@@ -4,7 +4,6 @@ import os
 import sys
 
 for file in os.listdir(os.path.dirname(sys.argv[0])):
-	print (file)
 	if file.endswith(".jpg"):
 		img = cv2.imread(file)
 		gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -14,4 +13,4 @@ for file in os.listdir(os.path.dirname(sys.argv[0])):
 			pt1 = (line[0],line[1])
 			pt2 = (line[2],line[3])
 			cv2.line(img, pt1, pt2, (0,0,255), 3)
-		cv2.imwrite("horizon - " + file.name, img)
+		cv2.imwrite("horizon - " + os.path.splitext(file)[0], img)
