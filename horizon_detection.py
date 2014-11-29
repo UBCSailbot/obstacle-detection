@@ -9,9 +9,9 @@ for file in os.listdir(os.path.dirname(sys.argv[0])):
         img = cv2.imread(file)
         img = img[24:239, 0:277] #comment this line out if no cropping is needed
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        #cv2.imwrite("gray.jpg", gray)
-        edges = cv2.Canny(gray, 80, 120)
-        #cv2.imwrite("edge.jpg", edges)
+        cv2.imwrite("gray.jpg", gray)
+        edges = cv2.Canny(gray, 160, 256)
+        cv2.imwrite("edge.jpg", edges)
         lines = cv2.HoughLinesP(edges, 1, np.pi/180, 100, None, 30, 12);
         longest_line = 0
         longest_points = ()
