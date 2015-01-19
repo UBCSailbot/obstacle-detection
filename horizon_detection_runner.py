@@ -16,11 +16,15 @@ def __main__(args):
     for fname in file_list:
         img = cv2.imread(os.path.join(input_dir, fname))
         img = img[24:239, 0:277]  # comment this line out if no cropping is needed
-        if horizon_detection.horizon_line(img) is 0:
+        edges, return_val = horizon_detection.horizon_line(img)
+        if return_val == 0:
             print "No lines were found in " + fname + "."
         dest_name = os.path.join(output_dir,
                                  fname.split('.')[0] + "-horizon.jpg")
+        edges_name = os.path.join(output_dir,
+                                 fname.split('.')[0] + "-edges.jpg")
         cv2.imwrite(dest_name, img)
+        cv2.imwrite(edges_name, edges)
 
 
 if __name__ == "__main__":

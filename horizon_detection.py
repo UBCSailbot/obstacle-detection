@@ -1,10 +1,13 @@
 import cv2
+import aux
 from math import pi
 
 
 def horizon_line(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    edges = cv2.Canny(gray, 160, 256)
+    blur = cv2.bilateralFilter(img,9,75,75)
+    #aux.paint(blur)
+    gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(gray, 20, 256)
 #    cv2.imwrite("edge.jpg", edges)
     lines = cv2.HoughLinesP(edges, 1, pi/180, 100, None, 30, 12)
     longest_line = 0
@@ -20,5 +23,5 @@ def horizon_line(img):
         if longest_line > 0:
             cv2.line(img, longest_points[0], longest_points[1], (0, 255, 0), 3)
     except TypeError:
-        return 0
-    return img
+        return edges, 0
+    return edges, 1
