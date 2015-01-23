@@ -1,11 +1,11 @@
 import cv2
-import aux
+import auxiliary
 from math import pi
 
 
 def horizon_line(img):
     blur = cv2.bilateralFilter(img,9,75,75)
-    #aux.paint(blur)
+    #auxiliary.paint(blur)
     gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
     edges = cv2.Canny(gray, 20, 256)
 #    cv2.imwrite("edge.jpg", edges)

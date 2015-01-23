@@ -1,7 +1,7 @@
 import os
 from sys import argv
 import horizon_detection
-import aux
+import auxiliary
 import cv2
 
 #horizon_test.py input_dir file_list output_dir
@@ -12,7 +12,7 @@ def __main__(args):
     list_file = args[2]
     output_dir = args[3]
 
-    file_list = aux.read_file_list(list_file)
+    file_list = auxiliary.read_file_list(list_file)
     for fname in file_list:
         img = cv2.imread(os.path.join(input_dir, fname))
         img = img[24:239, 0:277]  # comment this line out if no cropping is needed

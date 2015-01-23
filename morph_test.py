@@ -1,7 +1,7 @@
 import os
 import cv2
 import numpy as np
-import aux
+import auxiliary
 from sys import argv
 
 
@@ -10,7 +10,7 @@ def __main__(args):
     list_file = args[2]
     output_dir = args[3]
 
-    file_list = aux.read_file_list(list_file)
+    file_list = auxiliary.read_file_list(list_file)
 
     kernel = np.ones((3, 3), np.uint8)
     #kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
