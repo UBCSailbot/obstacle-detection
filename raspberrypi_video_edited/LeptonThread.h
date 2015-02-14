@@ -8,7 +8,9 @@
 #include <QtCore>
 #include <QPixmap>
 #include <QImage>
-#include <cv.h>
+//#include <cv.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #define PACKET_SIZE 164
 #define PACKET_SIZE_UINT16 (PACKET_SIZE/2)
@@ -35,10 +37,11 @@ signals:
 private:
 
   QImage myImage;
+  cv::Mat myMatrix;
 
   uint8_t result[PACKET_SIZE*PACKETS_PER_FRAME];
   uint16_t *frameBuffer;
-  cv::IplImage* QImage2IplImage(QImage*);
+  IplImage* QImage2IplImage(QImage*);
 
 };
 

@@ -15,6 +15,6 @@ SOURCES += Lepton_I2C.cpp \
            MyLabel.cpp \
            Palettes.cpp \
            SPI.cpp
-LIBS += -LleptonSDKEmb32PUB/Debug -lLEPTON_SDK
+LIBS += -LleptonSDKEmb32PUB/Debug -lLEPTON_SDK -I/usr/include/opencv -lopencv_core -lopencv_video -lopencv_highgui
 
-QMAKE_CXXFLAGS += -I/usr/include/opencv -lopencv_core -lopencv_video
+QMAKE_CXXFLAGS += -I/usr/include/opencv -lopencv_core -lopencv_video -lopencv_highgui

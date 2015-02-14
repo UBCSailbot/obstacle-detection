@@ -20,7 +20,8 @@ LeptonThread::~LeptonThread() {
 IplImage* LeptonThread::QImage2IplImage(QImage *qimg)
 {
 
-	IplImage *imgHeader = cv::cvCreateImageHeader(cv::cvSize(qimg->width(), qimg->height()), IPL_DEPTH_8U, 4);
+		
+	IplImage *imgHeader = cvCreateImageHeader(cvSize(qimg->width(), qimg->height()), IPL_DEPTH_8U, 4);
 	imgHeader->imageData = (char*) qimg->bits();
 
 	uchar* newdata = (uchar*) malloc(sizeof(uchar) * qimg->byteCount());
@@ -34,6 +35,10 @@ void LeptonThread::run()
 {
 	//create the initial image
 	myImage = QImage(80, 60, QImage::Format_RGB888);
+	//IplImage *imgHeader = cvCreateImageHeader(cvSize(80, 60), IPL_DEPTH_8U, 4);
+	myMatrix = cv::Mat(80, 60, CV_8UC3); 
+	cv::VideoWriter vid = cv::VideoWriter("out.avi", CV_FOURCC('M','J','P','G'),10, cv::Size(80, 60),true);
+
 
 	//open spi port
 	SpiOpenPort(0);
@@ -98,16 +103,19 @@ void LeptonThread::run()
 				continue;
 			}
 			value = (frameBuffer[i] - minValue) * scale;
-			const int *colormap = colormap_ironblack;
+			const int *colormap = colormap_grayscale;
 			color = qRgb(colormap[3*value], colormap[3*value+1], colormap[3*value+2]);
 			column = (i % PACKET_SIZE_UINT16 ) - 2;
 			row = i / PACKET_SIZE_UINT16;
 			myImage.setPixel(column, row, color);
+
+			myMatrix.at<cv::Vec3b>(column, row) = cv::Vec3b(colormap[3*value], colormap[3*value+1], colormap[3*value+2]);
 		}
 
 		//lets emit the signal for update
 		emit updateImage(myImage);
 
+		vid << myMatrix;
 	}
 	
 	//finally, close SPI port just bcuz
