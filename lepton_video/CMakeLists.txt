@@ -3,10 +3,14 @@ project(lepton)
 
 find_package( OpenCV REQUIRED )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 set(SOURCE_FILES
-    Lepton.cpp)
+    main.cpp
+    Lepton.cpp
+    Lepton.h
+    SPI.h
+    SPI.cpp)
 
 add_executable(lepton ${SOURCE_FILES})
 
