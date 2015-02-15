@@ -36,9 +36,9 @@ void LeptonThread::run()
 	//create the initial image
 	myImage = QImage(80, 60, QImage::Format_RGB888);
 	//IplImage *imgHeader = cvCreateImageHeader(cvSize(80, 60), IPL_DEPTH_8U, 4);
-	myMatrix = cv::Mat(80, 60, CV_8UC3); 
-	cv::VideoWriter vid = cv::VideoWriter("out.avi", CV_FOURCC('M','J','P','G'),10, cv::Size(80, 60),true);
-
+	myMatrix = cv::Mat(60, 80, CV_8UC3); 
+	cv::VideoWriter writer = cv::VideoWriter("out.avi", CV_FOURCC('M','J','P','G'),10, cv::Size(60, 80),true);
+	cvNamedWindow("capWindow", CV_WINDOW_AUTOSIZE);
 
 	//open spi port
 	SpiOpenPort(0);
@@ -47,7 +47,7 @@ void LeptonThread::run()
 
 		//read data packets from lepton over SPI
 		int resets = 0;
-		for(int j=0;j<PACKETS_PER_FRAME;j++) {
+		for(int j=0; j < PACKETS_PER_FRAME; j++) {
 			//if it's a drop packet, reset j to 0, set to -1 so he'll be at 0 again loop
 			read(spi_cs0_fd, result+sizeof(uint8_t)*PACKET_SIZE*j, sizeof(uint8_t)*PACKET_SIZE);
 			int packetNumber = result[j*PACKET_SIZE+1];
@@ -109,13 +109,19 @@ void LeptonThread::run()
 			row = i / PACKET_SIZE_UINT16;
 			myImage.setPixel(column, row, color);
 
-			myMatrix.at<cv::Vec3b>(column, row) = cv::Vec3b(colormap[3*value], colormap[3*value+1], colormap[3*value+2]);
+			myMatrix.at<cv::Vec3b>(row, column) = cv::Vec3b(colormap[3*value], colormap[3*value+1], colormap[3*value+2]);
 		}
 
 		//lets emit the signal for update
-		emit updateImage(myImage);
+//		emit updateImage(myImage);
 
-		vid << myMatrix;
+//		imwrite("test.jpg", myMatrix); // A JPG FILE IS BEING SAVED
+	//	imshow("capWindow", myMatrix);
+
+		//vid << myMatrix;
+		//cvWriteFrame(writer, myMatrix);
+		writer.write(myMatrix);
+		
 	}
 	
 	//finally, close SPI port just bcuz
