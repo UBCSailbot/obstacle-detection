@@ -37,8 +37,8 @@ void LeptonThread::run()
 	myImage = QImage(80, 60, QImage::Format_RGB888);
 	//IplImage *imgHeader = cvCreateImageHeader(cvSize(80, 60), IPL_DEPTH_8U, 4);
 	myMatrix = cv::Mat(60, 80, CV_8UC3); 
-	cv::VideoWriter writer = cv::VideoWriter("out.avi", CV_FOURCC('M','J','P','G'),10, cv::Size(60, 80),true);
-	cvNamedWindow("capWindow", CV_WINDOW_AUTOSIZE);
+	cv::VideoWriter writer = cv::VideoWriter("out.avi", CV_FOURCC('M','J','P','G'),27, cv::Size(80, 60));
+//	cvNamedWindow("capWindow", CV_WINDOW_AUTOSIZE);
 
 	//open spi port
 	SpiOpenPort(0);
@@ -113,13 +113,12 @@ void LeptonThread::run()
 		}
 
 		//lets emit the signal for update
-//		emit updateImage(myImage);
+		emit updateImage(myImage);
 
-//		imwrite("test.jpg", myMatrix); // A JPG FILE IS BEING SAVED
-		imshow("capWindow", myMatrix);
+		imwrite("test.jpg", myMatrix); // A JPG FILE IS BEING SAVED
+//		imshow("capWindow", myMatrix);
 
 		//vid << myMatrix;
-		//cvWriteFrame(writer, myMatrix);
 		writer.write(myMatrix);
 		
 	}
