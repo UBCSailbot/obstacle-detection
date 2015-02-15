@@ -107,7 +107,7 @@ void LeptonThread::run()
 			color = qRgb(colormap[3*value], colormap[3*value+1], colormap[3*value+2]);
 			column = (i % PACKET_SIZE_UINT16 ) - 2;
 			row = i / PACKET_SIZE_UINT16;
-//			myImage.setPixel(column, row, color);
+			myImage.setPixel(column, row, color);
 
 			myMatrix.at<cv::Vec3b>(row, column) = cv::Vec3b(colormap[3*value], colormap[3*value+1], colormap[3*value+2]);
 		}

@@ -115,7 +115,7 @@ void LeptonThread::run()
 		//lets emit the signal for update
 		emit updateImage(myImage);
 
-		imwrite("test.jpg", myMatrix); // A JPG FILE IS BEING SAVED
+		//imwrite("test.jpg", myMatrix); // A JPG FILE IS BEING SAVED
 //		imshow("capWindow", myMatrix);
 
 		//vid << myMatrix;
