@@ -7,3 +7,7 @@ raspberrypi_video
 !raspberrypi_video.pro
 .DS_Store
 leptonSDKEmb32PUB/Debug
+*~
+CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt

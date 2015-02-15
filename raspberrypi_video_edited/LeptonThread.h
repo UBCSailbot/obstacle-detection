@@ -8,7 +8,7 @@
 #include <QtCore>
 #include <QPixmap>
 #include <QImage>
-//#include <cv.h>
+
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
@@ -41,7 +41,6 @@ private:
 
   uint8_t result[PACKET_SIZE*PACKETS_PER_FRAME];
   uint16_t *frameBuffer;
-  IplImage* QImage2IplImage(QImage*);
 
 };
 

@@ -17,27 +17,14 @@ LeptonThread::LeptonThread() : QThread()
 LeptonThread::~LeptonThread() {
 }
 
-IplImage* LeptonThread::QImage2IplImage(QImage *qimg)
-{
-
-		
-	IplImage *imgHeader = cvCreateImageHeader(cvSize(qimg->width(), qimg->height()), IPL_DEPTH_8U, 4);
-	imgHeader->imageData = (char*) qimg->bits();
-
-	uchar* newdata = (uchar*) malloc(sizeof(uchar) * qimg->byteCount());
-	memcpy(newdata, qimg->bits(), qimg->byteCount());
-	imgHeader->imageData = (char*) newdata;
-	//cvClo
-	return imgHeader;
-}
-
 void LeptonThread::run()
 {
 	//create the initial image
 	myImage = QImage(80, 60, QImage::Format_RGB888);
 	//IplImage *imgHeader = cvCreateImageHeader(cvSize(80, 60), IPL_DEPTH_8U, 4);
-	myMatrix = cv::Mat(60, 80, CV_8UC3); 
-	cv::VideoWriter writer = cv::VideoWriter("out.avi", CV_FOURCC('M','J','P','G'),27, cv::Size(80, 60));
+	myMatrix = cv::Mat(60, 80, CV_8UC1); 
+//	myMatrix = cv::Mat(60, 80, CV_8UC3);  
+	cv::VideoWriter vid = cv::VideoWriter("out.avi", CV_FOURCC('A','S','L','C'),27, cv::Size(80, 60));
 //	cvNamedWindow("capWindow", CV_WINDOW_AUTOSIZE);
 
 	//open spi port
@@ -109,7 +96,8 @@ void LeptonThread::run()
 			row = i / PACKET_SIZE_UINT16;
 			myImage.setPixel(column, row, color);
 
-			myMatrix.at<cv::Vec3b>(row, column) = cv::Vec3b(colormap[3*value], colormap[3*value+1], colormap[3*value+2]);
+//			myMatrix.at<cv::Vec3b>(row, column) = cv::Vec3b(colormap[3*value], colormap[3*value+1], colormap[3*value+2]);
+      myMatrix.at<uchar>(row, column) = value;
 		}
 
 		//lets emit the signal for update
@@ -118,8 +106,7 @@ void LeptonThread::run()
 		//imwrite("test.jpg", myMatrix); // A JPG FILE IS BEING SAVED
 //		imshow("capWindow", myMatrix);
 
-		//vid << myMatrix;
-		writer.write(myMatrix);
+		vid << myMatrix;
 		
 	}
 	
