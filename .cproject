@@ -72,23 +72,6 @@
 						<toolChain id="cdt.managedbuild.toolchain.gnu.base.1285736547" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.802887871" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
-							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.56573034" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
-								<option id="gnu.cpp.compiler.option.include.paths.799711576" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/include/opencv"/>
-									<listOptionValue builtIn="false" value="/home/paul/workspace_cpp/OA/src"/>
-									<listOptionValue builtIn="false" value="/usr/include/qt4"/>
-									<listOptionValue builtIn="false" value="/usr/include/qt4/QtTest"/>
-								</option>
-								<option id="gnu.cpp.compiler.option.preprocessor.def.898130523" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="QT_SHARED"/>
-								</option>
-								<option id="gnu.cpp.compiler.option.optimization.level.331670602" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.debugging.level.638017166" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.dialect.std.1629781935" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.other.other.13306241" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.dialect.flags.1802615278" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" value="-std=c++11" valueType="string"/>
-								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.92304123" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
-							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.986110556" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 								<option id="gnu.c.compiler.option.include.paths.204244694" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/include/opencv"/>
@@ -103,18 +86,6 @@
 								<option id="gnu.c.compiler.option.debugging.level.395313414" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.dialect.std.526176423" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" value="gnu.c.compiler.dialect.default" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.362973080" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
-							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.2074230945" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
-							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1871593403" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base"/>
-							<tool id="cdt.managedbuild.tool.gnu.assembler.base.37252000" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
-								<option id="gnu.both.asm.option.include.paths.1833850428" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/include/opencv"/>
-									<listOptionValue builtIn="false" value="/home/paul/workspace_cpp/OA/src"/>
-									<listOptionValue builtIn="false" value="/usr/include/qt4"/>
-									<listOptionValue builtIn="false" value="/usr/include/qt4/QtTest"/>
-								</option>
-								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1643327801" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
-							</tool>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
