@@ -137,6 +137,7 @@ HoughLinesSDiv( const Mat& img,
                 std::vector<Vec2f>& lines, int linesMax,
                 double min_theta, double max_theta )
 {
+	(void)HoughLinesSDiv;
     #define _POINT(row, column)\
         (image_src[(row)*step+(column)])
 

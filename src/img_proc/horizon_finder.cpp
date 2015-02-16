@@ -47,13 +47,13 @@ int find_horizon(cv::Mat& img, float angle_deg) {
 
 
 
-	const uchar* image = img.ptr();
-	int width = img.cols;
-	int height = img.rows;
-
-	float slope = atan(angle_deg) * 180 / PI;
-
-
+//	const uchar* image = img.ptr();
+//	int width = img.cols;
+//	int height = img.rows;
+//
+//	float slope = atan(angle_deg) * 180 / PI;
+//
+//
 	return NO_HORIZON;
 
 }
@@ -76,9 +76,6 @@ float normalize_angle_ret(float angle_deg) {
 }
 
 HorizonFoundImg* findHorizon(cv::Mat img, float horizon_angle) {
-
-	int width = img.cols;
-	int height = img.rows;
 
 	float slope = atan(horizon_angle) * 180 / PI;
 	normalize_angle(horizon_angle);
