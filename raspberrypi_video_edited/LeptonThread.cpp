@@ -21,14 +21,17 @@ void LeptonThread::run()
 {
 	//create the initial image
 	myImage = QImage(80, 60, QImage::Format_RGB888);
-	//IplImage *imgHeader = cvCreateImageHeader(cvSize(80, 60), IPL_DEPTH_8U, 4);
+
 	myMatrix = cv::Mat(60, 80, CV_8UC1); 
+
+// Uncomment these lines if you want to record using OpenCV's video writer.
 //	myMatrix = cv::Mat(60, 80, CV_8UC3);  
-	cv::VideoWriter vid = cv::VideoWriter("out.avi", CV_FOURCC('A','S','L','C'),27, cv::Size(80, 60));
-//	cvNamedWindow("capWindow", CV_WINDOW_AUTOSIZE);
+//	cv::VideoWriter vid = cv::VideoWriter("out.avi", CV_FOURCC('M','J','P','G'), 27, cv::Size(80, 60));
 
 	//open spi port
 	SpiOpenPort(0);
+  int frame_counter = 1;
+  char file_name[50];
 
 	while(true) {
 
@@ -103,11 +106,14 @@ void LeptonThread::run()
 		//lets emit the signal for update
 		emit updateImage(myImage);
 
-		//imwrite("test.jpg", myMatrix); // A JPG FILE IS BEING SAVED
+    sprintf(file_name, "output/img_%06d.png", frame_counter);
+		imwrite(file_name, myMatrix); // save the current frame as a .png file
+
 //		imshow("capWindow", myMatrix);
 
-		vid << myMatrix;
-		
+//		vid << myMatrix;
+  
+		frame_counter++;
 	}
 	
 	//finally, close SPI port just bcuz
