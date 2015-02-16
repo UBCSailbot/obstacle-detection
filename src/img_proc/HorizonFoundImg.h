@@ -8,9 +8,18 @@
 #ifndef HORIZONFOUNDIMG_H_
 #define HORIZONFOUNDIMG_H_
 
+#define HORIZONTAL 1
+#define VERTICAL 2
+
 #include <memory>
 
 #include <opencv2/core/core.hpp>
+
+
+struct HorizonLine {
+		float slope;
+		unsigned int start_index;
+	} ;
 
 class HorizonFoundImg {
 public:
@@ -18,11 +27,18 @@ public:
 	virtual ~HorizonFoundImg();
 	virtual void showHorizon() = 0;
 
-private:
+	/**
+	 * TODO:
+	 * implement some way of iterating over a subset of the pixels in an image,
+	 * 	given the position of the horizon
+	 */
+
+protected:
 	//HorizonFoundImg();
 
 	cv::Mat* img;
 	float horizon_angle;
+	HorizonLine horizon_line;
 };
 
 #endif /* HORIZONFOUNDIMG_H_ */

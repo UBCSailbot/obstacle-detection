@@ -10,7 +10,9 @@ RM := rm -rf
 -include sources.mk
 -include test/img_proc/subdir.mk
 -include test/subdir.mk
+-include src/sensors/subdir.mk
 -include src/img_proc/subdir.mk
+-include src/subdir.mk
 -include subdir.mk
 -include objects.mk
 

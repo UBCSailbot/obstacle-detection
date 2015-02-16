@@ -12,9 +12,11 @@
 
 class HorizontalHorizon: public HorizonFoundImg {
 public:
+
 	HorizontalHorizon(cv::Mat* img, float angle);
-	virtual ~HorizontalHorizon();
+	~HorizontalHorizon();
 	void showHorizon();
+
 };
 
 #endif /* HORIZONTALHORIZON_H_ */

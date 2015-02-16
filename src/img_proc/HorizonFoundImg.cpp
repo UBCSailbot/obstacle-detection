@@ -19,7 +19,7 @@ HorizonFoundImg::HorizonFoundImg(cv::Mat* in_img, float angle) {
 }
 
 HorizonFoundImg::~HorizonFoundImg() {
-	// TODO Auto-generated destructor stub
+	img = NULL;
 }
 
 

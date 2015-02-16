@@ -25,5 +25,7 @@ C_UPPER_DEPS :=
 SUBDIRS := \
 test/img_proc \
 test \
+src/sensors \
+src \
 src/img_proc \
 

@@ -83,8 +83,7 @@ HorizonFoundImg* findHorizon(cv::Mat img, float horizon_angle) {
 	if (abs(horizon_angle) < slope ) {
 		return new HorizontalHorizon(&img, horizon_angle);
 	}
-	else {
-		return new VerticalHorizon(&img, horizon_angle);
-	}
+
+	return new VerticalHorizon(&img, horizon_angle);
 
 }
