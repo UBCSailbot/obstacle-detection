@@ -37,3 +37,25 @@ void normalize_horizon_angle(float& angle_deg) {
 		angle_deg += 360;
 
 }
+
+/**
+ * Given an x coordinate, a slope, and a y-intercept, find the corresponding y coordinate.
+ */
+//int f(int x, float m, int b) {
+//	return b - floor(x*m);
+//}
+//
+//void getAngledGradient(cv::Mat* src, cv::Mat dst, float slope) {
+//	cv::Mat gradx, grady;
+//	getDerivKernels(gradx, grady, 1, 1, 3);
+//
+//	for(int i=0; i < src->rows; i++) {
+//		for(int j=0; j< src->cols; j++) {
+//			float x = gradx.at<float>(i,j);
+//			float y = grady.at<float>(i,j);
+//			float dot_product = x + slope * y;
+//			float magnitude = sqrt(x*x + y*y);
+//			dst.at<uint16_t>(i,j) = dot_product / magnitude;
+//		}
+//	}
+//}

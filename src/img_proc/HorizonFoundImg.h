@@ -35,6 +35,8 @@ public:
 
 protected:
 	//HorizonFoundImg();
+//	void getAngledGradient(cv::Mat* src, cv::Mat dst, float slope);
+//	int f(int x, float slope, int y_intercept);
 
 	cv::Mat* img;
 	float horizon_angle;
