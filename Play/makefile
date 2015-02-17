@@ -8,7 +8,9 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/sensors/subdir.mk
 -include src/img_proc/subdir.mk
+-include src/subdir.mk
 -include sandbox/subdir.mk
 -include subdir.mk
 -include objects.mk
@@ -39,10 +41,7 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: pre-build main-build
-
-# Main-build Target
-main-build: OA
+all: OA
 
 # Tool invocations
 OA: $(OBJS) $(USER_OBJS)
@@ -57,11 +56,7 @@ clean:
 	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) OA
 	-@echo ' '
 
-pre-build:
-	-qmake -project "CONFIG += qtestlib"; qmake && make
-	-@echo ' '
-
 .PHONY: all clean dependents
-.SECONDARY: main-build pre-build
+.SECONDARY:
 
 -include ../makefile.targets

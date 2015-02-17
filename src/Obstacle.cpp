@@ -1,5 +1,6 @@
-#include <Obstacle.h>
 #include <ctime>
+
+#include "Obstacle.h"
 
 
 Obstacle::Obstacle(float init_pos) {
