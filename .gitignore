@@ -2,3 +2,5 @@
 *.mk
 *.d
 *~
+/Debug/
+/Play/

@@ -75,7 +75,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.56573034" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.799711576" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/include/opencv"/>
-									<listOptionValue builtIn="false" value="/home/paul/workspace_cpp/OA/src"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
 									<listOptionValue builtIn="false" value="/usr/include/qt4"/>
 									<listOptionValue builtIn="false" value="/usr/include/qt4/QtTest"/>
 								</option>
@@ -109,7 +109,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.assembler.base.37252000" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
 								<option id="gnu.both.asm.option.include.paths.1833850428" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/include/opencv"/>
-									<listOptionValue builtIn="false" value="/home/paul/workspace_cpp/OA/src"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
 									<listOptionValue builtIn="false" value="/usr/include/qt4"/>
 									<listOptionValue builtIn="false" value="/usr/include/qt4/QtTest"/>
 								</option>

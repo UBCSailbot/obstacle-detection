@@ -1,10 +1,3 @@
-/*
- * HorizontalHorizon.h
- *
- *  Created on: Feb 16, 2015
- *      Author: paul
- */
-
 #ifndef HORIZONTALHORIZON_H_
 #define HORIZONTALHORIZON_H_
 
