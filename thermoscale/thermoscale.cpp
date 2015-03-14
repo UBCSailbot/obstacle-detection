@@ -26,26 +26,57 @@ Prettiness:
 #include <cmath>
 #include <cstdint>
 
-#define WIN_NAME "Scale 16 to 8-bit"
-#define WIN_WIDTH 640
-#define WIN_HEIGHT 480
+#define APP_NAME "thermoscale"
+#define WIN_ZOOM_FACTOR 8
+#define WIN_WIDTH 80 * WIN_ZOOM_FACTOR
+#define WIN_HEIGHT 60 * WIN_ZOOM_FACTOR
+#define EIGHT_BITS 256
 
+struct TrackbarInfo {
+    int minVal_orig;
+    int* trackbarMin;
+    int* trackbarMax; 
+};
 
-void onTrackbarSlide(int pos) {
-
+struct TrackbarInfo* newTrackbarInfo(int minVal_orig, int* trackbarMin, int* trackbarMax) {
+    struct TrackbarInfo* info = (TrackbarInfo*) malloc(sizeof(struct TrackbarInfo));
+    info->minVal_orig = minVal_orig;
+    info->trackbarMin = trackbarMin;
+    info->trackbarMax = trackbarMax;
+    return info;
 }
 
-int greatestOfMinAndZero(int min) {
-    if (!min)
-        return min;     // return 0 if min is 0
-    int unit = min / std::abs(min);  // +1 if min > 0, else -1 
-    return (unit - 1) / -2;
+int trackbarValToPixelVal(int trackbarVal, int origMinVal) {
+    return trackbarVal - EIGHT_BITS/2 + origMinVal;
+}
+
+static void onMouse( int event, int x, int y, int, void* imgVP)
+{
+    if( event != cv::EVENT_LBUTTONDOWN )
+        return;
+
+    cv::Mat* img = static_cast<cv::Mat*>(imgVP);
+    int pixelVal = img->at<uint16_t>(x/WIN_ZOOM_FACTOR, y/WIN_ZOOM_FACTOR);
+    
+    std::cout << "Pixel value: " << pixelVal << std::endl;
+}
+
+void onTrackbarSlide(int pos, void* VP) {
+    struct TrackbarInfo* info = static_cast<struct TrackbarInfo*>(VP);
+
+    int minVal_orig = info->minVal_orig;
+    int cur_min = trackbarValToPixelVal(*(info->trackbarMin), minVal_orig);
+    int cur_max = trackbarValToPixelVal(*(info->trackbarMax), minVal_orig);
+
+    std::cout << "Min threshold: " << cur_min << std::endl;
+    std::cout << "Max threshold: " << cur_max << std::endl;
+    std::cout << "Range: " << cur_max - cur_min << std::endl << std::endl;
 }
 
 int main( int argc, char** argv ) {
 
     if(argc != 2) {
-        std::cout << "Usage: scaling <image path>" << std::endl;
+        std::cout << "Usage: " << APP_NAME << " <image path>" << std::endl;
         return -1;
     }
 
@@ -62,32 +93,34 @@ int main( int argc, char** argv ) {
     int range = maxVal_orig - minVal_orig;
 
     // Initialize window
-    cv::namedWindow(WIN_NAME);
+    std::string win_name = APP_NAME;
+    win_name += ": " + image_path;
+    cv::namedWindow(win_name);
     int minVal_trackbar = 128;
-    int maxVal_trackbar = range + 128;    
-    cv::createTrackbar("Min", WIN_NAME, &minVal_trackbar, range + 256);
-    cv::createTrackbar("Max", WIN_NAME, &maxVal_trackbar, range + 256);
+    int maxVal_trackbar = range + 128; 
+    struct TrackbarInfo* info = newTrackbarInfo(minVal_orig, &minVal_trackbar, &maxVal_trackbar);
+
+    cv::createTrackbar("Min", win_name, &minVal_trackbar, range + 256, onTrackbarSlide, info);
+    cv::createTrackbar("Max", win_name, &maxVal_trackbar, range + 256, onTrackbarSlide, info);
+    cv::setMouseCallback( win_name, onMouse, &image);
 
     // Dynamically adjust min and max pixel intensity values using window sliders    
     while (true) {
-        // Read trackbar info
-        minVal_trackbar = cv::getTrackbarPos("Min", WIN_NAME);
-        maxVal_trackbar = cv::getTrackbarPos("Max", WIN_NAME);
-    
-        // Convert to real pixel intensity values\
+
+        // Convert to real pixel intensity values
         // TODO: handle boundary cases (ensure values are never < 0 or > UINT16_MAX)
-        int minVal = minVal_trackbar - 128 + minVal_orig;
-        int maxVal = maxVal_trackbar -128 + minVal_orig;
-    
+        int minVal = trackbarValToPixelVal(minVal_trackbar, minVal_orig);
+        int maxVal = trackbarValToPixelVal(maxVal_trackbar, minVal_orig);
+
         // Convert input image to 8-bit and resize
         image.convertTo(eightBit, CV_8UC1, 255.0/(maxVal - minVal), -minVal * 255.0/(maxVal - minVal));
         cv::resize(eightBit, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
 
         // Display processed image
-        cv::imshow(WIN_NAME, displayed);
+        cv::imshow(win_name, displayed);
         char c = cv::waitKey(33);  // wait 33 ms to show frame
-        if (c == 27)
-            break;  // break if Esc key is hit
+        if (c == 27 || c == 113)
+            break;  // break if Esc key or Q key are hit
         
     }
 }
