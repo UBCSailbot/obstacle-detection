@@ -56,7 +56,7 @@ static void onMouse( int event, int x, int y, int, void* imgVP)
         return;
 
     cv::Mat* img = static_cast<cv::Mat*>(imgVP);
-    int pixelVal = img->at<uint16_t>(x/WIN_ZOOM_FACTOR, y/WIN_ZOOM_FACTOR);
+    int pixelVal = img->at<uint16_t>(y/WIN_ZOOM_FACTOR, x/WIN_ZOOM_FACTOR);
     
     std::cout << "Pixel value: " << pixelVal << std::endl;
 }
