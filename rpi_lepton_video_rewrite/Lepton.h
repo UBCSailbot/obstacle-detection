@@ -2,6 +2,11 @@
 #define LEPTON
 
 #include "SPI.h"
+#include "Lepton_I2C.h"
+
+#include "leptonSDKEmb32PUB/LEPTON_SDK.h"
+#include "leptonSDKEmb32PUB/LEPTON_SYS.h"
+#include "leptonSDKEmb32PUB/LEPTON_Types.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>

@@ -5,11 +5,10 @@ find_package( OpenCV REQUIRED )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
-set(SOURCE_FILES
-    Lepton.h
-    Lepton.cpp
-    SPI.h
-    SPI.cpp)
+file(GLOB SOURCE_FILES
+    "*.h"
+    "*.cpp"
+)
 
 add_executable(lepton main.cpp ${SOURCE_FILES})
 

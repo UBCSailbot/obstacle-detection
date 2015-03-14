@@ -19,12 +19,15 @@ Lepton::~Lepton() {
 }
 
 cv::Mat Lepton::GetFrame() {
+    std::cout << "start" << std::endl;
 
-    cv::Mat frame(80, 60, CV_8UC1);
+    cv::Mat frame(80, 60, CV_16UC1);
+    std::cout << "created mat" << std::endl;
 
     //read data packets from lepton over SPI
     int resets = 0;
     for (int j = 0; j < PACKETS_PER_FRAME; j++) {
+        std::cout << j << std::endl;
         //if it's a drop packet, reset j to 0, set to -1 so he'll be at 0 again loop
         read(spi_cs0_fd, result + sizeof(uint8_t) * PACKET_SIZE * j, sizeof(uint8_t) * PACKET_SIZE);
         int packetNumber = result[j * PACKET_SIZE + 1];
@@ -38,6 +41,9 @@ cv::Mat Lepton::GetFrame() {
                 SpiOpenPort(0);
             }
         }
+    }
+    if (resets >= 30) {
+        std::cout << "Done reading, resets: " << resets << std::endl;
     }
 
     frameBuffer = (uint16_t *) result;
@@ -77,13 +83,13 @@ cv::Mat Lepton::GetFrame() {
             continue;
         }
 
-        value = (uint16_t) ((frameBuffer[i] - minValue) * scale);
+//        value = (uint16_t) ((frameBuffer[i] - minValue) * scale);
 //            const int *colormap = colormap_ironblack;
 //        color = qRgb(colormap[3*value], colormap[3*value+1], colormap[3*value+2]);
 
         column = (i % PACKET_SIZE_UINT16) - 2;
         row = i / PACKET_SIZE_UINT16;
-        frame.at<uchar>(row, column, 0) = (uchar) value;
+        frame.at<uint16_t>(row, column) = frameBuffer[i];
 
     }
 

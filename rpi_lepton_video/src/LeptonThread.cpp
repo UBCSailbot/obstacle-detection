@@ -70,7 +70,7 @@ void LeptonThread::run()
 		frameBuffer = (uint16_t *)result;
 		int row, column;
 		uint16_t value;
-    uint16_t raw_val;
+        uint16_t raw_val;
 		uint16_t minValue = 65535;
 		uint16_t maxValue = 0;
 
