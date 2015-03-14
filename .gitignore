@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Object files
 *.o
 *.ko
@@ -56,3 +57,7 @@ Makefile.in
 #Ignore Build Folder
 build/
 tests.xml
+=======
+*~
+*.pyc
+>>>>>>> 946d17741de741562ce45a5152469403ce955aeb
