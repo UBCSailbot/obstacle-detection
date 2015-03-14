@@ -28,7 +28,7 @@ int main() {
         // this 10ms delay is necessary for proper operation of this program
         // if removed, frames will not have enough time to refresh and a blank
         // image will appear.
-        switch (cv::waitKey(10)) {
+        switch (cv::waitKey(30)) {
             case 113:
             case 27: //'esc' key has been pressed, exit program.
                 return 0;
