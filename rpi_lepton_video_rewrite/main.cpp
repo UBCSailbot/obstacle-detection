@@ -5,6 +5,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
 #include <string>
+#include <Automator/Automator.h>
 
 using namespace std;
 
@@ -23,6 +24,7 @@ int main() {
     cv::Mat frame(60, 80, CV_16UC1);
     cv::Mat eightBit(60, 80, CV_8UC1);
     cv::Mat displayed(WIN_HEIGHT, WIN_WIDTH, CV_8UC1);
+    cv::Mat output(60, 80, CV_8UC1);
 
     while (1) {
 
@@ -30,6 +32,14 @@ int main() {
 
         cv::Mat displayed(WIN_HEIGHT, WIN_WIDTH, CV_8UC1);
         cv::resize(eightBit, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
+
+        if (trackingEnabled) {
+            cv::GaussianBlur(eightBit, output, cv::Size(3, 3), 0, 0, cv::BORDER_DEFAULT);
+            cv::Laplacian(output, output, CV_16S, 3, 1, 0, cv::BORDER_DEFAULT);
+            cv::convertScaleAbs(output, output);
+
+            imshow("Filtered", output);
+        }
 
         imshow(APP_NAME, displayed);
 
