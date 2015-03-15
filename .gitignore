@@ -1,2 +1,63 @@
+<<<<<<< HEAD
+# Object files
+*.o
+*.ko
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+
+*.xcuserstate
+
+*.pbxproj
+
+*.xcuserstate
+
+*.xcbkptlist
+
+*.xcscheme
+
+*.plist
+
+*.pbxproj
+
+#Exclude MPLab Related
+*.d
+*.pre
+*.p1
+*.lst
+*.sym
+*.obj
+*.o
+*.sdb
+*.obj.dmp
+*.elf
+*.mk
+*.bash
+
+#Automake files
+autom4te.cache
+aclocal.m4
+Makefile.in
+
+#CLion Stuff
+*.idea
+
+#Ignore Build Folder
+build/
+tests.xml
+=======
 *~
 *.pyc
+>>>>>>> 946d17741de741562ce45a5152469403ce955aeb
