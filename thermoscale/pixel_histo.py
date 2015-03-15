@@ -3,6 +3,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
+PLOTFILE_FORMAT = ".png"
 
 def densest_window_range(histo_vals):
     max_density = 0
@@ -88,17 +89,24 @@ def plot_video_stats(pixels):
     plot_min_max(pixels.min(), pixels.max())
 
 
-def save_plot(frame_dir, save_name):
+def generate_save_path(frame_dir):
     save_dir, tail = os.path.split(frame_dir)
+    return os.path.join(save_dir, get_name_from_frames_dir(frame_dir) + PLOTFILE_FORMAT)
+
+
+def save_plot(frame_dir, save_name):
     plt.title("Histogram of pixel values\n" + save_name)
-    plt.savefig(os.path.join(save_dir, save_name) + ".png", bbox_inches='tight')
+    plt.savefig(generate_save_path(frame_dir), bbox_inches='tight')
     plt.clf()
 
 
-def generate_video_histo(frame_dir):
+def generate_video_histo(frame_dir, overwrite_existing=True):
     
     save_name = get_name_from_frames_dir(frame_dir)
-    
+    if not overwrite_existing and os.path.exists(generate_save_path(frame_dir)):
+        print "Overwrite set to false. Skipping " + save_name
+        return
+
     pixels = concatenate_frames(frame_dir)
     print "Done reading frames for " + save_name
 
