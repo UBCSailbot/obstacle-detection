@@ -13,7 +13,6 @@ using namespace std;
 #define WIN_ZOOM_FACTOR 8
 #define WIN_WIDTH 80 * WIN_ZOOM_FACTOR
 #define WIN_HEIGHT 60 * WIN_ZOOM_FACTOR
-#define EIGHT_BITS 256
 
 int main() {
     Lepton lepton;
@@ -21,28 +20,16 @@ int main() {
 
     bool trackingEnabled = false;
     bool debugModeEnabled = false;
-    cv::Mat frame;
-    cv::Mat eightBit;
+    cv::Mat frame(80, 60, CV_16UC1);
+    cv::Mat eightBit(80, 60, CV_8UC1);
+    cv::Mat displayed(WIN_HEIGHT, WIN_WIDTH, CV_8UC1);
 
 
     while (1) {
 
-        frame = lepton.GetFrame();
+        lepton.GetFrame(frame, eightBit);
 
-        // We must convert the frame to 8 bit display it properly
-
-        double minVal_orig;
-        double maxVal_orig;
-        cv::minMaxLoc(frame, &minVal_orig, &maxVal_orig);
         cv::Mat displayed(WIN_HEIGHT, WIN_WIDTH, CV_8UC1);
-
-        int range = maxVal_orig - minVal_orig;
-
-        int minVal_trackbar = 128;
-        int maxVal_trackbar = range + 128;
-
-        // Convert input image to 8-bit and resize
-        frame.convertTo(eightBit, CV_8UC1, 255.0/(maxVal_orig - minVal_orig), -minVal_orig * 255.0/(maxVal_orig - minVal_orig));
         cv::resize(eightBit, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
 
         imshow(APP_NAME, displayed);

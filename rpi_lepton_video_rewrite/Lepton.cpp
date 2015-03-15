@@ -18,9 +18,7 @@ Lepton::~Lepton() {
     SpiClosePort(0);
 }
 
-cv::Mat Lepton::GetFrame() {
-
-    cv::Mat frame(80, 60, CV_16UC1);
+void Lepton::GetFrame(cv::Mat &frame, cv::Mat &eightbit) {
 
     //read data packets from lepton over SPI
     int resets = 0;
@@ -80,12 +78,12 @@ cv::Mat Lepton::GetFrame() {
             continue;
         }
 
-//        value = (uint16_t) ((frameBuffer[i] - minValue) * scale);
 //        const int *colormap = colormap_ironblack;
 //        color = qRgb(colormap[3*value], colormap[3*value+1], colormap[3*value+2]);
 
         column = (i % PACKET_SIZE_UINT16) - 2;
         row = i / PACKET_SIZE_UINT16;
+        eightbit.at<uint8_t>(row, column) = (uint8_t) ((frameBuffer[i] - minValue) * scale);
         frame.at<uint16_t>(row, column) = frameBuffer[i];
 
     }

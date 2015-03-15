@@ -21,7 +21,7 @@ public:
   Lepton();
   ~Lepton();
 
-  cv::Mat GetFrame();
+  void GetFrame(cv::Mat &frame, cv::Mat &eightbit);
 
 private:
 
