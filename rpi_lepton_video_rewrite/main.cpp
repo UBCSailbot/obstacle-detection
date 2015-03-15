@@ -33,7 +33,7 @@ int main() {
 
     int iLowV = 0;
     int iHighV = 255;
-    
+
     RNG rng(12345);
     int kernel_size = 3;
     int scale = 1;
@@ -73,17 +73,13 @@ int main() {
 
 //        imshow(APP_NAME, displayed);
         imshow(APP_NAME, eightBit);
-
-        Mat imgHSV;
-
-        cvtColor(eightBit, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV
-
+        
         Mat imgThresholded, imgThresholded1, imgThresholded2, imgThresholded3, imgThresholded4;
         vector<vector<Point> > contours;
         vector<Vec4i> hierarchy;
 
 
-        inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
+        inRange(eightBit, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
 
         //morphological opening (remove small objects from the foreground)
         erode(imgThresholded, imgThresholded1, getStructuringElement(MORPH_ELLIPSE, Size(4, 4)));
