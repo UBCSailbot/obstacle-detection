@@ -21,8 +21,12 @@ int main() {
 
         frame = lepton.GetFrame();
 
-        imshow(windowName, frame);
+        // We must convert the frame to 8 bit display it properly
+        cv::Mat eightBit(240, 180, CV_8UC1);
+        frame.convertTo(eightBit, CV_8UC1);
+        cv::resize(eightBit, eightBit, eightBit.size(), 3, 3, cv::INTER_NEAREST);
 
+        imshow(windowName, eightBit);
 
         // Check to see if a button has been pressed.
         // this 10ms delay is necessary for proper operation of this program
@@ -30,7 +34,7 @@ int main() {
         // image will appear.
         switch (cv::waitKey(30)) {
             case 113:
-            case 27: //'esc' key has been pressed, exit program.
+            case 27: //'esc' or 'q' key has been pressed, exit program.
                 return 0;
             case 116: //'t' has been pressed. this will toggle tracking
                 trackingEnabled = !trackingEnabled;
@@ -53,5 +57,4 @@ int main() {
                 break;
         }
     }
-
 }
