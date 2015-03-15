@@ -78,16 +78,10 @@ void Lepton::GetFrame(cv::Mat &frame, cv::Mat &eightbit) {
             continue;
         }
 
-//        const int *colormap = colormap_ironblack;
-//        color = qRgb(colormap[3*value], colormap[3*value+1], colormap[3*value+2]);
-
         column = (i % PACKET_SIZE_UINT16) - 2;
         row = i / PACKET_SIZE_UINT16;
         eightbit.at<uint8_t>(row, column) = (uint8_t) ((frameBuffer[i] - minValue) * scale);
         frame.at<uint16_t>(row, column) = frameBuffer[i];
 
     }
-
-    return frame;
-
 }

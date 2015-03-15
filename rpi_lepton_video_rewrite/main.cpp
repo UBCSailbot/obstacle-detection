@@ -20,10 +20,9 @@ int main() {
 
     bool trackingEnabled = false;
     bool debugModeEnabled = false;
-    cv::Mat frame(80, 60, CV_16UC1);
-    cv::Mat eightBit(80, 60, CV_8UC1);
+    cv::Mat frame(60, 80, CV_16UC1);
+    cv::Mat eightBit(60, 80, CV_8UC1);
     cv::Mat displayed(WIN_HEIGHT, WIN_WIDTH, CV_8UC1);
-
 
     while (1) {
 
