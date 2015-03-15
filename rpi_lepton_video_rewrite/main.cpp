@@ -5,10 +5,8 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
 #include <string>
-#include <Automator/Automator.h>
 
 using namespace std;
-
 
 #define APP_NAME "Lepton Capture"
 #define WIN_ZOOM_FACTOR 8
@@ -31,7 +29,7 @@ int main() {
         lepton.GetFrame(frame, eightBit);
 
         cv::Mat displayed(WIN_HEIGHT, WIN_WIDTH, CV_8UC1);
-        cv::resize(eightBit, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
+//        cv::resize(eightBit, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
 
         if (trackingEnabled) {
             cv::GaussianBlur(eightBit, output, cv::Size(3, 3), 0, 0, cv::BORDER_DEFAULT);
@@ -41,7 +39,8 @@ int main() {
             imshow("Filtered", output);
         }
 
-        imshow(APP_NAME, displayed);
+//        imshow(APP_NAME, displayed);
+        imshow(APP_NAME, eightBit);
 
         // Check to see if a button has been pressed.
         // this 10ms delay is necessary for proper operation of this program
