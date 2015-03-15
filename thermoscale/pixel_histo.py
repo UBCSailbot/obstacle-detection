@@ -43,12 +43,7 @@ def concatenate_frames(frame_dir):
     return pixels
 
 
-def plot_video_stats(pixels):
-
-    # Generate histogram of pixel values over entire video
-    histo_vals, bins, patches = plt.hist(pixels, pixels.max() - pixels.min())
-
-    # Find the 256-range window that contains the most pixels
+def plot_densest_window_range(histo_vals, bins):
     window_range = densest_window_range(histo_vals)
     window_minval = int(bins[window_range[0]])
     window_maxval = int(bins[window_range[1]])
@@ -63,6 +58,24 @@ def plot_video_stats(pixels):
     window_avg = int( np.average(range(256), weights=clipped) + window_minval )
     plt.vlines(window_avg, 0, histo_vals.max(), color='green',
         label="window\navg: " + str(window_avg))
+
+
+def plot_min_max(min_pixel, max_pixel):
+    min_pixel = int(min_pixel)
+    max_pixel = int(max_pixel)
+    plt.text(min_pixel, 0, str(min_pixel), 
+        verticalalignment='bottom', horizontalalignment='right')
+    plt.text(max_pixel, 0, str(max_pixel), 
+        verticalalignment='bottom', horizontalalignment='left')
+
+def plot_video_stats(pixels):
+
+    # Generate histogram of pixel values over entire video
+    histo_vals, bins, patches = plt.hist(pixels, pixels.max() - pixels.min())
+
+    # Find the 256-range window that contains the most pixels
+    if len(histo_vals) > 256:
+        plot_densest_window_range(histo_vals, bins)
     
     # Plot the global average pixel value throughout entire video
     total_avg = int(pixels.mean())
@@ -72,12 +85,7 @@ def plot_video_stats(pixels):
     # Add legend and axes labels
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.xlabel("Lepton pixel intensity values")
-    min_pixel = int(pixels.min())
-    max_pixel = int(pixels.max())
-    plt.text(min_pixel, 0, str(min_pixel), 
-        verticalalignment='bottom', horizontalalignment='right')
-    plt.text(max_pixel, 0, str(max_pixel), 
-        verticalalignment='bottom', horizontalalignment='left')
+    plot_min_max(pixels.min(), pixels.max())
 
 
 def save_plot(frame_dir, save_name):
