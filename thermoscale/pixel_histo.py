@@ -1,4 +1,4 @@
-import os
+import sys, os
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,7 +8,7 @@ import numpy as np
 #frame_dir = "/home/paul/Desktop/sailbot/expt/20150219_VIGIL/Ucluelet Testing/01ferrydeck1/150218072105-360_onFerryDeck/raw"
 #frame_dir = "/home/paul/Desktop/sailbot/expt/20150219_VIGIL/Ucluelet Testing/01ferrydeck1/150218072144-Shaking on deck/raw"
 #frame_dir = "/home/paul/Desktop/sailbot/expt/20150219_VIGIL/Ucluelet Testing/04ucluelet_day/150218102803-Sun Sparkles/raw"
-frame_dir = "/home/paul/Desktop/sailbot/expt/20150219_VIGIL/Ucluelet Testing/04ucluelet_day/150218103647-Buoy/raw"
+#frame_dir = "/home/paul/Desktop/sailbot/expt/20150219_VIGIL/Ucluelet Testing/04ucluelet_day/150218103647-Buoy/raw"
 
 def indexof_densest_level(histo_vals):
 	max_density = 0
@@ -28,6 +28,8 @@ def get_name_from_frames_dir(f):
 	head, timestamp = os.path.split(head)
 	head, session_dir = os.path.split(head)
 	return session_dir + timestamp
+
+frame_dir = sys.argv[1]
 
 save_name = get_name_from_frames_dir(frame_dir)
 
