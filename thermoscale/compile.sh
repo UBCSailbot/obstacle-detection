@@ -7,6 +7,8 @@
 
 echo "Compiling..." && echo
 
-g++ thermoscale.cpp -g -std=c++11 -o thermoscale -I/usr/include/opencv -lopencv_core -lopencv_highgui -lopencv_imgproc
+g++ -c thermoscale.cpp -std=c++11 -g
+g++ -c SelectedPoints.cpp -std=c++11 -g
+g++ -o thermoscale thermoscale.o SelectedPoints.o -g -I/usr/include/opencv -lopencv_core -lopencv_highgui -lopencv_imgproc
 
 echo "Compilation complete. If there were errors they should be displayed above."
