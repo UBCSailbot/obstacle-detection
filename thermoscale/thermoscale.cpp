@@ -90,7 +90,7 @@ static void onMouse( int event, int x, int y, int, void* imgVP)
     for (int x=0; x < max_x; x++) {
         for (int y=0; y < max_y; y++) {
             int absDiff = std::abs(raw_img->at<uint16_t>(y, x) - pixelVal);
-            if (absDiff < EPSILON) {
+            if (absDiff <= EPSILON) {
                 points[i] = cv::Point(x,y);
                 i++;
             }
@@ -172,6 +172,8 @@ int main( int argc, char** argv ) {
         char c = showProcessedImage(&raw_image, info, &win_name);
         if (c == 27 || c == 113)
             break;  // break if Esc key or Q key are hit
+        if (c == 107)
+            
 
     }
 }
