@@ -46,7 +46,7 @@ for file_name in os.listdir(input_dir):
     img = cv2.imread( os.path.join(input_dir, file_name), -1 )
     try:
 #        img,cdf = histeq(img, pow(2,14))
-        img = scale_16to8(img, 7609, 7865)    
+        img = scale_16to8(img, 7360, 7615)    
         cv2.imwrite( os.path.join(temp_dir, file_name), img)
 
     except AttributeError:

@@ -1,6 +1,0 @@
-#ifndef RASPBERRY_PI_CAPTURE_H_
-#define RASPBERRY_PI_CAPTURE_H_
-
-int capture();
-
-#endif
