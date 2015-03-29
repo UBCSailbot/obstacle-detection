@@ -1,6 +1,0 @@
-LeptonThread.o: In function `LeptonThread::QImage2IplImage(QImage*)':
-LeptonThread.cpp:(.text+0xc0): undefined reference to `cvCreateImageHeader'
-collect2: ld returned 1 exit status
-Makefile:115: recipe for target 'raspberrypi_video' failed
-make: *** [raspberrypi_video] Error 1
-
