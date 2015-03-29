@@ -10,8 +10,7 @@ set(SOURCE_FILES
     Lepton.cpp
     SPI.h
     SPI.cpp
-    Imu.h
-    Imu.cpp)
+   	)
 
 add_executable(lepton main.cpp ${SOURCE_FILES})
 
