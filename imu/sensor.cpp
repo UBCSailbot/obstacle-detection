@@ -1,11 +1,18 @@
 #include <stdio.h>
+#include <sstream>
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <string.h> 
+#include <string>
 #include <unistd.h>     // UNIX standard function definitions
 #include <fcntl.h>      // File control definitions
 #include <errno.h>      // Error number definitions
 #include <termios.h>    // POSIX terminal control definitions
+
+#include <vector>
+
+#define DEBUG_ENABLED
 
 int open_serial(const char* port_name, int speed) {
 	int USB = open( port_name, O_RDWR| O_NOCTTY );
@@ -72,15 +79,38 @@ char* read(int USB, char* response) {
 	return response;
 }
 
+void calc(char* response) {
+  std::vector<std::string> elems;
+  std::stringstream ss(response);
+  std::string item;
+  const char delim = '\t';
+
+  while (std::getline(ss, item, delim)) {
+    elems.push_back(item);
+  }
+#ifdef DEBUG_ENABLED
+  std::cout << elems[0] << std::endl;
+  std::cout << elems[1] << std::endl;
+  std::cout << elems[2] << std::endl;
+  std::cout << elems[3] << std::endl;
+#endif
+}
 
 int main() {
     int USB = open_serial("/dev/ttyUSB0", B115200);
     char* response = new char[100]();
-    
+    std::ofstream imuLog;
+    imuLog.open ("imuLog.txt");
+
     for(int i=0; i < 135; i++) {
 	    read(USB, response);
 	    // std::string str = std::string(response);
 	    // std::cout << "Read " + str.size() << " bytes" << std::endl;
-	 	std::cout << response;   
-	 }
+      calc(response);
+#ifdef DEBUG_ENABLED
+      std::cout << response;
+#endif
+      imuLog << response;
+    }
+    imuLog.close();
 }
