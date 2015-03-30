@@ -61,8 +61,8 @@ void record(char* output_dir, bool verbose=true ) {
 	}
 
 	imuLog.close();
-	cout << "Recording received stopping signal\
-			 and terminated gracefully." << endl;
+	cout << "Recording received stopping signal " <<
+		"and terminated gracefully." << endl;
 
 }
 
