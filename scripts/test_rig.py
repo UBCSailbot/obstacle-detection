@@ -9,6 +9,7 @@ import RPi.GPIO as GPIO
 import time
 import subprocess
 from shutil import rmtree
+import signal
 
 xserver = False
 
@@ -48,6 +49,8 @@ def convert_to_video(top_dir, raw_dir):
   os.system("ffmpeg -i \"" + temp_dir + "/img_%06d.png\" -r 24 -vf \"transpose=2\"" + top_dir + "/out.avi")
 #  rmtree(temp_dir)
 
+lepton_video = 0
+
 while True:
   input_state = GPIO.input(18)
 
@@ -67,8 +70,8 @@ while True:
     GPIO.output(15, False)    
     print "killing process"
     try:
-      pid = subprocess.check_output(["pidof", "lepton_video"])
-      os.system("kill "+pid)
+      #pid = subprocess.check_output(["pidof", "lepton_video"])
+      os.kill(lepton_video.pid, signal.SIGHUP)
       convert_to_video(current_dir, raw_dir)
     except subprocess.CalledProcessError:
       pass

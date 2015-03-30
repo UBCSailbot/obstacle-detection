@@ -2,108 +2,77 @@
 
 #define DEBUG_ENABLED
 
+static const std::string ACCEL = "ACCEL";
+static const std::string GYRO = "GYRO";
+
 Imu::Imu() {
-  USB = open_serial("/dev/ttyUSB0", B115200);
-  response = new char[100]();
-  imuLog.open ("imuLog.txt");
+	USB = open_serial(DEFAULT_USB, B115200);
+	response = new char[100]();
 }
 
 Imu::~Imu() {
-  imuLog.close();
+	close_serial(USB);
 }
 
-int Imu::open_serial(const char* port_name, int speed) {
-	int USB = open( port_name, O_RDWR| O_NOCTTY );
+/**
+ * Read a line from the serial port and split it
+ *  at every instance of a tab character.
+ */
+void Imu::read_str(std::string dst[4]) {
+	read_serial(USB, response);
 
-	struct termios tty;
-	struct termios tty_old;
-	memset (&tty, 0, sizeof tty);
+	std::stringstream ss(response);
+	std::string item;
+	const char delim = '\t';
 
-	/* Error Handling */
-	if ( tcgetattr ( USB, &tty ) != 0 ) {
-	   std::cout << "Error " << errno << " from tcgetattr: " << strerror(errno) << std::endl;
+	for (int i=0; i < 4; i++) {
+		std::getline(ss, item, delim);
+		dst[i] = item;
 	}
-
-	/* Save old tty parameters */
-	tty_old = tty;
-
-	/* Set Baud Rate */
-	cfsetospeed (&tty, speed);
-	cfsetispeed (&tty, speed);
-
-	/* Setting other Port Stuff */
-	tty.c_cflag     &=  ~PARENB;            // Make 8n1
-	tty.c_cflag     &=  ~CSTOPB;
-	tty.c_cflag     &=  ~CSIZE;
-	tty.c_cflag     |=  CS8;
-
-	tty.c_cflag     &=  ~CRTSCTS;           // no flow control
-	tty.c_cc[VMIN]   =  1;                  // read doesn't block
-	tty.c_cc[VTIME]  =  1;                  // 0.5 seconds read timeout
-	tty.c_cflag     |=  CREAD | CLOCAL;     // turn on READ & ignore ctrl lines
-
-	/* Make raw */
-	cfmakeraw(&tty);
-
-	/* Flush Port, then applies attributes */
-	tcflush( USB, TCIFLUSH );
-	if ( tcsetattr ( USB, TCSANOW, &tty ) != 0) {
-	   std::cout << "Error " << errno << " from tcsetattr" << std::endl;
-	}
-
-	return USB;
 }
 
-char* Imu::readData(char* response) {
-	int n = 0, 
-	    spot = 0;
-	char buf = '\0';
+/**
+ * Read the given field from IMU.
+ * Attempts to get values for the given field until a certain maximum
+ *	 number of attempts.
+ * The number of attempts indicates the number of lines read from the IMU.
+ * Keep in mind that the device outputs accel/gyro data on alternating lines.
+ * Thus, the number of attempts for one particular field is really half the
+ * number of total line reads. 
+ *
+ * Returns true if read is successful, false otherwise.
+ */
+bool Imu::get_field(std::string field_name, float vals[3], 
+		int max_reads) {
 
-	do {
-	   n = read( USB, &buf, 1 );
-	   sprintf( &response[spot], "%c", buf );
-	   spot += n;
-	} while( buf != '\r' && n > 0);
+	int num_reads = 0;
+	std::string* string_response = new std::string[4]();
+	bool success = false;
 
-	if (n < 0) {
-	   std::cout << "Error reading: " << strerror(errno) << std::endl;
-	}
-	else if (n == 0) {
-	    std::cout << "Read nothing!" << std::endl;
-	}
-	else {
-	}
+	for (int i=0; i < max_reads; i++) {
+		read_str(string_response);
+        num_reads ++;
 
-	return response;
+        if (string_response[0].find(field_name) != 
+        		std::string::npos) {
+        	vals[0] = std::stof(string_response[1]);
+        	vals[1] = std::stof(string_response[2]);
+        	vals[2] = std::stof(string_response[3]);
+        	success = true;
+        	break;
+        }
+	}
+	
+	delete[] string_response;
+	return success;
 }
 
-void Imu::calc(char* response) {
-  std::vector<std::string> elems;
-  std::stringstream ss(response);
-  std::string item;
-  const char delim = '\t';
+ImuData Imu::getData() {
+	float* accel_data = new float[3];
+	float* gyro_data = new float[3];
 
-  while (std::getline(ss, item, delim)) {
-    elems.push_back(item);
-  }
-#ifdef DEBUG_ENABLED
-  std::cout << elems[0] << std::endl;
-  std::cout << elems[1] << std::endl;
-  std::cout << elems[2] << std::endl;
-  std::cout << elems[3] << std::endl;
-#endif
-}
+	get_field(ACCEL, accel_data);
+	get_field(GYRO, gyro_data);
 
-void Imu::getData() {
-	readData(response);
-
-  time_t now = time(0);
-  char* dt = ctime(&now);
-
-  imuLog << dt;
-  imuLog << response;
-#ifdef DEBUG_ENABLED
-  std::cout << dt;
-  std::cout << response;
-#endif
+	return ImuData(accel_data, gyro_data);
 }

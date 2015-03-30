@@ -94,7 +94,8 @@ def test():
     fails = 0
 
     # Read data from STM32F3discovery
-    while 1:
+    #while 1:
+    for i in range(135):
         #time.sleep(0.05)
         try:
             accel_data, gyro_data, fails = read_data(ser, fails)
