@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
 		record(output_dir);
 	}
 
-	if (argc == 3) {
+	else if (argc == 3) {
 		char* arg2 = argv[2];
 		if (!strcmp(arg2, "--silent"))
 			record(output_dir, false);

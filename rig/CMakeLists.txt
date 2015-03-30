@@ -15,6 +15,6 @@ set(SOURCE_FILES
     ../imu/imu_data.cpp
     )
 
-add_executable(rig_record main.cpp ${SOURCE_FILES})
+add_executable(rig_record rig_record.cpp ${SOURCE_FILES})
 
 target_link_libraries( rig_record ${OpenCV_LIBS} )
