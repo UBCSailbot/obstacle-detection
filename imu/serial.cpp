@@ -4,8 +4,7 @@
 // http://stackoverflow.com/questions/18108932/linux-c-serial-port-reading-writing
 
 int open_serial(const char* port_name, int speed) {
-	int USB = open( port_name, O_RDWR| O_NOCTTY );
-
+	int USB = open( port_name, O_RDONLY| O_NOCTTY );
 	struct termios tty;
 	struct termios tty_old;
 	memset (&tty, 0, sizeof tty);
@@ -64,7 +63,6 @@ char* read_serial(int USB, char* response) {
 	}
 	else {
 	}
-
 	return response;
 }
 

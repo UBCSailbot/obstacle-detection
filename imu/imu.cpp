@@ -4,6 +4,7 @@
 
 static const std::string ACCEL = "ACCEL";
 static const std::string GYRO = "GYRO";
+static const std::string MAG = "MAG";
 
 Imu::Imu() {
 	USB = open_serial(DEFAULT_USB, B115200);
@@ -20,6 +21,7 @@ Imu::~Imu() {
  */
 void Imu::read_str(std::string dst[4]) {
 	read_serial(USB, response);
+	//read_serial(USB, response);
 
 	std::stringstream ss(response);
 	std::string item;
@@ -70,9 +72,16 @@ bool Imu::get_field(std::string field_name, float vals[3],
 ImuData Imu::getData() {
 	float* accel_data = new float[3];
 	float* gyro_data = new float[3];
+	float* mag_data = new float[3];
 
-	get_field(ACCEL, accel_data);
-	get_field(GYRO, gyro_data);
+	bool success = true;
+	success &= get_field(ACCEL, accel_data);
+	success &= get_field(GYRO, gyro_data);
+	success &= get_field(MAG, mag_data);
 
-	return ImuData(accel_data, gyro_data);
+	if (!success) {
+		std::cout << "Failed to get data\n";
+	}
+
+	return ImuData(accel_data, gyro_data, mag_data);
 }

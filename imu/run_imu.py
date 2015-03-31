@@ -35,10 +35,11 @@ def parse_list(data):
 def read_data(ser, failed_reads):
     gyro  = []
     accel = []
+    mag = []
     fc = 0
 
     # Read next 2 lines from serial.
-    for i in range(2):
+    for i in range(3):
         data = pull_from_serial(ser)
         
         # Check what type of data was received, and save it to the proper list
@@ -46,6 +47,8 @@ def read_data(ser, failed_reads):
             gyro, fc = parse_list(data)
         elif 'ACCEL' in data[0]:
             accel, fc = parse_list(data)
+        elif 'MAG' in data[0]:
+            mag, fc = parse_list(data)
         else: 
             raise AttributeError("Unknown data received. Expected GYRO or ACCEL, but got: " + str(data) )
 
@@ -56,7 +59,7 @@ def read_data(ser, failed_reads):
         print data
         raise IOError("Unkown error occurred. Unable to read both GYRO and ACCEL data.")
     
-    return (accel, gyro, failed_reads)
+    return (accel, gyro, mag, failed_reads)
 
 
 """
@@ -94,13 +97,14 @@ def test():
     fails = 0
 
     # Read data from STM32F3discovery
-    #while 1:
-    for i in range(135):
+    while 1:
+    #for i in range(135):
         #time.sleep(0.05)
         try:
-            accel_data, gyro_data, fails = read_data(ser, fails)
+            accel_data, gyro_data, mag_data, fails = read_data(ser, fails)
             print "Accel: " + '  '.join(['{:8.3f}'.format(val) for val in accel_data]) + \
-               "   Gyro: "  + '  '.join(['{:8.3f}'.format(val) for val in gyro_data])
+               "   Gyro: "  + '  '.join(['{:8.3f}'.format(val) for val in gyro_data]) + \
+               "   Mag: "  + '  '.join(['{:8.3f}'.format(val) for val in mag_data])
         except AttributeError as ae:
             print ae
             fails += 1
