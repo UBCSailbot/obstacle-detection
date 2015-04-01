@@ -43,6 +43,8 @@ void record(char* output_dir, bool verbose=true ) {
 
 	std::ofstream imuLog;
 	imuLog.open ("imu.txt");
+	float dummy[3] = {0};
+	ImuData prev(dummy, dummy, dummy);
 
 	cout << "Starting Capture" << endl;
 
@@ -55,9 +57,11 @@ void record(char* output_dir, bool verbose=true ) {
 		// sprintf(file_name, "img_%06d.png", frame_counter);
 		// cv::imwrite(output_dir + "/" + file_name, frame);
 
-		imuLog << imuData.to_raw_str();
+		imuLog << imuData.to_raw_str(prev.get_timestamp());
 		if (verbose)
-			cout << imuData.to_pretty_str();
+			cout << imuData.to_pretty_str(prev.get_timestamp());
+
+		prev = imuData;
 	}
 
 	imuLog.close();
