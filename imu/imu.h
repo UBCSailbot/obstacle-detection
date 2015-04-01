@@ -12,6 +12,7 @@
 #include <fcntl.h>      // File control definitions
 #include <errno.h>      // Error number definitions
 #include <termios.h>    // POSIX terminal control definitions
+#include <stdexcept>
 
 #include "imu_data.h"
 #include "serial.h"
