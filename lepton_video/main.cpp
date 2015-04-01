@@ -2,6 +2,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
 #include <string>
+#include "Lepton.h"
 
 using namespace std;
 using namespace cv;
@@ -17,7 +18,7 @@ int main() {
     cout << "Starting Capture" << endl;
 
     bool trackingEnabled = false;
-    bool debugModeEnabled = false;
+    bool debugModeEnabled = true;
     Mat frame(60, 80, CV_16UC1);
     Mat eightBit(60, 80, CV_8UC1);
     Mat displayed(WIN_HEIGHT, WIN_WIDTH, CV_8UC1);

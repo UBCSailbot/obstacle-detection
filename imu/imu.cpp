@@ -57,11 +57,16 @@ bool Imu::get_field(std::string field_name, float vals[3],
 
         if (string_response[0].find(field_name) != 
         		std::string::npos) {
-        	vals[0] = std::stof(string_response[1]);
-        	vals[1] = std::stof(string_response[2]);
-        	vals[2] = std::stof(string_response[3]);
-        	success = true;
-        	break;
+          try {
+          	vals[0] = std::stof(string_response[1]);
+          	vals[1] = std::stof(string_response[2]);
+          	vals[2] = std::stof(string_response[3]);
+          	success = true;
+          	break;
+          }
+          catch (std::invalid_argument e) {
+              continue;
+          }
         }
 	}
 	

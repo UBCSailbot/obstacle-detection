@@ -33,31 +33,36 @@ void setup_sighandler() {
 
 void record(char* output_dir, bool verbose=true ) {
 	
-	// Lepton lepton;
+	Lepton lepton;
 	Imu imu;
 	
 	Mat eightBit(60, 80, CV_8UC1);
 	Mat frame(60, 80, CV_16UC1);
-	int frame_counter = 0;
-	char img_name[50];
+	int frame_counter = 1;
+	char img_name[128];
+  char imu_file_name[128];
 
 	std::ofstream imuLog;
-	imuLog.open ("imu.txt");
+  sprintf(imu_file_name, "%s/imuLog.txt", output_dir);
+	imuLog.open (imu_file_name);
 
 	cout << "Starting Capture" << endl;
 
 	while (!stop_record) {
 
 		ImuData imuData = imu.getData();
-		// lepton.GetFrame(frame, eightBit);
+		lepton.GetFrame(frame, eightBit);
 
-		// save the current frame as a .png file		
-		// sprintf(file_name, "img_%06d.png", frame_counter);
-		// cv::imwrite(output_dir + "/" + file_name, frame);
+    // save the current frame as a .png file
+		sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
+		cv::imwrite(img_name, frame);
 
 		imuLog << imuData.to_raw_str();
-		if (verbose)
+		if (verbose) {
 			cout << imuData.to_pretty_str();
+    }
+
+    frame_counter ++;
 	}
 
 	imuLog.close();

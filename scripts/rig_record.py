@@ -7,8 +7,13 @@ import signal
 bin_dir = "rig/build"
 bin_name = "rig_record"
 
+def make_dir_graceful(dir_name):
+  if not os.path.exists(dir_name):
+    os.makedirs(dir_name)
 
 def start(repo_dir, output_dir):
+  make_dir_graceful(output_dir)
+  make_dir_graceful(os.path.join(output_dir, 'raw'))
   if not os.path.exists(output_dir):
     os.makedirs(output_dir)
   rig_record = sp.Popen(os.path.join(repo_dir, \
@@ -19,8 +24,11 @@ def start(repo_dir, output_dir):
 
 
 def stop(process):
-  pid = sp.check_output(["pidof", bin_name])
-  os.kill(int(pid), signal.SIGHUP)
+  try:
+    pid = sp.check_output(["pidof", bin_name])
+    os.kill(int(pid), signal.SIGHUP)
+  except Exception:
+    pass
 
 
 def convert_to_video(top_dir, raw_dir):
