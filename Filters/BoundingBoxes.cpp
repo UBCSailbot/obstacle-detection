@@ -1,6 +1,7 @@
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <stdio.h>
 
 using namespace cv;
 using namespace std;
@@ -8,7 +9,7 @@ using namespace std;
 int main(int argc, char **argv) {
 
     int buoy_start = 132000; //2.2 mins
-    String path = "betterbouy.mov";
+    String path = argv[1];
     VideoCapture cap(path); //capture the video from web cam
 
     if (!cap.isOpened())  // if not success, exit program
