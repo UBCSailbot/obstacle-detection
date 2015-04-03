@@ -9,7 +9,7 @@ using namespace std;
  {
 
 	int buoy_start = 132000; //2.2 mins
-	String path = "/home/josh/SailbotOpenCV/data/buoy.avi";
+	String path = argv[1];
     VideoCapture cap(path); //capture the video from web cam
 
     if ( !cap.isOpened() )  // if not success, exit program
