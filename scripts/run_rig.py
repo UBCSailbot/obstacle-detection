@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO
 import time
 import os
 import rig_record as rig
+import make_video as vid
 
 
 # GPIO configuration
@@ -30,14 +31,17 @@ while True:
 
         if not recording:
           recording = True
+          GPIO.output(LED_pin, True)
           print "Now recording!"
           current_dir = os.path.join(data_dir, time.strftime("%d%H%M%S") )
-          current_proc = rig.start(repo_dir, os.path.join(current_dir))
+          current_proc = rig.start(repo_dir, current_dir)
           time.sleep(1)
 
         else:
           recording = False
+          GPIO.output(LED_pin, False)
           rig.stop(current_proc)
           print "Stopped recording."
+          vid.convert_to_video(current_dir, os.path.join(current_dir, 'raw'))
           time.sleep(1)
 
