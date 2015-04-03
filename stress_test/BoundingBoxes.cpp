@@ -3,14 +3,15 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <stdio.h>
 
+//#define DEBUG
+
 using namespace cv;
 using namespace std;
 
 int main(int argc, char **argv) {
 
-    int buoy_start = 132000; //2.2 mins
     String path = argv[1];
-    VideoCapture cap(path); //capture the video from web cam
+    VideoCapture cap(path);
 
     if (!cap.isOpened())  // if not success, exit program
     {
@@ -18,31 +19,13 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-//    cap.set(CV_CAP_PROP_POS_MSEC, buoy_start); //start the video at 2.5 mins
-    namedWindow("Control", CV_WINDOW_NORMAL);
+#ifdef DEBUG
     namedWindow("Obstacles", CV_WINDOW_NORMAL);
-//    namedWindow("Threshold", CV_WINDOW_NORMAL);
-//    namedWindow("Threshold1", CV_WINDOW_NORMAL);
-//    namedWindow("Threshold2", CV_WINDOW_NORMAL);
-//    namedWindow("Threshold3", CV_WINDOW_NORMAL);
-//    namedWindow("Threshold4", CV_WINDOW_NORMAL);
     namedWindow("Original", CV_WINDOW_NORMAL);
+#endif
 
-    moveWindow("Obstacles", 0, 0);
-    resizeWindow("Obstacles", 500, 500);
-//    moveWindow("Threshold", 0, 580);
-//    resizeWindow("Threshold", 500, 500);
-//    moveWindow("Threshold1", 0, 1060);
-//    resizeWindow("Threshold1", 500, 500);
-//    moveWindow("Threshold2", 1000, 580);
-//    resizeWindow("Threshold2", 500, 500);
-//    moveWindow("Threshold3", 580, 0);
-//    resizeWindow("Threshold3", 500, 500);
-//    moveWindow("Threshold4", 580, 580);
-//    resizeWindow("Threshold4", 500, 500);
-    moveWindow("Original", 580, 1640);
-    resizeWindow("Original", 500, 500);
-
+    int frame_counter = 1;
+    char file_name[50];
 
     int iLowH = 0;
     int iHighH = 179;
@@ -53,44 +36,21 @@ int main(int argc, char **argv) {
     int iLowV = 110;
     int iHighV = 255;
 
-    //Create trackbars in "Control" window
-    cvCreateTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
-    cvCreateTrackbar("HighH", "Control", &iHighH, 179);
-
-    cvCreateTrackbar("LowS", "Control", &iLowS, 255); //Saturation (0 - 255)
-    cvCreateTrackbar("HighS", "Control", &iHighS, 255);
-
-    cvCreateTrackbar("LowV", "Control", &iLowV, 255); //Value (0 - 255)
-    cvCreateTrackbar("HighV", "Control", &iHighV, 255);
-
-    /* Cut away above horizon boundaries */
-    int X = 0;
-    int Y = 20;
-    int Width = 55;
-    int Height = 60;
-
-
-    int frame_counter = 1;
-    char file_name[50];
-    string output_folder = "output";
-
-
     while (true) {
         Mat imgOriginal, imgLap;
 
         bool bSuccess = cap.read(imgOriginal); // read a new frame from video
-        // imgOriginal  = imgOriginal(Rect(X,Y,Width,Height)).clone(); // Cut away horizon
 
-
-        if (!bSuccess) //if not success, break loop
-        {
+        //if not success, break loop 
+        if (!bSuccess) {
             cout << "Cannot read a frame from video stream" << endl;
             break;
         }
 
         Mat imgHSV;
 
-        cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV
+        //Convert the captured frame from BGR to HSV
+        cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); 
 
         Mat imgThresholded, imgThresholded1, imgThresholded2, imgThresholded3, imgThresholded4;
         vector<vector<Point> > contours;
@@ -129,24 +89,15 @@ int main(int argc, char **argv) {
             rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0);
             //circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
         }
-//        imshow("Threshold", imgThresholded); //show the thresholded image
-//        imshow("Threshold1", imgThresholded1); //show the thresholded image
-//        imshow("Threshold2", imgThresholded2); //show the thresholded image
-//        imshow("Threshold3", imgThresholded3); //show the thresholded image
-//        imshow("Threshold4", imgThresholded4); //show the thresholded image
+
+    #ifdef DEBUG
         imshow("Obstacles", drawing); //show the drawn image
         imshow("Original", imgOriginal); //show the original image]
+        waitKey(24);
+    #endif
 
-        sprintf(file_name, "img_%06d.png", frame_counter);
-        cv::imwrite(output_folder + "/" + file_name, drawing); // save the current frame as a .png file
-        frame_counter++;
 
-        if (waitKey(30) == 27) { //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
-            cout << "esc key is pressed by user" << endl;
-            break;
-        }
     }
 
     return 0;
-
 }
