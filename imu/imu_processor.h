@@ -10,7 +10,7 @@ class ImuProcessor
 {
 public:
 
-	ImuProcessor();
+	ImuProcessor(const ImuData& data);
 
 	float getRoll() const;
 	float getPitch() const;
@@ -23,6 +23,9 @@ private:
 	void updateAccelAverage(const ImuData& data, int timeStepInMilliseconds);
 	void updatePitchAndRoll(const ImuData& data, int timeStepInMilliseconds);
 
+	float getAccelRoll(const ImuData& data) const;
+	float getAccelPitch(const ImuData& data) const;
+
 	float currentRoll;
 	float currentPitch;
 
@@ -31,7 +34,6 @@ private:
 
 	int timeSinceLastReset;
 
-    bool hasLastTimestamp;
 	TimePoint lastTimestamp;
 
 };
