@@ -29,7 +29,7 @@ private:
 	float accelRoll;
 	float accelPitch;
 
-	int accelAverageWeight;
+	int timeSinceLastReset;
 
     bool hasLastTimestamp;
 	TimePoint lastTimestamp;
