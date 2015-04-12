@@ -3,23 +3,37 @@
 
 #include "imu_data.h" // TODO
 
+typedef std::chrono::duration<std::chrono::steady_clock> TimeDuration;
+
 // TODO: Finish header file
-class ImuProcessor {
+class ImuProcessor
+{
 public:
 
 	ImuProcessor();
-	~ImuProcessor();
 
-	float getRoll();
-	float getPitch();
-	
-	void update(ImuData data);
+	float getRoll() const;
+	float getPitch() const;
+
+	void update(const ImuData& data);
 	void resetGyro();
 
-};
-
 private:
-	float cur_roll;
-	float cur_pitch;
+	int getTimeStepInMilliseconds(const ImuData& data) const;
+	void updateAccelAverage(const ImuData& data, int timeStepInMilliseconds);
+	void updatePitchAndRoll(const ImuData& data, int timeStepInMilliseconds);
+
+	float currentRoll;
+	float currentPitch;
+
+	float accelRoll;
+	float accelPitch;
+
+	int accelAverageWeight;
+
+    bool hasLastTimestamp;
+	TimePoint lastTimestamp;
+
+};
 
 #endif
