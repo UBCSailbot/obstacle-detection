@@ -84,6 +84,8 @@ ImuData Imu::getData() {
 	success &= get_field(GYRO, gyro_data);
 	success &= get_field(MAG, mag_data);
 
+	flush_serial(USB);
+
 	if (!success) {
 		std::cout << "Failed to get data\n";
 	}

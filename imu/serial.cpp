@@ -48,7 +48,7 @@ char* read_serial(int USB, char* response) {
 	int n = 0, 
 	    spot = 0;
 	char buf = '\0';
-
+	
 	do {
 	   n = read( USB, &buf, 1 );
 	   sprintf( &response[spot], "%c", buf );
@@ -68,4 +68,8 @@ char* read_serial(int USB, char* response) {
 
 void close_serial(int USB) {
 	close(USB);
+}
+
+void flush_serial(int USB) {
+	tcflush( USB, TCIFLUSH );
 }

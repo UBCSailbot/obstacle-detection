@@ -40,7 +40,7 @@ void record(char* output_dir, bool verbose=true ) {
 	Mat frame(60, 80, CV_16UC1);
 	int frame_counter = 1;
 	char img_name[128];
-  char imu_file_name[128];
+  	char imu_file_name[128];
 
 	std::ofstream imuLog;
 

@@ -20,5 +20,6 @@
 int open_serial(const char* port_name, int speed);
 char* read_serial(int USB, char* response);
 void close_serial(int USB);
+void flush_serial(int USB);
 
 #endif
