@@ -19,7 +19,7 @@ public:
 	void resetGyro();
 
 private:
-	int getTimeStepInMilliseconds(const ImuData& data) const;
+	int getTimeStepInMilliseconds(const ImuData& data);
 	void updateAccelAverage(const ImuData& data, int timeStepInMilliseconds);
 	void updatePitchAndRoll(const ImuData& data, int timeStepInMilliseconds);
 
