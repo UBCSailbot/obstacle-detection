@@ -1,4 +1,4 @@
-#include "horizon_finder.h"
+#include "Horizon.h"
 
 /*
 Determine the number of pixels by which the image of the horizon is shifted.
@@ -10,7 +10,7 @@ RETURN:
 pixel_shift: 0 when horizon centred, +height/2 when horizon at top, -height/2 at bottom.
 May exceed magnitude height/2 for large angles.
 */
-double pitchHorizonPixelShift(double angle){
+double Horizon::pitchHorizonPixelShift(double angle){
 	return -(double) angle / ((double) VIEWPORT_FOV_DEGREES_VERTICAL * PI / 180.0) * (double) VIEWPORT_HEIGHT_PIX;
 }
 
@@ -25,6 +25,6 @@ RETURN:
 pixel_shift: 0 when horizon centred, +height/2 when horizon from top left to bottom right.
 May exceed magnitude height/2 for large angles.
 */
-double rollHorizonPixelShift(double angle) {
+double Horizon::rollHorizonPixelShift(double angle) {
 	return tan(angle) * (double) VIEWPORT_WIDTH_PIX / 2.0;
 }
