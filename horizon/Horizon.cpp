@@ -1,5 +1,52 @@
 #include "Horizon.h"
 
+#define DEBUG_ENABLED
+
+Horizon::Horizon(float roll, float pitch) {
+	setPitchRoll(pitch, roll);
+}
+
+Horizon::~Horizon() {
+}
+
+/*
+Check if given point is above horizon.
+IN: point of interest
+OUT:
+RETURN: true if point is above horizon
+*/
+bool Horizon::isPointAbove(cv::Point2f pointOfInterest) {
+	if (pointOfInterest.y > start.y && pointOfInterest.y > end.y)
+        return true;
+
+    if (pointOfInterest.y < start.y && pointOfInterest.y < end.y)
+        return false;
+
+    if (pointOfInterest.x > start.x && pointOfInterest.x > end.x)
+        return false;
+
+    if (pointOfInterest.x < start.x && pointOfInterest.x < end.x)
+        return true;
+
+    if ((end.x - start.x) * pointOfInterest.x < (end.y - start.y) * pointOfInterest.y)
+        return true;
+}
+
+/*
+Check if rectangle intersect the horizon.
+IN: rectangle
+OUT:
+RETURN: true some points in the the rectangle is above and below the horizon
+*/
+bool Horizon::isPolyIntersect(Rect rectangle) {
+	bool isAbove = false;
+	bool isBelow = false;
+
+	//add check for 4 point
+
+	return isAbove && isBelow;
+}
+
 /*
 Determine the number of pixels by which the image of the horizon is shifted.
 IN:
