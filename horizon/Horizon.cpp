@@ -1,12 +1,21 @@
-#include "Horizon.h"
+#include "Horizon.hpp"
 
 #define DEBUG_ENABLED
 
-Horizon::Horizon(float roll, float pitch) {
+Horizon::Horizon(double roll, double pitch) : roll(roll), pitch(pitch) {
 	setPitchRoll(pitch, roll);
 }
 
 Horizon::~Horizon() {
+}
+
+cv::Point2f Horizon::getStart() {
+    return start;
+}
+
+
+cv::Point2f Horizon::getEnd() {
+    return end;
 }
 
 /*
@@ -38,7 +47,7 @@ IN: rectangle
 OUT:
 RETURN: true some points in the the rectangle is above and below the horizon
 */
-bool Horizon::isPolyIntersect(Rect rectangle) {
+bool Horizon::isPolyIntersect(cv::Rect rectangle) {
 	bool isAbove = false;
 	bool isBelow = false;
 
@@ -74,4 +83,24 @@ May exceed magnitude height/2 for large angles.
 */
 double Horizon::rollHorizonPixelShift(double angle) {
 	return tan(angle) * (double) VIEWPORT_WIDTH_PIX / 2.0;
+}
+
+/*
+Convert pitch and roll angles to intersection points.
+PRE: pitch, roll angles in radians given
+POST: pitch, roll, and intersection heights stored in class.
+*/
+void Horizon::setPitchRoll(double pitch, double roll) {
+    double pitchShift = pitchHorizonPixelShift(pitch);
+    heightLeft = pitchShift + VIEWPORT_HEIGHT_PIX / 2;
+    heightRight = pitchShift + VIEWPORT_HEIGHT_PIX / 2;
+
+    double rollShift = rollHorizonPixelShift(roll);
+    heightLeft += rollShift;
+    heightRight -= rollShift;
+
+    // XXX: Assumes that the horizon intersects both
+    //  vertical edges of the frame
+    start = cv::Point2f(0, heightLeft);
+    end = cv::Point2f(VIEWPORT_WIDTH_PIX, heightRight);
 }

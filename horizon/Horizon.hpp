@@ -11,14 +11,17 @@
 
 class Horizon {
 public:
-	Horizon(float pitch, float roll);
+	Horizon(double pitch, double roll);
 	~Horizon();
+
+	cv::Point2f getStart();
+	cv::Point2f getEnd();
 	
 private:
 	cv::Point2f start, end;
-	float pitch, roll;
+	double pitch, roll;
 	// Store the height of the intersection of the horizon with the edges of the viewport
-	double heightLeft, heightRight;
+	int heightLeft, heightRight;
 	
 	/*
 	Check if given point is above horizon.
@@ -34,7 +37,7 @@ private:
 	OUT:
 	RETURN: true some points in the the rectangle is above and below the horizon
 	*/
-	bool isPolyIntersect(Rect rectangle);
+	bool isPolyIntersect(cv::Rect rectangle);
 	
 	/* Convert pitch and roll angles to intersection points.
 	 * PRE: pitch, roll angles in radians given
