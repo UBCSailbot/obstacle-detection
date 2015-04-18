@@ -62,17 +62,17 @@ float ImuProcessor::getAccelPitch(const ImuData& data) const
 void ImuProcessor::updatePitchAndRoll(const ImuData& data, int timeStepInMilliseconds)
 {
     //TODO: set gyro scale factor - units: radians per millisecond
-    const auto gyroScaleFactor = 0.001;
+    const auto gyroScaleFactor = 0.00001;
 
     currentRoll += data.getGyro().y * gyroScaleFactor * timeStepInMilliseconds;
     currentPitch += (data.getGyro().x - IMU_GYRO_X_ERROR) * gyroScaleFactor * timeStepInMilliseconds;
 }
 
-void ImuProcessor::resetGyro()
+void ImuProcessor::resetGyro(const ImuData& data)
 {
 	currentRoll = accelRoll;
 	currentPitch = accelPitch;
-	lastTimestamp = std::chrono::steady_clock::now();
+	lastTimestamp = data.getTimestamp();
     timeSinceLastReset = 0;
 }
 

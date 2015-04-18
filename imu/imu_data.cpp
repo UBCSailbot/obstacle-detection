@@ -29,6 +29,11 @@ TimePoint ImuData::getTimestamp() const
 	return timestamp;
 }
 
+void ImuData::setTimestamp(TimePoint newTimeStamp) 
+{
+	timestamp = newTimeStamp;
+}
+
 int ImuData::millisSince(const TimePoint& prev) const
 {
 	int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(timestamp - prev).count();

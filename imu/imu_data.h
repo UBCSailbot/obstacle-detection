@@ -8,7 +8,7 @@
 #include <chrono>
 #include <vector>
 
-typedef std::chrono::time_point<std::chrono::steady_clock> TimePoint;
+typedef std::chrono::time_point < std::chrono::steady_clock > TimePoint;
 
 struct Sensor
 {
@@ -25,7 +25,9 @@ public:
 	Sensor getAccel() const;
 	Sensor getGyro() const;
 	Sensor getMag() const;
+
 	TimePoint getTimestamp() const;
+	void setTimestamp(TimePoint newTimeStamp);
 
 	int millisSince(const TimePoint& prev) const;
 

@@ -16,7 +16,7 @@ public:
 	float getPitch() const;
 
 	void update(const ImuData& data);
-	void resetGyro();
+	void resetGyro(const ImuData& data);
 
 private:
 	int getTimeStepInMilliseconds(const ImuData& data);
