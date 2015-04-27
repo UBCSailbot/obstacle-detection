@@ -24,7 +24,7 @@ void displayHorizonFrame(string fileName, Horizon h) {
 	cout << "First point: " << h.getStart() << endl;
 	cout << "Second point: " << h.getEnd() << endl;
 	imshow("Horizon", frame);
-	char c = waitKey(30);
+	char c = waitKey(33);
 	if (c == 'p') {
 		waitKey(0);
 	}
@@ -131,11 +131,11 @@ void videoTest(string imuLogfile, string frameDir) {
 				firstFrame = false;
 			else
 				proc.update(dataArray[frameCounter]);
-				if (frameCounter % 270 == 0) {
-					proc.resetGyro(dataArray[frameCounter]);
-					cout << "RESETTING" << endl;
-					waitKey(0);
-				}
+				// if (frameCounter % 270 == 0) {
+				// 	proc.resetGyro(dataArray[frameCounter]);
+				// 	cout << "RESETTING" << endl;
+				// 	waitKey(0);
+				// }
 			Horizon h(proc.getRoll(), proc.getPitch() + PITCH_OFFSET);
 			displayHorizonFrame(frameDir + "/" + fileName, h);
 		}

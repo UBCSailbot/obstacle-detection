@@ -10,6 +10,7 @@ ImuProcessor::ImuProcessor(const ImuData& data)
 
     accelRoll = getAccelRoll(data);
     accelPitch = getAccelPitch(data);
+    readingsSinceLastReset = 1;
 
     currentRoll = accelRoll;
 	currentPitch = accelPitch;
@@ -30,8 +31,11 @@ float ImuProcessor::getPitch() const
 void ImuProcessor::update(const ImuData& data)
 {
 	const auto timestep = getTimeStepInMilliseconds(data);
-	updateAccelAverage(data, timestep);
-	updatePitchAndRoll(data, timestep);
+	// updateAccelAverage(data, timestep);
+	// updatePitchAndRoll(data, timestep);
+    // readingsSinceLastReset ++;
+    currentPitch = getAccelPitch(data);
+    currentRoll = getAccelRoll(data);
 }
 
 void ImuProcessor::updateAccelAverage(const ImuData& data, int timeStepInMilliseconds)
@@ -40,11 +44,11 @@ void ImuProcessor::updateAccelAverage(const ImuData& data, int timeStepInMillise
     const auto newAccelPitch = getAccelPitch(data);
 
     // TODO: handle cases where timestep is multiple seconds
-    accelRoll = (accelRoll*timeSinceLastReset + newAccelRoll*timeStepInMilliseconds)
-              / (timeSinceLastReset + timeStepInMilliseconds);
+    accelRoll = (accelRoll*readingsSinceLastReset + newAccelRoll)
+              / (readingsSinceLastReset + 1);
 
-    accelPitch = (accelPitch*timeSinceLastReset + newAccelPitch*timeStepInMilliseconds)
-              / (timeSinceLastReset + timeStepInMilliseconds);
+    accelPitch = (accelPitch*readingsSinceLastReset + newAccelPitch)
+              / (readingsSinceLastReset + 1);
 
     timeSinceLastReset += timeStepInMilliseconds;
 }
@@ -74,6 +78,7 @@ void ImuProcessor::resetGyro(const ImuData& data)
 	currentPitch = accelPitch;
 	lastTimestamp = data.getTimestamp();
     timeSinceLastReset = 0;
+    readingsSinceLastReset = 1;
 }
 
 int ImuProcessor::getTimeStepInMilliseconds(const ImuData& data)

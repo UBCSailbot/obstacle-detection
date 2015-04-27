@@ -33,6 +33,7 @@ private:
 	float accelPitch;
 
 	int timeSinceLastReset;
+	int readingsSinceLastReset;
 
 	TimePoint lastTimestamp;
 
