@@ -2,33 +2,29 @@
 #include "imu_processor.h"
 #include <iostream>
 
-#define IMU_GYRO_X_ERROR -0.68
-
-ImuProcessor::ImuProcessor(const ImuData& data, 
-        float initRoll, float initPitch, float initYaw)
+ImuProcessor::ImuProcessor(const ImuData& data,
+                           float initRoll,
+                           float initPitch,
+                           float initYaw)
+    : orientation(1.0f, 0.0f, 0.0f, 0.0f),
+      lastTimestamp(data.getTimestamp())
 {
-    currentRoll = initRoll;
-	currentPitch = initPitch;
-    currentYaw = initYaw;
-
-    quaternion = { .q0 = 1.0f, .q1 = 0.0f, .q2 = 0.0f, .q3 = 0.0f};
-
-	lastTimestamp = data.getTimestamp();
+    //TODO: use init roll/pitch/yaw to set initial orientation
 }
 
 float ImuProcessor::getRoll() const
 {
-	return currentRoll;
+	return orientation.getRoll();
 }
 
 float ImuProcessor::getPitch() const
 {
-	return currentPitch;
+	return orientation.getPitch();
 }
 
 float ImuProcessor::getYaw() const
 {
-    return currentYaw;
+    return orientation.getYaw();
 }
 
 void ImuProcessor::update(const ImuData& data)
@@ -39,32 +35,20 @@ void ImuProcessor::update(const ImuData& data)
     Sensor accel = data.getAccel();
     Sensor mag = data.getMag();
 
-    MadgwickAHRSupdate(gyro.x, gyro.y, gyro.z,
-                      accel.x, accel.y, accel.z,
-                      mag.x, mag.y, mag.z,
-                      timeStep);
-	
-    currentPitch = computeRoll(quaternion);
-    currentRoll = computePitch(quaternion);
-    currentYaw = computeYaw(quaternion);
+    orientation = MadgwickAHRSupdate(gyro.x, gyro.y, gyro.z,
+                                     accel.x, accel.y, accel.z,
+                                     mag.x, mag.y, mag.z,
+                                     timeStep);
 }
 
-float ImuProcessor::computeRoll(Quaternion q) {
-    return atan2( (q.q2*q.q3 + q.q0*q.q1),  0.5 - (q.q1*q.q1 + q.q2*q.q2) );
-}
-
-float ImuProcessor::computePitch(Quaternion q) {
-    return asin( -2 * (q.q1*q.q3 - q.q0*q.q2) );
-}
-
-float ImuProcessor::computeYaw(Quaternion q) {
-    return atan2( (q.q1*q.q2 + q.q0*q.q3),  0.5 - (q.q3*q.q3 + q.q2*q.q2) );
-}
-
-void ImuProcessor::MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, int timeStepMillis) {    
+Quaternion ImuProcessor::MadgwickAHRSupdate(float gx, float gy, float gz,
+                                            float ax, float ay, float az,
+                                            float mx, float my, float mz,
+                                            int timeStepMillis) const
+{
     float beta = betaDef;  // 2 * proportional gain (Kp)
 
-    float q0=quaternion.q0, q1=quaternion.q1, q2=quaternion.q2, q3=quaternion.q3;
+    float q0=orientation.q0(), q1=orientation.q1(), q2=orientation.q2(), q3=orientation.q3();
     float recipNorm;
     float s0, s1, s2, s3;
     float qDot1, qDot2, qDot3, qDot4;
@@ -73,8 +57,7 @@ void ImuProcessor::MadgwickAHRSupdate(float gx, float gy, float gz, float ax, fl
 
     // Use IMU algorithm if magnetometer measurement invalid (avoids NaN in magnetometer normalisation)
     if((mx == 0.0f) && (my == 0.0f) && (mz == 0.0f)) {
-        MadgwickAHRSupdateIMU(gx, gy, gz, ax, ay, az, timeStepMillis);
-        return;
+        return MadgwickAHRSupdateIMU(gx, gy, gz, ax, ay, az, timeStepMillis);
     }
 
     // Rate of change of quaternion from gyroscope
@@ -90,7 +73,7 @@ void ImuProcessor::MadgwickAHRSupdate(float gx, float gy, float gz, float ax, fl
         recipNorm = invSqrt(ax * ax + ay * ay + az * az);
         ax *= recipNorm;
         ay *= recipNorm;
-        az *= recipNorm;   
+        az *= recipNorm;
 
         // Normalise magnetometer measurement
         recipNorm = invSqrt(mx * mx + my * my + mz * mz);
@@ -159,19 +142,18 @@ void ImuProcessor::MadgwickAHRSupdate(float gx, float gy, float gz, float ax, fl
     q2 *= recipNorm;
     q3 *= recipNorm;
 
-    quaternion.q0=q0;
-    quaternion.q1=q1;
-    quaternion.q2=q2;
-    quaternion.q3=q3;
+    return Quaternion(q0, q1, q2, q3);
 }
 
 //---------------------------------------------------------------------------------------------------
 // IMU algorithm update
 
-void ImuProcessor::MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, float az, int timeStep) {
-    
+Quaternion ImuProcessor::MadgwickAHRSupdateIMU(float gx, float gy, float gz,
+                                               float ax, float ay, float az,
+                                               int timeStep) const
+{
     float beta = betaDef;  // 2 * proportional gain (Kp)
-    float q0=quaternion.q0, q1=quaternion.q1, q2=quaternion.q2, q3=quaternion.q3;
+    float q0=orientation.q0(), q1=orientation.q1(), q2=orientation.q2(), q3=orientation.q3();
 
     float recipNorm;
     float s0, s1, s2, s3;
@@ -191,7 +173,7 @@ void ImuProcessor::MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax,
         recipNorm = invSqrt(ax * ax + ay * ay + az * az);
         ax *= recipNorm;
         ay *= recipNorm;
-        az *= recipNorm;   
+        az *= recipNorm;
 
         // Auxiliary variables to avoid repeated arithmetic
         _2q0 = 2.0f * q0;
@@ -239,17 +221,15 @@ void ImuProcessor::MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax,
     q2 *= recipNorm;
     q3 *= recipNorm;
 
-    quaternion.q0=q0;
-    quaternion.q1=q1;
-    quaternion.q2=q2;
-    quaternion.q3=q3;
+    return Quaternion(q0, q1, q2, q3);
 }
 
 //---------------------------------------------------------------------------------------------------
 // Fast inverse square-root
 // See: http://en.wikipedia.org/wiki/Fast_inverse_square_root
 
-float ImuProcessor::invSqrt(float x) {
+float ImuProcessor::invSqrt(float x) const
+{
     float halfx = 0.5f * x;
     float y = x;
     long i = *(long*)&y;
