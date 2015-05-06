@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/pi/obstacle-avoidance/horizon/HorizonGeometry.cpp
+opencv2/core/types_c.h
+/home/pi/obstacle-avoidance/horizon/opencv2/core/types_c.h
+opencv2/core/core.hpp
+/home/pi/obstacle-avoidance/horizon/opencv2/core/core.hpp
+opencv2/features2d/features2d.hpp
+/home/pi/obstacle-avoidance/horizon/opencv2/features2d/features2d.hpp
+iostream
+-
+stdio.h
+-
+stdlib.h
+-
+
