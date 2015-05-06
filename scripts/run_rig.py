@@ -42,6 +42,6 @@ while True:
           GPIO.output(LED_pin, False)
           rig.stop(current_proc)
           print "Stopped recording."
-          vid.convert_to_video(current_dir, os.path.join(current_dir, 'raw'))
+          vid.convert_to_video(repo_dir, current_dir, os.path.join(current_dir, 'raw'))
           time.sleep(1)
 
