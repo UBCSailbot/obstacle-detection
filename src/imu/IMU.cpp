@@ -2,8 +2,6 @@
 // Created by paul on 09/05/15.
 //
 
-#include <RTIMULibDefs.h>
-#include <sstream>
 #include "IMU.h"
 
 IMU::IMU() {

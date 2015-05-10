@@ -6,6 +6,8 @@
 #define OBSTACLE_AVOIDANCE_IMU_H
 
 #include "RTIMULib.h"
+#include <RTIMULibDefs.h>
+#include <sstream>
 
 #include <thread>
 #include <string>
