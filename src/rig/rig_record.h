@@ -1,0 +1,10 @@
+//
+// Created by paul on 09/05/15.
+//
+
+#ifndef OBSTACLE_AVOIDANCE_RIG_RECORD_H
+#define OBSTACLE_AVOIDANCE_RIG_RECORD_H
+
+#include "RTIMULib.h"
+
+#endif //OBSTACLE_AVOIDANCE_RIG_RECORD_H
