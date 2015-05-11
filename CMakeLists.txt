@@ -3,20 +3,37 @@ project(obstacle_avoidance)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES src/main.cpp)
-add_executable(rig_record src/rig/rig_record.cpp src/imu/IMU.cpp src/imu/IMU.h test/imu/moc_IMU.cpp test/imu/moc_IMU.h src/lepton/Lepton.cpp src/lepton/Lepton.h src/lepton/LeptonSPI.cpp src/lepton/LeptonSPI.h src/lepton/LeptonI2C.cpp src/lepton/LeptonI2C.h)
+###########
+# SOURCES #
+###########
+
+set(SOURCE_FILES src/imu/IMU.cpp
+                 src/lepton/Lepton.cpp
+                 src/lepton/LeptonSPI.cpp
+                 src/lepton/LeptonI2C.cpp
+                 src/imu/IMU.cpp
+                 src/imu/ParallelIMU.cpp)
+add_executable(rig_record src/rig/RigRunner.cpp ${SOURCE_FILES})
+
+#########
+# TESTS #
+#########
+
+set(TEST_FILES ${SOURCE_FILES} test/imu/MockIMU.cpp
+                               test/imu/IMUTest.cpp)
+add_executable(runTests test/TestRunner.cpp ${TEST_FILES})
 
 #############
 # LIBRARIES #
 #############
 
+set(LIBRARIES )
 
 # Add RTIMULib
 include_directories(RTIMULib STATIC
                     lib/RTIMULib)
 ADD_SUBDIRECTORY(lib/RTIMULib RTIMULib)
-TARGET_LINK_LIBRARIES(rig_record RTIMULib)
-
+list(APPEND LIBRARIES RTIMULib)
 
 # Add Lepton SDK
 include_directories(lib/leptonSDKEmb32PUB)
@@ -27,13 +44,16 @@ add_custom_target(
    WORKING_DIRECTORY ${LEPTONSDK_DIR}
 )
 add_dependencies(rig_record leptonSDK)
-target_link_libraries(rig_record ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
+list(APPEND LIBRARIES ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
 
 # Add OpenCV
-target_link_libraries( rig_record ${OpenCV_LIBS} )
+list(APPEND LIBRARIES ${OpenCV_LIBS} )
 
 
 # Add pthreads
 find_package (Threads)
-target_link_libraries (rig_record ${CMAKE_THREAD_LIBS_INIT})
+list(APPEND LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+
+TARGET_LINK_LIBRARIES(rig_record ${LIBRARIES})
+TARGET_LINK_LIBRARIES(runTests ${LIBRARIES})

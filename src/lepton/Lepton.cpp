@@ -5,23 +5,6 @@
 #include "Lepton.h"
 #include "LeptonI2C.h"
 
-#define PACKET_SIZE 164
-#define PACKET_SIZE_UINT16 (PACKET_SIZE/2)
-#define PACKETS_PER_FRAME 60
-#define FRAME_SIZE_UINT16 (PACKET_SIZE_UINT16*PACKETS_PER_FRAME)
-#define FPS 27;
-
-static const char *device = "/dev/spidev0.0";
-static uint8_t mode;
-static uint8_t bits = 8;
-static uint32_t speed = 16000000;
-
-static void pabort(const char *s)
-{
-    perror(s);
-    abort();
-}
-
 Lepton::Lepton() {
     SpiOpenPort(0);
 
@@ -124,8 +107,6 @@ void Lepton::captureFrame(cv::Mat &frame, cv::Mat &eightbit) {
         if (value < minValue) {
             minValue = value;
         }
-        column = i % PACKET_SIZE_UINT16 - 2;
-        row = i / PACKET_SIZE_UINT16;
     }
 
     float diff = maxValue - minValue;

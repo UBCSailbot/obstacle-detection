@@ -2,12 +2,12 @@
 // Created by paul on 10/05/15.
 //
 
-#include "TestIMU.h"
-#include "moc_IMU.h"
+#include "IMUTest.h"
+#include "MockIMU.h"
 
-int main()
+void testIMU()
 {
-    moc_IMU imu;
+    MockIMU imu;
 
     int sampleCount = 0;
     int sampleRate = 0;
@@ -26,7 +26,7 @@ int main()
 
         //  display 10 times per second
         if ((now - displayTimer) > 100000) {
-            printf("Sample rate %d: %s\r", sampleRate, imu.toString().c_str());
+            printf("Sample rate %d: %s\r", sampleRate, imu.toPrettyString().c_str());
             fflush(stdout);
             displayTimer = now;
         }

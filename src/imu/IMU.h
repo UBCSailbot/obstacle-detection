@@ -5,33 +5,23 @@
 #ifndef OBSTACLE_AVOIDANCE_IMU_H
 #define OBSTACLE_AVOIDANCE_IMU_H
 
-#include "RTIMULib.h"
-#include <RTIMULibDefs.h>
 #include <sstream>
-
-#include <thread>
 #include <string>
 
 class IMU {
 
 public:
-    IMU();
-    ~IMU();
+    virtual double getRollDeg() = 0;
+    virtual double getPitchDeg() = 0;
+    virtual double getYawDeg() = 0;
 
-    double getRollDeg();
-    double getPitchDeg();
-    double getYawDeg();
-
-    std::string toString();
+    virtual std::string toPrettyString();
+    virtual std::string toDataString();
 
 private:
-    RTIMU *imu;
-    RTIMU_DATA imuData;
+    std::ostringstream stringStream;
 
-    std::thread imuThread;
-
-    void startCapture();
-
+    void resetStringStream();
 };
 
 

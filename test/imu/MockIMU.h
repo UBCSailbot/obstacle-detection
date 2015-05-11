@@ -6,33 +6,32 @@
 #define OBSTACLE_AVOIDANCE_MOC_IMU_H
 
 #include "RTIMULib.h"
+#include "../../src/imu/IMU.h"
 #include <RTIMULibDefs.h>
 #include <sstream>
 
 #include <thread>
 #include <string>
 
-class moc_IMU {
+class MockIMU : public IMU {
 
 public:
-    moc_IMU();
-    ~moc_IMU();
-
-    double getRollDeg();
-    double getPitchDeg();
-    double getYawDeg();
-
-    std::string toString();
+    MockIMU();
+    ~MockIMU();
 
 private:
 
     std::thread imuThread;
 
-    void start();
+    void startCapture();
 
     double mockRoll;
     double mockPitch;
     double mockYaw;
+
+    double getRollDeg();
+    double getPitchDeg();
+    double getYawDeg();
 };
 
 
