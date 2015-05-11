@@ -26,7 +26,8 @@ public:
     Lepton();
     ~Lepton();
 
-    void GetFrame(cv::Mat &frame, cv::Mat &eightbit);
+    void captureFrame(cv::Mat &frame, cv::Mat &eightbit);
+    void performFFC();
 
 private:
 

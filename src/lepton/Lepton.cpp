@@ -3,6 +3,7 @@
 //
 
 #include "Lepton.h"
+#include "LeptonI2C.h"
 
 #define PACKET_SIZE 164
 #define PACKET_SIZE_UINT16 (PACKET_SIZE/2)
@@ -75,7 +76,7 @@ Lepton::~Lepton() {
     SpiClosePort(0);
 }
 
-void Lepton::GetFrame(cv::Mat &frame, cv::Mat &eightbit) {
+void Lepton::captureFrame(cv::Mat &frame, cv::Mat &eightbit) {
 
     //read data packets from lepton over SPI
     int resets = 0;
@@ -141,4 +142,8 @@ void Lepton::GetFrame(cv::Mat &frame, cv::Mat &eightbit) {
         frame.at<uint16_t>(row, column) = frameBuffer[i];
 
     }
+}
+
+void Lepton::performFFC() {
+    lepton_perform_ffc();
 }
