@@ -6,9 +6,9 @@
 #include "../imu/IMU.h"
 #include "../imu/ParallelIMU.h"
 #include "../lepton/Lepton.h"
+#include "../horizon/Horizon.h"
 
 #include <signal.h>
-
 #include <fstream>
 
 #define APP_NAME "rig_record"
@@ -17,6 +17,8 @@ using namespace std;
 using namespace cv;
 
 bool stop_record = false;
+
+void displayFrameWithHorizonLine(Mat mat, double roll, double pitch);
 
 static void hangup_handler(int signum) {
     if (signum == SIGHUP)
@@ -59,10 +61,11 @@ void record(char* output_dir, bool verbose=true ) {
         }
 
         lepton.captureFrame(frame, eightBit);
+        displayFrameWithHorizonLine(frame, imu.getRollDeg(), imu.getPitchDeg());
 
         // save the current frame as a .png file
         sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
-        cv::imwrite(img_name, frame);
+        imwrite(img_name, frame);
 
         imuLog << imu.toDataString();
         if (verbose)
@@ -75,6 +78,16 @@ void record(char* output_dir, bool verbose=true ) {
     cout << "Recording received stopping signal " <<
     "and terminated gracefully." << endl;
 
+}
+
+void displayFrameWithHorizonLine(Mat frame, double roll, double pitch) {
+    Horizon h(roll, pitch);
+    line(frame, h.getStart(), h.getEnd(), Scalar(0,0,255), 1);
+    imshow("Horizon", frame);
+    char c = (char) waitKey(33);
+    if (c == 'p') {
+        waitKey(0);
+    }
 }
 
 void printUsage(int argc, char** argv) {

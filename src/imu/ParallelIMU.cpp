@@ -35,6 +35,10 @@ ParallelIMU::ParallelIMU() {
 
 }
 
+ParallelIMU::~ParallelIMU() {
+
+}
+
 double ParallelIMU::getRollDeg() {
     return imuData.fusionPose.x() * RTMATH_RAD_TO_DEGREE;
 }

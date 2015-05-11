@@ -21,8 +21,13 @@
 #define PACKETS_PER_FRAME 60
 #define FRAME_SIZE_UINT16 (PACKET_SIZE_UINT16*PACKETS_PER_FRAME)
 
+#define VIEWPORT_HEIGHT_PIX 60
+#define VIEWPORT_WIDTH_PIX 80
+#define VIEWPORT_FOV_DEGREES_VERTICAL 37
+#define VIEWPORT_FOV_DEGREES_HORIZONTAL 51
+
 #define LEPTON_FPS 27
-#define FFC_FREQ_SEC = 30
+#define FFC_FREQ_SEC 30
 
 static const char *device = "/dev/spidev0.0";
 static uint8_t mode;

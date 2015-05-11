@@ -2,12 +2,13 @@
 // Created by paul on 09/05/15.
 //
 
-#include "TestRunner.h"
 #include "imu/IMUTest.h"
+#include "horizon/HorizonTest.h"
 
 int main() {
 
-    testIMU();
+//    testIMU();
+    testHorizon();
 
     return 0;
 }
