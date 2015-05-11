@@ -4,7 +4,7 @@ project(obstacle_avoidance)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES src/main.cpp)
-add_executable(rig_record src/rig/rig_record.cpp src/imu/IMU.cpp src/imu/IMU.h test/moc_IMU.cpp test/moc_IMU.h src/lepton/Lepton.cpp src/lepton/Lepton.h src/lepton/LeptonSPI.cpp src/lepton/LeptonSPI.h src/lepton/LeptonI2C.cpp src/lepton/LeptonI2C.h)
+add_executable(rig_record src/rig/rig_record.cpp src/imu/IMU.cpp src/imu/IMU.h test/imu/moc_IMU.cpp test/imu/moc_IMU.h src/lepton/Lepton.cpp src/lepton/Lepton.h src/lepton/LeptonSPI.cpp src/lepton/LeptonSPI.h src/lepton/LeptonI2C.cpp src/lepton/LeptonI2C.h)
 
 #############
 # LIBRARIES #
