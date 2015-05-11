@@ -30,7 +30,7 @@ private:
 
     std::thread imuThread;
 
-    void start();
+    void startCapture();
 
 };
 

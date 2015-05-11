@@ -30,12 +30,12 @@ IMU::IMU() {
     imu->setAccelEnable(true);
     imu->setCompassEnable(true);
 
-    std::thread tempThread(&IMU::start, this);
+    std::thread tempThread(&IMU::startCapture, this);
     std::swap(tempThread, imuThread);
 
 }
 
-void IMU::start() {
+void IMU::startCapture() {
     //  now just process data
     while (1) {
         //  poll at the rate recommended by the IMU
