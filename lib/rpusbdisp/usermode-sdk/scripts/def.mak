@@ -10,9 +10,9 @@ include $(PRJ_ROOT)/Makefile.conf
 # Path
 PRJ_ABS_ROOT:=$(shell cd $(PRJ_ROOT) && pwd)
 
-OBJ_PARENT_ROOT:=$(PRJ_ROOT)/build/obj/$(ARCH_PLATFORM)
+OBJ_PARENT_ROOT:=$(PRJ_ROOT)/build/obj
 OBJ_ROOT:=$(OBJ_PARENT_ROOT)/$(MOD_NAME)
-OUTPUT_ROOT:=$(PRJ_ROOT)/build/output/$(ARCH_PLATFORM)
+OUTPUT_ROOT:=$(PRJ_ROOT)/build/output
 
 DEP_FILE += $(patsubst %.o, %.d, $(OBJ))
 

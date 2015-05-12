@@ -64,9 +64,10 @@ add_custom_target(
    WORKING_DIRECTORY ${RPUSBDISP_DIR}
 )
 add_dependencies(rig_record rpusbdisp)
+add_dependencies(displayTest rpusbdisp)
 #list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/armv7l/rpusbdisp-drv.a)
-list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/x86/rpusbdisp-drv.a)
-list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/x86/librpusbdisp-drv.so)
+list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
+list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 
 #################
 # EXTERNAL LIBS #
