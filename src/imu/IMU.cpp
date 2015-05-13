@@ -14,9 +14,9 @@ std::string IMU::toPrettyString() {
 
 std::string IMU::toDataString() {
     resetStringStream();
-    stringStream << getRollDeg()   << " "
-                 << getPitchDeg()  << " "
-                 << getYawDeg()    << std::endl;
+    stringStream << getRollRad()   << " "
+                 << getPitchRad()  << " "
+                 << getYawRad()    << std::endl;
     return stringStream.str();
 }
 

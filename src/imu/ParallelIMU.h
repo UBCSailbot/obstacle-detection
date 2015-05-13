@@ -21,6 +21,10 @@ public:
     double getPitchDeg();
     double getYawDeg();
 
+    double getRollRad();
+    double getPitchRad();
+    double getYawRad();
+
 private:
     RTIMU *imu;
     RTIMU_DATA imuData;

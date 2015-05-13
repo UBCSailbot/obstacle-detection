@@ -62,3 +62,15 @@ void ParallelIMU::startCapture() {
         }
     }
 }
+
+double ParallelIMU::getRollRad() {
+    return imuData.fusionPose.x();
+}
+
+double ParallelIMU::getPitchRad() {
+    return imuData.fusionPose.y();
+}
+
+double ParallelIMU::getYawRad() {
+    return imuData.fusionPose.z();
+}
