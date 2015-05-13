@@ -6,7 +6,7 @@
 
 Lepton::Lepton() {
     SpiOpenPort(0);
-
+/*
     int ret = 0;
     int fd;
 
@@ -51,7 +51,7 @@ Lepton::Lepton() {
     {
         pabort("can't get max speed hz");
     }
-
+*/
 }
 
 Lepton::~Lepton() {

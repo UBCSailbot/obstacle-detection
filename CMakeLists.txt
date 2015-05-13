@@ -50,6 +50,7 @@ add_custom_target(
    COMMAND make
    WORKING_DIRECTORY ${LEPTONSDK_DIR}
 )
+add_dependencies(displayTest leptonSDK)
 add_dependencies(rigRunner leptonSDK)
 list(APPEND LIBRARIES ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
