@@ -29,6 +29,7 @@ public:
     RoboPeakUSBDisplay();
     ~RoboPeakUSBDisplay();
     void displayFrame(Image8bit image);
+    void displayColorFrame(cv::Mat image);
 
     const static int DISPLAY_HEIGHT = 240;
     const static int DISPLAY_WIDTH = 320;
@@ -39,6 +40,8 @@ private:
     uint16_t* frameBuffer;
 
     std::shared_ptr<RoboPeakUsbDisplayDevice> display;
+
+    void putMatIntoFrameBuffer(cv::Mat &displayed);
 };
 
 

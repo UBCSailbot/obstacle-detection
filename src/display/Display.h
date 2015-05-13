@@ -16,6 +16,7 @@ class Display {
 public:
     virtual ~Display() {}
     virtual void displayFrame(Image8bit image) = 0;
+    virtual void displayColorFrame(cv::Mat image) = 0;
 };
 
 #endif //OBSTACLE_AVOIDANCE_DISPLAY_H
