@@ -58,13 +58,23 @@ void loopOverDir(string frameDir) {
         cerr << "Couldn't open directory " << frameDir << endl;
 }
 
-int main() {
+void printUsage(int argc, char** argv) {
+    cout << "Usage: displayTest <video_dir>" << endl;
+    cout << "You entered: " << endl;
+    for (int i=0; i<argc; i++)
+        cout << argv[i];
+    cout << endl;
+}
 
-//    cv::Mat img = cv::imread("/home/paul/Pictures/lena.png", -1);
-//    while (1)
-//        d.displayFrame(img);
-    string targetDir = "/home/paul/sailbot/expt/fluctus/data/02012627freighterCrossingSun/modal100";
-    loopOverDir(targetDir);
+int main(int argc, char** argv) {
+    // "/home/paul/sailbot/expt/fluctus/data/02012627freighterCrossingSun/modal100"
+
+    if (argc != 2) {
+        printUsage(argc, argv);
+        return 1;
+    }
+    string videoDir(argv[1]);
+    loopOverDir(videoDir);
 
     return 0;
 }
