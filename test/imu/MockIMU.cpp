@@ -44,3 +44,15 @@ double MockIMU::getPitchDeg() {
 double MockIMU::getYawDeg() {
     return mockYaw;
 }
+
+double MockIMU::getRollRad() {
+    return mockRoll;
+}
+
+double MockIMU::getPitchRad() {
+    return mockPitch;
+}
+
+double MockIMU::getYawRad() {
+    return mockYaw;
+}
