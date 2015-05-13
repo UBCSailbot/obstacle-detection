@@ -3,6 +3,7 @@
 //
 
 #include "RigRunner.h"
+#include "../imageProc/SimpleRescaler.h"
 
 #define APP_NAME "rig_record"
 
@@ -27,9 +28,10 @@ void record(char* output_dir, bool verbose) {
 
     Lepton lepton;
     ParallelIMU imu;
+    SimpleRescaler rescaler;
 
-    Mat eightBit(60, 80, CV_8UC1);
-    Mat frame(60, 80, CV_16UC1);
+    Image8bit displayed(60, 80);
+    Image16bit frame(60, 80);
     int frame_counter = 1;
     char img_name[128];
     char imu_file_name[128];
@@ -53,12 +55,15 @@ void record(char* output_dir, bool verbose) {
             lepton.performFFC();
         }
 
-        lepton.captureFrame(frame, eightBit);
+        lepton.captureFrame(frame);
 
         // save the current frame as a .png file
         sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
         imwrite(img_name, frame);
-//        displayFrameWithHorizonLine(frame, imu.getRollDeg(), imu.getPitchDeg(), display);
+
+        // convert to 8 bit and display
+        rescaler.scale16bitTo8bit(frame, displayed);
+        displayFrameWithHorizonLine(displayed, imu.getRollDeg(), imu.getPitchDeg(), display);
 
         imuLog << imu.toDataString();
         if (verbose)
@@ -73,7 +78,7 @@ void record(char* output_dir, bool verbose) {
 
 }
 
-void displayFrameWithHorizonLine(Mat frame, double roll, double pitch, Display &d) {
+void displayFrameWithHorizonLine(Image8bit frame, double roll, double pitch, Display &d) {
     Horizon h(roll, pitch);
     line(frame, h.getStart(), h.getEnd(), Scalar(0,0,255), 1);
     d.displayFrame(frame);

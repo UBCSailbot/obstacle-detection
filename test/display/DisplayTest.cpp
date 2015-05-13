@@ -10,8 +10,6 @@
 using namespace std;
 using namespace cv;
 
-RoboPeakUSBDisplay d;
-
 bool startsWith (string const &fullString, string const &start) {
     if (fullString.length() >= start.length()) {
         return (0 == fullString.compare (0, start.length(), start));
@@ -39,6 +37,10 @@ void loopOverDir(string frameDir) {
     struct dirent *ep;
     dp = opendir (frameDir.c_str());
 
+    RoboPeakUSBDisplay d;
+
+    cout << "Successfully instatiated RoboPeakUSBDisplay" << endl;
+
     int frameCounter = 0;
     if (dp != NULL) {
         while (ep = readdir (dp)) {
@@ -47,7 +49,9 @@ void loopOverDir(string frameDir) {
                 continue;
 //            cout << "displaying " << fileName << endl;
             if (frameCounter % 3 == 0) {
-                d.displayFrame(imread(frameDir + "/" + fileName, -1));
+                Mat temp = imread(frameDir + "/" + fileName, -1);
+                Image8bit frame = Image8bit::fromMat(temp);
+                d.displayFrame(frame);
             }
             frameCounter ++;
             waitKey(37);
@@ -67,13 +71,13 @@ void printUsage(int argc, char** argv) {
 }
 
 int main(int argc, char** argv) {
-    // "/home/paul/sailbot/expt/fluctus/data/02012627freighterCrossingSun/modal100"
 
     if (argc != 2) {
         printUsage(argc, argv);
         return 1;
     }
     string videoDir(argv[1]);
+    cout << "videoDir: " << videoDir << endl;
     loopOverDir(videoDir);
 
     return 0;

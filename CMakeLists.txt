@@ -10,6 +10,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(SOURCE_FILES src/display/RoboPeakUSBDisplay.cpp
                  src/display/DesktopDisplay.cpp
                  src/horizon/Horizon.cpp
+                 src/imageProc/SimpleRescaler.cpp
+                 src/imageProc/ModalRescaler.cpp
+                 src/imageTypes/Image8bit.cpp
+                 src/imageTypes/Image16bit.cpp
                  src/lepton/Lepton.cpp
                  src/lepton/LeptonSPI.cpp
                  src/lepton/LeptonI2C.cpp

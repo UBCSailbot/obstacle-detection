@@ -28,13 +28,13 @@ class RoboPeakUSBDisplay : public Display {
 public:
     RoboPeakUSBDisplay();
     ~RoboPeakUSBDisplay();
-    void displayFrame(cv::Mat image);
+    void displayFrame(Image8bit image);
 
     const static int DISPLAY_HEIGHT = 240;
     const static int DISPLAY_WIDTH = 320;
 
 private:
-    void convertMatToUnsignedIntArray(cv::Mat image);
+    void convertMatToUnsignedIntArray(Image8bit image);
     uint16_t* frameBuffer;
     std::shared_ptr<RoboPeakUsbDisplayDevice> display;
 

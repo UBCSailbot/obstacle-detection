@@ -9,14 +9,14 @@
 #include "LeptonSPI.h"
 
 #include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
 
 #include <iostream>
 #include <ctime>
 #include <stdint.h>
 
 #include "LeptonI2C.h"
+
+#include "../imageTypes/Image16bit.h"
 
 #define PACKET_SIZE 164
 #define PACKET_SIZE_UINT16 (PACKET_SIZE/2)
@@ -41,7 +41,7 @@ public:
     Lepton();
     ~Lepton();
 
-    void captureFrame(cv::Mat &frame, cv::Mat &eightbit);
+    void captureFrame(Image16bit &frame);
     void performFFC();
 
 private:

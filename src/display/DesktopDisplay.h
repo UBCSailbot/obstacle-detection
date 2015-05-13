@@ -15,7 +15,7 @@ class DesktopDisplay: public Display {
 public:
     DesktopDisplay();
     ~DesktopDisplay();
-    void displayFrame(cv::Mat image);
+    void displayFrame(Image8bit image);
 
 };
 

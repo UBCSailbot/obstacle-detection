@@ -35,13 +35,13 @@ RoboPeakUSBDisplay::~RoboPeakUSBDisplay() {
     free(frameBuffer);
 }
 
-void RoboPeakUSBDisplay::displayFrame(cv::Mat image) {
+void RoboPeakUSBDisplay::displayFrame(Image8bit image) {
     convertMatToUnsignedIntArray(image);
     display->bitblt(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, RoboPeakUsbDisplayBitOperationCopy, frameBuffer);
 
 }
 
-void RoboPeakUSBDisplay::convertMatToUnsignedIntArray(cv::Mat image) {
+void RoboPeakUSBDisplay::convertMatToUnsignedIntArray(Image8bit image) {
     cv::Mat displayed(DISPLAY_HEIGHT, DISPLAY_WIDTH, CV_16U);
     cv::resize(image, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
     cv::cvtColor(displayed, displayed, cv::COLOR_GRAY2BGR565);

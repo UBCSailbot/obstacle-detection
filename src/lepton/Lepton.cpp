@@ -58,7 +58,7 @@ Lepton::~Lepton() {
     SpiClosePort(0);
 }
 
-void Lepton::captureFrame(cv::Mat &frame, cv::Mat &eightbit) {
+void Lepton::captureFrame(Image16bit &frame) {
 
     //read data packets from lepton over SPI
     int resets = 0;
@@ -84,9 +84,6 @@ void Lepton::captureFrame(cv::Mat &frame, cv::Mat &eightbit) {
 
     frameBuffer = (uint16_t *) result;
     int row, column;
-    uint16_t value;
-    uint16_t minValue = 65535;
-    uint16_t maxValue = 0;
 
     for (int i = 0; i < FRAME_SIZE_UINT16; i++) {
         //skip the first 2 uint16_t's of every packet, they're 4 header bytes
@@ -99,17 +96,7 @@ void Lepton::captureFrame(cv::Mat &frame, cv::Mat &eightbit) {
         result[i * 2] = result[i * 2 + 1];
         result[i * 2 + 1] = temp;
 
-        value = frameBuffer[i];
-        if (value > maxValue) {
-            maxValue = value;
-        }
-        if (value < minValue) {
-            minValue = value;
-        }
     }
-
-    float diff = maxValue - minValue;
-    float scale = 255 / diff;
 
     for (int i = 0; i < FRAME_SIZE_UINT16; i++) {
         if (i % PACKET_SIZE_UINT16 < 2) {
@@ -118,9 +105,7 @@ void Lepton::captureFrame(cv::Mat &frame, cv::Mat &eightbit) {
 
         column = (i % PACKET_SIZE_UINT16) - 2;
         row = i / PACKET_SIZE_UINT16;
-        eightbit.at<uint8_t>(row, column) = (uint8_t) ((frameBuffer[i] - minValue) * scale);
         frame.at<uint16_t>(row, column) = frameBuffer[i];
-
     }
 }
 

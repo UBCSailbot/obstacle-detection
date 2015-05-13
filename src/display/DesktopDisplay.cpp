@@ -14,6 +14,6 @@ DesktopDisplay::~DesktopDisplay() {
 
 }
 
-void DesktopDisplay::displayFrame(cv::Mat image) {
+void DesktopDisplay::displayFrame(Image8bit image) {
     cv::imshow("Image", image);
 }
