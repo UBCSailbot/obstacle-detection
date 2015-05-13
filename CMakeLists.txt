@@ -50,6 +50,7 @@ add_custom_target(
    WORKING_DIRECTORY ${LEPTONSDK_DIR}
 )
 add_dependencies(rig_record leptonSDK)
+add_dependencies(displayTest leptonSDK)
 list(APPEND LIBRARIES ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
 # Add rpusbdisp
