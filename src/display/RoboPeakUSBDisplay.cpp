@@ -37,12 +37,9 @@ RoboPeakUSBDisplay::~RoboPeakUSBDisplay() {
 
 void RoboPeakUSBDisplay::displayFrame(Image8bit image) {
     convertMatToUnsignedIntArray(image);
-    std::thread tempThread(&RoboPeakUSBDisplay::update, this);
-}
-
-void RoboPeakUSBDisplay::update() {
     display->bitblt(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, RoboPeakUsbDisplayBitOperationCopy, frameBuffer);
 }
+
 
 void RoboPeakUSBDisplay::convertMatToUnsignedIntArray(Image8bit image) {
     cv::Mat displayed(DISPLAY_HEIGHT, DISPLAY_WIDTH, CV_16U);

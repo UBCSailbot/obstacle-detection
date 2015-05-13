@@ -35,7 +35,6 @@ public:
 
 private:
     void convertMatToUnsignedIntArray(Image8bit image);
-    void update();
 
     uint16_t* frameBuffer;
 
