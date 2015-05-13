@@ -22,7 +22,7 @@ static void hangup_handler(int signum);
 void setup_sighandler();
 
 void record(char* output_dir, bool verbose=true );
-void displayFrameWithHorizonLine(Mat mat, double roll, double pitch, Display &d);
+void displayFrameWithHorizonLine(Image8bit image, double roll, double pitch, Display &d);
 
 void printUsage(int argc, char** argv);
 
