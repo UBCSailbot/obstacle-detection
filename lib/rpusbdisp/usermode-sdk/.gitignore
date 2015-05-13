@@ -3,3 +3,4 @@ Release
 Debug
 *.ipch
 build
+config.log
