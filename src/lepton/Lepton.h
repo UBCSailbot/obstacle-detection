@@ -16,6 +16,8 @@
 #include <ctime>
 #include <stdint.h>
 
+#include "LeptonI2C.h"
+
 #define PACKET_SIZE 164
 #define PACKET_SIZE_UINT16 (PACKET_SIZE/2)
 #define PACKETS_PER_FRAME 60

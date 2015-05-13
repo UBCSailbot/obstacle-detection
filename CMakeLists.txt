@@ -7,7 +7,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 # SOURCES #
 ###########
 
-set(SOURCE_FILES src/display/Display.cpp
+set(SOURCE_FILES src/display/RoboPeakUSBDisplay.cpp
+                 src/display/DesktopDisplay.cpp
                  src/horizon/Horizon.cpp
                  src/lepton/Lepton.cpp
                  src/lepton/LeptonSPI.cpp
@@ -15,7 +16,7 @@ set(SOURCE_FILES src/display/Display.cpp
                  src/imu/IMU.cpp
                  src/imu/ParallelIMU.cpp
                  )
-add_executable(rig_record src/rig/RigRunner.cpp ${SOURCE_FILES} test/horizon/HorizonTest.cpp test/horizon/HorizonTest.h)
+add_executable(rigRunner src/rig/RigRunner.cpp ${SOURCE_FILES})
 
 #########
 # TESTS #
@@ -49,8 +50,8 @@ add_custom_target(
    COMMAND make
    WORKING_DIRECTORY ${LEPTONSDK_DIR}
 )
-add_dependencies(rig_record leptonSDK)
 add_dependencies(displayTest leptonSDK)
+add_dependencies(rigRunner leptonSDK)
 list(APPEND LIBRARIES ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
 # Add rpusbdisp
@@ -64,9 +65,8 @@ add_custom_target(
    COMMAND ./configure && make
    WORKING_DIRECTORY ${RPUSBDISP_DIR}
 )
-add_dependencies(rig_record rpusbdisp)
+add_dependencies(rigRunner rpusbdisp)
 add_dependencies(displayTest rpusbdisp)
-#list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/armv7l/rpusbdisp-drv.a)
 list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
 list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 
@@ -83,6 +83,6 @@ list(APPEND LIBRARIES ${OpenCV_LIBS} )
 find_package (Threads REQUIRED)
 list(APPEND LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
-TARGET_LINK_LIBRARIES(rig_record ${LIBRARIES})
+TARGET_LINK_LIBRARIES(rigRunner ${LIBRARIES})
 TARGET_LINK_LIBRARIES(runTests ${LIBRARIES})
 TARGET_LINK_LIBRARIES(displayTest ${LIBRARIES})

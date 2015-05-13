@@ -3,7 +3,6 @@
 //
 
 #include "Lepton.h"
-#include "LeptonI2C.h"
 
 Lepton::Lepton() {
     SpiOpenPort(0);

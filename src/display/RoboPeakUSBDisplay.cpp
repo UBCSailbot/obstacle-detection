@@ -2,13 +2,13 @@
 // Created by paul on 11/05/15.
 //
 
-#include "Display.h"
+#include "RoboPeakUSBDisplay.h"
 
 static void onStatusUpdated(const rpusbdisp_status_normal_packet_t& status) {
     printf("Status: %02X, Touch: %02X, X: %d, Y: %d\n", status.display_status, status.touch_status, status.touch_x, status.touch_y);
 }
 
-Display::Display() {
+RoboPeakUSBDisplay::RoboPeakUSBDisplay() {
     frameBuffer = (uint16_t*)malloc(DISPLAY_WIDTH* DISPLAY_HEIGHT*2);
     uint16_t* p = frameBuffer;
 
@@ -31,12 +31,17 @@ Display::Display() {
     }
 }
 
-Display::~Display() {
+RoboPeakUSBDisplay::~RoboPeakUSBDisplay() {
     free(frameBuffer);
 }
 
+void RoboPeakUSBDisplay::displayFrame(cv::Mat image) {
+    convertMatToUnsignedIntArray(image);
+    display->bitblt(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, RoboPeakUsbDisplayBitOperationCopy, frameBuffer);
 
-void Display::convertMatToUnsignedIntArray(cv::Mat image) {
+}
+
+void RoboPeakUSBDisplay::convertMatToUnsignedIntArray(cv::Mat image) {
     cv::Mat displayed(DISPLAY_HEIGHT, DISPLAY_WIDTH, CV_16U);
     cv::resize(image, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
     cv::cvtColor(displayed, displayed, cv::COLOR_GRAY2BGR565);
@@ -51,8 +56,3 @@ void Display::convertMatToUnsignedIntArray(cv::Mat image) {
     }
 }
 
-void Display::displayFrame(cv::Mat image) {
-    convertMatToUnsignedIntArray(image);
-    display->bitblt(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, RoboPeakUsbDisplayBitOperationCopy, frameBuffer);
-
-}
