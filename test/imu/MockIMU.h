@@ -32,6 +32,10 @@ private:
     double getRollDeg();
     double getPitchDeg();
     double getYawDeg();
+
+    double getRollRad();
+    double getPitchRad();
+    double getYawRad();
 };
 
 
