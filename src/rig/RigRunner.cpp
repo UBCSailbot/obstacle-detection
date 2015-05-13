@@ -50,19 +50,19 @@ void record(char* output_dir, bool verbose) {
     while (!stop_record) {
 
         // Perform FFC every FFC_FREQ_SEC seconds
-        if ( (frame_counter / LEPTON_FPS) % FFC_FREQ_SEC == FFC_FREQ_SEC - 1) {
+/*        if ( (frame_counter / LEPTON_FPS) % FFC_FREQ_SEC == FFC_FREQ_SEC - 1) {
             cout << "Performing FFC" << endl;
             lepton.performFFC();
             usleep(600 * 1000);
         }
-
+*/
         lepton.captureFrame(frame);
 
         // save the current frame as a .png file
         sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
         imwrite(img_name, frame);
 
-        if (frame_counter % 10 == 0) {
+        if (frame_counter % LEPTON_FPS == 0) {
             // convert to 8 bit and display
             rescaler.scale16bitTo8bit(frame, displayed);
             displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), display);
@@ -70,8 +70,8 @@ void record(char* output_dir, bool verbose) {
         }
 
         imuLog << imu.toDataString();
-        if (verbose)
-            cout << imu.toPrettyString();
+//        if (verbose)
+ //           cout << imu.toPrettyString();
 
         frame_counter ++;
     }
@@ -86,10 +86,7 @@ void displayFrameWithHorizonLine(Image8bit frame, double roll, double pitch, Dis
     Horizon h(roll, pitch);
     line(frame, h.getStart(), h.getEnd(), Scalar(0,0,255), 1);
     d.displayFrame(frame);
-    char c = (char) waitKey(1 / LEPTON_FPS * 1000);
-    if (c == 'p') {
-        waitKey(0);
-    }
+//    waitKey(1 / LEPTON_FPS * 1000);
 }
 
 void printUsage(int argc, char** argv) {
