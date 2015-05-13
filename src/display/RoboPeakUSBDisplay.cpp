@@ -51,7 +51,7 @@ void RoboPeakUSBDisplay::displayColorFrame(cv::Mat image) {
 void RoboPeakUSBDisplay::convertMatToUnsignedIntArray(Image8bit image) {
     cv::Mat displayed(DISPLAY_HEIGHT, DISPLAY_WIDTH, CV_16U);
     cv::resize(image, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
-    cv::cvtColor(displayed, displayed, cv::COLOR_GRAY2BGR565);
+    cv::cvtColor(displayed, displayed, cv::COLOR_BGR2BGR565);
 
     putMatIntoFrameBuffer(displayed);
 }
