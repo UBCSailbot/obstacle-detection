@@ -86,7 +86,7 @@ void displayFrameWithHorizonLine(Image8bit frame, double roll, double pitch, Dis
     Horizon h(roll, pitch);
     cv::Mat displayed(frame.rows, frame.cols, CV_16U);
     cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
-    line(displayed, h.getStart(), h.getEnd(), Scalar(0,0,255), 1);
+    line(displayed, h.getStart(), h.getEnd(), Scalar(255,0,0), 1);
     d.displayColorFrame(displayed);
 }
 

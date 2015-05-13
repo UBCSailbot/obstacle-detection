@@ -49,12 +49,16 @@ void loopOverDir(string frameDir) {
                 continue;
 //            cout << "displaying " << fileName << endl;
             if (frameCounter % 3 == 0) {
-                Mat temp = imread(frameDir + "/" + fileName, -1);
-                Image8bit frame = Image8bit::fromMat(temp);
-                d.displayFrame(frame);
+                Mat frame = imread(frameDir + "/" + fileName, -1);
+//                Image8bit frame = Image8bit::fromMat(temp);
+                cv::Mat displayed(frame.rows, frame.cols, CV_16U);
+                cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
+
+                line(displayed, Point(0,30), Point(80, 40), Scalar(255,0,0), 1);
+                d.displayColorFrame(displayed);
             }
             frameCounter ++;
-            waitKey(37);
+            waitKey(15);
         }
         (void) closedir (dp);
     }
