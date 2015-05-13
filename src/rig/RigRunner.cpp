@@ -3,22 +3,10 @@
 //
 
 #include "RigRunner.h"
-#include "../imu/IMU.h"
-#include "../imu/ParallelIMU.h"
-#include "../lepton/Lepton.h"
-#include "../horizon/Horizon.h"
-
-#include <signal.h>
-#include <fstream>
 
 #define APP_NAME "rig_record"
 
-using namespace std;
-using namespace cv;
-
 bool stop_record = false;
-
-void displayFrameWithHorizonLine(Mat mat, double roll, double pitch);
 
 static void hangup_handler(int signum) {
     if (signum == SIGHUP)
@@ -35,7 +23,7 @@ void setup_sighandler() {
         cerr << "Failed to initialize signal handler for " << APP_NAME << endl;
 }
 
-void record(char* output_dir, bool verbose=true ) {
+void record(char* output_dir, bool verbose) {
 
     Lepton lepton;
     ParallelIMU imu;
@@ -51,6 +39,10 @@ void record(char* output_dir, bool verbose=true ) {
     sprintf(imu_file_name, "%s/imuLog.txt", output_dir);
     imuLog.open (imu_file_name);
 
+    cout << "Connecting to screen" << endl;
+
+    RoboPeakUSBDisplay display;
+
     cout << "Starting Capture" << endl;
 
     while (!stop_record) {
@@ -61,7 +53,7 @@ void record(char* output_dir, bool verbose=true ) {
         }
 
         lepton.captureFrame(frame, eightBit);
-        displayFrameWithHorizonLine(frame, imu.getRollDeg(), imu.getPitchDeg());
+        displayFrameWithHorizonLine(frame, imu.getRollDeg(), imu.getPitchDeg(), display);
 
         // save the current frame as a .png file
         sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
@@ -80,11 +72,11 @@ void record(char* output_dir, bool verbose=true ) {
 
 }
 
-void displayFrameWithHorizonLine(Mat frame, double roll, double pitch) {
+void displayFrameWithHorizonLine(Mat frame, double roll, double pitch, Display &d) {
     Horizon h(roll, pitch);
     line(frame, h.getStart(), h.getEnd(), Scalar(0,0,255), 1);
-    imshow("Horizon", frame);
-    char c = (char) waitKey(33);
+    d.displayFrame(frame);
+    char c = (char) waitKey(1 / LEPTON_FPS * 1000);
     if (c == 'p') {
         waitKey(0);
     }
