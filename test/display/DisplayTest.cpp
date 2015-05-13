@@ -4,12 +4,13 @@
 
 #include <dirent.h>
 #include <iostream>
-#include "../../src/display/Display.h"
+#include <opencv2/highgui/highgui.hpp>
+#include "../../src/display/RoboPeakUSBDisplay.h"
 
 using namespace std;
 using namespace cv;
 
-Display d;
+RoboPeakUSBDisplay d;
 
 bool startsWith (string const &fullString, string const &start) {
     if (fullString.length() >= start.length()) {
@@ -45,7 +46,9 @@ void loopOverDir(string frameDir) {
             if (!validFrameFile(fileName))
                 continue;
 //            cout << "displaying " << fileName << endl;
-            d.displayFrame(imread(frameDir + "/" + fileName, -1));
+            if (frameCounter % 3 == 0) {
+                d.displayFrame(imread(frameDir + "/" + fileName, -1));
+            }
             frameCounter ++;
             waitKey(37);
         }

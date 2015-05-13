@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 # SOURCES #
 ###########
 
-set(SOURCE_FILES src/display/Display.cpp
+set(SOURCE_FILES src/display/RoboPeakUSBDisplay.cpp
                  src/horizon/Horizon.cpp
                  src/lepton/Lepton.cpp
                  src/lepton/LeptonSPI.cpp
@@ -65,7 +65,6 @@ add_custom_target(
 )
 add_dependencies(rig_record rpusbdisp)
 add_dependencies(displayTest rpusbdisp)
-#list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/armv7l/rpusbdisp-drv.a)
 list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
 list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 
