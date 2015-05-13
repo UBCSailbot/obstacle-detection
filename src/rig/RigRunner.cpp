@@ -53,6 +53,7 @@ void record(char* output_dir, bool verbose) {
         if ( (frame_counter / LEPTON_FPS) % FFC_FREQ_SEC == 0) {
             cout << "Performing FFC" << endl;
             lepton.performFFC();
+            usleep(600 * 1000);
         }
 
         lepton.captureFrame(frame);
@@ -63,7 +64,7 @@ void record(char* output_dir, bool verbose) {
 
         // convert to 8 bit and display
         rescaler.scale16bitTo8bit(frame, displayed);
-        displayFrameWithHorizonLine(displayed, imu.getRollDeg(), imu.getPitchDeg(), display);
+        displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), display);
 
         imuLog << imu.toDataString();
         if (verbose)
