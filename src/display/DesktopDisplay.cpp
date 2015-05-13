@@ -16,4 +16,5 @@ DesktopDisplay::~DesktopDisplay() {
 
 void DesktopDisplay::displayFrame(Image8bit image) {
     cv::imshow("Image", image);
+    cv::waitKey(20);
 }
