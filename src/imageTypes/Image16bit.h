@@ -15,6 +15,10 @@ public:
     Image16bit(int rows, int cols) : Mat(rows, cols, CV_16UC1) { }
 
     using cv::Mat::Mat;
+
+    Image16bit(int rows, int cols, int type) : Mat(rows, cols, type) {}
+
+    static Image16bit fromMat(cv::Mat src);
 };
 
 
