@@ -50,7 +50,7 @@ void record(char* output_dir, bool verbose) {
     while (!stop_record) {
 
         // Perform FFC every FFC_FREQ_SEC seconds
-        if ( (frame_counter / LEPTON_FPS) % FFC_FREQ_SEC == 0) {
+        if ( (frame_counter / LEPTON_FPS) % FFC_FREQ_SEC == FFC_FREQ_SEC - 1) {
             cout << "Performing FFC" << endl;
             lepton.performFFC();
         }
@@ -61,9 +61,12 @@ void record(char* output_dir, bool verbose) {
         sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
         imwrite(img_name, frame);
 
-        // convert to 8 bit and display
-        rescaler.scale16bitTo8bit(frame, displayed);
-        displayFrameWithHorizonLine(displayed, imu.getRollDeg(), imu.getPitchDeg(), display);
+        if (frame_counter % 10 == 0) {
+            // convert to 8 bit and display
+            rescaler.scale16bitTo8bit(frame, displayed);
+            displayFrameWithHorizonLine(displayed, imu.getRollDeg(), imu.getPitchDeg(), display);
+            //d.displayFrame(displayed);
+        }
 
         imuLog << imu.toDataString();
         if (verbose)
