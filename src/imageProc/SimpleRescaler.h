@@ -12,7 +12,7 @@ class SimpleRescaler : public Rescaler {
 public:
     SimpleRescaler();
     ~SimpleRescaler();
-    void scale16bitTo8bit(Image16bit src, Image8bit dst);
+    void scale16bitTo8bit(const Image16bit &src, Image8bit &dst);
 
 };
 
