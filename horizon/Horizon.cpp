@@ -26,10 +26,10 @@ RETURN: true if point is above horizon
 */
 bool Horizon::isPointAbove(cv::Point2f pointOfInterest) {
 	if (pointOfInterest.y > start.y && pointOfInterest.y > end.y)
-        return true;
+        return false;
 
     if (pointOfInterest.y < start.y && pointOfInterest.y < end.y)
-        return false;
+        return true;
 
     if (pointOfInterest.x > start.x && pointOfInterest.x > end.x)
         return false;
@@ -38,7 +38,7 @@ bool Horizon::isPointAbove(cv::Point2f pointOfInterest) {
         return true;
 
     if ((end.x - start.x) * pointOfInterest.x < (end.y - start.y) * pointOfInterest.y)
-        return true;
+        return false;
 }
 
 /*
@@ -47,11 +47,9 @@ IN: rectangle
 OUT:
 RETURN: true some points in the the rectangle is above and below the horizon
 */
-bool Horizon::isPolyIntersect(cv::Rect rectangle) {
-	bool isAbove = false;
-	bool isBelow = false;
-
-	//add check for 4 point
+bool Horizon::isPolyIntersect(Rect rectangle) {
+	bool isAbove = isPointAbove(rectangle.tl()) || isPointAbove(cv::Point2f(rectangle.x + rectangle.width, rectangle.y))
+	bool isBelow = !isPointAbove(rectangle.br()) || !isPointAbove(cv::Point2f(rectangle.x + rectangle.width, rectangle.y + rectangle.height))
 
 	return isAbove && isBelow;
 }
