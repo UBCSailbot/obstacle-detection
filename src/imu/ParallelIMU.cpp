@@ -10,7 +10,7 @@ ParallelIMU::ParallelIMU() {
     //  Or, you can create the .ini in some other directory by using:
     //      RTIMUSettings *settings = new RTIMUSettings("<directory path>", "RTIMULib");
     //  where <directory path> is the path to where the .ini file is to be loaded/saved
-    RTIMUSettings *settings = new RTIMUSettings("RTIMULib");
+    RTIMUSettings *settings = new RTIMUSettings("config", "RTIMULib");
 
     imu = RTIMU::createIMU(settings);
 
