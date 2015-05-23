@@ -1,1 +1,0 @@
-/home/pi/obstacle-avoidance/horizon/CMakeFiles/HorizonGeometry.dir
