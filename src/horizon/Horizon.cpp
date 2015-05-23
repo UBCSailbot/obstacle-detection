@@ -72,7 +72,7 @@ pixel_shift: 0 when horizon centred, +height/2 when horizon at top, -height/2 at
 May exceed magnitude height/2 for large angles.
 */
 double Horizon::pitchHorizonPixelShift(double angle){
-    return -angle / ((double) VIEWPORT_FOV_DEGREES_VERTICAL * M_PI / 180.0) * (double) VIEWPORT_HEIGHT_PIX;
+    return angle / ((double) VIEWPORT_FOV_DEGREES_VERTICAL * M_PI / 180.0) * (double) VIEWPORT_HEIGHT_PIX;
 }
 
 /*
