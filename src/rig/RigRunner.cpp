@@ -62,7 +62,7 @@ void record(char* output_dir, bool verbose) {
         sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
         imwrite(img_name, frame);
 
-        if (frame_counter % LEPTON_FPS == 0) {
+        if ((frame_counter % LEPTON_FPS) * 3 == 0) {
             // convert to 8 bit and display
             rescaler.scale16bitTo8bit(frame, displayed);
             displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), display);
