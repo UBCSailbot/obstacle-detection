@@ -43,7 +43,7 @@ set(WIN_SOURCE_FILES    src/horizon/Horizon.cpp)
 set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/horizon/HorizonTest.cpp)
 
 add_executable(winRunTests test/WinTestRunner.cpp ${WIN_TEST_FILES})
-set(OpenCV_DIR /home/DerekLun/build_shared_release)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules)
 
 #################
 # INTERNAL LIBS #
