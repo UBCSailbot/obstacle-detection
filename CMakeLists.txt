@@ -35,12 +35,22 @@ set(TEST_FILES ${SOURCE_FILES} test/imu/MockIMU.cpp
 add_executable(runTests test/TestRunner.cpp ${TEST_FILES})
 add_executable(displayTest test/display/DisplayTest.cpp ${TEST_FILES})
 
+###########
+# WINDOWS #
+###########
 
-set(LIBRARIES )
+set(WIN_SOURCE_FILES    src/horizon/Horizon.cpp)
+set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/horizon/HorizonTest.cpp)
+
+add_executable(winRunTests test/WinTestRunner.cpp ${WIN_TEST_FILES})
+# Please also see the lines appended to the section of this file
+#  that attempts to load the OpenCV installation.
 
 #################
 # INTERNAL LIBS #
 #################
+
+set(LIBRARIES )
 
 # Add RTIMULib
 include_directories(RTIMULib STATIC
@@ -76,25 +86,16 @@ add_dependencies(displayTest rpusbdisp)
 list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
 list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 
-###########
-# WINDOWS #
-###########
-
-set(WIN_SOURCE_FILES    src/horizon/Horizon.cpp
-                        src/sunImage/SunImage.cpp
-                        )
-set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/horizon/HorizonTest.cpp
-                                       test/sunImage/SunImageTest.cpp
-                                       )
-
-add_executable(winRunTests test/WinTestRunner.cpp ${WIN_TEST_FILES})
-set(OpenCV_DIR /home/DerekLun/build_shared_release)
 #################
 # EXTERNAL LIBS #
 #################
 
 # Add OpenCV
-find_package (OpenCV REQUIRED)
+if( CYGWIN )
+    # TODO: This is a dirty hack meant to add OpenCV on Windows systems, that only works on Derek's machine.
+    set(OpenCV_DIR /home/DerekLun/build_shared_release)
+endif( CYGWIN )
+find_package (OpenCV)
 list(APPEND LIBRARIES ${OpenCV_LIBS} )
 
 # Add pthreads
