@@ -20,8 +20,8 @@ public:
     Horizon(double roll, double pitch);
     ~Horizon();
 
-    cv::Point2f getStart();
-    cv::Point2f getEnd();
+    cv::Point2f getStart() const;
+    cv::Point2f getEnd() const;
 
     /*
     Check if given point is above horizon.
@@ -29,7 +29,11 @@ public:
     OUT:
     RETURN: true if point is above horizon
     */
-    bool isPointAbove(cv::Point2f pointOfInterest);
+    bool isPointAbove(cv::Point2f pointOfInterest) const;
+
+
+    bool isPointAbove(const float &x, const float &y) const;
+
 
     /*
     Check if rectangle intersect the horizon.
@@ -37,7 +41,7 @@ public:
     OUT:
     RETURN: true some points in the the rectangle is above and below the horizon
     */
-    bool isPolyIntersect(cv::Rect rectangle);
+    bool isPolyIntersect(cv::Rect rectangle) const;
 
 private:
     cv::Point2f start, end;

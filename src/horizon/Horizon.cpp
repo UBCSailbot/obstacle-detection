@@ -15,12 +15,12 @@ Horizon::Horizon(double roll, double pitch) : roll(roll), pitch(pitch) {
 Horizon::~Horizon() {
 }
 
-cv::Point2f Horizon::getStart() {
+cv::Point2f Horizon::getStart() const {
     return start;
 }
 
 
-cv::Point2f Horizon::getEnd() {
+cv::Point2f Horizon::getEnd() const {
     return end;
 }
 
@@ -30,23 +30,19 @@ IN: point of interest
 OUT:
 RETURN: true if point is above horizon
 */
-bool Horizon::isPointAbove(cv::Point2f pointOfInterest) {
-    if (pointOfInterest.y > start.y && pointOfInterest.y > end.y)
-        return true;
+bool Horizon::isPointAbove(cv::Point2f pointOfInterest) const {
+    return isPointAbove(pointOfInterest.x, pointOfInterest.y);
+}
 
-    if (pointOfInterest.y < start.y && pointOfInterest.y < end.y)
+bool Horizon::isPointAbove(const float &x, const float &y) const {
+    if (y > start.y && y > end.y)
         return false;
 
-    if (pointOfInterest.x > start.x && pointOfInterest.x > end.x)
-        return false;
-
-    if (pointOfInterest.x < start.x && pointOfInterest.x < end.x)
+    if (y < start.y && y < end.y)
         return true;
 
-    if ((end.x - start.x) * pointOfInterest.x < (end.y - start.y) * pointOfInterest.y)
-        return true;
+    return (end.x - start.x) * (y - start.y) < (end.y - start.y) * x;
 
-    return false;
 }
 
 /*
@@ -55,7 +51,7 @@ IN: rectangle
 OUT:
 RETURN: true some points in the the rectangle is above and below the horizon
 */
-bool Horizon::isPolyIntersect(cv::Rect rectangle) {
+bool Horizon::isPolyIntersect(cv::Rect rectangle) const {
     bool isAbove = false;
     bool isBelow = false;
 
@@ -90,7 +86,7 @@ pixel_shift: 0 when horizon centred, +height/2 when horizon from top left to bot
 May exceed magnitude height/2 for large angles.
 */
 double Horizon::rollHorizonPixelShift(double angle) {
-    return tan(angle) * (double) VIEWPORT_WIDTH_PIX / 2.0;
+    return -tan(angle) * (double) VIEWPORT_WIDTH_PIX / 2.0;
 }
 
 /*
@@ -112,3 +108,4 @@ void Horizon::setPitchRoll(double pitch, double roll) {
     start = cv::Point2f(0, heightLeft);
     end = cv::Point2f(VIEWPORT_WIDTH_PIX, heightRight);
 }
+
