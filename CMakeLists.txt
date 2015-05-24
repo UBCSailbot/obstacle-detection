@@ -70,6 +70,7 @@ add_custom_target(
 )
 add_dependencies(displayTest leptonSDK)
 add_dependencies(rigRunner leptonSDK)
+add_dependencies(runTests leptonSDK)
 list(APPEND LIBRARIES ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
 # Add rpusbdisp
