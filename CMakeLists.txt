@@ -39,8 +39,8 @@ add_executable(displayTest test/display/DisplayTest.cpp ${TEST_FILES})
 # WINDOWS #
 ###########
 
-set(WIN_SOURCE_FILES    src/horizon/Horizon.cpp)
-set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/horizon/HorizonTest.cpp
+set(WIN_SOURCE_FILES    src/features/Horizon.cpp)
+set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/features/HorizonTest.cpp
                                        test/sunImage/SunImageTest.cpp
 )
 

@@ -90,10 +90,12 @@ void HorizonTest::testOnlyNegativePitch() const {
     testPointPosition(pointOfInterest, h, false, "only negative pitch, onto");
 }
 
+// TODO: Implement test.
 void HorizonTest::testPositiveRollNegativePitch() const {
 
 }
 
+// TODO: Implement test.
 void HorizonTest::testNegativeRollPositivePitch() const {
 
 }
