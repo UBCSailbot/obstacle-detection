@@ -3,7 +3,7 @@
 //
 
 #include "imu/IMUTest.h"
-#include "horizon/HorizonTest.h"
+#include "features/HorizonTest.h"
 
 int main() {
 

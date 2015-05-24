@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES src/display/RoboPeakUSBDisplay.cpp
                  src/display/DesktopDisplay.cpp
-                 src/horizon/Horizon.cpp
+                 src/features/Horizon.cpp
                  src/imageProc/SimpleRescaler.cpp
                  src/imageProc/ModalRescaler.cpp
                  src/imageTypes/Image8bit.cpp
@@ -29,7 +29,7 @@ add_executable(rigRunner src/rig/RigRunner.cpp ${SOURCE_FILES})
 
 set(TEST_FILES ${SOURCE_FILES} test/imu/MockIMU.cpp
                                test/imu/IMUTest.cpp
-                               test/horizon/HorizonTest.cpp
+                               test/features/HorizonTest.cpp
                                )
 
 add_executable(runTests test/TestRunner.cpp ${TEST_FILES})

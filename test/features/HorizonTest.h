@@ -5,7 +5,11 @@
 #ifndef OBSTACLE_AVOIDANCE_HORIZONTEST_H
 #define OBSTACLE_AVOIDANCE_HORIZONTEST_H
 
-#include "../../src/horizon/Horizon.h"
+#include <iostream>
+#include <opencv2/core/core.hpp>
+#include <iomanip>
+
+#include "../../src/features/Horizon.h"
 
 using namespace std;
 using namespace cv;

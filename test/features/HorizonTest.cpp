@@ -2,9 +2,6 @@
 // Created by paul on 11/05/15.
 //
 
-#include <iostream>
-#include <opencv2/core/core.hpp>
-#include <iomanip>
 #include "HorizonTest.h"
 
 
@@ -25,7 +22,7 @@ void HorizonTest::testIsAboveHorizon() {
 
 void HorizonTest::testStable() const {
     Point2f pointOfInterest;
-    Horizon h(0,0);
+    Horizon h(0, 0);
 
     pointOfInterest = Point2f(69,20);
     testPointPosition(pointOfInterest, h, true, "only positive roll, above");
