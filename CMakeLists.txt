@@ -91,11 +91,11 @@ list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 #################
 
 # Add OpenCV
-find_package (OpenCV REQUIRED)
-if( NOT OpenCV_FOUND )
+if( CYGWIN )
     # TODO: This is a dirty hack meant to add OpenCV on Windows systems, that only works on Derek's machine.
     set(OpenCV_DIR /home/DerekLun/build_shared_release)
-endif( NOT OpenCV_FOUND )
+endif( CYGWIN )
+find_package (OpenCV)
 list(APPEND LIBRARIES ${OpenCV_LIBS} )
 
 # Add pthreads
