@@ -43,7 +43,8 @@ set(WIN_SOURCE_FILES    src/horizon/Horizon.cpp)
 set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/horizon/HorizonTest.cpp)
 
 add_executable(winRunTests test/WinTestRunner.cpp ${WIN_TEST_FILES})
-set(OpenCV_DIR /home/DerekLun/build_shared_release)
+# Please also see the lines appended to the section of this file
+#  that attempts to load the OpenCV installation.
 
 #################
 # INTERNAL LIBS #
@@ -91,6 +92,10 @@ list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 
 # Add OpenCV
 find_package (OpenCV REQUIRED)
+if( NOT OpenCV_FOUND )
+    # TODO: This is a dirty hack meant to add OpenCV on Windows systems, that only works on Derek's machine.
+    set(OpenCV_DIR /home/DerekLun/build_shared_release)
+endif( NOT OpenCV_FOUND )
 list(APPEND LIBRARIES ${OpenCV_LIBS} )
 
 # Add pthreads
