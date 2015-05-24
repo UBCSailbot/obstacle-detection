@@ -3,7 +3,7 @@
 //
 
 #include "features/HorizonTest.h"
-#include "sunImage/SunImageTest.h"
+#include "features/SunImageTest.h"
 
 int main() {
 

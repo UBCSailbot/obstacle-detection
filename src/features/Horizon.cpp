@@ -4,10 +4,6 @@
 
 #include "Horizon.h"
 
-#ifndef UNIX
-    #define M_PI		3.14159265358979323846
-#endif
-
 Horizon::Horizon(double roll, double pitch) : roll(roll), pitch(pitch) {
     setPitchRoll(pitch, roll);
 }

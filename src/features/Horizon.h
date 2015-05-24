@@ -15,6 +15,10 @@
 
 #include "../lepton/LeptonCameraDimensions.h"
 
+#ifndef UNIX
+    #define M_PI		3.14159265358979323846
+#endif
+
 class Horizon {
 public:
     Horizon(double roll, double pitch);

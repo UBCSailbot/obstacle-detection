@@ -41,7 +41,7 @@ add_executable(displayTest test/display/DisplayTest.cpp ${TEST_FILES})
 
 set(WIN_SOURCE_FILES    src/features/Horizon.cpp)
 set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/features/HorizonTest.cpp
-                                       test/sunImage/SunImageTest.cpp
+                                       test/features/SunImageTest.cpp
 )
 
 add_executable(winRunTests test/WinTestRunner.cpp ${WIN_TEST_FILES})
