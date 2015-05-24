@@ -3,11 +3,13 @@
 //
 
 #include "horizon/HorizonTest.h"
+#include "sunImage/SunImageTest.h"
 
 int main() {
 
 //    testIMU();
     testHorizon();
+    testSunImage();
 
     return 0;
 }

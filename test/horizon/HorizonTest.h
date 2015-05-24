@@ -5,6 +5,8 @@
 #ifndef OBSTACLE_AVOIDANCE_HORIZONTEST_H
 #define OBSTACLE_AVOIDANCE_HORIZONTEST_H
 
+#include "../../src/horizon/Horizon.h"
+
 void testHorizon();
 
 void testIsAboveHorizon();

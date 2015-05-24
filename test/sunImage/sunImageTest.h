@@ -4,8 +4,8 @@
 
 #ifndef OBSTACLE_AVOIDANCE_SUNIMAGETESTER_H
 #define OBSTACLE_AVOIDANCE_SUNIMAGETESTER_H
+#include "../../src/horizon/Horizon.h"
 
+void testSunImage();
 
-class sunImageTester {
-
-};
+#endif

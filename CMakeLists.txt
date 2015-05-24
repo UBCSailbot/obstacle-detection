@@ -80,8 +80,12 @@ list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 # WINDOWS #
 ###########
 
-set(WIN_SOURCE_FILES    src/horizon/Horizon.cpp)
-set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/horizon/HorizonTest.cpp)
+set(WIN_SOURCE_FILES    src/horizon/Horizon.cpp
+                        src/sunImage/SunImage.cpp
+                        )
+set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/horizon/HorizonTest.cpp
+                                       test/sunImage/SunImageTest.cpp
+                                       )
 
 add_executable(winRunTests test/WinTestRunner.cpp ${WIN_TEST_FILES})
 set(OpenCV_DIR /home/DerekLun/build_shared_release)

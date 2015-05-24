@@ -1,8 +1,7 @@
 #ifndef SUNIMG_H
 #define SUNIMG_H
 
-#include "Horizon.h";
-#include "vmath.h";
+#include "../horizon/Horizon.h"
 
 #include "opencv2/features2d/features2d.hpp"
 #include <opencv2/highgui/highgui.hpp>
@@ -13,7 +12,8 @@
 class SunImage
 {
 public:
-    SunImage(const Horizon &horizon, cv::Mat &frame, uint minSunPixelValue, int margin) : &horizon(horizon), &frame(frame), minSunPixelValue(minSunPixelValue), margin(margin);
+    SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, int margin);
+    ~SunImage();
 
 private:
     void findSun();
@@ -21,16 +21,16 @@ private:
 
     //Rect isSun();   //OpenCV doesn't have a circle class
 
-    const Horizon &horizon;
-    const cv::Mat &frame;
+    const Horizon horizon;
+    cv::Mat frame;
     const unsigned int minSunPixelValue;
     const unsigned int margin;
 
     unsigned int sunRadius;
-    cv::Point2i sunLeft = std::numeric_limits<int>::max();
-    cv::Point2i sunRight = 0;
-    cv::Point2i sunTop = std::numeric_limits<int>::max();
-    cv::Point2i sunBottom = 0;
+    unsigned int sunLeft = std::numeric_limits<unsigned int>::max();
+    unsigned int sunRight = 0;
+    unsigned int sunTop = std::numeric_limits<unsigned int>::max();
+    unsigned int sunBottom = 0;
 
     cv::Point2f leftDelimTop;
     cv::Point2f leftDelimBottom;

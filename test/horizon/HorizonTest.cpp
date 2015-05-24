@@ -5,7 +5,6 @@
 #include <iostream>
 #include <opencv2/core/core.hpp>
 #include "HorizonTest.h"
-#include "../../src/horizon/Horizon.h"
 
 using namespace std;
 
