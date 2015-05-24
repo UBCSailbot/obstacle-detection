@@ -7,7 +7,7 @@
 
 
 #include "LeptonSPI.h"
-
+#include "LeptonCameraDimensions.h"
 #include <opencv2/core/core.hpp>
 
 #include <iostream>
@@ -22,11 +22,6 @@
 #define PACKET_SIZE_UINT16 (PACKET_SIZE/2)
 #define PACKETS_PER_FRAME 60
 #define FRAME_SIZE_UINT16 (PACKET_SIZE_UINT16*PACKETS_PER_FRAME)
-
-#define VIEWPORT_HEIGHT_PIX 60
-#define VIEWPORT_WIDTH_PIX 80
-#define VIEWPORT_FOV_DEGREES_VERTICAL 37
-#define VIEWPORT_FOV_DEGREES_HORIZONTAL 51
 
 #define LEPTON_FPS 27
 #define FFC_FREQ_SEC 30

@@ -20,6 +20,7 @@ set(SOURCE_FILES src/display/RoboPeakUSBDisplay.cpp
                  src/imu/IMU.cpp
                  src/imu/ParallelIMU.cpp
                  )
+
 add_executable(rigRunner src/rig/RigRunner.cpp ${SOURCE_FILES})
 
 #########
@@ -30,6 +31,7 @@ set(TEST_FILES ${SOURCE_FILES} test/imu/MockIMU.cpp
                                test/imu/IMUTest.cpp
                                test/horizon/HorizonTest.cpp
                                )
+
 add_executable(runTests test/TestRunner.cpp ${TEST_FILES})
 add_executable(displayTest test/display/DisplayTest.cpp ${TEST_FILES})
 
@@ -74,6 +76,15 @@ add_dependencies(displayTest rpusbdisp)
 list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
 list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 
+###########
+# WINDOWS #
+###########
+
+set(WIN_SOURCE_FILES    src/horizon/Horizon.cpp)
+set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/horizon/HorizonTest.cpp)
+
+add_executable(winRunTests test/WinTestRunner.cpp ${WIN_TEST_FILES})
+set(OpenCV_DIR /home/DerekLun/build_shared_release)
 #################
 # EXTERNAL LIBS #
 #################
@@ -82,7 +93,6 @@ list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 find_package (OpenCV REQUIRED)
 list(APPEND LIBRARIES ${OpenCV_LIBS} )
 
-
 # Add pthreads
 find_package (Threads REQUIRED)
 list(APPEND LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
@@ -90,3 +100,5 @@ list(APPEND LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 TARGET_LINK_LIBRARIES(rigRunner ${LIBRARIES})
 TARGET_LINK_LIBRARIES(runTests ${LIBRARIES})
 TARGET_LINK_LIBRARIES(displayTest ${LIBRARIES})
+TARGET_LINK_LIBRARIES(winRunTests ${OpenCV_LIBS})
+

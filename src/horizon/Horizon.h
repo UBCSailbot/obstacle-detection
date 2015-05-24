@@ -13,6 +13,8 @@
 #include <cmath>
 #include <math.h>
 
+#include "../lepton/LeptonCameraDimensions.h"
+
 class Horizon {
 public:
     Horizon(double roll, double pitch);
