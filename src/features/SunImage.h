@@ -15,8 +15,10 @@ public:
     SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, int margin);
     ~SunImage();
 
-private:
     void findSun();
+
+private:
+
     //unsigned int sunRadius();
 
     //Rect isSun();   //OpenCV doesn't have a circle class

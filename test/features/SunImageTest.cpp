@@ -21,5 +21,6 @@ void SunImageTest::testFindSun() const {
     Horizon h(0, 0);
 
     SunImage si(h, frame, minSunPixelValue, margin);
+    si.findSun();
 }
 
