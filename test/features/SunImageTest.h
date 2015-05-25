@@ -5,7 +5,14 @@
 #ifndef OBSTACLE_AVOIDANCE_SUNIMAGETESTER_H
 #define OBSTACLE_AVOIDANCE_SUNIMAGETESTER_H
 #include "../../src/features/Horizon.h"
+#include "../../src/features/SunImage.h"
 
-void testSunImage();
+class SunImageTest {
+public:
+    void testSunImage();
+
+private:
+    void testFindSun() const;
+};
 
 #endif

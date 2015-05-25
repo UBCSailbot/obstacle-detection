@@ -4,7 +4,6 @@
 
 #include "HorizonTest.h"
 
-
 void HorizonTest::testIsAboveHorizon() {
 
     testStable();

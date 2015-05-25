@@ -1,7 +1,7 @@
 #ifndef SUNIMG_H
 #define SUNIMG_H
 
-#include "../horizon/Horizon.h"
+#include "Horizon.h"
 
 #include "opencv2/features2d/features2d.hpp"
 #include <opencv2/highgui/highgui.hpp>
