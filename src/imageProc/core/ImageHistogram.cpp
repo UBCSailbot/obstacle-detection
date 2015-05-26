@@ -12,24 +12,32 @@ int ImageHistogram::getMaxPixelValue() const {
     return _maxPixelValue;
 }
 
-int ImageHistogram::size() const {
-    return 0;
+int ImageHistogram::numBins() const {
+    return (int) _histogramBins.size();
 }
 
 int ImageHistogram::getMode() {
     if (_tallestBinIndex == -1) {
-        calculateMode();
+        calculateModeBinIndex();
     }
-
     return _tallestBinIndex + _minPixelValue;
-
 }
 
-void ImageHistogram::calculateMode() {
-    int maxVal, maxIndex;
-    maxVal = 0; maxIndex = 0;
 
-    for (int i=0; i < _histogramBins.size(); i++) {
+int ImageHistogram::getMedian() {
+    if (_medianBinIndex == -1) {
+        calculateMedianBinIndex();
+    }
+    return _medianBinIndex + _minPixelValue;
+}
+
+
+void ImageHistogram::calculateModeBinIndex() {
+    int maxVal, maxIndex;
+    maxVal = 0;
+    maxIndex = 0;
+
+    for (int i = 0; i < _histogramBins.size(); i++) {
         if (_histogramBins[i] > maxVal) {
             maxVal = _histogramBins[i];
             maxIndex = i;
@@ -37,11 +45,30 @@ void ImageHistogram::calculateMode() {
     }
 
     _tallestBinIndex = maxIndex;
+}
 
+void ImageHistogram::calculateMedianBinIndex() {
+    int curDistanceFromMedianPixel = calculateMedianPixelIndex();
+
+    for (int i = 0; i < _histogramBins.size(); i++) {
+        curDistanceFromMedianPixel -= _histogramBins[i];
+        if (curDistanceFromMedianPixel <= 0) {
+            _medianBinIndex = i;
+            break;
+        }
+    }
+}
+
+int ImageHistogram::calculateMedianPixelIndex() const {
+    return (this->getNumPixels()) / 2;
 }
 
 int ImageHistogram::getNumPixelsWithValue(const int &pixelValue) const {
-    return _histogramBins[pixelValue];
+    int binIndex = pixelValue - _minPixelValue;
+    if (binIndex < 0 || pixelValue > _maxPixelValue) {
+        return 0;
+    }
+    return _histogramBins[binIndex];
 }
 
 void ImageHistogram::find8bitWindow(const int &medianValue, int &minValue, int &maxValue) const {

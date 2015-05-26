@@ -16,9 +16,9 @@ public:
     HorizonImageHistogram(const cv::Mat &image, const Horizon &horizon);
 
 private:
-
     void populateHistogram(const cv::Mat &image, const Horizon &horizon);
 
+    int _numPixels;
 };
 
 

@@ -11,6 +11,7 @@ set(SOURCE_FILES src/display/DesktopDisplay.cpp
                  src/display/Display.h
                  src/display/RoboPeakUSBDisplay.cpp
                  src/features/Horizon.cpp
+                 src/imageProc/EightBitWindowRescaler.cpp
                  src/imageProc/core/HorizonImageHistogram.cpp
                  src/imageProc/core/ImageHistogram.cpp
                  src/imageProc/SimpleRescaler.cpp

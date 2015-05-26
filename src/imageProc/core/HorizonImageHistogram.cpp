@@ -4,9 +4,10 @@
 
 #include "HorizonImageHistogram.h"
 
-HorizonImageHistogram::HorizonImageHistogram(const cv::Mat &image, const Horizon &horizon)
-        : _tallestBinIndex(-1)
+HorizonImageHistogram::HorizonImageHistogram(const cv::Mat &image, const Horizon &horizon) :
+        _numPixels(0)
 {
+    // TODO: find more efficient implementation for sparse histograms
     double min, max;
     minMaxLoc(image, &min, &max);
     int histogramSize = (int) (max - min + 1);
@@ -25,7 +26,9 @@ void HorizonImageHistogram::populateHistogram(const cv::Mat &image, const Horizo
             if (horizon.isPointAbove(col, row)) {
                 int i = image.at<uint16_t>(row, col) - _minPixelValue;
                 _histogramBins[i]++;
+                _numPixels++;
             }
         }
     }
 }
+

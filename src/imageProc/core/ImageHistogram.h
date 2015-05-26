@@ -6,15 +6,61 @@
 #define OBSTACLE_AVOIDANCE_IMAGE_HISTOGRAM_H
 
 #include <vector>
+#include <opencv2/core/core.hpp>
 
+/**
+ * Stores information about the number of pixels of each value that occurs in
+ *  a monochrome (grayscale) image.
+ */
 class ImageHistogram {
+
 public:
 
-    virtual int getNumPixelsWithValue(const int &pixelValue) const;
-    virtual int getMode();
-    virtual int getMinPixelValue() const;
-    virtual int getMaxPixelValue() const;
-    virtual int size() const;
+    /**
+     * Returns the number of pixels contained in this histogram. Note that
+     *  depending on the histogram implementation, this may not necessarily
+     *  coincide with the number of pixels in the image from which this
+     *  histogram was constructed.
+     */
+    virtual int getNumPixels() const = 0;
+
+    /**
+     * Returns the number of pixels contained in this histogram with the
+     *  specified value. Handles all input gracefully - i.e. if the provided
+     *  value falls outside the range of values contained in this histogram,
+     *  this function (aptly) returns 0.
+     */
+    int getNumPixelsWithValue(const int &pixelValue) const;
+
+    /**
+     * Returns the most common pixel value contained in this histogram.
+     */
+    int getMode();
+
+    /**
+     * Returns the median pixel value in this histogram. Note that since pixel
+     *  values must necessarily be (positive) integers, this function does not
+     *  give the true arithmetical median of the set of numbers stored in this
+     *  histogram, but instead returns the floor() of the true median. (Thus a
+     *  median of 7.5 would be floored down to 7).
+     */
+    int getMedian();
+
+    /**
+     * Returns the smallest pixel value contained in this histogram.
+     */
+    int getMinPixelValue() const;
+
+    /**
+     * Returns the largest pixel value contained in this histogram.
+     */
+    int getMaxPixelValue() const;
+
+    /**
+     * Returns the number of bins in this histogram (and hence the number of
+     *  discrete pixel values contained in this histogram).
+     */
+    int numBins() const;
 
     /**
      * Finds a window of pixel values represented within this histogram that is at most
@@ -43,10 +89,14 @@ protected:
     std::vector<int> _histogramBins;
     int _minPixelValue;
     int _maxPixelValue;
-    int _tallestBinIndex;
 
 private:
-    void calculateMode();
+    int _tallestBinIndex = -1;
+    int _medianBinIndex = -1;
+
+    void calculateModeBinIndex();
+    void calculateMedianBinIndex();
+    int calculateMedianPixelIndex() const;
 
 };
 

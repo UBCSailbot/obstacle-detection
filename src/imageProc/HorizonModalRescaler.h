@@ -12,8 +12,9 @@
 #include "../imageTypes/Image8bit.h"
 #include "core/ImageHistogram.h"
 #include "core/HorizonImageHistogram.h"
+#include "EightBitWindowRescaler.h"
 
-class HorizonModalRescaler {
+class HorizonModalRescaler : public EightBitWindowRescaler {
 
 public:
     HorizonModalRescaler(int bufferSize = 100);
@@ -21,7 +22,6 @@ public:
 
 private:
     int calculateBufferedPeakValue(ImageHistogram &histogram);
-    void applyRescaling(const Image16bit &src, Image8bit &dst, const int &newMinPixelValue) const;
 
     std::queue<int> _histogramPeakBuffer;
     int _bufferRunningSum;
