@@ -4,11 +4,13 @@
 
 #include "imu/IMUTest.h"
 #include "features/HorizonTest.h"
+#include "imageProc/core/HorizonImageHistogramTest.h"
 
 int main() {
 
 //    testIMU();
-    HorizonTest().testHorizon();
+    HorizonTest().runTests();
+    HorizonImageHistogramTest().runTests();
 
     return 0;
 }

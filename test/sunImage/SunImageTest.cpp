@@ -4,7 +4,7 @@
 
 #include "SunImageTest.h"
 
-void testFindSun() {
+void SunImageTest::testFindSun() {
 
     cv::Point2i start, end, pointOfInterest;
 
@@ -21,6 +21,6 @@ void testFindSun() {
     //SunImage si(h, frame, minSunPixelValue, margin);
 }
 
-void testSunImage() {
+void SunImageTest::runTests() {
     testFindSun();
 }

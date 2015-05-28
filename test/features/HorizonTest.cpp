@@ -124,13 +124,13 @@ double HorizonTest::calculateRollAngleFromEndpoints(const Point2f &start, const 
 
 void HorizonTest::testPointPosition(const Point2f &pointOfInterest, const Horizon &h,
                                       const bool &isAbove, const string &testTitle) const {
-    if (isAbove == h.isPointAbove(pointOfInterest))
-        cout << setiosflags(ios::left) << "HorizonTest, " << setw(30) << testTitle << ": pass" << endl;
-    else
-        cout << setiosflags(ios::left) << "HorizonTest, " << setw(30) << testTitle << ": failed" << endl;
+    bool expected = isAbove;
+    bool actual = h.isPointAbove(pointOfInterest);
+
+    assertEquals(expected, actual, testTitle);
 }
 
-void HorizonTest::testHorizon() {
+void HorizonTest::runTests() {
     testIsAboveHorizon();
 }
 

@@ -8,7 +8,7 @@
 int main() {
 
 //    testIMU();
-    HorizonTest().testHorizon();
+    HorizonTest().runTests();
     testSunImage();
 
     return 0;

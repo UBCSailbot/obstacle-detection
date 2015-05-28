@@ -6,18 +6,22 @@
 #define OBSTACLE_AVOIDANCE_HORIZONTEST_H
 
 #include <iostream>
-#include <opencv2/core/core.hpp>
 #include <iomanip>
 
-#include "../../src/features/Horizon.h"
+#include "gtest/gtest.h"
+#include <opencv2/core/core.hpp>
+
+#include "features/Horizon.h"
+#include "TestClass.h"
+#include "gtest/gtest.h"
 
 using namespace std;
 using namespace cv;
 
 
-class HorizonTest {
+class HorizonTest : public TestClass {
 public:
-    void testHorizon();
+    void runTests();
 
 private:
     void testIsAboveHorizon();

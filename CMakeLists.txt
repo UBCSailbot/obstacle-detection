@@ -41,13 +41,23 @@ add_executable(rigRunner src/rig/RigRunner.cpp ${SOURCE_FILES})
 # Add test folder to header search path so that we don't have to `#include` relative paths
 include_directories( test )
 
-set(TEST_FILES ${SOURCE_FILES} test/imu/MockIMU.cpp
+set(TEST_FILES ${SOURCE_FILES} test/TestClass.h
+                               test/imageProc/core/HorizonImageHistogramTest.cpp
+                               test/imu/MockIMU.cpp
                                test/imu/IMUTest.cpp
                                test/features/HorizonTest.cpp
                                )
 
 add_executable(runTests test/TestRunner.cpp ${TEST_FILES})
 add_executable(displayTest test/display/DisplayTest.cpp ${TEST_FILES})
+
+##################
+# TEST FRAMEWORK #
+##################
+
+# Add google test framework
+ADD_SUBDIRECTORY(lib/gtest-1.7.0 gtest)
+include_directories(gtest STATIC lib/gtest-1.7.0/include )
 
 ###########
 # WINDOWS #
@@ -120,7 +130,7 @@ find_package (Threads REQUIRED)
 list(APPEND LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 TARGET_LINK_LIBRARIES(rigRunner ${LIBRARIES})
-TARGET_LINK_LIBRARIES(runTests ${LIBRARIES})
+TARGET_LINK_LIBRARIES(runTests ${LIBRARIES} gtest)
 TARGET_LINK_LIBRARIES(displayTest ${LIBRARIES})
 TARGET_LINK_LIBRARIES(winRunTests ${OpenCV_LIBS})
 
