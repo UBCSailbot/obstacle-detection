@@ -7,6 +7,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 # SOURCES #
 ###########
 
+# Add src folder to header search path so that we don't have to `#include` relative paths
+include_directories( src )
+
 set(SOURCE_FILES src/display/DesktopDisplay.cpp
                  src/display/Display.h
                  src/display/RoboPeakUSBDisplay.cpp
@@ -28,11 +31,15 @@ set(SOURCE_FILES src/display/DesktopDisplay.cpp
                  src/imu/ParallelIMU.cpp
                  )
 
+
 add_executable(rigRunner src/rig/RigRunner.cpp ${SOURCE_FILES})
 
 #########
 # TESTS #
 #########
+
+# Add test folder to header search path so that we don't have to `#include` relative paths
+include_directories( test )
 
 set(TEST_FILES ${SOURCE_FILES} test/imu/MockIMU.cpp
                                test/imu/IMUTest.cpp
