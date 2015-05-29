@@ -2,15 +2,14 @@
 // Created by paul on 09/05/15.
 //
 
+#include <gtest/gtest.h>
 #include "imu/IMUTest.h"
-#include "features/HorizonTest.h"
-#include "imageProc/core/HorizonImageHistogramTest.h"
 
-int main() {
 
-//    testIMU();
-    HorizonTest().runTests();
-    HorizonImageHistogramTest().runTests();
+int main(int argc, char **argv) {
 
-    return 0;
+    //    testIMU();
+
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

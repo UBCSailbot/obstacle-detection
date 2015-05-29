@@ -32,3 +32,7 @@ void HorizonImageHistogram::populateHistogram(const cv::Mat &image, const Horizo
     }
 }
 
+
+int HorizonImageHistogram::getNumPixels() const {
+    return _numPixels;
+}

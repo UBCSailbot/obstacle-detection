@@ -2,25 +2,10 @@
 // Created by paul on 11/05/15.
 //
 
-#include "HorizonTest.h"
+#include <features/HorizonTest.h>
 
 
-void HorizonTest::testIsAboveHorizon() {
-
-    testStable();
-
-    testOnlyPositiveRoll();
-    testOnlyNegativeRoll();
-
-    testOnlyPositivePitch();
-    testOnlyNegativePitch();
-
-    testPositiveRollNegativePitch();
-    testNegativeRollPositivePitch();
-
-}
-
-void HorizonTest::testStable() const {
+TEST_F(HorizonTest, centeredHorizon) {
     Point2f pointOfInterest;
     Horizon h(0, 0);
 
@@ -34,7 +19,7 @@ void HorizonTest::testStable() const {
     testPointPosition(pointOfInterest, h, false, "only positive roll, onto");
 }
 
-void HorizonTest::testOnlyPositiveRoll() const {
+TEST_F(HorizonTest, positiveRollOnly) {
     Point2f pointOfInterest;
     Horizon h = generateHorizonFromEndpoints(Point2f(0, 0), Point2f(80,60));
 
@@ -48,7 +33,7 @@ void HorizonTest::testOnlyPositiveRoll() const {
     testPointPosition(pointOfInterest, h, false, "only positive roll, onto");
 }
 
-void HorizonTest::testOnlyNegativeRoll() const {
+TEST_F(HorizonTest, NegativeRollOnly) {
     Point2f pointOfInterest;
     Horizon h = generateHorizonFromEndpoints(Point2f(0, 60), Point2f(80,0));
 
@@ -62,7 +47,7 @@ void HorizonTest::testOnlyNegativeRoll() const {
     testPointPosition(pointOfInterest, h, false, "only negative roll, onto");
 }
 
-void HorizonTest::testOnlyPositivePitch() const {
+TEST_F(HorizonTest, positivePitchOnly) {
     Point2f pointOfInterest;
     Horizon h = generateHorizonFromEndpoints(Point2f(0, 40), Point2f(80, 40));
 
@@ -76,7 +61,7 @@ void HorizonTest::testOnlyPositivePitch() const {
     testPointPosition(pointOfInterest, h, false, "only positive pitch, onto");
 }
 
-void HorizonTest::testOnlyNegativePitch() const {
+TEST_F(HorizonTest, negativePitchOnly) {
     Point2f pointOfInterest;
     Horizon h = generateHorizonFromEndpoints(Point2f(0, 20), Point2f(80, 20));
 
@@ -91,25 +76,25 @@ void HorizonTest::testOnlyNegativePitch() const {
 }
 
 // TODO: Implement test.
-void HorizonTest::testPositiveRollNegativePitch() const {
+TEST_F(HorizonTest, positiveRollNegativePitch) {
 
 }
 
 // TODO: Implement test.
-void HorizonTest::testNegativeRollPositivePitch() const {
+TEST_F(HorizonTest, negativeRollPositivePitch) {
 
 }
 
 
 
-double HorizonTest::calculatePitchAngleFromEndpoints(const Point2f &start, const Point2f &end) const {
+double HorizonTest::calculatePitchAngleFromEndpoints(const Point2f &start, const Point2f &end) {
     double middleHeight = (start.y + end.y) / 2;
     double delta = middleHeight - (double) VIEWPORT_HEIGHT_PIX/2;
     double fovVerticalRad = (double) VIEWPORT_FOV_DEGREES_VERTICAL / 180 * M_PI;
     return delta * fovVerticalRad / VIEWPORT_HEIGHT_PIX ;
 }
 
-Horizon HorizonTest::generateHorizonFromEndpoints(const Point2f &start, const Point2f &end) const {
+Horizon HorizonTest::generateHorizonFromEndpoints(const Point2f &start, const Point2f &end) {
 
     double pitchRad = calculatePitchAngleFromEndpoints(start, end);
     double rollRad = calculateRollAngleFromEndpoints(start, end);
@@ -117,20 +102,12 @@ Horizon HorizonTest::generateHorizonFromEndpoints(const Point2f &start, const Po
     return h;
 }
 
-double HorizonTest::calculateRollAngleFromEndpoints(const Point2f &start, const Point2f &end) const {
+double HorizonTest::calculateRollAngleFromEndpoints(const Point2f &start, const Point2f &end) {
     double rollRad = atan2(end.y - start.y, end.x - start.x);
     return rollRad;
 }
 
 void HorizonTest::testPointPosition(const Point2f &pointOfInterest, const Horizon &h,
-                                      const bool &isAbove, const string &testTitle) const {
-    bool expected = isAbove;
-    bool actual = h.isPointAbove(pointOfInterest);
-
-    assertEquals(expected, actual, testTitle);
+                                      const bool &isAbove, const string &testTitle) {
+    EXPECT_EQ(isAbove, h.isPointAbove(pointOfInterest));
 }
-
-void HorizonTest::runTests() {
-    testIsAboveHorizon();
-}
-

@@ -15,6 +15,9 @@ class HorizonImageHistogram : public ImageHistogram {
 public:
     HorizonImageHistogram(const cv::Mat &image, const Horizon &horizon);
 
+     int getNumPixels() const;
+
+
 private:
     void populateHistogram(const cv::Mat &image, const Horizon &horizon);
 
