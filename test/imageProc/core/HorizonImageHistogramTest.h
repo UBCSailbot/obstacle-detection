@@ -6,9 +6,9 @@
 #define OBSTACLE_AVOIDANCE_IMAGEHISTOGRAMTEST_H
 
 #include <iostream>
-#include "../../TestClass.h"
+#include <gtest/gtest.h>
 
-class HorizonImageHistogramTest : public TestClass {
+class HorizonImageHistogramTest : public ::testing::Test {
 
 public:
     void runTests();
