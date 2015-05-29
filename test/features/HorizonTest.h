@@ -16,8 +16,8 @@ class HorizonTest : public ::testing::Test {
 
 public:
 
-    void testPointPosition(const Point2f &pointOfInterest, const Horizon &h,
-                           const bool &isAbove, const string &testTitle);
+    void testPointPosition(const Point2f &pointOfInterest, const Horizon &h, const bool &isAbove);
+    void testGenerateHorizonFromEndpoints(const Point2f &start, const Point2f &end);
 
     Horizon generateHorizonFromEndpoints(const Point2f &start, const Point2f &end);
 

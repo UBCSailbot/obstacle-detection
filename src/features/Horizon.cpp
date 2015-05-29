@@ -41,7 +41,7 @@ bool Horizon::isPointAbove(const float &x, const float &y) const {
     if (y < start.y && y < end.y)
         return true;
 
-    return (end.x - start.x) * (y - start.y) < (end.y - start.y) * x;
+    return (end.x - start.x) * (y - start.y) < (end.y - start.y) * (x - start.x);
 
 }
 
