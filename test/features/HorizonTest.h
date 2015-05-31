@@ -10,19 +10,17 @@
 
 #include "features/Horizon.h"
 
-using namespace cv;
-
 class HorizonTest : public ::testing::Test {
 
 public:
 
-    void testPointPosition(const Point2f &pointOfInterest, const Horizon &h, const bool &isAbove);
-    void testGenerateHorizonFromEndpoints(const Point2f &start, const Point2f &end);
+    void testPointPosition(const cv::Point2f &pointOfInterest, const Horizon &h, const bool &isAbove);
+    void testGenerateHorizonFromEndpoints(const cv::Point2f &start, const cv::Point2f &end);
 
-    Horizon generateHorizonFromEndpoints(const Point2f &start, const Point2f &end);
+    Horizon generateHorizonFromEndpoints(const cv::Point2f &start, const cv::Point2f &end);
 
-    double calculatePitchAngleFromEndpoints(const Point2f &start, const Point2f &end);
-    double calculateRollAngleFromEndpoints(const Point2f &start, const Point2f &end);
+    double calculatePitchAngleFromEndpoints(const cv::Point2f &start, const cv::Point2f &end);
+    double calculateRollAngleFromEndpoints(const cv::Point2f &start, const cv::Point2f &end);
 
 };
 
