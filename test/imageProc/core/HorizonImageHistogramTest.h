@@ -7,11 +7,25 @@
 
 #include <iostream>
 #include <gtest/gtest.h>
+#include <geometry/Horizon.h>
+
+#include <opencv2/core/core.hpp>
+#include <imageProc/core/HorizonImageHistogram.h>
 
 class HorizonImageHistogramTest : public ::testing::Test {
 
 public:
-    void runTests();
+    HorizonImageHistogramTest();
+
+protected:
+    static const int imageRows = 60;
+    static const int imageCols = 80;
+
+    Horizon horizonBelowFrame;
+
+    static cv::Mat makeThreeEvenPixelValues(const int &pixelValue0,
+                                            const int &pixelValue1,
+                                            const int &pixelValue2);
 };
 
 
