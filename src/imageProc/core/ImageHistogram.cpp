@@ -4,6 +4,14 @@
 
 #include "ImageHistogram.h"
 
+ImageHistogram::ImageHistogram(const cv::Mat &image) {
+    populateHistogram(image);
+}
+
+ImageHistogram::ImageHistogram() {
+
+}
+
 int ImageHistogram::getMinPixelValue() const {
     return _minPixelValue;
 }
@@ -79,4 +87,18 @@ void ImageHistogram::find8bitWindow(const int &medianValue, int &minValue, int &
 
     // identify a legal max value
     maxValue = (peakIndex + 128 > _histogramBins.size()) ? _maxPixelValue : peakIndex + 128;
+}
+
+int ImageHistogram::getNumPixels() const {
+    return _numPixels;
+}
+
+void ImageHistogram::populateHistogram(const cv::Mat &image) {
+    for (int row=0; row < image.rows; row++) {
+        for (int col=0; col < image.cols; col++) {
+            int i = image.at<uint16_t>(row, col) - _minPixelValue;
+            _histogramBins[i]++;
+            _numPixels++;
+        }
+    }
 }

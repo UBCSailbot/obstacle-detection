@@ -4,8 +4,7 @@
 
 #include "HorizonImageHistogram.h"
 
-HorizonImageHistogram::HorizonImageHistogram(const cv::Mat &image, const Horizon &horizon) :
-        _numPixels(0)
+HorizonImageHistogram::HorizonImageHistogram(const cv::Mat &image, const Horizon &horizon)
 {
     // TODO: find more efficient implementation for sparse histograms
     double min, max;
@@ -30,9 +29,4 @@ void HorizonImageHistogram::populateHistogram(const cv::Mat &image, const Horizo
             }
         }
     }
-}
-
-
-int HorizonImageHistogram::getNumPixels() const {
-    return _numPixels;
 }

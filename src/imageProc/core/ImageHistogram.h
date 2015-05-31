@@ -16,13 +16,12 @@ class ImageHistogram {
 
 public:
 
+    ImageHistogram(const cv::Mat &image);
+
     /**
-     * Returns the number of pixels contained in this histogram. Note that
-     *  depending on the histogram implementation, this may not necessarily
-     *  coincide with the number of pixels in the image from which this
-     *  histogram was constructed.
+     * Returns the number of pixels contained in this histogram.
      */
-    virtual int getNumPixels() const = 0;
+    int getNumPixels() const;
 
     /**
      * Returns the number of pixels contained in this histogram with the
@@ -83,16 +82,24 @@ public:
      *  values falls outside this histogram, then they are clipped to the histogram min
      *  or max, respectively.
      */
-    virtual void find8bitWindow(const int &medianValue, int &minValue, int &maxValue) const;
+    void find8bitWindow(const int &medianValue, int &minValue, int &maxValue) const;
 
 protected:
+    /**
+     * Protected default constructor for subclasses, so that superclass object is not
+     *  needlessly populated.
+     */
+    ImageHistogram();
     std::vector<int> _histogramBins;
     int _minPixelValue;
     int _maxPixelValue;
+    int _numPixels = 0;
 
 private:
     int _tallestBinIndex = -1;
     int _medianBinIndex = -1;
+
+    void populateHistogram(const cv::Mat &image);
 
     void calculateModeBinIndex();
     void calculateMedianBinIndex();

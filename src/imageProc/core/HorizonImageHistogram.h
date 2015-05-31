@@ -7,7 +7,7 @@
 
 #include <opencv2/core/core.hpp>
 #include <vector>
-#include "../../geometry/Horizon.h"
+#include <geometry/Horizon.h>
 #include "ImageHistogram.h"
 
 class HorizonImageHistogram : public ImageHistogram {
@@ -15,13 +15,8 @@ class HorizonImageHistogram : public ImageHistogram {
 public:
     HorizonImageHistogram(const cv::Mat &image, const Horizon &horizon);
 
-     int getNumPixels() const;
-
-
 private:
     void populateHistogram(const cv::Mat &image, const Horizon &horizon);
-
-    int _numPixels;
 };
 
 
