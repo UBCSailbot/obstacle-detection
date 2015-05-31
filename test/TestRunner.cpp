@@ -4,11 +4,13 @@
 
 #include "imu/IMUTest.h"
 #include "features/HorizonTest.h"
+#include "features/SunImageTest.h"
 
 int main() {
 
 //    testIMU();
     HorizonTest().testHorizon();
+    SunImageTest().testSunImage();
 
     return 0;
 }

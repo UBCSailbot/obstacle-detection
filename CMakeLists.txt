@@ -10,6 +10,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(SOURCE_FILES src/display/RoboPeakUSBDisplay.cpp
                  src/display/DesktopDisplay.cpp
                  src/features/Horizon.cpp
+                 src/features/SunImage.cpp
                  src/imageProc/SimpleRescaler.cpp
                  src/imageProc/ModalRescaler.cpp
                  src/imageTypes/Image8bit.cpp
@@ -30,26 +31,11 @@ add_executable(rigRunner src/rig/RigRunner.cpp ${SOURCE_FILES})
 set(TEST_FILES ${SOURCE_FILES} test/imu/MockIMU.cpp
                                test/imu/IMUTest.cpp
                                test/features/HorizonTest.cpp
+                               test/features/SunImageTest.cpp
                                )
 
 add_executable(runTests test/TestRunner.cpp ${TEST_FILES})
 add_executable(displayTest test/display/DisplayTest.cpp ${TEST_FILES})
-
-###########
-# WINDOWS #
-###########
-
-set(WIN_SOURCE_FILES    src/features/Horizon.cpp
-                        src/features/SunImage.cpp
-)
-
-set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/features/HorizonTest.cpp
-                                       test/features/SunImageTest.cpp
-)
-
-add_executable(winRunTests test/WinTestRunner.cpp ${WIN_TEST_FILES})
-# Please also see the lines appended to the section of this file
-#  that attempts to load the OpenCV installation.
 
 #################
 # INTERNAL LIBS #
@@ -97,10 +83,6 @@ list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 #################
 
 # Add OpenCV
-if( CYGWIN )
-    # TODO: This is a dirty hack meant to add OpenCV on Windows systems, that only works on Derek's machine.
-    set(OpenCV_DIR /home/DerekLun/build_shared_release)
-endif( CYGWIN )
 find_package (OpenCV)
 list(APPEND LIBRARIES ${OpenCV_LIBS} )
 
@@ -111,5 +93,4 @@ list(APPEND LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 TARGET_LINK_LIBRARIES(rigRunner ${LIBRARIES})
 TARGET_LINK_LIBRARIES(runTests ${LIBRARIES})
 TARGET_LINK_LIBRARIES(displayTest ${LIBRARIES})
-TARGET_LINK_LIBRARIES(winRunTests ${OpenCV_LIBS})
 
