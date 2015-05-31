@@ -10,13 +10,13 @@ TEST_F(HorizonTest, centeredHorizon) {
     Horizon h(0, 0);
 
     pointOfInterest = cv::Point2f(69,20);
-    testPointPosition(pointOfInterest, h, true);
+    testIsPointAbove(pointOfInterest, h, true);
 
     pointOfInterest = cv::Point2f(30,31);
-    testPointPosition(pointOfInterest, h, false);
+    testIsPointAbove(pointOfInterest, h, false);
 
     pointOfInterest = cv::Point2f(79,30);
-    testPointPosition(pointOfInterest, h, false);
+    testIsPointAbove(pointOfInterest, h, false);
 }
 
 TEST_F(HorizonTest, positiveRollOnly) {
@@ -24,13 +24,13 @@ TEST_F(HorizonTest, positiveRollOnly) {
     Horizon h(cv::Point2f(0, 0), cv::Point2f(80,60));
 
     pointOfInterest = cv::Point2f(30,20);
-    testPointPosition(pointOfInterest, h, true);
+    testIsPointAbove(pointOfInterest, h, true);
 
     pointOfInterest = cv::Point2f(30,29);
-    testPointPosition(pointOfInterest, h, false);
+    testIsPointAbove(pointOfInterest, h, false);
 
     pointOfInterest = cv::Point2f(30,22.5);
-    testPointPosition(pointOfInterest, h, false);
+    testIsPointAbove(pointOfInterest, h, false);
 }
 
 TEST_F(HorizonTest, NegativeRollOnly) {
@@ -38,13 +38,13 @@ TEST_F(HorizonTest, NegativeRollOnly) {
     Horizon h(cv::Point2f(0, 60), cv::Point2f(80,0));
 
     pointOfInterest = cv::Point2f(60,10);
-    testPointPosition(pointOfInterest, h, true);
+    testIsPointAbove(pointOfInterest, h, true);
 
     pointOfInterest = cv::Point2f(60,29);
-    testPointPosition(pointOfInterest, h, false);
+    testIsPointAbove(pointOfInterest, h, false);
 
     pointOfInterest = cv::Point2f(60,15);
-    testPointPosition(pointOfInterest, h, false);
+    testIsPointAbove(pointOfInterest, h, false);
 }
 
 TEST_F(HorizonTest, positivePitchOnly) {
@@ -52,13 +52,13 @@ TEST_F(HorizonTest, positivePitchOnly) {
     Horizon h(cv::Point2f(0, 40), cv::Point2f(80, 40));
 
     pointOfInterest = cv::Point2f(25,20);
-    testPointPosition(pointOfInterest, h, true);
+    testIsPointAbove(pointOfInterest, h, true);
 
     pointOfInterest = cv::Point2f(25,50);
-    testPointPosition(pointOfInterest, h, false);
+    testIsPointAbove(pointOfInterest, h, false);
 
     pointOfInterest = cv::Point2f(25,40);
-    testPointPosition(pointOfInterest, h, false);
+    testIsPointAbove(pointOfInterest, h, false);
 }
 
 TEST_F(HorizonTest, negativePitchOnly) {
@@ -66,13 +66,13 @@ TEST_F(HorizonTest, negativePitchOnly) {
     Horizon h(cv::Point2f(0, 20), cv::Point2f(80, 20));
 
     pointOfInterest = cv::Point2f(18,18);
-    testPointPosition(pointOfInterest, h, true);
+    testIsPointAbove(pointOfInterest, h, true);
 
     pointOfInterest = cv::Point2f(47,29);
-    testPointPosition(pointOfInterest, h, false);
+    testIsPointAbove(pointOfInterest, h, false);
 
     pointOfInterest = cv::Point2f(18,20);
-    testPointPosition(pointOfInterest, h, false);
+    testIsPointAbove(pointOfInterest, h, false);
 }
 
 TEST_F(HorizonTest, positiveRollNegativePitch) {
@@ -83,10 +83,10 @@ TEST_F(HorizonTest, positiveRollNegativePitch) {
     cv::Point2f pointOfInterest;
 
     pointOfInterest = cv::Point2f(60,2);
-    testPointPosition(pointOfInterest, h, true);
+    testIsPointAbove(pointOfInterest, h, true);
 
     pointOfInterest = cv::Point2f(5,30);
-    testPointPosition(pointOfInterest, h, false);
+    testIsPointAbove(pointOfInterest, h, false);
 }
 
 TEST_F(HorizonTest, negativeRollPositivePitch) {
@@ -97,10 +97,10 @@ TEST_F(HorizonTest, negativeRollPositivePitch) {
     cv::Point2f pointOfInterest;
 
     pointOfInterest = cv::Point2f(30,59);
-    testPointPosition(pointOfInterest, h, true);
+    testIsPointAbove(pointOfInterest, h, true);
 
     pointOfInterest = cv::Point2f(76,55);
-    testPointPosition(pointOfInterest, h, false);
+    testIsPointAbove(pointOfInterest, h, false);
 }
 
 TEST_F(HorizonTest, positiveRollpositivePitch) {
@@ -111,17 +111,48 @@ TEST_F(HorizonTest, positiveRollpositivePitch) {
     cv::Point2f pointOfInterest;
 
     pointOfInterest = cv::Point2f(43, 40);
-    testPointPosition(pointOfInterest, h, true);
+    testIsPointAbove(pointOfInterest, h, true);
 
     pointOfInterest = cv::Point2f(55, 40);
-    testPointPosition(pointOfInterest, h, true);
+    testIsPointAbove(pointOfInterest, h, true);
 
     pointOfInterest = cv::Point2f(3,55);
-    testPointPosition(pointOfInterest, h, false);
-
+    testIsPointAbove(pointOfInterest, h, false);
 }
 
-void HorizonTest::testPointPosition(const cv::Point2f &pointOfInterest, const Horizon &h, const bool &isAbove)
+TEST_F(HorizonTest, steepHorizonPositiveSlope) {
+    cv::Point2f start(17,60);
+    cv::Point2f end(68,0);
+    Horizon h(start, end);
+
+    cv::Point2f p1(12, 30);
+    cv::Point2f p2(23, 30);
+    cv::Point2f p3(52, 30);
+    cv::Point2f p4(77, 30);
+
+    testIsPointAbove(p1, h, true);
+    testIsPointAbove(p2, h, true);
+    testIsPointAbove(p3, h, false);
+    testIsPointAbove(p4, h, false);
+}
+
+TEST_F(HorizonTest, steepHorizonNegativeSlope) {
+    cv::Point2f start(17,0);
+    cv::Point2f end(68,60);
+    Horizon h(start, end);
+
+    cv::Point2f p1(12, 30);
+    cv::Point2f p2(23, 30);
+    cv::Point2f p3(52, 30);
+    cv::Point2f p4(77, 30);
+
+    testIsPointAbove(p1, h, false);
+    testIsPointAbove(p2, h, false);
+    testIsPointAbove(p3, h, true);
+    testIsPointAbove(p4, h, true);
+}
+
+void HorizonTest::testIsPointAbove(const cv::Point2f &pointOfInterest, const Horizon &h, const bool &isAbove)
 {
     EXPECT_EQ(isAbove, h.isPointAbove(pointOfInterest));
 }

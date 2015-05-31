@@ -14,7 +14,7 @@ class HorizonTest : public ::testing::Test {
 
 public:
 
-    void testPointPosition(const cv::Point2f &pointOfInterest, const Horizon &h, const bool &isAbove);
+    void testIsPointAbove(const cv::Point2f &pointOfInterest, const Horizon &h, const bool &isAbove);
 
 };
 
