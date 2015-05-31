@@ -9,15 +9,22 @@
 #include <opencv2/core/core.hpp>
 
 /**
- * A simple, immutable class that represents a two-dimensional line, defined
- *  by a starting point and an endpoint.
+ * A simple class that represents a two-dimensional line, as defined
+ *  by two points. Although this class defines one of these points
+ *  to be a "start point" and the other to be an "end point", in fact
+ *  the geometric entity represented by this class should be considered
+ *  to be directionless.
  */
 class Line {
 
 public:
     Line(const cv::Point2f startPoint, const cv::Point2f endPoint);
-    const cv::Point2f start;
-    const cv::Point2f end;
+    cv::Point2f getStartPoint() const;
+    cv::Point2f getEndPoint() const;
+
+protected:
+    cv::Point2f _startPoint;
+    cv::Point2f _endPoint;
 };
 
 
