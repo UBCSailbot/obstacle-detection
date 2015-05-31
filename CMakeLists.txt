@@ -42,10 +42,11 @@ add_executable(rigRunner src/rig/RigRunner.cpp ${SOURCE_FILES})
 # Add test folder to header search path so that we don't have to `#include` relative paths
 include_directories( test )
 
-set(TEST_FILES ${SOURCE_FILES} test/imageProc/core/HorizonImageHistogramTest.cpp
+set(TEST_FILES ${SOURCE_FILES} test/geometry/HorizonTest.cpp
+                               test/geometry/LineTest.cpp
+                               test/imageProc/core/HorizonImageHistogramTest.cpp
                                test/imu/MockIMU.cpp
                                test/imu/IMUTest.cpp
-                               test/geometry/HorizonTest.cpp
                                )
 
 add_executable(runTests test/TestRunner.cpp ${TEST_FILES})
