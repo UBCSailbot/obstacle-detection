@@ -13,7 +13,7 @@ include_directories( src )
 set(SOURCE_FILES src/display/DesktopDisplay.cpp
                  src/display/Display.h
                  src/display/RoboPeakUSBDisplay.cpp
-                 src/features/Horizon.cpp
+                 src/geometry/Horizon.cpp
                  src/imageProc/EightBitWindowRescaler.cpp
                  src/imageProc/core/HorizonImageHistogram.cpp
                  src/imageProc/core/ImageHistogram.cpp
@@ -44,7 +44,7 @@ include_directories( test )
 set(TEST_FILES ${SOURCE_FILES} test/imageProc/core/HorizonImageHistogramTest.cpp
                                test/imu/MockIMU.cpp
                                test/imu/IMUTest.cpp
-                               test/features/HorizonTest.cpp
+                               test/geometry/HorizonTest.cpp
                                )
 
 add_executable(runTests test/TestRunner.cpp ${TEST_FILES})
@@ -63,8 +63,8 @@ include_directories(gtest STATIC lib/gtest-1.7.0/include )
 # WINDOWS #
 ###########
 
-set(WIN_SOURCE_FILES    src/features/Horizon.cpp)
-set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/features/HorizonTest.cpp
+set(WIN_SOURCE_FILES    src/geometry/Horizon.cpp)
+set(WIN_TEST_FILES ${WIN_SOURCE_FILES} test/geometry/HorizonTest.cpp
                                        test/sunImage/SunImageTest.cpp
 )
 

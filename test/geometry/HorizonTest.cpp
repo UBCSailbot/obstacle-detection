@@ -121,29 +121,6 @@ TEST_F(HorizonTest, positiveRollpositivePitch) {
 
 }
 
-TEST_F(HorizonTest, generateHorizonFromEndpoints1) {
-    // level
-    testGenerateHorizonFromEndpoints(cv::Point2f(0, 30), cv::Point2f(80,30));
-    // pure roll
-    testGenerateHorizonFromEndpoints(cv::Point2f(0, 0), cv::Point2f(80,60));
-    testGenerateHorizonFromEndpoints(cv::Point2f(0, 60), cv::Point2f(80,0));
-    // pure pitch
-    testGenerateHorizonFromEndpoints(cv::Point2f(0, 20), cv::Point2f(80,20));
-    testGenerateHorizonFromEndpoints(cv::Point2f(0, 45), cv::Point2f(80,65));
-
-    // roll, pitch:
-    // pos neg
-    testGenerateHorizonFromEndpoints(cv::Point2f(0, 0), cv::Point2f(80,40));
-    // neg pos
-//    testGenerateHorizonFromEndpoints(cv::Point2f(40, 60), cv::Point2f(80,40));
-
-    // hard test cases?
-//    testGenerateHorizonFromEndpoints(cv::Point2f(0, 35), cv::Point2f(50,60));
-//    testGenerateHorizonFromEndpoints(cv::Point2f(40, 60), cv::Point2f(80,40));
-
-}
-
-
 /**
  * Assumes that the line is not vertical; if it were, this would cause a divide-by-zero error.
  */

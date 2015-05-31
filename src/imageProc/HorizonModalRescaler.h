@@ -8,7 +8,7 @@
 
 #include <queue>
 #include "../imageTypes/Image16bit.h"
-#include "../features/Horizon.h"
+#include "../geometry/Horizon.h"
 #include "../imageTypes/Image8bit.h"
 #include "core/ImageHistogram.h"
 #include "core/HorizonImageHistogram.h"

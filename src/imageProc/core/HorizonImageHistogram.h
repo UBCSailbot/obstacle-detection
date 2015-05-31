@@ -7,7 +7,7 @@
 
 #include <opencv2/core/core.hpp>
 #include <vector>
-#include "../../features/Horizon.h"
+#include "../../geometry/Horizon.h"
 #include "ImageHistogram.h"
 
 class HorizonImageHistogram : public ImageHistogram {

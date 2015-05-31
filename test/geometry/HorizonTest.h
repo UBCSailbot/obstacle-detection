@@ -8,7 +8,7 @@
 #include "gtest/gtest.h"
 #include <opencv2/core/core.hpp>
 
-#include "features/Horizon.h"
+#include "geometry/Horizon.h"
 
 class HorizonTest : public ::testing::Test {
 
