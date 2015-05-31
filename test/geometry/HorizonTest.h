@@ -7,20 +7,14 @@
 
 #include "gtest/gtest.h"
 #include <opencv2/core/core.hpp>
+#include <geometry/Horizon.h>
 
-#include "geometry/Horizon.h"
 
 class HorizonTest : public ::testing::Test {
 
 public:
 
     void testPointPosition(const cv::Point2f &pointOfInterest, const Horizon &h, const bool &isAbove);
-    void testGenerateHorizonFromEndpoints(const cv::Point2f &start, const cv::Point2f &end);
-
-    Horizon generateHorizonFromEndpoints(const cv::Point2f &start, const cv::Point2f &end);
-
-    double calculatePitchAngleFromEndpoints(const cv::Point2f &start, const cv::Point2f &end);
-    double calculateRollAngleFromEndpoints(const cv::Point2f &start, const cv::Point2f &end);
 
 };
 

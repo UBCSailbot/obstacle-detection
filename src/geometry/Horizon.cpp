@@ -8,20 +8,15 @@
     #define M_PI		3.14159265358979323846
 #endif
 
-Horizon::Horizon(double roll, double pitch) : roll(roll), pitch(pitch) {
+Horizon::Horizon(cv::Point2f startPoint, cv::Point2f endPoint) :
+        Line(startPoint, endPoint) {}
+
+Horizon::Horizon(double roll, double pitch) :
+        Line(cv::Point(0,0), cv::Point(0,0)) {
     setPitchRoll(pitch, roll);
 }
 
 Horizon::~Horizon() {
-}
-
-cv::Point2f Horizon::getStart() const {
-    return start;
-}
-
-
-cv::Point2f Horizon::getEnd() const {
-    return end;
 }
 
 /*
@@ -35,13 +30,14 @@ bool Horizon::isPointAbove(cv::Point2f pointOfInterest) const {
 }
 
 bool Horizon::isPointAbove(const float &x, const float &y) const {
-    if (y > start.y && y > end.y)
+    if (y > _startPoint.y && y > _endPoint.y)
         return false;
 
-    if (y < start.y && y < end.y)
+    if (y < _startPoint.y && y < _endPoint.y)
         return true;
 
-    return (end.x - start.x) * (y - start.y) < (end.y - start.y) * (x - start.x);
+    return (_endPoint.x - _startPoint.x) * (y - _startPoint.y) <
+            (_endPoint.y - _startPoint.y) * (x - _startPoint.x);
 
 }
 
@@ -50,6 +46,7 @@ Check if rectangle intersect the horizon.
 IN: rectangle
 OUT:
 RETURN: true some points in the the rectangle is above and below the horizon
+ TODO: Implement this function
 */
 bool Horizon::isPolyIntersect(cv::Rect rectangle) const {
     bool isAbove = false;
@@ -105,7 +102,6 @@ void Horizon::setPitchRoll(double pitch, double roll) {
 
     // XXX: Assumes that the horizon intersects both
     //  vertical edges of the frame
-    start = cv::Point2f(0, heightLeft);
-    end = cv::Point2f(VIEWPORT_WIDTH_PIX, heightRight);
+    _startPoint = cv::Point2f(0, heightLeft);
+    _endPoint = cv::Point2f(VIEWPORT_WIDTH_PIX, heightRight);
 }
-
