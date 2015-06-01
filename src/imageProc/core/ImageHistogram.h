@@ -33,6 +33,8 @@ public:
 
     /**
      * Returns the most common pixel value contained in this histogram.
+     *  If multiple pixel values are tied for the mode, this function
+     *  returns the smallest such value.
      */
     int getMode();
 

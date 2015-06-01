@@ -5,6 +5,16 @@
 #include "ImageHistogram.h"
 
 ImageHistogram::ImageHistogram(const cv::Mat &image) {
+    // TODO: find more efficient implementation for sparse histograms
+    double min, max;
+    minMaxLoc(image, &min, &max);
+    int histogramSize = (int) (max - min + 1);
+
+    _histogramBins = std::vector<int>(histogramSize, 0);
+    _minPixelValue = (int) min;
+    _maxPixelValue = (int) max;
+
+
     populateHistogram(image);
 }
 
@@ -68,7 +78,7 @@ void ImageHistogram::calculateMedianBinIndex() {
 }
 
 int ImageHistogram::calculateMedianPixelIndex() const {
-    return (this->getNumPixels()) / 2;
+    return (this->getNumPixels() + 1) / 2;
 }
 
 int ImageHistogram::getNumPixelsWithValue(const int &pixelValue) const {

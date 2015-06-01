@@ -45,6 +45,7 @@ include_directories( test )
 set(TEST_FILES ${SOURCE_FILES} test/geometry/HorizonTest.cpp
                                test/geometry/LineTest.cpp
                                test/imageProc/core/HorizonImageHistogramTest.cpp
+                               test/imageProc/core/ImageHistogramTest.cpp
                                test/imu/MockIMU.cpp
                                test/imu/IMUTest.cpp
                                )
