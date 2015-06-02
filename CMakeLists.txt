@@ -51,6 +51,13 @@ set(TEST_FILES ${SOURCE_FILES} test/geometry/HorizonTest.cpp
                                )
 
 add_executable(runTests test/TestRunner.cpp ${TEST_FILES})
+# The following command copies the resources folder into the binary directory.
+add_custom_command(TARGET runTests POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                        ${CMAKE_SOURCE_DIR}/resources
+                        ${CMAKE_BINARY_DIR}/resources
+)
+
 add_executable(displayTest test/display/DisplayTest.cpp ${TEST_FILES})
 add_executable(imageDisplayDriver test/ImageDisplayDriver.cpp ${TEST_FILES})
 
