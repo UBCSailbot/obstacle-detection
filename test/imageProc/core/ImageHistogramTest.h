@@ -15,9 +15,14 @@
 class ImageHistogramTest : public ::testing::Test {
 
 protected:
+    ImageHistogramTest();
     static cv::Mat makeThreeEvenPixelValues(const int &pixelValue0,
                                             const int &pixelValue1,
                                             const int &pixelValue2);
+
+    cv::Mat _fishingBoatImg;
+    cv::Mat _freighterSunImg;
+    cv::Mat _garbledImg;
 };
 
 

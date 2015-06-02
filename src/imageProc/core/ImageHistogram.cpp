@@ -89,14 +89,27 @@ int ImageHistogram::getNumPixelsWithValue(const int &pixelValue) const {
     return _histogramBins[binIndex];
 }
 
-void ImageHistogram::find8bitWindow(const int &medianValue, int &minValue, int &maxValue) const {
-    int peakIndex = medianValue - _minPixelValue;
+void ImageHistogram::find8bitWindow(const int &middleValue, int &minValue, int &maxValue) const {
+    bool closeToMin = middleValue - 127 < _minPixelValue;
+    bool closeToMax = middleValue + 128 > _maxPixelValue;
 
-    // identify a legal min value
-    minValue = (peakIndex - 127 < 0) ? _minPixelValue : medianValue - 127;
-
-    // identify a legal max value
-    maxValue = (peakIndex + 128 > _histogramBins.size()) ? _maxPixelValue : peakIndex + 128;
+    if (closeToMin && closeToMax) {
+        minValue = _minPixelValue;
+        maxValue = _maxPixelValue;
+    }
+    else if (closeToMin) {
+        minValue = _minPixelValue;
+        maxValue = minValue + 255;
+    }
+    else if (closeToMax) {
+        maxValue = _maxPixelValue;
+        minValue = maxValue - 255;
+    }
+    else {
+        // range of pixel values in native image is wider than 8 bits
+        minValue = middleValue - 127;
+        maxValue = middleValue + 128;
+    }
 }
 
 int ImageHistogram::getNumPixels() const {

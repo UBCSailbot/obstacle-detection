@@ -65,12 +65,12 @@ public:
 
     /**
      * Finds a window of pixel values represented within this histogram that is at most
-     *  8 bits wide, distributed as evenly as possible around the given median.
+     *  8 bits wide, distributed as evenly as possible around the given pixel value.
      *
-     * PRE: medianValue is a value that corresponds to one of the bins of this histogram.
-     *  If medianValue is a pixel value that falls outside of this histogram, this function
-     *  behaves as if medianValue were the minimum or maximum value in the histogram,
-     *  respectively, depending on whether medianValue is greater than the histogram max
+     * PRE: middleValue is a value that corresponds to one of the bins of this histogram.
+     *  If middleValue is a pixel value that falls outside of this histogram, this function
+     *  behaves as if middleValue were the minimum or maximum value in the histogram,
+     *  respectively, depending on whether middleValue is greater than the histogram max
      *  or less than the histogram min.
      *
      * POST: minValue and maxValue are set such that maxValue - minValue <= 255 .
@@ -84,7 +84,7 @@ public:
      *  values falls outside this histogram, then they are clipped to the histogram min
      *  or max, respectively.
      */
-    void find8bitWindow(const int &medianValue, int &minValue, int &maxValue) const;
+    void find8bitWindow(const int &middleValue, int &minValue, int &maxValue) const;
 
 protected:
     /**

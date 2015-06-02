@@ -54,6 +54,7 @@ TEST_F(ImageHistogramTest, statsGaussianDistributionOdd) {
 
     EXPECT_EQ(3, histogram.getMedian());
     EXPECT_EQ(2, histogram.getMode());
+    EXPECT_EQ(15, histogram.getNumPixels());
 }
 
 TEST_F(ImageHistogramTest, statsGaussianDistributionEven) {
@@ -61,13 +62,15 @@ TEST_F(ImageHistogramTest, statsGaussianDistributionEven) {
                              1,1,
                              2,2,2,2,
                              3,3,3,
-                             4
+                             4,
+                             5
     };
     cv::Mat image(data, false);
     ImageHistogram histogram(image);
 
     EXPECT_EQ(2, histogram.getMedian());
     EXPECT_EQ(2, histogram.getMode());
+    EXPECT_EQ(12, histogram.getNumPixels());
 }
 
 TEST_F(ImageHistogramTest, statsBimodalDistributionOdd) {
@@ -84,6 +87,7 @@ TEST_F(ImageHistogramTest, statsBimodalDistributionOdd) {
 
     EXPECT_EQ(3, histogram.getMedian());
     EXPECT_EQ(0, histogram.getMode());
+    EXPECT_EQ(17, histogram.getNumPixels());
 }
 
 TEST_F(ImageHistogramTest, statsBimodalDistributionEven) {
@@ -100,25 +104,88 @@ TEST_F(ImageHistogramTest, statsBimodalDistributionEven) {
 
     EXPECT_EQ(3, histogram.getMedian());
     EXPECT_EQ(6, histogram.getMode());
+    EXPECT_EQ(18, histogram.getNumPixels());
 }
 
+TEST_F(ImageHistogramTest, statsFishingBoat) {
+    ImageHistogram histogram(_fishingBoatImg);
 
-TEST_F(ImageHistogramTest, getMinMaxPixelValues) {
-    // TODO: implement this test
+    EXPECT_EQ(7488, histogram.getMedian());
+    EXPECT_EQ(7490, histogram.getMode());
+    EXPECT_EQ(4800, histogram.getNumPixels());
+}
+
+TEST_F(ImageHistogramTest, getMinPixelValue) {
+    ImageHistogram histogram(_freighterSunImg);
+    EXPECT_EQ(7483, histogram.getMinPixelValue());
+}
+
+TEST_F(ImageHistogramTest, getMaxPixelValue) {
+    ImageHistogram histogram(_freighterSunImg);
+    EXPECT_EQ(14691, histogram.getMaxPixelValue());
 }
 
 TEST_F(ImageHistogramTest, numBins) {
     // TODO: implement this test
 }
 
+TEST_F(ImageHistogramTest, find8bitWindowCentered) {
+    ImageHistogram histogram(_fishingBoatImg);
 
-TEST_F(ImageHistogramTest, find8bitWindow) {
-    // TODO: implement this test
+    int min, max;
+    histogram.find8bitWindow(histogram.getMedian(), min, max);
+    EXPECT_EQ(7361, min);
+    EXPECT_EQ(7616, max);
+    EXPECT_EQ(255, max - min);
+}
+
+TEST_F(ImageHistogramTest, find8bitWindowSkewedLeft) {
+    ImageHistogram histogram(_fishingBoatImg);
+
+    int min, max;
+    histogram.find8bitWindow(7190, min, max);
+    EXPECT_EQ(7191, min);
+    EXPECT_EQ(7446, max);
+    EXPECT_EQ(255, max - min);
+}
+
+TEST_F(ImageHistogramTest, find8bitWindowSkewedRight) {
+    ImageHistogram histogram(_fishingBoatImg);
+
+    int min, max;
+    histogram.find8bitWindow(7642, min, max);
+    EXPECT_EQ(7386, min);
+    EXPECT_EQ(7641, max);
+    EXPECT_EQ(255, max - min);
+}
+
+TEST_F(ImageHistogramTest, find8bitWindowNarrow) {
+    ImageHistogram histogram(_garbledImg);
+
+    int min, max;
+    histogram.find8bitWindow(7653, min, max);
+    EXPECT_EQ(7605, min);
+    EXPECT_EQ(7701, max);
+
+    histogram.find8bitWindow(7610, min, max);
+    EXPECT_EQ(7605, min);
+    EXPECT_EQ(7701, max);
+
+    histogram.find8bitWindow(7700, min, max);
+    EXPECT_EQ(7605, min);
+    EXPECT_EQ(7701, max);
 }
 
 
 TEST_F(ImageHistogramTest, getNumPixelsWithValue) {
     // TODO: implement this test
+}
+
+ImageHistogramTest::ImageHistogramTest() {
+    _fishingBoatImg = cv::imread("resources/img/fishingBoat01.png", CV_LOAD_IMAGE_UNCHANGED);
+    _freighterSunImg = cv::imread("resources/img/freighterAndSun01.png", CV_LOAD_IMAGE_UNCHANGED);
+    _garbledImg = cv::imread("resources/img/garbled01.png", CV_LOAD_IMAGE_UNCHANGED);
+
 }
 
 cv::Mat ImageHistogramTest::makeThreeEvenPixelValues(const int &pixelValue0,
@@ -149,3 +216,4 @@ cv::Mat ImageHistogramTest::makeThreeEvenPixelValues(const int &pixelValue0,
 
     return image;
 }
+
