@@ -11,7 +11,6 @@ class ModalRescaler : public Rescaler {
 public:
 
     ModalRescaler();
-    ~ModalRescaler();
 
     void scale16bitTo8bit(Image16bit src, Image8bit dst);
 };

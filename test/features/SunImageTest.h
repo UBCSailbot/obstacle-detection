@@ -4,8 +4,9 @@
 
 #ifndef OBSTACLE_AVOIDANCE_SUNIMAGETESTER_H
 #define OBSTACLE_AVOIDANCE_SUNIMAGETESTER_H
-#include "../../src/features/Horizon.h"
-#include "../../src/features/SunImage.h"
+
+#include "geometry/Horizon.h"
+#include "features/SunImage.h"
 
 class SunImageTest {
 public:

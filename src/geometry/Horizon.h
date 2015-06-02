@@ -13,19 +13,15 @@
 #include <cmath>
 #include <math.h>
 
-#include "../lepton/LeptonCameraDimensions.h"
+#include "lepton/LeptonCameraDimensions.h"
+#include "Line.h"
 
-#ifndef UNIX
-    #define M_PI		3.14159265358979323846
-#endif
+class Horizon : public Line {
 
-class Horizon {
 public:
     Horizon(double roll, double pitch);
+    Horizon(cv::Point2f startPoint, cv::Point2f endPoint);
     ~Horizon();
-
-    cv::Point2f getStart() const;
-    cv::Point2f getEnd() const;
 
     /*
     Check if given point is above horizon.
@@ -48,8 +44,6 @@ public:
     bool isPolyIntersect(cv::Rect rectangle) const;
 
 private:
-    cv::Point2f start, end;
-    double pitch, roll;
     // Store the height of the intersection of the horizon with the edges of the viewport
     int heightLeft, heightRight;
 

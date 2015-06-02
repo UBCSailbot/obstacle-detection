@@ -8,10 +8,6 @@ ModalRescaler::ModalRescaler() {
 
 }
 
-ModalRescaler::~ModalRescaler() {
-
-}
-
 void ModalRescaler::scale16bitTo8bit(Image16bit src, Image8bit dst) {
 
 }
