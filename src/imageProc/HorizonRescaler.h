@@ -5,7 +5,9 @@
 #ifndef OBSTACLE_AVOIDANCE_HORIZONRESCALER_H
 #define OBSTACLE_AVOIDANCE_HORIZONRESCALER_H
 
-#include "../horizon/Horizon.h"
+#include "geometry/Horizon.h"
+#include "imageTypes/Image16bit.h"
+#include "imageTypes/Image8bit.h"
 
 class HorizonRescaler {
 

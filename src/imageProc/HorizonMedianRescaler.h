@@ -6,7 +6,7 @@
 #define OBSTACLE_AVOIDANCE_HORIZONMEDIALRESCALER_H
 
 
-class HorizonMedialRescaler {
+class HorizonMedianRescaler {
 
 };
 
