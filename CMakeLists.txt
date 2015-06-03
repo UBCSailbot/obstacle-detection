@@ -13,22 +13,30 @@ include_directories( src )
 set(SOURCE_FILES src/display/DesktopDisplay.cpp
                  src/display/Display.h
                  src/display/RoboPeakUSBDisplay.cpp
+
                  src/features/SunImage.cpp
+
                  src/geometry/Horizon.cpp
                  src/geometry/Line.cpp
-                 src/imageProc/EightBitWindowRescaler.cpp
+
                  src/imageProc/core/HorizonImageHistogram.cpp
                  src/imageProc/core/ImageHistogram.cpp
-                 src/imageProc/SimpleRescaler.cpp
-                 src/imageProc/HorizonModalRescaler.cpp
-                 src/imageProc/HorizonRescaler.h
-                 src/imageProc/ModalRescaler.cpp
-                 src/imageProc/Rescaler.h
+
+                 src/imageProc/rescale/EightBitWindowRescaler.cpp
+                 src/imageProc/rescale/HorizonMedianRescaler.cpp
+                 src/imageProc/rescale/HorizonModalRescaler.cpp
+                 src/imageProc/rescale/HorizonRescaler.h
+                 src/imageProc/rescale/ModalRescaler.cpp
+                 src/imageProc/rescale/Rescaler.h
+                 src/imageProc/rescale/SimpleRescaler.cpp
+
                  src/imageTypes/Image8bit.cpp
                  src/imageTypes/Image16bit.cpp
+
                  src/lepton/Lepton.cpp
                  src/lepton/LeptonSPI.cpp
                  src/lepton/LeptonI2C.cpp
+
                  src/imu/IMU.cpp
                  src/imu/ParallelIMU.cpp
                  )
@@ -48,6 +56,7 @@ set(TEST_FILES ${SOURCE_FILES} test/geometry/HorizonTest.cpp
                                test/geometry/LineTest.cpp
                                test/imageProc/core/HorizonImageHistogramTest.cpp
                                test/imageProc/core/ImageHistogramTest.cpp
+                               test/imageProc/rescale/HorizonMedialRescalerTest.cpp
                                test/imu/MockIMU.cpp
                                test/imu/IMUTest.cpp
                                test/features/SunImageTest.cpp
