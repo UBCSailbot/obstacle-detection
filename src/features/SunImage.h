@@ -16,6 +16,8 @@ public:
     ~SunImage();
 
     void findSun();
+    void debugMessage();
+    void findSunColumn();
 
 private:
 

@@ -11,6 +11,7 @@ void SunImage::findSun() {
     for (int row = 0; row < frame.rows; row++) {
         for (int col = 0; col < frame.cols; col++) {
             unsigned int value = frame.at<uint16_t>(row, col);
+            //std::cout << "value is " << value << std::endl;
 
             if (value >= minSunPixelValue) {
             	if (row > sunBottom)
@@ -24,13 +25,15 @@ void SunImage::findSun() {
             }
         }
     }
-
-    std::cout << "sunBottom is" << sunBottom << std::endl;
-    std::cout << "sunTop is" << sunTop << std::endl;
-    std::cout << "sunLeft is" << sunLeft << std::endl;
-    std::cout << "sunRight is" << sunRight << std::endl;
-
 }
 
-// uint sunRadius() {
-// }
+void SunImage::debugMessage() {
+    std::cout << "sunBottom is " << sunBottom << std::endl;
+    std::cout << "sunTop is " << sunTop << std::endl;
+    std::cout << "sunLeft is " << sunLeft << std::endl;
+    std::cout << "sunRight is " << sunRight << std::endl;
+}
+
+void SunImage::findSunColumn() {
+
+}
