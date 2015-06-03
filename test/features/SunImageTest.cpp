@@ -33,4 +33,5 @@ void SunImageTest::testFindSun() const {
 
     si.findSun();
     si.debugMessage();
+    si.findSunColumn();
 }
