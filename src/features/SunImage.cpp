@@ -38,12 +38,15 @@ void SunImage::debugMessage() {
 
 void SunImage::findSunColumn() {
     int offset = horizon.getHeightLeft();
-    int y = horizon.getHeightRight() - horizon.getHeightLeft();
-    int x = VIEWPORT_WIDTH_PIX;
+    float y = static_cast<float>((horizon.getHeightRight() - horizon.getHeightLeft());
+    float x = VIEWPORT_WIDTH_PIX;
+    float magnitude = (VIEWPORT_WIDTH_PIX*2 + y*2)^0.5
+    x = x / magnitude;
+    y = y / magnitude;
 
     unsigned int totalPix = 0, totalSum = 0;
     float mean = 0.0, variance = 0.0;
-    std::stack<int> tempResults;
+    std::stack<float> tempResults;
 
     //calculate dot product
     for (int row = 0; row < frame.rows; row++) {
@@ -51,7 +54,7 @@ void SunImage::findSunColumn() {
             if (minSunPixelValue <= frame.at<uint16_t>(row, col)) {
                 totalPix++;
 
-                int tempValue = (row - offset) * x + col * y;
+                float tempValue = (row - offset) * x + col * y;
                 totalSum += tempValue;
                 tempResults.push(tempValue);
             }
