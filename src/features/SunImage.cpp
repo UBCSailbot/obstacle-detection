@@ -40,20 +40,18 @@ void SunImage::findSunColumn() {
     int offset = horizon.getHeightLeft();
     float y = static_cast<float>((horizon.getHeightRight() - horizon.getHeightLeft());
     float x = VIEWPORT_WIDTH_PIX;
-    float magnitude = (VIEWPORT_WIDTH_PIX*2 + y*2)^0.5
+    float magnitude = pow((VIEWPORT_WIDTH_PIX*2 + y*2), 0.5);
     x = x / magnitude;
     y = y / magnitude;
 
-    unsigned int totalPix = 0, totalSum = 0;
-    float mean = 0.0, variance = 0.0;
+    unsigned int totalPix;
+    float mean = 0.0, variance = 0.0, totalSum = 0,0;
     std::stack<float> tempResults;
 
     //calculate dot product
     for (int row = 0; row < frame.rows; row++) {
         for (int col = 0; col < frame.cols; col++) {
             if (minSunPixelValue <= frame.at<uint16_t>(row, col)) {
-                totalPix++;
-
                 float tempValue = (row - offset) * x + col * y;
                 totalSum += tempValue;
                 tempResults.push(tempValue);
@@ -62,7 +60,8 @@ void SunImage::findSunColumn() {
     }
 
     //calculate mean
-    mean = static_cast<float>(totalSum)/static_cast<float>(totalPix);
+    unsigned int totalPix = tempResults.size();
+    mean = totalSum / static_cast<float>(totalPix);
     std::cout << "totalSum is " << totalSum << std::endl;
     std::cout << "totalPix is " << totalPix << std::endl;
     std::cout << " mean is " << mean << std::endl;
@@ -71,7 +70,7 @@ void SunImage::findSunColumn() {
     while (!tempResults.empty()) {
         float tempResult = static_cast<float>(tempResults.top());
         tempResults.pop();
-        variance = pow((tempResult - mean), 2);
+        variance += pow((tempResult - mean), 2);
     }
     
     variance = variance/static_cast<float>(totalPix);
