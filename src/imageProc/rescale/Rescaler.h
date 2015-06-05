@@ -5,8 +5,8 @@
 #ifndef OBSTACLE_AVOIDANCE_RESCALER_H
 #define OBSTACLE_AVOIDANCE_RESCALER_H
 
-#include "../imageTypes/Image16bit.h"
-#include "../imageTypes/Image8bit.h"
+#include "imageTypes/Image16bit.h"
+#include "imageTypes/Image8bit.h"
 
 class Rescaler {
 

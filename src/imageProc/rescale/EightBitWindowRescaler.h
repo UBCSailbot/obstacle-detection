@@ -6,8 +6,8 @@
 #define OBSTACLE_AVOIDANCE_EIGHTBITWINDOWRESCALER_H
 
 
-#include "../imageTypes/Image16bit.h"
-#include "../imageTypes/Image8bit.h"
+#include "imageTypes/Image16bit.h"
+#include "imageTypes/Image8bit.h"
 #include "Rescaler.h"
 
 class EightBitWindowRescaler : public Rescaler {

@@ -7,11 +7,11 @@
 
 
 #include <queue>
-#include "../imageTypes/Image16bit.h"
-#include "../geometry/Horizon.h"
-#include "../imageTypes/Image8bit.h"
-#include "core/ImageHistogram.h"
-#include "core/HorizonImageHistogram.h"
+#include "imageTypes/Image16bit.h"
+#include "geometry/Horizon.h"
+#include "imageTypes/Image8bit.h"
+#include "imageProc/core/ImageHistogram.h"
+#include "imageProc/core/HorizonImageHistogram.h"
 #include "EightBitWindowRescaler.h"
 
 class HorizonModalRescaler : public EightBitWindowRescaler {
