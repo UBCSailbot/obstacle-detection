@@ -8,8 +8,9 @@
 #include "geometry/Horizon.h"
 #include "imageTypes/Image16bit.h"
 #include "imageTypes/Image8bit.h"
+#include "Rescaler.h"
 
-class HorizonRescaler {
+class HorizonRescaler : public Rescaler {
 
 public:
     virtual ~HorizonRescaler();

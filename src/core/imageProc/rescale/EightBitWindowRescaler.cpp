@@ -2,9 +2,6 @@
 // Created by paul on 25/05/15.
 //
 
-#include <imageTypes/Image16bit.h>
-#include <imageTypes/Image8bit.h>
-#include "HorizonModalRescaler.h"
 #include "EightBitWindowRescaler.h"
 
 void EightBitWindowRescaler::applyRescaling(const Image16bit &src, Image8bit &dst, const int &newMinPixelValue) const

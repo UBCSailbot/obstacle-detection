@@ -5,6 +5,9 @@
 #ifndef OBSTACLE_AVOIDANCE_EIGHTBITWINDOWRESCALER_H
 #define OBSTACLE_AVOIDANCE_EIGHTBITWINDOWRESCALER_H
 
+#include <imageTypes/Image16bit.h>
+#include <imageTypes/Image8bit.h>
+#include "HorizonModalRescaler.h"
 
 #include "imageTypes/Image16bit.h"
 #include "imageTypes/Image8bit.h"

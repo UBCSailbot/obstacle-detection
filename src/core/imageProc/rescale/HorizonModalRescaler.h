@@ -8,25 +8,20 @@
 
 #include <queue>
 
-#include "imageTypes/Image16bit.h"
 #include "geometry/Horizon.h"
+#include "imageTypes/Image16bit.h"
 #include "imageTypes/Image8bit.h"
 #include "imageProc/histogram/ImageHistogram.h"
 #include "imageProc/histogram/HorizonImageHistogram.h"
 #include "EightBitWindowRescaler.h"
+#include "BufferedRescaler.h"
 
-class HorizonModalRescaler : public EightBitWindowRescaler {
+class HorizonModalRescaler : public EightBitWindowRescaler, public BufferedRescaler {
 
 public:
-    HorizonModalRescaler(int bufferSize = 100);
+    HorizonModalRescaler(int bufferSize = DEFAULT_BUFFER_SIZE);
     void scale16bitTo8bit(const Image16bit &src, const Horizon &horizon, Image8bit &dst);
 
-private:
-    int calculateBufferedPeakValue(ImageHistogram &histogram);
-
-    std::queue<int> _histogramPeakBuffer;
-    int _bufferRunningSum;
-    int _bufferCapacity;
 };
 
 

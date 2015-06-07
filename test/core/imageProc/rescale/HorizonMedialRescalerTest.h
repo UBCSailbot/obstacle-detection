@@ -5,6 +5,9 @@
 #ifndef OBSTACLE_AVOIDANCE_HORIZONMEDIALRESCALERTEST_H
 #define OBSTACLE_AVOIDANCE_HORIZONMEDIALRESCALERTEST_H
 
+#include <gtest/gtest.h>
+
+#include "imageProc/rescale/HorizonMedianRescaler.h"
 
 class HorizonMedialRescalerTest {
 

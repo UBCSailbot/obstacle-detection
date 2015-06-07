@@ -3,3 +3,7 @@
 //
 
 #include "HorizonMedialRescalerTest.h"
+
+TEST(HorizonMedialRescalerTest, instatiation) {
+    HorizonMedianRescaler r();
+}
