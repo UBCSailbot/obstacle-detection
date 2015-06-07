@@ -5,13 +5,15 @@
 #ifndef OBSTACLE_AVOIDANCE_MOC_IMU_H
 #define OBSTACLE_AVOIDANCE_MOC_IMU_H
 
-#include "RTIMULib.h"
-#include "../../src/imu/IMU.h"
-#include <RTIMULibDefs.h>
 #include <sstream>
-
 #include <thread>
 #include <string>
+
+#include <RTIMULib.h>
+#include <RTIMULibDefs.h>
+
+#include "imu/IMU.h"
+
 
 class MockIMU : public IMU {
 

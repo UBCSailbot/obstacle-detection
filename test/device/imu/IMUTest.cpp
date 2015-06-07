@@ -2,7 +2,6 @@
 // Created by paul on 10/05/15.
 //
 
-#include "IMUTest.h"
 #include "MockIMU.h"
 
 void testIMU()
@@ -38,4 +37,8 @@ void testIMU()
             rateTimer = now;
         }
     }
+}
+
+int main() {
+    testIMU();
 }

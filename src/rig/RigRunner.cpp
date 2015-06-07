@@ -3,7 +3,7 @@
 //
 
 #include "RigRunner.h"
-#include "../imageProc/SimpleRescaler.h"
+#include "imageProc"
 
 #define APP_NAME "rig_record"
 

@@ -7,10 +7,10 @@
 
 #include <iostream>
 #include <gtest/gtest.h>
-#include <geometry/Horizon.h>
-
 #include <opencv2/core/core.hpp>
-#include <imageProc/core/HorizonImageHistogram.h>
+
+#include <geometry/Horizon.h>
+#include <imageProc/histogram/HorizonImageHistogram.h>
 
 class ImageHistogramTest : public ::testing::Test {
 
