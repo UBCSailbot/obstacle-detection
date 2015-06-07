@@ -86,7 +86,7 @@ int ImageHistogram::getNumPixelsWithValue(const int &pixelValue) const {
     if (binIndex < 0 || pixelValue > _maxPixelValue) {
         return 0;
     }
-    return _histogramBins[binIndex];
+    return _histogramBins[binIndex]; 
 }
 
 void ImageHistogram::find8bitWindow(const int &middleValue, int &minValue, int &maxValue) const {
