@@ -10,15 +10,20 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 # Add src folder to header search path so that we don't have to `#include` relative paths
 include_directories( src )
 
-set(SOURCE_FILES src/display/DesktopDisplay.cpp
+set(SRC_DEVICES  src/display/DesktopDisplay.cpp
                  src/display/Display.h
                  src/display/RoboPeakUSBDisplay.cpp
+)
 
-                 src/features/SunImage.cpp
+set(SRC_FEATURES src/features/SunImage.cpp
+)
 
+set(SRC_GEOMETRY
                  src/geometry/Horizon.cpp
                  src/geometry/Line.cpp
+)
 
+set(SRC_IMAGEPROC
                  src/imageProc/core/HorizonImageHistogram.cpp
                  src/imageProc/core/ImageHistogram.cpp
 
@@ -29,25 +34,39 @@ set(SOURCE_FILES src/display/DesktopDisplay.cpp
                  src/imageProc/rescale/ModalRescaler.cpp
                  src/imageProc/rescale/Rescaler.h
                  src/imageProc/rescale/SimpleRescaler.cpp
+)
 
+set(SRC_IMAGETYPES
                  src/imageTypes/Image8bit.cpp
                  src/imageTypes/Image16bit.cpp
+)
 
+set(SRC_LEPTON
                  src/lepton/Lepton.cpp
                  src/lepton/LeptonSPI.cpp
                  src/lepton/LeptonI2C.cpp
+)
 
+set(SRC_IMU
                  src/imu/IMU.cpp
                  src/imu/ParallelIMU.cpp
-                 )
+)
 
+set(SOURE_FILES ${SRC_DISPLAY}
+                ${SRC_FEATURES}
+                ${SRC_GEOMETRY}
+                ${SRC_IMAGEPROC}
+                ${SRC_IMAGETYPES}
+                ${SRC_LEPTON}
+                ${SRC_IMU}
+)
 
 add_executable(rigRunner src/rig/RigRunner.cpp ${SOURCE_FILES})
 
 
-#########
-# TESTS #
-#########
+##############
+# UNIT TESTS #
+##############
 
 # Add test folder to header search path so that we don't have to `#include` relative paths
 include_directories( test )
