@@ -8,12 +8,12 @@
 
 #include <queue>
 
-class ValueBuffer {
+class ValueSmoothener {
 public:
     static const int DEFAULT_BUFFER_SIZE = 100;
 
-    ValueBuffer(int bufferSize);
-    int calculateBufferedValue(int &peakValue);
+    ValueSmoothener(int bufferSize);
+    int calculateSmoothedValue(int &peakValue);
 
 protected:
     std::queue<int> _histogramPeakBuffer;

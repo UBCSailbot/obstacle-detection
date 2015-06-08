@@ -4,14 +4,14 @@
 
 #include "HorizonMedianRescaler.h"
 
-HorizonMedianRescaler::HorizonMedianRescaler(int bufferSize) : valueBuffer(bufferSize) {
+HorizonMedianRescaler::HorizonMedianRescaler(int bufferSize) : valueSmoothener(bufferSize) {
 
 }
 
 void HorizonMedianRescaler::scale16bitTo8bit(const Image16bit &src, const Horizon &horizon, Image8bit &dst) {
     HorizonImageHistogram histogram(src, horizon);
     int localPeakValue = histogram.getMode();
-    int bufferedPeakValue = valueBuffer.calculateBufferedValue(localPeakValue);
+    int bufferedPeakValue = valueSmoothener.calculateSmoothedValue(localPeakValue);
 
     int newMinPixelValue, newMaxPixelValue;
     histogram.find8bitWindow(bufferedPeakValue, newMinPixelValue, newMaxPixelValue);
