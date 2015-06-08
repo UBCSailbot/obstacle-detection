@@ -6,7 +6,8 @@
 
 void EightBitWindowRescaler::applyRescaling(const Image16bit &src, Image8bit &dst, const int &newMinPixelValue) const
 {
-    // TODO: check that the output image already has memory allocated to it.
+    assert(dst.data != NULL);
+
     for (int row = 0; row < src.rows; row++) {
         for (int col = 0; col < src.cols; col++) {
             int scaledValue = src.at<uint16_t>(row, col) - newMinPixelValue;

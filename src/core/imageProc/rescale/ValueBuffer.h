@@ -7,18 +7,15 @@
 
 
 #include <queue>
-#include <imageProc/core/ImageHistogram.h>
-#include "Rescaler.h"
 
-class BufferedRescaler : public Rescaler {
+class ValueBuffer {
 public:
     static const int DEFAULT_BUFFER_SIZE = 100;
 
-    BufferedRescaler(int bufferSize);
+    ValueBuffer(int bufferSize);
+    int calculateBufferedValue(int &peakValue);
 
 protected:
-    int calculateBufferedPeakValue(int &peakValue);
-
     std::queue<int> _histogramPeakBuffer;
     int _bufferRunningSum;
     int _bufferCapacity;

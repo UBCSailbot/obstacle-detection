@@ -2,9 +2,9 @@
 // Created by paul on 02/06/15.
 //
 
-#include "BufferedRescaler.h"
+#include "ValueBuffer.h"
 
-int BufferedRescaler::calculateBufferedPeakValue(int &peakValue) {
+int ValueBuffer::calculateBufferedValue(int &peakValue) {
     _histogramPeakBuffer.push(peakValue);
     _bufferRunningSum += peakValue;
 
@@ -18,7 +18,7 @@ int BufferedRescaler::calculateBufferedPeakValue(int &peakValue) {
 
 }
 
-BufferedRescaler::BufferedRescaler(int bufferSize) : _bufferCapacity(bufferSize) {
+ValueBuffer::ValueBuffer(int bufferSize) : _bufferCapacity(bufferSize) {
 
 
 }

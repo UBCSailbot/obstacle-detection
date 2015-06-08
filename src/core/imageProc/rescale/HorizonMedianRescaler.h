@@ -6,7 +6,22 @@
 #define OBSTACLE_AVOIDANCE_HORIZONMEDIALRESCALER_H
 
 
-class HorizonMedianRescaler {
+#include <imageTypes/Image16bit.h>
+#include <geometry/Horizon.h>
+#include <imageTypes/Image8bit.h>
+#include "ValueBuffer.h"
+#include "EightBitWindowRescaler.h"
+#include <imageProc/histogram/HorizonImageHistogram.h>
+
+
+class HorizonMedianRescaler : public EightBitWindowRescaler {
+
+public:
+    HorizonMedianRescaler(int bufferSize = ValueBuffer::DEFAULT_BUFFER_SIZE);
+    void scale16bitTo8bit(const Image16bit &src, const Horizon &horizon, Image8bit &dst);
+
+protected:
+    ValueBuffer valueBuffer;
 
 };
 
