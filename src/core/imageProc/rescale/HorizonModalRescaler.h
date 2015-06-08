@@ -14,16 +14,16 @@
 #include "imageProc/histogram/ImageHistogram.h"
 #include "imageProc/histogram/HorizonImageHistogram.h"
 #include "EightBitWindowRescaler.h"
-#include "ValueSmoothener.h"
+#include "ValueSmoother.h"
 
 class HorizonModalRescaler : public EightBitWindowRescaler {
 
 public:
-    HorizonModalRescaler(int bufferSize = ValueSmoothener::DEFAULT_BUFFER_SIZE);
+    HorizonModalRescaler(int bufferSize = ValueSmoother::DEFAULT_BUFFER_SIZE);
     void scale16bitTo8bit(const Image16bit &src, const Horizon &horizon, Image8bit &dst);
 
 protected:
-    ValueSmoothener valueBuffer;
+    ValueSmoother valueBuffer;
 
 };
 

@@ -5,5 +5,5 @@
 #include "HorizonMedianRescalerTest.h"
 
 TEST(HorizonMedialRescalerTest, instatiation) {
-    HorizonMedianRescaler r();
+    //HorizonMedianRescaler r();
 }

@@ -2,9 +2,9 @@
 // Created by paul on 02/06/15.
 //
 
-#include "ValueSmoothener.h"
+#include "ValueSmoother.h"
 
-int ValueSmoothener::calculateSmoothedValue(int &peakValue) {
+int ValueSmoother::calculateSmoothedValue(int &peakValue) {
     _histogramPeakBuffer.push(peakValue);
     _bufferRunningSum += peakValue;
 
@@ -18,7 +18,7 @@ int ValueSmoothener::calculateSmoothedValue(int &peakValue) {
 
 }
 
-ValueSmoothener::ValueSmoothener(int bufferSize) : _bufferCapacity(bufferSize) {
+ValueSmoother::ValueSmoother(int bufferSize) : _bufferCapacity(bufferSize) {
 
 
 }
