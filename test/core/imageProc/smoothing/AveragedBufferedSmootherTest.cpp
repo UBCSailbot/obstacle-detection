@@ -2,16 +2,16 @@
 // Created by paul on 07/06/15.
 //
 
-#include "ValueSmootherTest.h"
+#include "AveragedBufferedSmootherTest.h"
 
-TEST_F(ValueSmootherTest, singleValue) {
-    ValueSmoother v(1);
+TEST_F(AveragedBufferedSmootherTest, singleValue) {
+    AveragedBufferedSmoother v(1);
     EXPECT_EQ(10, v.calculateSmoothedValue(10));
 }
 
-TEST_F(ValueSmootherTest, underCapacity) {
+TEST_F(AveragedBufferedSmootherTest, underCapacity) {
     int bufferSize = 10;
-    ValueSmoother v(bufferSize);
+    AveragedBufferedSmoother v(bufferSize);
 
     int n, result;
 
@@ -21,7 +21,7 @@ TEST_F(ValueSmootherTest, underCapacity) {
     }
 }
 
-TEST_F(ValueSmootherTest, simpleSmoothing) {
+TEST_F(AveragedBufferedSmootherTest, simpleSmoothing) {
     int bufferSize = 10;
 
     /*
@@ -30,17 +30,17 @@ TEST_F(ValueSmootherTest, simpleSmoothing) {
      *  erroneously pass in spite of off-by-one errors
      *  because of rounding due to integer division.
      */
-    ValueSmootherTest::testSimpleSmoothing(bufferSize, 100);
-    ValueSmootherTest::testSimpleSmoothing(bufferSize, 99);
-    ValueSmootherTest::testSimpleSmoothing(bufferSize, 98);
-    ValueSmootherTest::testSimpleSmoothing(bufferSize, 97);
+    AveragedBufferedSmootherTest::testSimpleSmoothing(bufferSize, 100);
+    AveragedBufferedSmootherTest::testSimpleSmoothing(bufferSize, 99);
+    AveragedBufferedSmootherTest::testSimpleSmoothing(bufferSize, 98);
+    AveragedBufferedSmootherTest::testSimpleSmoothing(bufferSize, 97);
 
 }
 
-TEST_F(ValueSmootherTest, noSmoothing) {
+TEST_F(AveragedBufferedSmootherTest, noSmoothing) {
 
     int bufferSize = 10;
-    ValueSmoother v(bufferSize);
+    AveragedBufferedSmoother v(bufferSize);
 
     int constantValue = 42;
 
@@ -52,8 +52,8 @@ TEST_F(ValueSmootherTest, noSmoothing) {
 
 }
 
-void ValueSmootherTest::testSimpleSmoothing(int bufferSize, int outlier) {
-    ValueSmoother v(bufferSize);
+void AveragedBufferedSmootherTest::testSimpleSmoothing(int bufferSize, int outlier) {
+    AveragedBufferedSmoother v(bufferSize);
 
     int n;
 

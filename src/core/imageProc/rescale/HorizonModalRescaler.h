@@ -14,18 +14,18 @@
 #include "imageProc/histogram/ImageHistogram.h"
 #include "imageProc/histogram/HorizonImageHistogram.h"
 #include "Rescaling.h"
-#include "ValueSmoother.h"
+#include "imageProc/smoothing/AveragedBufferedSmoother.h"
 #include "HorizonRescaler.h"
 
 class HorizonModalRescaler : public HorizonRescaler {
 
 public:
-    HorizonModalRescaler(int bufferSize = ValueSmoother::DEFAULT_BUFFER_SIZE);
+    HorizonModalRescaler(int bufferSize = AveragedBufferedSmoother::DEFAULT_BUFFER_SIZE);
 
     void scale16bitTo8bit(const Image16bit &src, const Horizon &horizon, Image8bit &dst);
 
 protected:
-    ValueSmoother valueSmoother;
+    AveragedBufferedSmoother peakSmoother;
 
 };
 

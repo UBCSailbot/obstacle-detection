@@ -4,7 +4,7 @@
 
 #include "Rescaling.h"
 
-void Rescaling::rescale8bitWindow(const Image16bit &src, Image8bit &dst, const int &newMinPixelValue) {
+void Rescaling::clipTo8bits(const Image16bit &src, Image8bit &dst, const int &newMinPixelValue) {
     assert(dst.size == src.size);
 
     for (int row = 0; row < src.rows; row++) {

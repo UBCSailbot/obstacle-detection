@@ -8,5 +8,5 @@ TEST(RescalingTest, eightBitWindowSizeAssertion) {
     Image16bit src(5,6);
     Image8bit dst(4,5);
     int newMinPixelValue = 1;
-    EXPECT_DEATH(Rescaling::rescale8bitWindow(src, dst, newMinPixelValue), "c*");
+    EXPECT_DEATH(Rescaling::clipTo8bits(src, dst, newMinPixelValue), "c*");
 }
