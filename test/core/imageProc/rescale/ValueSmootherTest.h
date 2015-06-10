@@ -8,8 +8,10 @@
 #include <gtest/gtest.h>
 #include "imageProc/rescale/ValueSmoother.h"
 
-class ValueSmootherTest {
+class ValueSmootherTest : public ::testing::Test {
 
+protected:
+    static void testSimpleSmoothing(int bufferSize, int outlier);
 };
 
 

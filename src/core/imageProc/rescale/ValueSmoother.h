@@ -13,7 +13,7 @@ public:
     static const int DEFAULT_BUFFER_SIZE = 100;
 
     ValueSmoother(int bufferSize);
-    int calculateSmoothedValue(int &peakValue);
+    int calculateSmoothedValue(int currentValue);
 
 protected:
     std::queue<int> _histogramPeakBuffer;

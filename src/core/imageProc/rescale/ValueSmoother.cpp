@@ -4,17 +4,16 @@
 
 #include "ValueSmoother.h"
 
-int ValueSmoother::calculateSmoothedValue(int &peakValue) {
-    _histogramPeakBuffer.push(peakValue);
-    _bufferRunningSum += peakValue;
+int ValueSmoother::calculateSmoothedValue(int currentValue) {
+    _histogramPeakBuffer.push(currentValue);
+    _bufferRunningSum += currentValue;
 
     if (_histogramPeakBuffer.size() > _bufferCapacity) {
-        peakValue = _bufferRunningSum / _bufferCapacity;
         _bufferRunningSum -= _histogramPeakBuffer.front();
         _histogramPeakBuffer.pop();
     }
 
-    return peakValue;
+    return _bufferRunningSum / (int) _histogramPeakBuffer.size();
 
 }
 
