@@ -181,12 +181,6 @@ TEST_F(ImageHistogramTest, getNumPixelsWithValue) {
     // TODO: implement this test
 }
 
-ImageHistogramTest::ImageHistogramTest() {
-    _fishingBoatImg = cv::imread("resources/img/fishingBoat01.png", CV_LOAD_IMAGE_UNCHANGED);
-    _freighterSunImg = cv::imread("resources/img/freighterAndSun01.png", CV_LOAD_IMAGE_UNCHANGED);
-    _garbledImg = cv::imread("resources/img/garbled01.png", CV_LOAD_IMAGE_UNCHANGED);
-
-}
 
 cv::Mat ImageHistogramTest::makeThreeEvenPixelValues(const int &pixelValue0,
                                                             const int &pixelValue1,

@@ -7,11 +7,14 @@
 
 #include <gtest/gtest.h>
 
+#include "ImageLoaderForTests.h"
+
 #include "imageProc/rescale/Rescaling.h"
 #include "imageTypes/Image16bit.h"
 #include "imageTypes/Image8bit.h"
 
-class RescalingTest : public ::testing::Test {
+class RescalingTest : public ImageLoaderForTests {
+
 
 };
 

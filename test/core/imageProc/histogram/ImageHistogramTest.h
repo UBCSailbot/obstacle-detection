@@ -9,20 +9,17 @@
 #include <gtest/gtest.h>
 #include <opencv2/core/core.hpp>
 
+#include "ImageLoaderForTests.h"
 #include <geometry/Horizon.h>
 #include <imageProc/histogram/HorizonImageHistogram.h>
 
-class ImageHistogramTest : public ::testing::Test {
+class ImageHistogramTest : public ImageLoaderForTests {
 
 protected:
-    ImageHistogramTest();
     static cv::Mat makeThreeEvenPixelValues(const int &pixelValue0,
                                             const int &pixelValue1,
                                             const int &pixelValue2);
 
-    cv::Mat _fishingBoatImg;
-    cv::Mat _freighterSunImg;
-    cv::Mat _garbledImg;
 };
 
 
