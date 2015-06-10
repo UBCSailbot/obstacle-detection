@@ -10,10 +10,11 @@
 #include "Rescaler.h"
 
 
-class EightBitWindowRescaler : public Rescaler {
+class Rescaling {
 
-protected:
-    void applyRescaling(const Image16bit &src, Image8bit &dst, const int &newMinPixelValue) const;
+public:
+    static void rescale8bitWindow(const Image16bit &src, Image8bit &dst, const int &newMinPixelValue);
+
 };
 
 
