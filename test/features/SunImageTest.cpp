@@ -5,33 +5,56 @@
 #include "SunImageTest.h"
 #include <iostream>
 
-void SunImageTest::testSunImage() {
-    testFindSun();
+TEST_F(SunImageTest, test0Pix) {
+    cv::Mat zeros = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
+    Horizon h = Horizon(cv::Point2f (0, 0), cv::Point2f (0, VIEWPORT_WIDTH_PIX - 1));
+    SunImage sunImage = SunImage(h, zeros, 9000, 1);
+
+    sunImage.findSunColumn();
+    EXPECT_EQ(sunImage.getMean(), -1);
+    EXPECT_EQ(sunImage.getVariance(), -1);
 }
 
-void SunImageTest::testFindSun() const {
-    cv::Point2i start, end, pointOfInterest;
+TEST_F(SunImageTest, testMinSunPixelValue) {
+    cv::Mat zeros = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
+    zeros.at<uint16_t>(20, 20) = 8999;
+    Horizon h = Horizon(cv::Point2f (0, 0), cv::Point2f (0, VIEWPORT_WIDTH_PIX - 1));
+    SunImage sunImage = SunImage(h, zeros, 9000, 1);
 
-    start = cv::Point2f(0,0);
-    end = cv::Point2f(80,80);
-    pointOfInterest = cv::Point2f(30,31);
-    cv::Mat frame = cv::imread("resources/img/freighterAndSun01.png", CV_LOAD_IMAGE_UNCHANGED);
+    sunImage.findSunColumn();
+    EXPECT_EQ(sunImage.getMean(), -1);
+    EXPECT_EQ(sunImage.getVariance(), -1);
+}
 
-    if (!frame.data) {
-        std:: cout << "could not open or find the image" << std::endl;
-        return;
-    }
-    else
-        std::cout << "image loaded" <<std::endl;
+TEST_F(SunImageTest, test1PixFlatPointFlatHorizon) {
+    cv::Mat zeros = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
+    zeros.at<uint16_t>(20, 0) = 9000;
+    Horizon h = Horizon(cv::Point2f (0, 0), cv::Point2f (0, VIEWPORT_WIDTH_PIX - 1));
+    SunImage sunImage = SunImage(h, zeros, 9000, 1);
 
-    unsigned int minSunPixelValue = 9001;
-    int margin = 2;
+    sunImage.findSunColumn();
+    EXPECT_EQ(sunImage.getMean(), 20);
+    EXPECT_EQ(sunImage.getVariance(), 0);
+}
 
-    Horizon h(0, 0);
+TEST_F(SunImageTest, test1PixDiagPointFlatHorizon) {
+    cv::Mat zeros = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
+    zeros.at<uint16_t>(20, 20) = 9000;
+    Horizon h = Horizon(cv::Point2f (0, 0), cv::Point2f (0, VIEWPORT_WIDTH_PIX - 1));
+    SunImage sunImage = SunImage(h, zeros, 9000, 1);
 
-    SunImage si(h, frame, minSunPixelValue, margin);
+    sunImage.findSunColumn();
+    EXPECT_EQ(sunImage.getMean(), 20);
+    EXPECT_EQ(sunImage.getVariance(), 0);
+}
 
-    si.findSun();
-    si.debugMessage();
-    si.findSunColumn();
+TEST_F(SunImageTest, test1PixFlatPointDiagHorizon) {
+    cv::Mat zeros = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
+    zeros.at<uint16_t>(20, 0) = 9000;
+    Horizon h = Horizon(cv::Point2f (60, 0), cv::Point2f (0, VIEWPORT_WIDTH_PIX - 1));
+    SunImage sunImage = SunImage(h, zeros, 9000, 1);
+
+    sunImage.findSunColumn();
+    EXPECT_EQ(sunImage.getMean(), 20);
+    EXPECT_EQ(sunImage.getVariance(), 0);
 }
