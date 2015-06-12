@@ -15,15 +15,13 @@ class Image8bit : public cv::Mat {
 
 
 public:
+
+    using cv::Mat::Mat; // TODO: Determine whether this is useful
+
     Image8bit() : Mat() {}
     Image8bit(int rows, int cols) : Mat(rows, cols, CV_8UC1) { }
-
     Image8bit(int rows, int cols, int type) : Mat(rows, cols, type) { }
-
-    static Image8bit fromMat(cv::Mat src);
-
-private:
-    using cv::Mat::Mat;
+    Image8bit(const cv::Mat &m) : Mat(m) {}
 
 };
 

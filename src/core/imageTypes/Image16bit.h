@@ -8,17 +8,20 @@
 
 #include <opencv2/core/core.hpp>
 
+/**
+ * A convenience class to distinguish 16-bit images from 8-bit images.
+ */
 class Image16bit : public cv::Mat {
 
 public:
+
+    using cv::Mat::Mat; // TODO: Determine whether this is useful
+
     Image16bit() : Mat() {}
     Image16bit(int rows, int cols) : Mat(rows, cols, CV_16UC1) { }
-
-    using cv::Mat::Mat;
-
     Image16bit(int rows, int cols, int type) : Mat(rows, cols, type) {}
+    Image16bit(const cv::Mat &m) : Mat(m) {}
 
-    static Image16bit fromMat(cv::Mat src);
 };
 
 
