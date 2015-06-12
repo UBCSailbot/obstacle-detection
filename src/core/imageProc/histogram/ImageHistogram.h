@@ -90,9 +90,12 @@ public:
  * Protected default constructor for subclasses, so that superclass object is not
  *  needlessly populated.
  */
-ImageHistogram();
+
 
 protected:
+
+    ImageHistogram();
+
     std::vector<int> _histogramBins;
     int _minPixelValue;
     int _maxPixelValue;
