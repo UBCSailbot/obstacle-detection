@@ -10,7 +10,7 @@ TEST_F(SunImageTest, testFindSunPositive) {
     Horizon h = Horizon(cv::Point2f (0, 50), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
     SunImage sunImage = SunImage(h, frame, 9000, 1);
 
-    sunImage.findSun();
+    sunImage.findPosition();
     EXPECT_EQ(sunImage.getPosition(), cv::Point2f(37, 37.5));
 }
 
@@ -19,7 +19,7 @@ TEST_F(SunImageTest, testFindSunNegative) {
     Horizon h = Horizon(cv::Point2f (0, 50), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
     SunImage sunImage = SunImage(h, frame, 9000, 1);
 
-    sunImage.findSun();
+    sunImage.findPosition();
     EXPECT_EQ(sunImage.getPosition(), cv::Point2f());
 }
 

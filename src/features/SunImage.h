@@ -15,13 +15,15 @@ public:
     SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, int margin);
     ~SunImage();
 
-    void findSun();
-//    void debugMessage();
+    void findPosition();
     void findMeanVariance();
+    void findColumn();
 
     cv::Point2f getPosition() const;
     float getMean() const;
     float getVariance() const;
+    Line getLeftMargin() const;
+    Line getRightMargin() const;
 
 private:
 
