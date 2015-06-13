@@ -31,8 +31,6 @@ public:
     */
     bool isPointAbove(cv::Point2f pointOfInterest) const;
     bool isPointAbove(const float &x, const float &y) const;
-    int getHeightLeft() const;
-    int getHeightRight() const;
 
     /*
     Check if rectangle intersect the horizon.

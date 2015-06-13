@@ -16,13 +16,16 @@ public:
     ~SunImage();
 
     void findSun();
-    void debugMessage();
-    void findSunColumn();
+//    void debugMessage();
+    void findMeanVariance();
+
+    cv::Point2f getPosition() const;
+    float getMean() const;
+    float getVariance() const;
 
 private:
 
     //unsigned int sunRadius();
-
     //Rect isSun();   //OpenCV doesn't have a circle class
 
     const Horizon horizon;
@@ -30,16 +33,25 @@ private:
     const unsigned int minSunPixelValue;
     const unsigned int margin;
 
-    unsigned int sunRadius;
+    //unsigned int sunRadius;
+//    bool hasSun = false;
+
     unsigned int sunLeft = std::numeric_limits<unsigned int>::max();
     unsigned int sunRight = 0;
     unsigned int sunTop = std::numeric_limits<unsigned int>::max();
     unsigned int sunBottom = 0;
+//    cv::Point2f sunPosition;
 
+    float mean = 0.0;
+    float variance = 0.0;
+    
     cv::Point2f leftDelimTop;
     cv::Point2f leftDelimBottom;
     cv::Point2f rightDelimTop;
     cv::Point2f rightDelimBottom;
+
+//    Line leftDelim(cv::Point2f(), cv::Point2f());
+//    Line::Line rightDelim();
 };
 
 #endif

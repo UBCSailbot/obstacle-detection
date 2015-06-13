@@ -37,14 +37,6 @@ bool Horizon::isPointAbove(const float &x, const float &y) const {
 
 }
 
-int Horizon::getHeightLeft() const {
-    return heightLeft;
-}
-
-int Horizon::getHeightRight() const {
-    return heightRight;
-}
-
 /*
 Check if rectangle intersect the horizon.
 IN: rectangle
