@@ -17,6 +17,8 @@ file(GLOB_RECURSE DEVICE_SOURCE_FILES src/device/*.cpp src/device/*.h)
 
 add_executable(rigRunner src/mains/RigRunner.cpp ${CORE_SOURCE_FILES} ${DEVICE_SOURCE_FILES})
 
+add_executable(rescale src/mains/RunRescaling.cpp ${CORE_SOURCE_FILES})
+
 
 #########
 # TESTS #
@@ -138,6 +140,7 @@ list(APPEND CORE_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 # Once all the libraries have been loaded, they can be linked to the
 #  executables as necessary
 target_link_libraries(rigRunner ${CORE_LIBRARIES} ${DEVICE_LIBRARIES})
+target_link_libraries(rescale ${CORE_LIBRARIES})
 
 target_link_libraries(runCoreTests ${CORE_LIBRARIES} ${TEST_FRAMEWORK_LIBS})
 
