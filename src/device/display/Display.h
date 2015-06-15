@@ -6,7 +6,7 @@
 #define OBSTACLE_AVOIDANCE_DISPLAY_H
 
 #include <opencv2/core/core.hpp>
-#include "../imageTypes/Image8bit.h"
+#include "imageTypes/Image8bit.h"
 
 /**
  * Interface for displays on which to show visual output.

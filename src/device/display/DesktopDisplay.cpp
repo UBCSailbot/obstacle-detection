@@ -3,6 +3,7 @@
 //
 
 #include <opencv2/highgui/highgui.hpp>
+#include <imageTypes/Image8bit.h>
 #include "DesktopDisplay.h"
 
 DesktopDisplay::DesktopDisplay() {

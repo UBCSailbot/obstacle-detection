@@ -5,15 +5,18 @@
 #ifndef OBSTACLE_AVOIDANCE_RIGRUNNER_H
 #define OBSTACLE_AVOIDANCE_RIGRUNNER_H
 
-#include "../imu/IMU.h"
-#include "../imu/ParallelIMU.h"
-#include "../lepton/Lepton.h"
-#include "features"
-#include "../display/Display.h"
-#include "../display/RoboPeakUSBDisplay.h"
+#include "imu/IMU.h"
+#include "imu/ParallelIMU.h"
+#include "lepton/Lepton.h"
+#include "features/SunImage.h"
+#include "display/Display.h"
+#include "display/RoboPeakUSBDisplay.h"
 
 #include <signal.h>
 #include <fstream>
+
+#include <imageTypes/Image8bit.h>
+#include "imageProc/rescale/SimpleRescaler.h"
 
 using namespace std;
 using namespace cv;
