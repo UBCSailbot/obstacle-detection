@@ -36,7 +36,7 @@ file(GLOB_RECURSE SUPPORT_TEST_FILES test/support/*.cpp test/support/*.h)
 set(CORE_TEST_FILES ${CORE_TEST_FILES} ${CORE_SOURCE_FILES} ${SUPPORT_TEST_FILES})
 set(DEVICE_TEST_FILES ${DEVICE_TEST_FILES} ${DEVICE_SOURCE_FILES} ${SUPPORT_TEST_FILES})
 
-# Create target for automated unit tests of histogram functionality
+# Create target for automated unit tests
 add_executable(runCoreTests
                test/mains/CoreTestRunner.cpp
                ${CORE_TEST_FILES}
@@ -81,24 +81,24 @@ set(TEST_FRAMEWORK_LIBS gtest ${QT_LIBRARIES})
 # CORE LIBRARIES #
 #################
 
-set( CORE_LIBRARIES )
+set( CORE_LIBS )
 
 # OpenCV must be independently preinstalled on the host machine
 find_package (OpenCV REQUIRED)
-list(APPEND CORE_LIBRARIES ${OpenCV_LIBS} )
+list(APPEND CORE_LIBS ${OpenCV_LIBS} )
 
 
 ####################
 # DEVICE LIBRARIES #
 ####################
 
-set( DEVICE_LIBRARIES )
+set( DEVICE_LIBS )
 
 # RTIMULib is compiled with the project
 include_directories(RTIMULib STATIC
                     lib/RTIMULib)
 add_subdirectory(lib/RTIMULib RTIMULib)
-list(APPEND DEVICE_LIBRARIES RTIMULib)
+list(APPEND DEVICE_LIBS RTIMULib)
 
 
 # Lepton SDK is compiled with the project
@@ -112,7 +112,7 @@ add_custom_target(
 add_dependencies(displayTest leptonSDK)
 add_dependencies(rigRunner leptonSDK)
 add_dependencies(runCoreTests leptonSDK)
-list(APPEND DEVICE_LIBRARIES ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
+list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
 
 # rpusbdisp is compiled with the project
@@ -128,21 +128,25 @@ add_custom_target(
 )
 add_dependencies(rigRunner rpusbdisp)
 add_dependencies(displayTest rpusbdisp)
-list(APPEND DEVICE_LIBRARIES ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
-list(APPEND DEVICE_LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
+list(APPEND DEVICE_LIBS ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
+list(APPEND DEVICE_LIBS ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 
 
 # Threads library must be independently preinstalled on the host machine
 find_package (Threads REQUIRED)
-list(APPEND CORE_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+list(APPEND CORE_LIBS ${CMAKE_THREAD_LIBS_INIT})
 
+
+###################
+# LIBRARY LINKING #
+###################
 
 # Once all the libraries have been loaded, they can be linked to the
 #  executables as necessary
-target_link_libraries(rigRunner ${CORE_LIBRARIES} ${DEVICE_LIBRARIES})
-target_link_libraries(rescale ${CORE_LIBRARIES})
+target_link_libraries(rigRunner ${CORE_LIBS} ${DEVICE_LIBS})
+target_link_libraries(rescale ${CORE_LIBS})
 
-target_link_libraries(runCoreTests ${CORE_LIBRARIES} ${TEST_FRAMEWORK_LIBS})
+target_link_libraries(runCoreTests ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
 
-target_link_libraries(imuTest ${CORE_LIBRARIES} ${DEVICE_LIBRARIES} ${TEST_FRAMEWORK_LIBS})
-target_link_libraries(displayTest ${CORE_LIBRARIES} ${DEVICE_LIBRARIES} ${TEST_FRAMEWORK_LIBS})
+target_link_libraries(imuTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
+target_link_libraries(displayTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
