@@ -16,12 +16,32 @@ class Image8bit : public cv::Mat {
 
 public:
 
-    using cv::Mat::Mat; // TODO: Determine whether this is useful
-
-    Image8bit() : Mat() {}
     Image8bit(int rows, int cols) : Mat(rows, cols, CV_8UC1) { }
-    Image8bit(int rows, int cols, int type) : Mat(rows, cols, type) { }
-    Image8bit(const cv::Mat &m) : Mat(m) {}
+
+    /**
+     * PARAM m: Mat used to seed this Image8bit. Must be of type CV_8UC1,
+     *      i.e. an 8-bit grayscale image.
+     * PARAM copyData: if True, copy the pixel data stored in m into this object.
+     *      If False, share the data between the two objects, such that a change in one
+     *      results in a change in the other.
+     */
+    Image8bit(const cv::Mat &m, bool copyData) : Mat( copyData ? m.clone() : m ) {
+        assert(m.type() == CV_8UC1);
+    }
+
+    /**
+     * Overloads square brackets to work as a getter.
+     */
+    uint8_t pixelAt(int row, int col)  const{
+        return this->at<uint8_t>(row, col);
+    }
+
+    /**
+     * Overloads square brackets to work as a setter.
+     */
+    uint8_t &pixelAt(int row, int col)  {
+        return this->at<uint8_t>(row, col);
+    }
 
 };
 

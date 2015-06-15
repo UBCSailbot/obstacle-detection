@@ -105,7 +105,7 @@ void Lepton::captureFrame(Image16bit &frame) {
 
         column = (i % PACKET_SIZE_UINT16) - 2;
         row = i / PACKET_SIZE_UINT16;
-        frame.at<uint16_t>(row, column) = frameBuffer[i];
+        frame.pixelAt(row, column) = frameBuffer[i];
     }
 }
 
