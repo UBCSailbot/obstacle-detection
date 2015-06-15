@@ -2,7 +2,7 @@
 // Created by paul on 10/05/15.
 //
 
-#include "MockIMU.h"
+#include "imu/MockIMU.h"
 
 void testIMU()
 {

@@ -15,7 +15,7 @@ include_directories( src/device )
 file(GLOB_RECURSE CORE_SOURCE_FILES src/core/*.cpp src/core/*.h)
 file(GLOB_RECURSE DEVICE_SOURCE_FILES src/device/*.cpp src/device/*.h)
 
-add_executable(rigRunner src/rig/RigRunner.cpp ${CORE_SOURCE_FILES} ${DEVICE_SOURCE_FILES})
+add_executable(rigRunner src/mains/RigRunner.cpp ${CORE_SOURCE_FILES} ${DEVICE_SOURCE_FILES})
 
 
 #########
@@ -23,33 +23,32 @@ add_executable(rigRunner src/rig/RigRunner.cpp ${CORE_SOURCE_FILES} ${DEVICE_SOU
 #########
 
 # Add test folders to header search path so that we don't have to `#include` relative paths
-include_directories( test )
 include_directories( test/core )
 include_directories( test/device )
+include_directories( test/support )
 
 file(GLOB_RECURSE CORE_TEST_FILES test/core/*.cpp test/core/*.h)
 file(GLOB_RECURSE DEVICE_TEST_FILES test/device/*.cpp test/device/*.h)
-
-set(SUPPORT_TEST_FILES test/Resources.cpp)
+file(GLOB_RECURSE SUPPORT_TEST_FILES test/support/*.cpp test/support/*.h)
 
 set(CORE_TEST_FILES ${CORE_TEST_FILES} ${CORE_SOURCE_FILES} ${SUPPORT_TEST_FILES})
 set(DEVICE_TEST_FILES ${DEVICE_TEST_FILES} ${DEVICE_SOURCE_FILES} ${SUPPORT_TEST_FILES})
 
 # Create target for automated unit tests of histogram functionality
 add_executable(runCoreTests
-               test/core/CoreTestRunner.cpp
+               test/mains/CoreTestRunner.cpp
                ${CORE_TEST_FILES}
 )
 
 # IMU testing
 add_executable(imuTest
-               test/device/imu/IMUTest.cpp
+               test/mains/IMUTest.cpp
                ${DEVICE_TEST_FILES}
 )
 
 # Display testing
 add_executable(displayTest
-               test/device/display/DisplayTest.cpp
+               test/mains/DisplayTest.cpp
                ${DEVICE_TEST_FILES}
 )
 
@@ -131,7 +130,7 @@ list(APPEND DEVICE_LIBRARIES ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
 list(APPEND DEVICE_LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 
 
-# Threads must be independently preinstalled on the host machine
+# Threads library must be independently preinstalled on the host machine
 find_package (Threads REQUIRED)
 list(APPEND CORE_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
@@ -142,5 +141,5 @@ target_link_libraries(rigRunner ${CORE_LIBRARIES} ${DEVICE_LIBRARIES})
 
 target_link_libraries(runCoreTests ${CORE_LIBRARIES} ${TEST_FRAMEWORK_LIBS})
 
-target_link_libraries(imuTest ${CORE_LIBRARIES} ${DEVICE_LIBRARIES})
-target_link_libraries(displayTest ${CORE_LIBRARIES} ${DEVICE_LIBRARIES})
+target_link_libraries(imuTest ${CORE_LIBRARIES} ${DEVICE_LIBRARIES} ${TEST_FRAMEWORK_LIBS})
+target_link_libraries(displayTest ${CORE_LIBRARIES} ${DEVICE_LIBRARIES} ${TEST_FRAMEWORK_LIBS})
