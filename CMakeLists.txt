@@ -87,6 +87,9 @@ set( CORE_LIBS )
 find_package (OpenCV REQUIRED)
 list(APPEND CORE_LIBS ${OpenCV_LIBS} )
 
+# Include tclap - a header-only library for command-line parsing
+include_directories( lib/tclap/include )
+
 
 ####################
 # DEVICE LIBRARIES #
