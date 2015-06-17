@@ -9,6 +9,11 @@
 #include <imageTypes/Image8bit.h>
 #include "Rescaler.h"
 
+typedef enum {
+    SIMPLE = 1,
+    MODAL,
+    MEDIAN
+} RescalingType;
 
 class Rescaling {
 
