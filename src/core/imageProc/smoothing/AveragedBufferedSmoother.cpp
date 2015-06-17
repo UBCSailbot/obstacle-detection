@@ -4,6 +4,14 @@
 
 #include "AveragedBufferedSmoother.h"
 
+AveragedBufferedSmoother::AveragedBufferedSmoother(int bufferSize) : _bufferCapacity(bufferSize) {
+
+}
+
+AveragedBufferedSmoother::AveragedBufferedSmoother() {
+    _bufferCapacity = DEFAULT_BUFFER_SIZE;
+}
+
 int AveragedBufferedSmoother::calculateSmoothedValue(int currentValue) {
     _valueBuffer.push(currentValue);
     _bufferRunningSum += currentValue;
@@ -17,7 +25,3 @@ int AveragedBufferedSmoother::calculateSmoothedValue(int currentValue) {
 
 }
 
-AveragedBufferedSmoother::AveragedBufferedSmoother(int bufferSize) : _bufferCapacity(bufferSize) {
-
-
-}

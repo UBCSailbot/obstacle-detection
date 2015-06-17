@@ -18,6 +18,7 @@ class AveragedBufferedSmoother : public BufferedSmoother {
 public:
     static const int DEFAULT_BUFFER_SIZE = 100;
 
+    AveragedBufferedSmoother();
     AveragedBufferedSmoother(int bufferSize);
     virtual int calculateSmoothedValue(int currentValue);
 
