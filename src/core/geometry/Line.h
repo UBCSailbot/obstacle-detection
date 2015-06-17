@@ -22,9 +22,12 @@ public:
     cv::Point2f getStartPoint() const;
     cv::Point2f getEndPoint() const;
 
+    bool operator==(const Line &other) const;
+
 protected:
     cv::Point2f _startPoint;
     cv::Point2f _endPoint;
+
 };
 
 

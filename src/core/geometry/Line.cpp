@@ -14,3 +14,11 @@ cv::Point2f Line::getStartPoint() const {
 cv::Point2f Line::getEndPoint() const {
     return _endPoint;
 }
+
+bool Line::operator==(const Line &other) const {
+    const int EPSILON_FACTOR = 1000;
+    return (_startPoint.x - other._startPoint.x <= _startPoint.x / EPSILON_FACTOR) &&
+            (_startPoint.y - other._startPoint.y <= _startPoint.y / EPSILON_FACTOR) &&
+            (_endPoint.x - other._endPoint.x <= _endPoint.x / EPSILON_FACTOR) &&
+            (_endPoint.y - other._endPoint.y <= _endPoint.y / EPSILON_FACTOR);
+}
