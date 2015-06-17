@@ -15,6 +15,10 @@ class Image16bit : public cv::Mat {
 
 public:
 
+    Image16bit() : cv::Mat() {
+        forceConversion(*this);
+    }
+
     Image16bit(int rows, int cols) : Mat(rows, cols, CV_16UC1) { }
 
     /**
@@ -28,6 +32,7 @@ public:
         assert(m.type() == CV_16UC1);
     }
 
+
     /**
      * Overloads square brackets to work as a getter.
      */
@@ -40,6 +45,17 @@ public:
      */
     uint16_t & pixelAt(int row, int col)  {
         return this->at<uint16_t>(row, col);
+    }
+
+    /**
+     * Performs some under-the-hood OpenCV voodoo magic to force
+     *  the given cv::Mat to become of type CV_16UC1.
+     *
+     * CAUTION: Use wisely.
+     */
+    static void forceConversion(cv::Mat &mat) {
+        mat.flags = mat.flags & (1 << 12);
+        mat.flags += CV_16UC1;
     }
 
 };

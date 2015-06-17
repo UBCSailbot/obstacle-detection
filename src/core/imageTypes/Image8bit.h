@@ -16,7 +16,11 @@ class Image8bit : public cv::Mat {
 
 public:
 
-    Image8bit(int rows, int cols) : Mat(rows, cols, CV_8UC1) { }
+    Image8bit() : cv::Mat() {
+        forceConversion(*this);
+    }
+
+    Image8bit(int rows, int cols) : cv::Mat(rows, cols, CV_8UC1) { }
 
     /**
      * PARAM m: Mat used to seed this Image8bit. Must be of type CV_8UC1,
@@ -25,7 +29,7 @@ public:
      *      If False, share the data between the two objects, such that a change in one
      *      results in a change in the other.
      */
-    Image8bit(const cv::Mat &m, bool copyData) : Mat( copyData ? m.clone() : m ) {
+    Image8bit(const cv::Mat &m, bool copyData) : cv::Mat( copyData ? m.clone() : m ) {
         assert(m.type() == CV_8UC1);
     }
 
@@ -42,6 +46,18 @@ public:
     uint8_t &pixelAt(int row, int col)  {
         return this->at<uint8_t>(row, col);
     }
+
+    /**
+     * Performs some under-the-hood OpenCV voodoo magic to force
+     *  the given cv::Mat to become of type CV_8UC1.
+     *
+     * CAUTION: Use wisely.
+     */
+    static void forceConversion(cv::Mat &mat) {
+        mat.flags = mat.flags & (1 << 12);
+        mat.flags += CV_8UC1;
+    }
+
 
 };
 
