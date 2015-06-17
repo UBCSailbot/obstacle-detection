@@ -53,7 +53,7 @@ private:
     cv::Point2f rightDelimBottom;
 
 //    Line leftDelim(cv::Point2f(), cv::Point2f());
-//    Line::Line rightDelim();
+//    Line::Line rightDelim;
 };
 
 #endif

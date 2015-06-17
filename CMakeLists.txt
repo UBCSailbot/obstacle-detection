@@ -35,7 +35,7 @@ set(SOURCE_FILES src/display/DesktopDisplay.cpp
 
 
 add_executable(rigRunner src/rig/RigRunner.cpp ${SOURCE_FILES})
-
+add_executable(sunImageRunner src/mains/sunImageRunner.cpp ${SOURCE_FILES})
 
 #########
 # TESTS #
@@ -128,6 +128,7 @@ find_package (Threads REQUIRED)
 list(APPEND LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 TARGET_LINK_LIBRARIES(rigRunner ${LIBRARIES})
+TARGET_LINK_LIBRARIES(sunImageRunner ${LIBRARIES})
 TARGET_LINK_LIBRARIES(runTests ${LIBRARIES} gtest)
 TARGET_LINK_LIBRARIES(displayTest ${LIBRARIES})
 TARGET_LINK_LIBRARIES(imageDisplayDriver ${LIBRARIES} gtest)
