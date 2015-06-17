@@ -71,11 +71,7 @@ add_custom_command(TARGET runCoreTests POST_BUILD
 add_subdirectory(lib/gtest-1.7.0 gtest)
 include_directories(gtest STATIC lib/gtest-1.7.0/include )
 
-# Add QT
-FIND_PACKAGE(Qt4 REQUIRED)
-INCLUDE(${QT_USE_FILE})
-
-set(TEST_FRAMEWORK_LIBS gtest ${QT_LIBRARIES})
+set(TEST_FRAMEWORK_LIBS gtest)
 
 #################
 # CORE LIBRARIES #
@@ -86,6 +82,11 @@ set( CORE_LIBS )
 # OpenCV must be independently preinstalled on the host machine
 find_package (OpenCV REQUIRED)
 list(APPEND CORE_LIBS ${OpenCV_LIBS} )
+
+# We use QT for handling file system paths
+FIND_PACKAGE(Qt4 REQUIRED)
+INCLUDE(${QT_USE_FILE})
+list(APPEND CORE_LIBS ${QT_LIBRARIES})
 
 # Include tclap - a header-only library for command-line parsing
 include_directories( lib/tclap/include )
