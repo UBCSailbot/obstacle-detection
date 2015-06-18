@@ -12,7 +12,7 @@
 class SunImage
 {
 public:
-    SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, int margin);
+    SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, float margin);
     ~SunImage();
 
     void findPosition();
@@ -33,7 +33,7 @@ private:
     const Horizon horizon;
     cv::Mat frame;
     const unsigned int minSunPixelValue;
-    const unsigned int margin;
+    const float margin;
 
     //unsigned int sunRadius;
 //    bool hasSun = false;

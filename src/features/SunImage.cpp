@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stack>
 
-SunImage::SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, int margin) : horizon(horizon), frame(frame), minSunPixelValue(minSunPixelValue), margin(margin) {
+SunImage::SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, float margin) : horizon(horizon), frame(frame), minSunPixelValue(minSunPixelValue), margin(margin) {
 }
 
 SunImage::~SunImage() {
@@ -122,49 +122,62 @@ void SunImage::findColumn() {
     x = x / magnitude;
     y = y / magnitude;
 
-    std::cout << "x is " << x << std::endl;
-    std::cout << "y is " << y << std::endl;
+//    std::cout << "x is " << x << std::endl;
+//    std::cout << "y is " << y << std::endl;
 
     float leftLimit = std::numeric_limits<float>::max();
     float rightLimit = std::numeric_limits<float>::min();
     cv::Point2d leftPoint;
     cv::Point2d rightPoint;
 
-    //calculate dot product
-    for (int yValue = 0; yValue < frame.rows; yValue++) {
-        for (int xValue = 0; xValue < frame.cols; xValue++) {
-            if (minSunPixelValue <= frame.at<uint16_t>(yValue, xValue)
-                && !horizon.isPointAbove(static_cast<float>(xValue), static_cast<float>(yValue))) {
+    if (sunLeft != std::numeric_limits<unsigned int>::max() && sunTop != std::numeric_limits<unsigned int>::max()) {
+        std::cout << "margin is " << margin << std::endl;
 
-//                std::cout << "row is " << row << std::endl;
-//                std::cout << "col is " << col << std::endl;
-//                std::cout << "offset is " << offset << std::endl;
-//                std::cout << "x is " << x << std::endl;
-//                std::cout << "y is " << y << std::endl;
+        cv::Point2f sunPosition = getPosition();
+        leftPoint = cv::Point2d(sunPosition.x - static_cast<int>((sunRight - sunLeft) * margin), sunPosition.y);
+        rightPoint = cv::Point2d(sunPosition.x + static_cast<int>((sunRight - sunLeft) * margin), sunPosition.y);
+    }
 
-                float tempValue = (yValue - offset) * y + xValue * x;
+    else {
+        //calculate dot product
+        for (int yValue = 0; yValue < frame.rows; yValue++) {
+            for (int xValue = 0; xValue < frame.cols; xValue++) {
+                if (minSunPixelValue <= frame.at<uint16_t>(yValue, xValue)
+                    && !horizon.isPointAbove(static_cast<float>(xValue), static_cast<float>(yValue))) {
 
-                if (tempValue < leftLimit) {
-//                    std::cout << "row is " << yValue << std::endl;
-//                    std::cout << "col is " << xValue << std::endl;
-//                    std::cout << "value is " << tempValue << std::endl;
+    //                std::cout << "row is " << row << std::endl;
+    //                std::cout << "col is " << col << std::endl;
+    //                std::cout << "offset is " << offset << std::endl;
+    //                std::cout << "x is " << x << std::endl;
+    //                std::cout << "y is " << y << std::endl;
 
-                    leftLimit = tempValue;
-                    leftPoint = cv::Point2d(xValue, yValue);
-                }
-                if (tempValue > rightLimit) {
-//                    std::cout << "row is " << row << std::endl;
-//                    std::cout << "col is " << col << std::endl;
+                    float tempValue = (yValue - offset) * y + xValue * x;
 
-                    rightLimit = tempValue;
-                    rightPoint = cv::Point2d(xValue, yValue);
+                    if (tempValue < leftLimit) {
+    //                    std::cout << "row is " << yValue << std::endl;
+    //                    std::cout << "col is " << xValue << std::endl;
+    //                    std::cout << "value is " << tempValue << std::endl;
+
+                        leftLimit = tempValue;
+                        leftPoint = cv::Point2d(xValue, yValue);
+                    }
+                    if (tempValue > rightLimit) {
+    //                    std::cout << "row is " << row << std::endl;
+    //                    std::cout << "col is " << col << std::endl;
+
+                        rightLimit = tempValue;
+                        rightPoint = cv::Point2d(xValue, yValue);
+                    }
                 }
             }
         }
     }
 
-    if (leftLimit != std::numeric_limits<float>::max() && rightLimit != std::numeric_limits<float>::min()) {
+    if ((leftLimit != std::numeric_limits<float>::max() && rightLimit != std::numeric_limits<float>::min())
+            || (sunLeft != std::numeric_limits<unsigned int>::max() && sunTop != std::numeric_limits<unsigned int>::max())) {
         if (y != 0.0) {
+            std::cout << "Horizon is not flat" << std::endl;
+
             std::cout << "leftPoint.x is " << leftPoint.x << std::endl;
             std::cout << "leftPoint.y is " << leftPoint.y << std::endl;
             std::cout << "rightPoint.x is " << rightPoint.x << std::endl;
