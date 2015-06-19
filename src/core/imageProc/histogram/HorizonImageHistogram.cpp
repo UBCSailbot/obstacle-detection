@@ -22,7 +22,7 @@ HorizonImageHistogram::HorizonImageHistogram(const cv::Mat &image, const Horizon
 void HorizonImageHistogram::populateHistogram(const cv::Mat &image, const Horizon &horizon) {
     for (int row=0; row < image.rows; row++) {
         for (int col=0; col < image.cols; col++) {
-            if (horizon.isPointAbove(col, row)) {
+            if (!horizon.isPointAbove(col, row)) {
                 int i = image.at<uint16_t>(row, col) - _minPixelValue;
                 _histogramBins[i]++;
                 _numPixels++;
