@@ -6,20 +6,22 @@
 #define OBSTACLE_AVOIDANCE_HORIZON_H
 
 
-#include "opencv2/features2d/features2d.hpp"
+#include <opencv2/features2d/features2d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <cmath>
 #include <math.h>
 
-class Horizon {
+#include "lepton/LeptonCameraDimensions.h"
+#include "Line.h"
+
+class Horizon : public Line {
+
 public:
     Horizon(double roll, double pitch);
+    Horizon(cv::Point2f startPoint, cv::Point2f endPoint);
     ~Horizon();
-
-    cv::Point2f getStart();
-    cv::Point2f getEnd();
 
     /*
     Check if given point is above horizon.
@@ -27,7 +29,8 @@ public:
     OUT:
     RETURN: true if point is above horizon
     */
-    bool isPointAbove(cv::Point2f pointOfInterest);
+    bool isPointAbove(cv::Point2f pointOfInterest) const;
+    bool isPointAbove(const float &x, const float &y) const;
 
     /*
     Check if rectangle intersect the horizon.
@@ -35,11 +38,9 @@ public:
     OUT:
     RETURN: true some points in the the rectangle is above and below the horizon
     */
-    bool isPolyIntersect(cv::Rect rectangle);
+    bool isPolyIntersect(cv::Rect rectangle) const;
 
 private:
-    cv::Point2f start, end;
-    double pitch, roll;
     // Store the height of the intersection of the horizon with the edges of the viewport
     int heightLeft, heightRight;
 

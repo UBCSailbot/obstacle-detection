@@ -2,13 +2,13 @@
 // Created by paul on 09/05/15.
 //
 
+#include <gtest/gtest.h>
 #include "imu/IMUTest.h"
-#include "horizon/HorizonTest.h"
+#include "features/SunImageTest.h"
 
-int main() {
+int main(int argc, char **argv) {
 
-//    testIMU();
-    testHorizon();
-
-    return 0;
+    //    testIMU();
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

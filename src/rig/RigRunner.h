@@ -8,7 +8,7 @@
 #include "../imu/IMU.h"
 #include "../imu/ParallelIMU.h"
 #include "../lepton/Lepton.h"
-#include "../horizon/Horizon.h"
+#include "../geometry/Horizon.h"
 #include "../display/Display.h"
 #include "../display/RoboPeakUSBDisplay.h"
 

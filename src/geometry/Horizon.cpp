@@ -3,22 +3,16 @@
 //
 
 #include "Horizon.h"
-#include "../lepton/Lepton.h"
 
-Horizon::Horizon(double roll, double pitch) : roll(roll), pitch(pitch) {
+Horizon::Horizon(cv::Point2f startPoint, cv::Point2f endPoint) :
+        Line(startPoint, endPoint) {}
+
+Horizon::Horizon(double roll, double pitch) :
+        Line(cv::Point(0,0), cv::Point(0,0)) {
     setPitchRoll(pitch, roll);
 }
 
 Horizon::~Horizon() {
-}
-
-cv::Point2f Horizon::getStart() {
-    return start;
-}
-
-
-cv::Point2f Horizon::getEnd() {
-    return end;
 }
 
 /*
@@ -27,23 +21,20 @@ IN: point of interest
 OUT:
 RETURN: true if point is above horizon
 */
-bool Horizon::isPointAbove(cv::Point2f pointOfInterest) {
-    if (pointOfInterest.y > start.y && pointOfInterest.y > end.y)
-        return true;
+bool Horizon::isPointAbove(cv::Point2f pointOfInterest) const {
+    return isPointAbove(pointOfInterest.x, pointOfInterest.y);
+}
 
-    if (pointOfInterest.y < start.y && pointOfInterest.y < end.y)
+bool Horizon::isPointAbove(const float &x, const float &y) const {
+    if (y > _startPoint.y && y > _endPoint.y)
         return false;
 
-    if (pointOfInterest.x > start.x && pointOfInterest.x > end.x)
-        return false;
-
-    if (pointOfInterest.x < start.x && pointOfInterest.x < end.x)
+    if (y < _startPoint.y && y < _endPoint.y)
         return true;
 
-    if ((end.x - start.x) * pointOfInterest.x < (end.y - start.y) * pointOfInterest.y)
-        return true;
+    return (_endPoint.x - _startPoint.x) * (y - _startPoint.y) <
+            (_endPoint.y - _startPoint.y) * (x - _startPoint.x);
 
-    return false;
 }
 
 /*
@@ -51,8 +42,9 @@ Check if rectangle intersect the horizon.
 IN: rectangle
 OUT:
 RETURN: true some points in the the rectangle is above and below the horizon
+ TODO: Implement this function
 */
-bool Horizon::isPolyIntersect(cv::Rect rectangle) {
+bool Horizon::isPolyIntersect(cv::Rect rectangle) const {
     bool isAbove = false;
     bool isBelow = false;
 
@@ -87,7 +79,7 @@ pixel_shift: 0 when horizon centred, +height/2 when horizon from top left to bot
 May exceed magnitude height/2 for large angles.
 */
 double Horizon::rollHorizonPixelShift(double angle) {
-    return tan(angle) * (double) VIEWPORT_WIDTH_PIX / 2.0;
+    return -tan(angle) * (double) VIEWPORT_WIDTH_PIX / 2.0;
 }
 
 /*
@@ -106,6 +98,6 @@ void Horizon::setPitchRoll(double pitch, double roll) {
 
     // XXX: Assumes that the horizon intersects both
     //  vertical edges of the frame
-    start = cv::Point2f(0, heightLeft);
-    end = cv::Point2f(VIEWPORT_WIDTH_PIX, heightRight);
+    _startPoint = cv::Point2f(0, heightLeft);
+    _endPoint = cv::Point2f(VIEWPORT_WIDTH_PIX, heightRight);
 }
