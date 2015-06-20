@@ -10,8 +10,7 @@ TEST_F(SunImageTest, FindSunPositive) {
     Horizon h = Horizon(cv::Point2f (0, 50), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
     SunImage sunImage = SunImage(h, frame, 9000, 1);
 
-    sunImage.findPosition();
-    EXPECT_EQ(sunImage.getPosition(), cv::Point2f(37, 37.5));
+    EXPECT_EQ(sunImage.getPosition(), cv::Point2f(37, 37));
 }
 
 TEST_F(SunImageTest, FindSunNegative) {
@@ -19,7 +18,6 @@ TEST_F(SunImageTest, FindSunNegative) {
     Horizon h = Horizon(cv::Point2f (0, 50), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
     SunImage sunImage = SunImage(h, frame, 9000, 1);
 
-    sunImage.findPosition();
     EXPECT_EQ(sunImage.getPosition(), cv::Point2f());
 }
 
@@ -28,7 +26,6 @@ TEST_F(SunImageTest, FindColumn0Pix) {
     Horizon h = Horizon(cv::Point2f (0, 0), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 0));
     SunImage sunImage = SunImage(h, frame, 9000, 1);
 
-    sunImage.findColumn();
     EXPECT_EQ(sunImage.getLeftMargin().getStartPoint(), cv::Point2f());
     EXPECT_EQ(sunImage.getLeftMargin().getEndPoint(), cv::Point2f());
     EXPECT_EQ(sunImage.getRightMargin().getStartPoint(), cv::Point2f());
@@ -41,11 +38,10 @@ TEST_F(SunImageTest, FindColumnPixAboveHorizon) {
     Horizon h = Horizon(cv::Point2f (0, 40), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 40));
     SunImage sunImage = SunImage(h, frame, 9000, 1);
 
-    sunImage.findColumn();
-    EXPECT_EQ(sunImage.getLeftMargin().getStartPoint(), cv::Point2f());
-    EXPECT_EQ(sunImage.getLeftMargin().getEndPoint(), cv::Point2f());
-    EXPECT_EQ(sunImage.getRightMargin().getStartPoint(), cv::Point2f());
-    EXPECT_EQ(sunImage.getRightMargin().getEndPoint(), cv::Point2f());
+    EXPECT_EQ(sunImage.getLeftMargin().getStartPoint(), cv::Point2f(20, 0));
+    EXPECT_EQ(sunImage.getLeftMargin().getEndPoint(), cv::Point2f(20, 59));
+    EXPECT_EQ(sunImage.getRightMargin().getStartPoint(), cv::Point2f(20, 0));
+    EXPECT_EQ(sunImage.getRightMargin().getEndPoint(), cv::Point2f(20, 59));
 }
 
 TEST_F(SunImageTest, FindColumnPixBelowFlatHorizonWithSun) {
@@ -56,8 +52,6 @@ TEST_F(SunImageTest, FindColumnPixBelowFlatHorizonWithSun) {
     Horizon h = Horizon(cv::Point2f (0, 40), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 40));
     SunImage sunImage = SunImage(h, frame, 9000, 1);
 
-    sunImage.findPosition();
-    sunImage.findColumn();
     EXPECT_NE(sunImage.getLeftMargin().getStartPoint(), cv::Point2f(53, 0));
     EXPECT_NE(sunImage.getLeftMargin().getEndPoint(), cv::Point2f(53, 59));
     EXPECT_NE(sunImage.getRightMargin().getStartPoint(), cv::Point2f(55, 0));
@@ -71,7 +65,6 @@ TEST_F(SunImageTest, FindColumnPixBelowFlatHorizon) {
     Horizon h = Horizon(cv::Point2f (0, 40), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 40));
     SunImage sunImage = SunImage(h, frame, 9000, 1);
 
-    sunImage.findColumn();
     EXPECT_EQ(sunImage.getLeftMargin().getStartPoint(), cv::Point2f(53, 0));
     EXPECT_EQ(sunImage.getLeftMargin().getEndPoint(), cv::Point2f(53, 59));
     EXPECT_EQ(sunImage.getRightMargin().getStartPoint(), cv::Point2f(55, 0));
@@ -85,7 +78,6 @@ TEST_F(SunImageTest, FindColumnPixBelowDiagHorizon) {
     Horizon h = Horizon(cv::Point2f (0, 30), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
     SunImage sunImage = SunImage(h, frame, 9000, 1);
 
-    sunImage.findColumn();
     EXPECT_FLOAT_EQ(sunImage.getLeftMargin().getStartPoint().x,  67.43037975);
     EXPECT_FLOAT_EQ(sunImage.getLeftMargin().getEndPoint().x,  52.49367089);
     EXPECT_FLOAT_EQ(sunImage.getRightMargin().getStartPoint().x,  68.16455696);

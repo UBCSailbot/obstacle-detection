@@ -15,7 +15,7 @@ public:
     SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, float margin);
     ~SunImage();
 
-    void findPosition();
+    void findSunPosition();
     void findMeanVariance();
     void findColumn();
 

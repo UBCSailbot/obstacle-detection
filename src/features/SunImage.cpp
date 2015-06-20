@@ -4,12 +4,14 @@
 #include <stack>
 
 SunImage::SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, float margin) : horizon(horizon), frame(frame), minSunPixelValue(minSunPixelValue), margin(margin) {
+    findSunPosition();
+    findColumn();
 }
 
 SunImage::~SunImage() {
 }
 
-void SunImage::findPosition() {
+void SunImage::findSunPosition() {
     //may implement blob detection for this method later
     for (int row = 0; row < frame.rows; row++) {
         for (int col = 0; col < frame.cols; col++) {
@@ -22,15 +24,20 @@ void SunImage::findPosition() {
 
             	if (row > sunBottom)
             		sunBottom = row;
-            	else if (row < sunTop)
+                if (row < sunTop)
             		sunTop = row;
             	if (col < sunLeft)
             		sunLeft = col;
-            	else if (col > sunRight)
+            	if (col > sunRight)
             		sunRight = col;
             }
         }
     }
+
+//    std::cout << "sunBottom is " << sunBottom << std::endl;
+//    std::cout << "sunTop is " << sunTop << std::endl;
+//    std::cout << "sunLeft is " << sunLeft << std::endl;
+//    std::cout << "sunRight is " << sunRight << std::endl;
 }
 
 cv::Point2f SunImage::getPosition() const {
@@ -131,11 +138,14 @@ void SunImage::findColumn() {
     cv::Point2d rightPoint;
 
     if (sunLeft != std::numeric_limits<unsigned int>::max() && sunTop != std::numeric_limits<unsigned int>::max()) {
-        std::cout << "margin is " << margin << std::endl;
+//        std::cout << "margin is " << margin << std::endl;
 
         cv::Point2f sunPosition = getPosition();
         leftPoint = cv::Point2d(sunPosition.x - static_cast<int>((sunRight - sunLeft) * margin), sunPosition.y);
         rightPoint = cv::Point2d(sunPosition.x + static_cast<int>((sunRight - sunLeft) * margin), sunPosition.y);
+
+//        std::cout << "leftPoint is " << leftPoint << std::endl;
+//        std::cout << "rightPoint is " << rightPoint << std::endl;
     }
 
     else {
@@ -145,25 +155,25 @@ void SunImage::findColumn() {
                 if (minSunPixelValue <= frame.at<uint16_t>(yValue, xValue)
                     && !horizon.isPointAbove(static_cast<float>(xValue), static_cast<float>(yValue))) {
 
-    //                std::cout << "row is " << row << std::endl;
-    //                std::cout << "col is " << col << std::endl;
-    //                std::cout << "offset is " << offset << std::endl;
-    //                std::cout << "x is " << x << std::endl;
-    //                std::cout << "y is " << y << std::endl;
+//                    std::cout << "row is " << row << std::endl;
+//                    std::cout << "col is " << col << std::endl;
+//                    std::cout << "offset is " << offset << std::endl;
+//                    std::cout << "x is " << x << std::endl;
+//                    std::cout << "y is " << y << std::endl;
 
                     float tempValue = (yValue - offset) * y + xValue * x;
 
                     if (tempValue < leftLimit) {
-    //                    std::cout << "row is " << yValue << std::endl;
-    //                    std::cout << "col is " << xValue << std::endl;
-    //                    std::cout << "value is " << tempValue << std::endl;
+//                        std::cout << "row is " << yValue << std::endl;
+//                        std::cout << "col is " << xValue << std::endl;
+//                        std::cout << "value is " << tempValue << std::endl;
 
                         leftLimit = tempValue;
                         leftPoint = cv::Point2d(xValue, yValue);
                     }
                     if (tempValue > rightLimit) {
-    //                    std::cout << "row is " << row << std::endl;
-    //                    std::cout << "col is " << col << std::endl;
+//                        std::cout << "row is " << row << std::endl;
+//                        std::cout << "col is " << col << std::endl;
 
                         rightLimit = tempValue;
                         rightPoint = cv::Point2d(xValue, yValue);
@@ -176,13 +186,13 @@ void SunImage::findColumn() {
     if ((leftLimit != std::numeric_limits<float>::max() && rightLimit != std::numeric_limits<float>::min())
             || (sunLeft != std::numeric_limits<unsigned int>::max() && sunTop != std::numeric_limits<unsigned int>::max())) {
         if (y != 0.0) {
-            std::cout << "Horizon is not flat" << std::endl;
-
-            std::cout << "leftPoint.x is " << leftPoint.x << std::endl;
-            std::cout << "leftPoint.y is " << leftPoint.y << std::endl;
-            std::cout << "rightPoint.x is " << rightPoint.x << std::endl;
-            std::cout << "rightPoint.y is " << rightPoint.y << std::endl;
-            std::cout << "bottom is " << (VIEWPORT_HEIGHT_PIX - 1) << std::endl;
+//            std::cout << "Horizon is not flat" << std::endl;
+//
+//            std::cout << "leftPoint.x is " << leftPoint.x << std::endl;
+//            std::cout << "leftPoint.y is " << leftPoint.y << std::endl;
+//            std::cout << "rightPoint.x is " << rightPoint.x << std::endl;
+//            std::cout << "rightPoint.y is " << rightPoint.y << std::endl;
+//            std::cout << "bottom is " << (VIEWPORT_HEIGHT_PIX - 1) << std::endl;
 
             leftDelimTop.y = 0.0;
             leftDelimTop.x = (leftPoint.y + leftPoint.x*(x/y))/(x/y);
@@ -197,7 +207,7 @@ void SunImage::findColumn() {
             rightDelimBottom.x = (rightPoint.y + rightPoint.x*(x/y) - (VIEWPORT_HEIGHT_PIX - 1))/(x/y);
         }
         else {
-            std::cout << "Horizon is flat" << std::endl;
+//            std::cout << "Horizon is flat" << std::endl;
             leftDelimTop = cv::Point2f(leftPoint.x, 0.0);
             leftDelimBottom = cv::Point2f(leftPoint.x, VIEWPORT_HEIGHT_PIX - 1);
 
