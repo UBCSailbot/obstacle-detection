@@ -4,7 +4,6 @@
 
 #include <gtest/gtest.h>
 #include "imu/IMUTest.h"
-#include "features/SunImageTest.h"
 
 int main(int argc, char **argv) {
 

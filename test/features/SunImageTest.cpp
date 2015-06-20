@@ -2,10 +2,13 @@
 // Created by Derek Lun on 5/23/2015.
 //
 
-#include "SunImageTest.h"
 #include <iostream>
+#include <gtest/gtest.h>
+#include "geometry/Horizon.h"
+#include "features/SunImage.h"
+#include "lepton/LeptonCameraDimensions.h"
 
-TEST_F(SunImageTest, FindSunPositive) {
+TEST(SunImageTest, FindSunPositive) {
     cv::Mat frame = cv::imread("resources/img/freighterAndSun01.png", CV_LOAD_IMAGE_UNCHANGED);
     Horizon h = Horizon(cv::Point2f (0, 50), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
     SunImage sunImage = SunImage(h, frame, 9000, 1);
@@ -13,7 +16,7 @@ TEST_F(SunImageTest, FindSunPositive) {
     EXPECT_EQ(sunImage.getPosition(), cv::Point2f(37, 37));
 }
 
-TEST_F(SunImageTest, FindSunNegative) {
+TEST(SunImageTest, FindSunNegative) {
     cv::Mat frame = cv::imread("resources/img/fishingBoat01.png", CV_LOAD_IMAGE_UNCHANGED);
     Horizon h = Horizon(cv::Point2f (0, 50), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
     SunImage sunImage = SunImage(h, frame, 9000, 1);
@@ -21,7 +24,7 @@ TEST_F(SunImageTest, FindSunNegative) {
     EXPECT_EQ(sunImage.getPosition(), cv::Point2f());
 }
 
-TEST_F(SunImageTest, FindColumn0Pix) {
+TEST(SunImageTest, FindColumn0Pix) {
     cv::Mat frame = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
     Horizon h = Horizon(cv::Point2f (0, 0), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 0));
     SunImage sunImage = SunImage(h, frame, 9000, 1);
@@ -32,7 +35,7 @@ TEST_F(SunImageTest, FindColumn0Pix) {
     EXPECT_EQ(sunImage.getRightMargin().getEndPoint(), cv::Point2f());
 }
 
-TEST_F(SunImageTest, FindColumnPixAboveHorizon) {
+TEST(SunImageTest, FindColumnPixAboveHorizon) {
     cv::Mat frame = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
     frame.at<uint16_t>(0, 20) = 9000;
     Horizon h = Horizon(cv::Point2f (0, 40), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 40));
@@ -44,7 +47,7 @@ TEST_F(SunImageTest, FindColumnPixAboveHorizon) {
     EXPECT_EQ(sunImage.getRightMargin().getEndPoint(), cv::Point2f(20, 59));
 }
 
-TEST_F(SunImageTest, FindColumnPixBelowFlatHorizonWithSun) {
+TEST(SunImageTest, FindColumnPixBelowFlatHorizonWithSun) {
     cv::Mat frame = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
     frame.at<uint16_t>(0, 0) = 9000;
     frame.at<uint16_t>(52, 55) = 9000;
@@ -58,7 +61,7 @@ TEST_F(SunImageTest, FindColumnPixBelowFlatHorizonWithSun) {
     EXPECT_NE(sunImage.getRightMargin().getEndPoint(), cv::Point2f(55, 59));
 }
 
-TEST_F(SunImageTest, FindColumnPixBelowFlatHorizon) {
+TEST(SunImageTest, FindColumnPixBelowFlatHorizon) {
     cv::Mat frame = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
     frame.at<uint16_t>(52, 55) = 9000;
     frame.at<uint16_t>(57, 53) = 9000;
@@ -71,7 +74,7 @@ TEST_F(SunImageTest, FindColumnPixBelowFlatHorizon) {
     EXPECT_EQ(sunImage.getRightMargin().getEndPoint(), cv::Point2f(55, 59));
 }
 
-TEST_F(SunImageTest, FindColumnPixBelowDiagHorizon) {
+TEST(SunImageTest, FindColumnPixBelowDiagHorizon) {
     cv::Mat frame = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
     frame.at<uint16_t>(52, 55) = 9000;
     frame.at<uint16_t>(57, 53) = 9000;
@@ -84,7 +87,7 @@ TEST_F(SunImageTest, FindColumnPixBelowDiagHorizon) {
     EXPECT_FLOAT_EQ(sunImage.getRightMargin().getEndPoint().x,  53.2278481);
 }
 
-TEST_F(SunImageTest, MeanVariance0Pix) {
+TEST(SunImageTest, MeanVariance0Pix) {
     cv::Mat zeros = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
     Horizon h = Horizon(cv::Point2f (0, 0), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 0));
     SunImage sunImage = SunImage(h, zeros, 9000, 1);
@@ -94,7 +97,7 @@ TEST_F(SunImageTest, MeanVariance0Pix) {
     EXPECT_EQ(sunImage.getVariance(), -1);
 }
 
-TEST_F(SunImageTest, MeanVarianceMinSunPixelValue) {
+TEST(SunImageTest, MeanVarianceMinSunPixelValue) {
     cv::Mat zeros = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
     zeros.at<uint16_t>(20, 20) = 8999;
     Horizon h = Horizon(cv::Point2f (0, 0), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 0));
@@ -105,7 +108,7 @@ TEST_F(SunImageTest, MeanVarianceMinSunPixelValue) {
     EXPECT_EQ(sunImage.getVariance(), -1);
 }
 
-TEST_F(SunImageTest, MeanVariance1PixFlatPointFlatHorizon) {
+TEST(SunImageTest, MeanVariance1PixFlatPointFlatHorizon) {
     cv::Mat zeros = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
     zeros.at<uint16_t>(0, 20) = 9000;
     Horizon h = Horizon(cv::Point2f (0, 0), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 0));
@@ -116,7 +119,7 @@ TEST_F(SunImageTest, MeanVariance1PixFlatPointFlatHorizon) {
     EXPECT_EQ(sunImage.getVariance(), 0);
 }
 
-TEST_F(SunImageTest, MeanVariance1PixDiagPointFlatHorizon) {
+TEST(SunImageTest, MeanVariance1PixDiagPointFlatHorizon) {
     cv::Mat zeros = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
     zeros.at<uint16_t>(20, 20) = 9000;
     Horizon h = Horizon(cv::Point2f (0, 0), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 0));
@@ -127,7 +130,7 @@ TEST_F(SunImageTest, MeanVariance1PixDiagPointFlatHorizon) {
     EXPECT_EQ(sunImage.getVariance(), 0);
 }
 
-TEST_F(SunImageTest, MeanVariance1PixFlatPointDiagHorizon) {
+TEST(SunImageTest, MeanVariance1PixFlatPointDiagHorizon) {
     cv::Mat zeros = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
     zeros.at<uint16_t>(0, 20) = 9000;
     Horizon h = Horizon(cv::Point2f (0, 0), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 59));
@@ -138,7 +141,7 @@ TEST_F(SunImageTest, MeanVariance1PixFlatPointDiagHorizon) {
     EXPECT_EQ(sunImage.getVariance(), 0);
 }
 
-TEST_F(SunImageTest, MeanVariance1PixFlatPointDiagHorizonWithOffSet) {
+TEST(SunImageTest, MeanVariance1PixFlatPointDiagHorizonWithOffSet) {
     cv::Mat zeros = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
     zeros.at<uint16_t>(0, 20) = 9000;
     Horizon h = Horizon(cv::Point2f (0, 59), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 0));
