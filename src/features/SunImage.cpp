@@ -3,7 +3,8 @@
 #include <iostream>
 #include <stack>
 
-SunImage::SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, float margin) : horizon(horizon), frame(frame), minSunPixelValue(minSunPixelValue), margin(margin) {
+SunImage::SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, float margin)
+        : _horizon(horizon), _frame(frame), _minSunPixelValue(minSunPixelValue), _margin(margin) {
 }
 
 SunImage::~SunImage() {
@@ -11,37 +12,37 @@ SunImage::~SunImage() {
 
 void SunImage::findPosition() {
     //may implement blob detection for this method later
-    for (int row = 0; row < frame.rows; row++) {
-        for (int col = 0; col < frame.cols; col++) {
-            unsigned int value = frame.at<uint16_t>(row, col);
+    for (int row = 0; row < _frame.rows; row++) {
+        for (int col = 0; col < _frame.cols; col++) {
+            unsigned int value = _frame.at<uint16_t>(row, col);
 
-            if (value >= minSunPixelValue && horizon.isPointAbove(static_cast<float>(row), static_cast<float>(col))) {
+            if (value >= _minSunPixelValue && _horizon.isPointAbove(static_cast<float>(row), static_cast<float>(col))) {
 //                std::cout << "value is " << value << std::endl;
 //                std::cout << "row is " << row << std::endl;
 //                std::cout << "col is " << col << std::endl;
 
-            	if (row > sunBottom)
-            		sunBottom = row;
-            	else if (row < sunTop)
-            		sunTop = row;
-            	if (col < sunLeft)
-            		sunLeft = col;
-            	else if (col > sunRight)
-            		sunRight = col;
+            	if (row > _sunBottom)
+            		_sunBottom = row;
+            	else if (row < _sunTop)
+            		_sunTop = row;
+            	if (col < _sunLeft)
+            		_sunLeft = col;
+            	else if (col > _sunRight)
+            		_sunRight = col;
             }
         }
     }
 }
 
 cv::Point2f SunImage::getPosition() const {
-    if (sunLeft != std::numeric_limits<unsigned int>::max() && sunTop != std::numeric_limits<unsigned int>::max())
-        return cv::Point2f((static_cast<float>(sunLeft)+static_cast<float>(sunRight))/2, (static_cast<float>(sunTop)+static_cast<float>(sunBottom))/2);
+    if (_sunLeft != std::numeric_limits<unsigned int>::max() && _sunTop != std::numeric_limits<unsigned int>::max())
+        return cv::Point2f((static_cast<float>(_sunLeft)+static_cast<float>(_sunRight))/2, (static_cast<float>(_sunTop)+static_cast<float>(_sunBottom))/2);
     return cv::Point2f();
 }
 
 void SunImage::findMeanVariance() {
-    float offset = horizon.getStartPoint().y;
-    float y = horizon.getEndPoint().y - horizon.getStartPoint().y;
+    float offset = _horizon.getStartPoint().y;
+    float y = _horizon.getEndPoint().y - _horizon.getStartPoint().y;
     float x = VIEWPORT_WIDTH_PIX - 1;
 
 //    std::cout << "offset is " << offset << std::endl;
@@ -60,9 +61,9 @@ void SunImage::findMeanVariance() {
     std::stack<float> tempResults;
 
     //calculate dot product
-    for (int yValue = 0; yValue < frame.rows; yValue++) {
-        for (int xValue = 0; xValue < frame.cols; xValue++) {
-            if (minSunPixelValue <= frame.at<uint16_t>(yValue, xValue)) {
+    for (int yValue = 0; yValue < _frame.rows; yValue++) {
+        for (int xValue = 0; xValue < _frame.cols; xValue++) {
+            if (_minSunPixelValue <= _frame.at<uint16_t>(yValue, xValue)) {
 
 //                std::cout << "row is " << row << std::endl;
 //                std::cout << "col is " << col << std::endl;
@@ -79,14 +80,14 @@ void SunImage::findMeanVariance() {
     }
 
     if (totalPix == 0) {
-        mean = -1;
-        variance = -1;
+        _mean = -1;
+        _variance = -1;
         return;
     }
 
     //calculate mean
     totalPix = tempResults.size();
-    mean = totalSum / static_cast<float>(totalPix);
+    _mean = totalSum / static_cast<float>(totalPix);
 //    std::cout << "totalSum is " << totalSum << std::endl;
 //    std::cout << "totalPix is " << totalPix << std::endl;
 
@@ -94,24 +95,24 @@ void SunImage::findMeanVariance() {
     while (!tempResults.empty()) {
         float tempResult = static_cast<float>(tempResults.top());
         tempResults.pop();
-        variance += pow((tempResult - mean), 2);
+        _variance += pow((tempResult - _mean), 2);
     }
     
-    variance = variance/static_cast<float>(totalPix);
+    _variance = _variance /static_cast<float>(totalPix);
 //    std::cout << "variance is " << variance << std::endl;
 }
 
 float SunImage::getVariance() const {
-    return variance;
+    return _variance;
 }
 
 float SunImage::getMean() const {
-    return mean;
+    return _mean;
 }
 
 void SunImage::findColumn() {
-    float offset = horizon.getStartPoint().y;
-    float y = horizon.getEndPoint().y - horizon.getStartPoint().y;
+    float offset = _horizon.getStartPoint().y;
+    float y = _horizon.getEndPoint().y - _horizon.getStartPoint().y;
     float x = VIEWPORT_WIDTH_PIX - 1;
 
 //    std::cout << "offset is " << offset << std::endl;
@@ -130,20 +131,20 @@ void SunImage::findColumn() {
     cv::Point2d leftPoint;
     cv::Point2d rightPoint;
 
-    if (sunLeft != std::numeric_limits<unsigned int>::max() && sunTop != std::numeric_limits<unsigned int>::max()) {
-        std::cout << "margin is " << margin << std::endl;
+    if (_sunLeft != std::numeric_limits<unsigned int>::max() && _sunTop != std::numeric_limits<unsigned int>::max()) {
+        std::cout << "margin is " << _margin << std::endl;
 
         cv::Point2f sunPosition = getPosition();
-        leftPoint = cv::Point2d(sunPosition.x - static_cast<int>((sunRight - sunLeft) * margin), sunPosition.y);
-        rightPoint = cv::Point2d(sunPosition.x + static_cast<int>((sunRight - sunLeft) * margin), sunPosition.y);
+        leftPoint = cv::Point2d(sunPosition.x - static_cast<int>((_sunRight - _sunLeft) * _margin), sunPosition.y);
+        rightPoint = cv::Point2d(sunPosition.x + static_cast<int>((_sunRight - _sunLeft) * _margin), sunPosition.y);
     }
 
     else {
         //calculate dot product
-        for (int yValue = 0; yValue < frame.rows; yValue++) {
-            for (int xValue = 0; xValue < frame.cols; xValue++) {
-                if (minSunPixelValue <= frame.at<uint16_t>(yValue, xValue)
-                    && !horizon.isPointAbove(static_cast<float>(xValue), static_cast<float>(yValue))) {
+        for (int yValue = 0; yValue < _frame.rows; yValue++) {
+            for (int xValue = 0; xValue < _frame.cols; xValue++) {
+                if (_minSunPixelValue <= _frame.at<uint16_t>(yValue, xValue)
+                    && !_horizon.isPointAbove(static_cast<float>(xValue), static_cast<float>(yValue))) {
 
     //                std::cout << "row is " << row << std::endl;
     //                std::cout << "col is " << col << std::endl;
@@ -174,7 +175,7 @@ void SunImage::findColumn() {
     }
 
     if ((leftLimit != std::numeric_limits<float>::max() && rightLimit != std::numeric_limits<float>::min())
-            || (sunLeft != std::numeric_limits<unsigned int>::max() && sunTop != std::numeric_limits<unsigned int>::max())) {
+            || (_sunLeft != std::numeric_limits<unsigned int>::max() && _sunTop != std::numeric_limits<unsigned int>::max())) {
         if (y != 0.0) {
             std::cout << "Horizon is not flat" << std::endl;
 
@@ -184,33 +185,33 @@ void SunImage::findColumn() {
             std::cout << "rightPoint.y is " << rightPoint.y << std::endl;
             std::cout << "bottom is " << (VIEWPORT_HEIGHT_PIX - 1) << std::endl;
 
-            leftDelimTop.y = 0.0;
-            leftDelimTop.x = (leftPoint.y + leftPoint.x*(x/y))/(x/y);
+            _leftDelimTop.y = 0.0;
+            _leftDelimTop.x = (leftPoint.y + leftPoint.x*(x/y))/(x/y);
 
-            leftDelimBottom.y = VIEWPORT_HEIGHT_PIX - 1;
-            leftDelimBottom.x = (leftPoint.y + leftPoint.x*(x/y) - (VIEWPORT_HEIGHT_PIX - 1))/(x/y);
+            _leftDelimBottom.y = VIEWPORT_HEIGHT_PIX - 1;
+            _leftDelimBottom.x = (leftPoint.y + leftPoint.x*(x/y) - (VIEWPORT_HEIGHT_PIX - 1))/(x/y);
 
-            rightDelimTop.y = 0.0;
-            rightDelimTop.x = (rightPoint.y + rightPoint.x*(x/y))/(x/y);
+            _rightDelimTop.y = 0.0;
+            _rightDelimTop.x = (rightPoint.y + rightPoint.x*(x/y))/(x/y);
 
-            rightDelimBottom.y = VIEWPORT_HEIGHT_PIX - 1;
-            rightDelimBottom.x = (rightPoint.y + rightPoint.x*(x/y) - (VIEWPORT_HEIGHT_PIX - 1))/(x/y);
+            _rightDelimBottom.y = VIEWPORT_HEIGHT_PIX - 1;
+            _rightDelimBottom.x = (rightPoint.y + rightPoint.x*(x/y) - (VIEWPORT_HEIGHT_PIX - 1))/(x/y);
         }
         else {
             std::cout << "Horizon is flat" << std::endl;
-            leftDelimTop = cv::Point2f(leftPoint.x, 0.0);
-            leftDelimBottom = cv::Point2f(leftPoint.x, VIEWPORT_HEIGHT_PIX - 1);
+            _leftDelimTop = cv::Point2f(leftPoint.x, 0.0);
+            _leftDelimBottom = cv::Point2f(leftPoint.x, VIEWPORT_HEIGHT_PIX - 1);
 
-            rightDelimTop = cv::Point2f(rightPoint.x, 0.0);
-            rightDelimBottom = cv::Point2f(rightPoint.x, VIEWPORT_HEIGHT_PIX - 1);
+            _rightDelimTop = cv::Point2f(rightPoint.x, 0.0);
+            _rightDelimBottom = cv::Point2f(rightPoint.x, VIEWPORT_HEIGHT_PIX - 1);
         }
     }
 }
 
 Line SunImage::getLeftMargin() const {
-    return Line(leftDelimTop, leftDelimBottom);
+    return Line(_leftDelimTop, _leftDelimBottom);
 }
 
 Line SunImage::getRightMargin() const {
-    return Line(rightDelimTop, rightDelimBottom);
+    return Line(_rightDelimTop, _rightDelimBottom);
 }
