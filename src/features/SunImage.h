@@ -30,27 +30,27 @@ private:
     //unsigned int sunRadius();
     //Rect isSun();   //OpenCV doesn't have a circle class
 
-    const Horizon horizon;
-    cv::Mat frame;
-    const unsigned int minSunPixelValue;
-    const float margin;
+    const Horizon _horizon;
+    cv::Mat _frame;
+    const unsigned int _minSunPixelValue;
+    const float _margin;
 
     //unsigned int sunRadius;
 //    bool hasSun = false;
 
-    unsigned int sunLeft = std::numeric_limits<unsigned int>::max();
-    unsigned int sunRight = 0;
-    unsigned int sunTop = std::numeric_limits<unsigned int>::max();
-    unsigned int sunBottom = 0;
+    unsigned int _sunLeft = std::numeric_limits<unsigned int>::max();
+    unsigned int _sunRight = 0;
+    unsigned int _sunTop = std::numeric_limits<unsigned int>::max();
+    unsigned int _sunBottom = 0;
 //    cv::Point2f sunPosition;
 
-    float mean = 0.0;
-    float variance = 0.0;
+    float _mean = 0.0;
+    float _variance = 0.0;
     
-    cv::Point2f leftDelimTop;
-    cv::Point2f leftDelimBottom;
-    cv::Point2f rightDelimTop;
-    cv::Point2f rightDelimBottom;
+    cv::Point2f _leftDelimTop;
+    cv::Point2f _leftDelimBottom;
+    cv::Point2f _rightDelimTop;
+    cv::Point2f _rightDelimBottom;
 
 //    Line leftDelim(cv::Point2f(), cv::Point2f());
 //    Line::Line rightDelim;
