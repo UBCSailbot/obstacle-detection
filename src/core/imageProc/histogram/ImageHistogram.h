@@ -86,12 +86,16 @@ public:
      */
     void find8bitWindow(const int &middleValue, int &minValue, int &maxValue) const;
 
+/**
+ * Protected default constructor for subclasses, so that superclass object is not
+ *  needlessly populated.
+ */
+
+
 protected:
-    /**
-     * Protected default constructor for subclasses, so that superclass object is not
-     *  needlessly populated.
-     */
+
     ImageHistogram();
+
     std::vector<int> _histogramBins;
     int _minPixelValue;
     int _maxPixelValue;

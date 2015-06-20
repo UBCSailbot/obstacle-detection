@@ -6,6 +6,7 @@
 
 bool _connected;
 
+
 LEP_CAMERA_PORT_DESC_T _port;
 
 int lepton_connect() {
@@ -22,3 +23,4 @@ void lepton_perform_ffc() {
 }
 
 //presumably more commands could go here if desired
+

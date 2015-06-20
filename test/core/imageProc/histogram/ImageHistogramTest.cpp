@@ -126,8 +126,39 @@ TEST_F(ImageHistogramTest, getMaxPixelValue) {
 }
 
 TEST_F(ImageHistogramTest, numBins) {
-    // TODO: implement this test
-}
+
+    std::vector<int> data = {0, 0, 0, 0,
+                             1, 1, 1, 1,
+                             2, 2, 2, 2,
+                             3, 3, 3, 3
+
+    };
+    cv::Mat image(data, false);
+    ImageHistogram histogram(image);
+
+    std::vector<int> nulldata = {};
+    cv::Mat nullimage(nulldata, false);
+    ImageHistogram nullhistogram(nullimage);
+
+    EXPECT_EQ(4, histogram.numBins());
+
+    EXPECT_EQ(1, nullhistogram.numBins());
+
+    std::vector<int> data1 = {0,0,0,
+                              2,2,2,
+                              6,6,
+                              8,12
+    };
+
+
+    cv::Mat image1(data1, false);
+    ImageHistogram histogram1(image1);
+    EXPECT_EQ(13, histogram1.numBins());
+
+
+
+
+};
 
 TEST_F(ImageHistogramTest, find8bitWindowCentered) {
     ImageHistogram histogram(_fishingBoatImg);
@@ -178,8 +209,26 @@ TEST_F(ImageHistogramTest, find8bitWindowNarrow) {
 
 
 TEST_F(ImageHistogramTest, getNumPixelsWithValue) {
-    // TODO: implement this test
+
+
+    std::vector<int> data = {
+                             1, 1,
+                             0, 0, 0, 0,
+                             2, 2, 2, 2,
+                             3, 3, 3, 3,3,3
+
+    };
+    cv::Mat image(data, false);
+    ImageHistogram histogram = ImageHistogram(image);
+    EXPECT_EQ(0,histogram.getNumPixelsWithValue(-1));
+    EXPECT_EQ(0,histogram.getNumPixelsWithValue(4));
+
+    EXPECT_EQ(6,histogram.getNumPixelsWithValue(3));
+    EXPECT_EQ(2,histogram.getNumPixelsWithValue(1));
+
+
 }
+
 
 
 cv::Mat ImageHistogramTest::makeThreeEvenPixelValues(const int &pixelValue0,
