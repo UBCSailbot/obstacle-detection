@@ -3,11 +3,14 @@
 //
 
 #include "LeptonI2C.h"
+#include "LEPTON_SYS.h"
 
 bool _connected;
 
 
+
 LEP_CAMERA_PORT_DESC_T _port;
+LEP_SYS_SHUTTER_POSITION_E_PTR lep_sys_shutter_position_e_ptr;
 
 int lepton_connect() {
     LEP_OpenPort(1, LEP_CCI_TWI, 400, &_port);
@@ -22,5 +25,22 @@ void lepton_perform_ffc() {
     LEP_RunSysFFCNormalization(&_port);
 }
 
-//presumably more commands could go here if desired
 
+
+void lepton_openShutter(){   
+    LEP_GetSysShutterPosition(&_port, lep_sys_shutter_position_e_ptr);  
+
+    if (*lep_sys_shutter_position_e_ptr == LEP_SYS_SHUTTER_POSITION_CLOSED){  
+        LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_OPEN); 
+    }
+
+     }
+
+void lepton_closeShutter(){  
+
+    LEP_GetSysShutterPosition(&_port, lep_sys_shutter_position_e_ptr);  
+    if (*lep_sys_shutter_position_e_ptr == LEP_SYS_SHUTTER_POSITION_OPEN ){  
+        LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_CLOSED); 
+    }
+
+     }

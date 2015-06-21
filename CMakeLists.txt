@@ -52,7 +52,7 @@ add_executable(imuTest
 add_executable(displayTest
                test/mains/DisplayTest.cpp
                ${DEVICE_TEST_FILES}
-)
+test/mains/leptonShutterTest.h test/mains/leptonShutterTest.cpp)
 
 # The following command copies the resources folder into the binary directory,
 #  making it possible to load resources from a relative path within the project
@@ -115,7 +115,7 @@ add_custom_target(
 )
 add_dependencies(displayTest leptonSDK)
 add_dependencies(rigRunner leptonSDK)
-add_dependencies(runCoreTests leptonSDK)
+
 list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
 
