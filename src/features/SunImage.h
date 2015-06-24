@@ -38,18 +38,8 @@ private:
     float _mean = 0.0;
     float _variance = 0.0;
 
-    Line* leftMargin = new Line(cv::Point2f(-1.0, -1.0), cv::Point2f(-1.0, -1.0));
-    Line* rightMargin = new Line(cv::Point2f(-1.0, -1.0), cv::Point2f(-1.0, -1.0));
-
-//    unsigned int _sunLeft = std::numeric_limits<unsigned int>::max();
-//    unsigned int _sunRight = 0;
-//    unsigned int _sunTop = std::numeric_limits<unsigned int>::max();
-//    unsigned int _sunBottom = 0;
-
-    cv::Point2f _leftDelimTop;
-    cv::Point2f _leftDelimBottom;
-    cv::Point2f _rightDelimTop;
-    cv::Point2f _rightDelimBottom;
+    Line* _leftMargin = new Line(cv::Point2f(-1.0, -1.0), cv::Point2f(-1.0, -1.0));
+    Line* _rightMargin = new Line(cv::Point2f(-1.0, -1.0), cv::Point2f(-1.0, -1.0));
 };
 
 #endif
