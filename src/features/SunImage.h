@@ -8,6 +8,7 @@
 #include <limits>
 
 #include "geometry/Horizon.h"
+#include "common/Rect2f.h"
 
 class SunImage
 {
@@ -16,44 +17,39 @@ public:
     ~SunImage();
 
     void findSunPosition();
-    void findMeanVariance();
-    void findColumn();
+    Rect2f getSunPosition() const;
 
-    cv::Point2f getPosition() const;
+    void findColumn();
+    Line* getLeftMargin() const;
+    Line* getRightMargin() const;
+
+    void findMeanVariance();
     float getMean() const;
     float getVariance() const;
-    Line getLeftMargin() const;
-    Line getRightMargin() const;
 
 private:
-
-    //unsigned int sunRadius();
-    //Rect isSun();   //OpenCV doesn't have a circle class
-
     const Horizon _horizon;
     cv::Mat _frame;
     const unsigned int _minSunPixelValue;
     const float _margin;
 
-    //unsigned int sunRadius;
-//    bool hasSun = false;
-
-    unsigned int _sunLeft = std::numeric_limits<unsigned int>::max();
-    unsigned int _sunRight = 0;
-    unsigned int _sunTop = std::numeric_limits<unsigned int>::max();
-    unsigned int _sunBottom = 0;
-//    cv::Point2f sunPosition;
+    Rect2f _sunPosition = Rect2f(-1.0, -1.0, -1.0, -1.0);
 
     float _mean = 0.0;
     float _variance = 0.0;
-    
+
+    Line* leftMargin = new Line(cv::Point2f(-1.0, -1.0), cv::Point2f(-1.0, -1.0));
+    Line* rightMargin = new Line(cv::Point2f(-1.0, -1.0), cv::Point2f(-1.0, -1.0));
+
+//    unsigned int _sunLeft = std::numeric_limits<unsigned int>::max();
+//    unsigned int _sunRight = 0;
+//    unsigned int _sunTop = std::numeric_limits<unsigned int>::max();
+//    unsigned int _sunBottom = 0;
+
     cv::Point2f _leftDelimTop;
     cv::Point2f _leftDelimBottom;
     cv::Point2f _rightDelimTop;
     cv::Point2f _rightDelimBottom;
-
-//    Line leftDelim(cv::Point2f(), cv::Point2f());
-//    Line::Line rightDelim;
 };
 
 #endif
