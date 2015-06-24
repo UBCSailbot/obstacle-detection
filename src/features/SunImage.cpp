@@ -179,3 +179,8 @@ void SunImage::calcMeanVariance() {
     
     _variance = _variance /static_cast<float>(totalPix);
 }
+
+// TODO: Implement this function correctly.
+bool SunImage::isGlintInFrame() const {
+    return false;
+}

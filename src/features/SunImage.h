@@ -22,7 +22,15 @@ public:
 
     ~SunImage();
 
+    /**
+     * RETURN: Whether or not the sun is visible within the frame.
+     */
     bool isSunInFrame() const;
+
+    /**
+     * RETURN: Whether or not the water is reflecting sunlight.
+     */
+    bool isGlintInFrame() const;
 
     /**
      * RETURN: A point indicating the center of the sun in the frame.
@@ -30,7 +38,16 @@ public:
      */
     cv::Point2f getSunPosition() const;
 
+    /**
+     * RETURN: The left margin of the column containing sun glint in
+     *  the frame.
+     */
     Line getGlintLeftMargin() const;
+
+    /**
+     * RETURN: The right margin of the column containing sun glint in
+     *  the frame.
+     */
     Line getGlintRightMargin() const;
 
     float getMean();

@@ -145,3 +145,11 @@ TEST(SunImageTest, MeanVariance1PixFlatPointDiagHorizonWithOffSet) {
     EXPECT_FLOAT_EQ(sunImage.getMean(), pow(pow(20, 2) + pow(59, 2), 0.5)*cos(atan(59.0/20.0) - atan(59.0/79.0)));
     EXPECT_EQ(sunImage.getVariance(), 0);
 }
+
+TEST(SunImageTest, HorizonOutsideFrame) {
+    // TODO: Implement this test.
+}
+
+TEST(SunImageTest, GetDelimsNoSunPixels) {
+    // TODO: Implement this test.
+}
