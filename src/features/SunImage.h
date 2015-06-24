@@ -7,36 +7,51 @@
 
 #include <limits>
 
+#include "lepton/LeptonCameraDimensions.h"
+#include <iostream>
+#include <stack>
+
 #include "geometry/Horizon.h"
 
 class SunImage
 {
 public:
-    SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, float margin);
+    SunImage(const Horizon &horizon, const cv::Mat &frame,
+             unsigned int minSunPixelValue=DEFAULT_MIN_SUN_PIXEL_VALUE,
+             float margin=DEFAULT_MARGIN);
+
     ~SunImage();
 
-    void findSunPosition();
-    void findMeanVariance();
-    void findColumn();
+    bool isSunInFrame() const;
 
-    cv::Point2f getPosition() const;
-    float getMean() const;
-    float getVariance() const;
-    Line getLeftMargin() const;
-    Line getRightMargin() const;
+    /**
+     * RETURN: A point indicating the center of the sun in the frame.
+     *  If there is no sun in the frame, returns an empty point.
+     */
+    cv::Point2f getSunPosition() const;
+
+    Line getGlintLeftMargin() const;
+    Line getGlintRightMargin() const;
+
+    float getMean();
+    float getVariance();
+
+    static const unsigned int DEFAULT_MIN_SUN_PIXEL_VALUE = 8500;
+    static constexpr float DEFAULT_MARGIN = 1.5;
 
 private:
 
     //unsigned int sunRadius();
-    //Rect isSun();   //OpenCV doesn't have a circle class
+
+    void calcSunPosition();
+    void calcGlintColumn();
+
+    void calcMeanVariance();
 
     const Horizon _horizon;
     cv::Mat _frame;
     const unsigned int _minSunPixelValue;
     const float _margin;
-
-    //unsigned int sunRadius;
-//    bool hasSun = false;
 
     unsigned int _sunLeft = std::numeric_limits<unsigned int>::max();
     unsigned int _sunRight = 0;

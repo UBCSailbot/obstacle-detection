@@ -1,22 +1,58 @@
 #include "SunImage.h"
-#include "lepton/LeptonCameraDimensions.h"
-#include <iostream>
-#include <stack>
 
-SunImage::SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, float margin) : _horizon(horizon), _frame(frame), _minSunPixelValue(minSunPixelValue), _margin(margin) {
-    findSunPosition();
-    findColumn();
+SunImage::SunImage(const Horizon &horizon, const cv::Mat &frame,
+                   unsigned int minSunPixelValue, float margin) :
+            _horizon(horizon), _frame(frame),
+            _minSunPixelValue(minSunPixelValue), _margin(margin)
+{
+    calcSunPosition();
+    calcGlintColumn();
 }
 
 SunImage::~SunImage() {
 }
 
-void SunImage::findSunPosition() {
-    for (int row = 0; row < _frame.rows; row++) {
-        for (int col = 0; col < _frame.cols; col++) {
+cv::Point2f SunImage::getSunPosition() const {
+    if (isSunInFrame())
+        return cv::Point2f( (static_cast<float>(_sunLeft) + static_cast<float>(_sunRight)) / 2,
+                            (static_cast<float>(_sunTop) + static_cast<float>(_sunBottom)) / 2 );
+    return cv::Point2f();
+}
+
+bool SunImage::isSunInFrame() const {
+    return _sunLeft != std::numeric_limits<unsigned int>::max() &&
+            _sunTop != std::numeric_limits<unsigned int>::max();
+}
+
+Line SunImage::getGlintLeftMargin() const {
+    return Line(_leftDelimTop, _leftDelimBottom);
+}
+
+Line SunImage::getGlintRightMargin() const {
+    return Line(_rightDelimTop, _rightDelimBottom);
+}
+
+float SunImage::getMean() {
+    if (_mean == 0.0) {
+        calcMeanVariance();
+    }
+    return _mean;
+}
+
+float SunImage::getVariance() {
+    if (_mean == 0.0) {
+        calcMeanVariance();
+    }
+    return _variance;
+}
+
+void SunImage::calcSunPosition() {
+    for (unsigned int row = 0; row < _frame.rows; row++) {
+        for (unsigned int col = 0; col < _frame.cols; col++) {
             unsigned int value = _frame.at<uint16_t>(row, col);
 
-            if (value >= _minSunPixelValue && _horizon.isPointAbove(static_cast<float>(row), static_cast<float>(col))) {
+            if (value >= _minSunPixelValue &&
+                    _horizon.isPointAbove(static_cast<float>(row), static_cast<float>(col))) {
             	if (row > _sunBottom)
             		_sunBottom = row;
                 if (row < _sunTop)
@@ -30,72 +66,12 @@ void SunImage::findSunPosition() {
     }
 }
 
-cv::Point2f SunImage::getPosition() const {
-    if (_sunLeft != std::numeric_limits<unsigned int>::max() && _sunTop != std::numeric_limits<unsigned int>::max())
-        return cv::Point2f((static_cast<float>(_sunLeft)+static_cast<float>(_sunRight))/2, (static_cast<float>(_sunTop)+static_cast<float>(_sunBottom))/2);
-    return cv::Point2f();
-}
-
-void SunImage::findMeanVariance() {
+void SunImage::calcGlintColumn() {
     float offset = _horizon.getStartPoint().y;
     float y = _horizon.getEndPoint().y - _horizon.getStartPoint().y;
     float x = VIEWPORT_WIDTH_PIX - 1;
 
-    float magnitude = pow((pow(VIEWPORT_WIDTH_PIX - 1, 2) + pow(y, 2)), 0.5);
-    x = x / magnitude;
-    y = y / magnitude;
-
-    unsigned int totalPix = 0;
-    float totalSum = 0.0;
-    std::stack<float> tempResults;
-
-    //calculate dot product
-    for (int yValue = 0; yValue < _frame.rows; yValue++) {
-        for (int xValue = 0; xValue < _frame.cols; xValue++) {
-            if (_minSunPixelValue <= _frame.at<uint16_t>(yValue, xValue)) {
-
-                float tempValue = (yValue - offset) * y + xValue * x;
-                totalSum += tempValue;
-                tempResults.push(tempValue);
-                totalPix++;
-            }
-        }
-    }
-
-    if (totalPix == 0) {
-        _mean = -1;
-        _variance = -1;
-        return;
-    }
-
-    //calculate mean
-    totalPix = tempResults.size();
-    _mean = totalSum / static_cast<float>(totalPix);
-
-    //calculate variance
-    while (!tempResults.empty()) {
-        float tempResult = static_cast<float>(tempResults.top());
-        tempResults.pop();
-        _variance += pow((tempResult - _mean), 2);
-    }
-    
-    _variance = _variance /static_cast<float>(totalPix);
-}
-
-float SunImage::getVariance() const {
-    return _variance;
-}
-
-float SunImage::getMean() const {
-    return _mean;
-}
-
-void SunImage::findColumn() {
-    float offset = _horizon.getStartPoint().y;
-    float y = _horizon.getEndPoint().y - _horizon.getStartPoint().y;
-    float x = VIEWPORT_WIDTH_PIX - 1;
-
-    float magnitude = pow((pow(x, 2) + pow(y, 2)), 0.5);
+    float magnitude = (float) pow((pow(x, 2) + pow(y, 2)), 0.5);
     x = x / magnitude;
     y = y / magnitude;
 
@@ -106,7 +82,7 @@ void SunImage::findColumn() {
 
     if (_sunLeft != std::numeric_limits<unsigned int>::max() && _sunTop != std::numeric_limits<unsigned int>::max()) {
 
-        cv::Point2f sunPosition = getPosition();
+        cv::Point2f sunPosition = getSunPosition();
         leftPoint = cv::Point2d(sunPosition.x - static_cast<int>((_sunRight - _sunLeft) * _margin), sunPosition.y);
         rightPoint = cv::Point2d(sunPosition.x + static_cast<int>((_sunRight - _sunLeft) * _margin), sunPosition.y);
     }
@@ -134,7 +110,7 @@ void SunImage::findColumn() {
     }
 
     if ((leftLimit != std::numeric_limits<float>::max() && rightLimit != std::numeric_limits<float>::min())
-            || (_sunLeft != std::numeric_limits<unsigned int>::max() && _sunTop != std::numeric_limits<unsigned int>::max())) {
+        || (_sunLeft != std::numeric_limits<unsigned int>::max() && _sunTop != std::numeric_limits<unsigned int>::max())) {
         if (y != 0.0) {
             _leftDelimTop.y = 0.0;
             _leftDelimTop.x = (leftPoint.y + leftPoint.x*(x/y))/(x/y);
@@ -158,10 +134,48 @@ void SunImage::findColumn() {
     }
 }
 
-Line SunImage::getLeftMargin() const {
-    return Line(_leftDelimTop, _leftDelimBottom);
-}
+void SunImage::calcMeanVariance() {
+    float offset = _horizon.getStartPoint().y;
+    float y = _horizon.getEndPoint().y - _horizon.getStartPoint().y;
+    float x = VIEWPORT_WIDTH_PIX - 1;
 
-Line SunImage::getRightMargin() const {
-    return Line(_rightDelimTop, _rightDelimBottom);
+    float magnitude = (float) pow((pow(VIEWPORT_WIDTH_PIX - 1, 2) + pow(y, 2)), 0.5);
+    x = x / magnitude;
+    y = y / magnitude;
+
+    unsigned int totalPix = 0;
+    float totalSum = 0.0;
+    std::stack<float> tempResults;
+
+    //calculate dot product
+    for (int yValue = 0; yValue < _frame.rows; yValue++) {
+        for (int xValue = 0; xValue < _frame.cols; xValue++) {
+            if (_minSunPixelValue <= _frame.at<uint16_t>(yValue, xValue)) {
+
+                float tempValue = (yValue - offset) * y + xValue * x;
+                totalSum += tempValue;
+                tempResults.push(tempValue);
+                totalPix++;
+            }
+        }
+    }
+
+    if (totalPix == 0) {
+        _mean = -1;
+        _variance = -1;
+        return;
+    }
+
+    //calculate mean
+    totalPix = (unsigned int) tempResults.size();
+    _mean = totalSum / static_cast<float>(totalPix);
+
+    //calculate variance
+    while (!tempResults.empty()) {
+        float tempResult = static_cast<float>(tempResults.top());
+        tempResults.pop();
+        _variance += pow((tempResult - _mean), 2);
+    }
+    
+    _variance = _variance /static_cast<float>(totalPix);
 }
