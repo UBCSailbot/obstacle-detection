@@ -3,7 +3,6 @@
 //
 
 #include "LeptonI2C.h"
-#include "LEPTON_SYS.h"
 
 bool _connected;
 
@@ -27,20 +26,18 @@ void lepton_perform_ffc() {
 
 
 
-void lepton_openShutter(){   
-    LEP_GetSysShutterPosition(&_port, lep_sys_shutter_position_e_ptr);  
+void lepton_openShutter() {
+    LEP_GetSysShutterPosition(&_port, lep_sys_shutter_position_e_ptr);
 
-    if (*lep_sys_shutter_position_e_ptr == LEP_SYS_SHUTTER_POSITION_CLOSED){  
-        LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_OPEN); 
+    if (*lep_sys_shutter_position_e_ptr == LEP_SYS_SHUTTER_POSITION_CLOSED) {
+        LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_OPEN);
+    }
+}
+
+void lepton_closeShutter() {
+    LEP_GetSysShutterPosition(&_port, lep_sys_shutter_position_e_ptr);
+    if (*lep_sys_shutter_position_e_ptr == LEP_SYS_SHUTTER_POSITION_OPEN) {
+        LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_CLOSED);
     }
 
-     }
-
-void lepton_closeShutter(){  
-
-    LEP_GetSysShutterPosition(&_port, lep_sys_shutter_position_e_ptr);  
-    if (*lep_sys_shutter_position_e_ptr == LEP_SYS_SHUTTER_POSITION_OPEN ){  
-        LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_CLOSED); 
-    }
-
-     }
+}

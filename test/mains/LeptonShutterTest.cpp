@@ -2,7 +2,7 @@
 // Created by Aditi Chakravarthi on 15-06-20.
 //
 
-#include "lepton/leptonI2C.h"
+#include "lepton/LeptonI2C.h"
 #include <unistd.h>
 
 
