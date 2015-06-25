@@ -19,6 +19,8 @@ add_executable(rigRunner src/mains/RigRunner.cpp ${CORE_SOURCE_FILES} ${DEVICE_S
 
 add_executable(rescale src/mains/RunRescaling.cpp ${CORE_SOURCE_FILES})
 
+add_executable(sunImageRunner src/mains/SunImageRunner.cpp ${CORE_SOURCE_FILES})
+
 
 #########
 # TESTS #
@@ -149,6 +151,7 @@ list(APPEND CORE_LIBS ${CMAKE_THREAD_LIBS_INIT})
 #  executables as necessary
 target_link_libraries(rigRunner ${CORE_LIBS} ${DEVICE_LIBS})
 target_link_libraries(rescale ${CORE_LIBS})
+target_link_libraries(sunImageRunner ${CORE_LIBS})
 
 target_link_libraries(runCoreTests ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
 

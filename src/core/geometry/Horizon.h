@@ -30,10 +30,7 @@ public:
     RETURN: true if point is above horizon
     */
     bool isPointAbove(cv::Point2f pointOfInterest) const;
-
-
     bool isPointAbove(const float &x, const float &y) const;
-
 
     /*
     Check if rectangle intersect the horizon.

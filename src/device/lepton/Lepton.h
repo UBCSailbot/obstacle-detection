@@ -16,7 +16,7 @@
 
 #include "LeptonI2C.h"
 
-#include "imageTypes/Image16bit.h"
+#include "types/Image16bit.h"
 
 #define PACKET_SIZE 164
 #define PACKET_SIZE_UINT16 (PACKET_SIZE/2)

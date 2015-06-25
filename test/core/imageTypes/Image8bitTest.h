@@ -11,7 +11,7 @@
 
 #include <opencv2/core/core.hpp>
 
-#include "imageTypes/Image8bit.h"
+#include "types/Image8bit.h"
 
 class Image8bitTest : public ::testing::Test {
 protected:

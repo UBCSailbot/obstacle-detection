@@ -11,7 +11,7 @@
 
 #include <opencv2/core/core.hpp>
 
-#include "imageTypes/Image16bit.h"
+#include "types/Image16bit.h"
 
 class Image16bitTest : public ::testing::Test {
 protected:
