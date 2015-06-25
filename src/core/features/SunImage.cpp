@@ -1,10 +1,12 @@
 #include "SunImage.h"
 
-SunImage::SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, float margin) :
+SunImage::SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue,
+                       unsigned int minGlintPixelValue, float glintColumnMargin) :
         _horizon(horizon),
         _frame(frame),
         _minSunPixelValue(minSunPixelValue),
-        _margin(margin)
+        _minGlintPixelValue(minGlintPixelValue),
+        _margin(glintColumnMargin)
 {
     findSunPosition();
     findGlintColumn();
@@ -73,7 +75,7 @@ void SunImage::findGlintColumn() {
         //calculate dot product
         for (float yValue = 0.0; yValue < _frame.rows; yValue++) {
             for (float xValue = 0.0; xValue < _frame.cols; xValue++) {
-                if (_minSunPixelValue <= _frame.at<uint16_t>(yValue, xValue)
+                if (_frame.at<uint16_t>(yValue, xValue) >= _minGlintPixelValue
                     && !_horizon.isPointAbove(xValue, yValue)) {
 
                     float tempValue = (yValue - offset) * y + xValue * x;
@@ -120,6 +122,11 @@ Line* SunImage::getLeftGlintMargin() const {
 
 Line* SunImage::getRightGlintMargin() const {
     return _rightMargin;
+}
+
+bool SunImage::containsGlint() const {
+    //TODO: Implement this function.
+    return false;
 }
 
 void SunImage::findMeanVariance() {

@@ -7,8 +7,8 @@
 int main(int argc, char** argv) {
 
 
-    if(argc < 4) {
-        std::cout << "Usage: <input_image> <sun_brightness> <margin>" << std::endl;
+    if(argc < 5) {
+        std::cout << "Usage: <input_image> <sun_brightness> <glint_brightness> <margin>" << std::endl;
         return -1;
     }
 
@@ -20,8 +20,9 @@ int main(int argc, char** argv) {
         return -1;
     }
 
+    // TODO: take in a proper horizon somehow
     Horizon h(cv::Point2f (0, 50), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
-    SunImage sunImage = SunImage(h, grayScale, atoi(argv[2]), atof(argv[3]));
+    SunImage sunImage = SunImage(h, grayScale, atoi(argv[2]), atof(argv[3]), atof(argv[4]));
 
     cv::Mat rendering = sunImage.render();
 

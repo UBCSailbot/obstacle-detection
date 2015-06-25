@@ -35,7 +35,8 @@ public:
     SunImage(const Horizon &horizon,
              const cv::Mat &frame,
              unsigned int minSunPixelValue = DEFAULT_MIN_SUN_PIXEL_VALUE,
-             float margin = DEFAULT_MARGIN);
+             unsigned int minGlintPixelValue = DEFAULT_MIN_GLINT_PIXEL_VALUE,
+             float glintColumnMargin = DEFAULT_MARGIN);
     ~SunImage();
 
     void findSunPosition();
@@ -66,6 +67,12 @@ public:
      */
     Line* getRightGlintMargin() const;
 
+    /**
+     * RETURN: Whether this frame contains sun glint reflecting from the
+     *  water.
+     */
+    bool containsGlint() const;
+
     void findMeanVariance();
     float getMean() const;
     float getVariance() const;
@@ -85,10 +92,15 @@ public:
      */
     cv::Mat render() const;
 
+    static const unsigned int DEFAULT_MIN_SUN_PIXEL_VALUE = 10000;
+    static const unsigned int DEFAULT_MIN_GLINT_PIXEL_VALUE = 8800;
+    static constexpr float DEFAULT_MARGIN = 1.5;
+
 private:
     const Horizon _horizon;
     cv::Mat _frame;
     const unsigned int _minSunPixelValue;
+    const unsigned int _minGlintPixelValue;
     const float _margin;
 
     Rect2f _sunPosition = Rect2f(-1.0f, -1.0f, -1.0f, -1.0f);
@@ -99,8 +111,6 @@ private:
     Line* _leftMargin = new Line(cv::Point2f(-1.0f, -1.0f), cv::Point2f(-1.0f, -1.0f));
     Line* _rightMargin = new Line(cv::Point2f(-1.0f, -1.0f), cv::Point2f(-1.0f, -1.0f));
 
-    static const unsigned int DEFAULT_MIN_SUN_PIXEL_VALUE = 8500;
-    static constexpr float DEFAULT_MARGIN = 1.5;
 };
 
 #endif
