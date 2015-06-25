@@ -19,7 +19,7 @@ add_executable(rigRunner src/mains/RigRunner.cpp ${CORE_SOURCE_FILES} ${DEVICE_S
 
 add_executable(rescale src/mains/RunRescaling.cpp ${CORE_SOURCE_FILES})
 
-add_executable(sunImageRunner src/mains/SunImageRunner.cpp ${SOURCE_FILES})
+add_executable(sunImageRunner src/mains/SunImageRunner.cpp ${CORE_SOURCE_FILES})
 
 
 #########
