@@ -34,6 +34,8 @@ public:
     float getMean() const;
     float getVariance() const;
 
+    cv::Mat render() const;
+
 private:
     const Horizon _horizon;
     cv::Mat _frame;

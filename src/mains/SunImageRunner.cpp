@@ -14,7 +14,6 @@ int main(int argc, char** argv) {
     }
 
     cv::Mat grayScale = cv::imread(argv[1], CV_LOAD_IMAGE_UNCHANGED);
-    cv::Mat color = cv::imread(argv[1], CV_LOAD_IMAGE_COLOR);
 
     if(! grayScale.data )
     {
@@ -25,12 +24,9 @@ int main(int argc, char** argv) {
     Horizon h = Horizon(cv::Point2f (0, 50), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
     SunImage sunImage = SunImage(h, grayScale, atoi(argv[2]), atof(argv[3]));
 
-    rectangle(color, sunImage.getSunPosition(), cv::Scalar(0, 0, 0xFFFF));
-    line(color, h.getStartPoint(), h.getEndPoint(), cv::Scalar(0xFFFF, 0, 0));
-    line(color, sunImage.getLeftGlintMargin()->getStartPoint(), sunImage.getLeftGlintMargin()->getEndPoint(), cv::Scalar(0, 0xFFFF, 0));
-    line(color, sunImage.getRightGlintMargin()->getStartPoint(), sunImage.getRightGlintMargin()->getEndPoint(), cv::Scalar(0, 0xFFFF, 0));
+    cv::Mat rendering = sunImage.render();
 
-    resize(color, color, cv::Size(400,300), 0, 0, cv::INTER_NEAREST);
-    cv::imshow("windows", color);
+    resize(rendering, rendering, cv::Size(400,300), 0, 0, cv::INTER_NEAREST);
+    cv::imshow("windows", rendering);
     cv::waitKey(0);
 }

@@ -35,7 +35,7 @@ set(SOURCE_FILES src/display/DesktopDisplay.cpp
 
 
 add_executable(rigRunner src/rig/RigRunner.cpp ${SOURCE_FILES})
-add_executable(sunImageRunner src/mains/sunImageRunner.cpp ${SOURCE_FILES})
+add_executable(sunImageRunner src/mains/SunImageRunner.cpp ${SOURCE_FILES})
 
 #########
 # TESTS #

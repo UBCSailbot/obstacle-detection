@@ -43,7 +43,7 @@ void SunImage::findSunPosition() {
 }
 
 bool SunImage::containsSun() const {
-    return _sunPosition != Rect2f(-1.0, -1.0, -1.0, -1.0);
+    return _sunPosition != Rect2f(-1.0f, -1.0f, -1.0f, -1.0f);
 }
 
 Rect2f SunImage::getSunPosition() const {
@@ -176,3 +176,14 @@ float SunImage::getMean() const {
     return _mean;
 }
 
+cv::Mat SunImage::render() const {
+    cv::Mat sunImage(_frame.rows, _frame.cols, CV_8UC3);
+    cv::cvtColor(_frame, sunImage, cv::COLOR_GRAY2BGR);
+
+    rectangle(sunImage, getSunPosition(), cv::Scalar(0, 0, 0xFFFF));
+    line(sunImage, _horizon.getStartPoint(), _horizon.getEndPoint(), cv::Scalar(0xFFFF, 0, 0));
+    line(sunImage, getLeftGlintMargin()->getStartPoint(), getLeftGlintMargin()->getEndPoint(), cv::Scalar(0, 0xFFFF, 0));
+    line(sunImage, getRightGlintMargin()->getStartPoint(), getRightGlintMargin()->getEndPoint(), cv::Scalar(0, 0xFFFF, 0));
+
+    return sunImage;
+}
