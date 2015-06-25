@@ -3,66 +3,66 @@ project(obstacle_avoidance)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+
 ###########
 # SOURCES #
 ###########
 
-# Add src folder to header search path so that we don't have to `#include` relative paths
-include_directories( src )
+# Add src folders to header search path so that we don't have to `#include` relative paths
+include_directories( src/core )
+include_directories( src/device )
 
-set(SOURCE_FILES src/display/DesktopDisplay.cpp
-                 src/display/Display.h
-                 src/display/RoboPeakUSBDisplay.cpp
-                 src/features/SunImage.cpp
-                 src/geometry/Horizon.cpp
-                 src/geometry/Line.cpp
-                 src/imageProc/EightBitWindowRescaler.cpp
-                 src/imageProc/core/HorizonImageHistogram.cpp
-                 src/imageProc/core/ImageHistogram.cpp
-                 src/imageProc/SimpleRescaler.cpp
-                 src/imageProc/HorizonModalRescaler.cpp
-                 src/imageProc/HorizonRescaler.h
-                 src/imageProc/ModalRescaler.cpp
-                 src/imageProc/Rescaler.h
-                 src/imageTypes/Image8bit.cpp
-                 src/imageTypes/Image16bit.cpp
-                 src/lepton/Lepton.cpp
-                 src/lepton/LeptonSPI.cpp
-                 src/lepton/LeptonI2C.cpp
-                 src/imu/IMU.cpp
-                 src/imu/ParallelIMU.cpp
-                 )
+file(GLOB_RECURSE CORE_SOURCE_FILES src/core/*.cpp src/core/*.h)
+file(GLOB_RECURSE DEVICE_SOURCE_FILES src/device/*.cpp src/device/*.h)
 
+add_executable(rigRunner src/mains/RigRunner.cpp ${CORE_SOURCE_FILES} ${DEVICE_SOURCE_FILES})
 
-add_executable(rigRunner src/rig/RigRunner.cpp ${SOURCE_FILES})
+add_executable(rescale src/mains/RunRescaling.cpp ${CORE_SOURCE_FILES})
+
 add_executable(sunImageRunner src/mains/SunImageRunner.cpp ${SOURCE_FILES})
+
 
 #########
 # TESTS #
 #########
 
-# Add test folder to header search path so that we don't have to `#include` relative paths
-include_directories( test )
+# Add test folders to header search path so that we don't have to `#include` relative paths
+include_directories( test/core )
+include_directories( test/device )
+include_directories( test/support )
 
-set(TEST_FILES ${SOURCE_FILES} test/geometry/HorizonTest.cpp
-                               test/geometry/LineTest.cpp
-                               test/imageProc/core/HorizonImageHistogramTest.cpp
-                               test/imageProc/core/ImageHistogramTest.cpp
-                               test/imu/MockIMU.cpp
-                               test/imu/IMUTest.cpp
-                               test/features/SunImageTest.cpp
-                               )
+file(GLOB_RECURSE CORE_TEST_FILES test/core/*.cpp test/core/*.h)
+file(GLOB_RECURSE DEVICE_TEST_FILES test/device/*.cpp test/device/*.h)
+file(GLOB_RECURSE SUPPORT_TEST_FILES test/support/*.cpp test/support/*.h)
 
-add_executable(runTests test/TestRunner.cpp ${TEST_FILES})
-# The following command copies the resources folder into the binary directory.
-add_custom_command(TARGET runTests POST_BUILD
+set(CORE_TEST_FILES ${CORE_TEST_FILES} ${CORE_SOURCE_FILES} ${SUPPORT_TEST_FILES})
+set(DEVICE_TEST_FILES ${DEVICE_TEST_FILES} ${DEVICE_SOURCE_FILES} ${SUPPORT_TEST_FILES})
+
+# Create target for automated unit tests
+add_executable(runCoreTests
+               test/mains/CoreTestRunner.cpp
+               ${CORE_TEST_FILES}
+)
+
+# IMU testing
+add_executable(imuTest
+               test/mains/IMUTest.cpp
+               ${DEVICE_TEST_FILES}
+)
+
+# Display testing
+add_executable(displayTest
+               test/mains/DisplayTest.cpp
+               ${DEVICE_TEST_FILES}
+)
+
+# The following command copies the resources folder into the binary directory,
+#  making it possible to load resources from a relative path within the project
+add_custom_command(TARGET runCoreTests POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
                         ${CMAKE_SOURCE_DIR}/resources
                         ${CMAKE_BINARY_DIR}/resources
 )
-
-add_executable(displayTest test/display/DisplayTest.cpp ${TEST_FILES})
-add_executable(imageDisplayDriver test/ImageDisplayDriver.cpp ${TEST_FILES})
 
 
 ##################
@@ -70,23 +70,44 @@ add_executable(imageDisplayDriver test/ImageDisplayDriver.cpp ${TEST_FILES})
 ##################
 
 # Add google test framework
-ADD_SUBDIRECTORY(lib/gtest-1.7.0 gtest)
+add_subdirectory(lib/gtest-1.7.0 gtest)
 include_directories(gtest STATIC lib/gtest-1.7.0/include )
 
+set(TEST_FRAMEWORK_LIBS gtest)
 
 #################
-# INTERNAL LIBS #
+# CORE LIBRARIES #
 #################
 
-set(LIBRARIES )
+set( CORE_LIBS )
 
-# Add RTIMULib
+# OpenCV must be independently preinstalled on the host machine
+find_package (OpenCV REQUIRED)
+list(APPEND CORE_LIBS ${OpenCV_LIBS} )
+
+# We use QT for handling file system paths
+FIND_PACKAGE(Qt4 REQUIRED)
+INCLUDE(${QT_USE_FILE})
+list(APPEND CORE_LIBS ${QT_LIBRARIES})
+
+# Include tclap - a header-only library for command-line parsing
+include_directories( lib/tclap/include )
+
+
+####################
+# DEVICE LIBRARIES #
+####################
+
+set( DEVICE_LIBS )
+
+# RTIMULib is compiled with the project
 include_directories(RTIMULib STATIC
                     lib/RTIMULib)
-ADD_SUBDIRECTORY(lib/RTIMULib RTIMULib)
-list(APPEND LIBRARIES RTIMULib)
+add_subdirectory(lib/RTIMULib RTIMULib)
+list(APPEND DEVICE_LIBS RTIMULib)
 
-# Add Lepton SDK
+
+# Lepton SDK is compiled with the project
 include_directories(lib/leptonSDKEmb32PUB)
 set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/leptonSDKEmb32PUB)
 add_custom_target(
@@ -96,10 +117,11 @@ add_custom_target(
 )
 add_dependencies(displayTest leptonSDK)
 add_dependencies(rigRunner leptonSDK)
-add_dependencies(runTests leptonSDK)
-list(APPEND LIBRARIES ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
+add_dependencies(runCoreTests leptonSDK)
+list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
-# Add rpusbdisp
+
+# rpusbdisp is compiled with the project
 set(RPUSBDISP_DIR ${CMAKE_SOURCE_DIR}/lib/rpusbdisp/usermode-sdk)
 include_directories(${RPUSBDISP_DIR})
 include_directories(${RPUSBDISP_DIR}/infra/include)
@@ -112,23 +134,26 @@ add_custom_target(
 )
 add_dependencies(rigRunner rpusbdisp)
 add_dependencies(displayTest rpusbdisp)
-list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
-list(APPEND LIBRARIES ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
+list(APPEND DEVICE_LIBS ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
+list(APPEND DEVICE_LIBS ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 
-#################
-# EXTERNAL LIBS #
-#################
 
-# Add OpenCV
-find_package (OpenCV)
-list(APPEND LIBRARIES ${OpenCV_LIBS} )
-
-# Add pthreads
+# Threads library must be independently preinstalled on the host machine
 find_package (Threads REQUIRED)
-list(APPEND LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+list(APPEND CORE_LIBS ${CMAKE_THREAD_LIBS_INIT})
 
-TARGET_LINK_LIBRARIES(rigRunner ${LIBRARIES})
-TARGET_LINK_LIBRARIES(sunImageRunner ${LIBRARIES})
-TARGET_LINK_LIBRARIES(runTests ${LIBRARIES} gtest)
-TARGET_LINK_LIBRARIES(displayTest ${LIBRARIES})
-TARGET_LINK_LIBRARIES(imageDisplayDriver ${LIBRARIES} gtest)
+
+###################
+# LIBRARY LINKING #
+###################
+
+# Once all the libraries have been loaded, they can be linked to the
+#  executables as necessary
+target_link_libraries(rigRunner ${CORE_LIBS} ${DEVICE_LIBS})
+target_link_libraries(rescale ${CORE_LIBS})
+target_link_libraries(sunImageRunner ${CORE_LIBS})
+
+target_link_libraries(runCoreTests ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
+
+target_link_libraries(imuTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
+target_link_libraries(displayTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
