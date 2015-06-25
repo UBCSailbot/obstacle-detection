@@ -3,18 +3,17 @@
 //
 
 #include "lepton/leptonI2C.h"
-
+#include <unistd.h>
 
 
 
 int main() {
 
-void lepton_openShutter();
+    lepton_closeShutter();
 
-    
+    sleep(5);
 
-void lepton_closeShutter();
-
+    lepton_openShutter();
 
 }
 
