@@ -79,7 +79,9 @@ public:
      * RETURN: An 8-bit 3-channel color Mat with the following features
      *  rendered on it:
      *      - a red rectangle around the sun, if the sun is in the frame
-     *      - a
+     *      - a blue line where the horizon is
+     *      - two parallel green lines forming a column perpendicular to the
+     *        horizon, within which sun glint is thought to be located
      */
     cv::Mat render() const;
 

@@ -2,8 +2,7 @@
 // Created by delun on 16/06/15.
 //
 
-#include "../features/SunImage.h"
-#include <iostream>
+#include "features/SunImage.h"
 
 int main(int argc, char** argv) {
 
@@ -21,7 +20,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    Horizon h = Horizon(cv::Point2f (0, 50), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
+    Horizon h(cv::Point2f (0, 50), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
     SunImage sunImage = SunImage(h, grayScale, atoi(argv[2]), atof(argv[3]));
 
     cv::Mat rendering = sunImage.render();
