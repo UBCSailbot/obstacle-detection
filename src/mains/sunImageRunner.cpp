@@ -27,8 +27,8 @@ int main(int argc, char** argv) {
 
     line(color, sunImage.getSunPosition(), sunImage.getSunPosition(), cv::Scalar(0, 0, 0xFFFF));
     line(color, h.getStartPoint(), h.getEndPoint(), cv::Scalar(0xFFFF, 0, 0));
-    line(color, sunImage.getLeftMargin().getStartPoint(), sunImage.getLeftMargin().getEndPoint(), cv::Scalar(0, 0xFFFF, 0));
-    line(color, sunImage.getRightMargin().getStartPoint(), sunImage.getRightMargin().getEndPoint(), cv::Scalar(0, 0xFFFF, 0));
+    line(color, sunImage.getLeftGlintMargin().getStartPoint(), sunImage.getLeftGlintMargin().getEndPoint(), cv::Scalar(0, 0xFFFF, 0));
+    line(color, sunImage.getRightGlintMargin().getStartPoint(), sunImage.getRightGlintMargin().getEndPoint(), cv::Scalar(0, 0xFFFF, 0));
 
     resize(color, color, cv::Size(400,300), 0, 0, cv::INTER_NEAREST);
     cv::imshow("windows", color);

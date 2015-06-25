@@ -1,11 +1,13 @@
 #include "SunImage.h"
-#include "lepton/LeptonCameraDimensions.h"
-#include <iostream>
-#include <stack>
 
-SunImage::SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, float margin) : _horizon(horizon), _frame(frame), _minSunPixelValue(minSunPixelValue), _margin(margin) {
+SunImage::SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int minSunPixelValue, float margin) :
+        _horizon(horizon),
+        _frame(frame),
+        _minSunPixelValue(minSunPixelValue),
+        _margin(margin)
+{
     findSunPosition();
-    findColumn();
+    findGlintColumn();
 }
 
 SunImage::~SunImage() {
@@ -40,11 +42,15 @@ void SunImage::findSunPosition() {
         _sunPosition = Rect2f(cv::Point2f(sunLeft, sunTop), cv::Point2f(sunRight, sunBottom));
 }
 
+bool SunImage::containsSun() const {
+    return _sunPosition != Rect2f(-1.0, -1.0, -1.0, -1.0);
+}
+
 Rect2f SunImage::getSunPosition() const {
     return _sunPosition;
 }
 
-void SunImage::findColumn() {
+void SunImage::findGlintColumn() {
     float offset = _horizon.getStartPoint().y;
     float y = _horizon.getEndPoint().y - _horizon.getStartPoint().y;
     float x = VIEWPORT_WIDTH_PIX - 1;
@@ -108,11 +114,11 @@ void SunImage::findColumn() {
     }
 }
 
-Line* SunImage::getLeftMargin() const {
+Line* SunImage::getLeftGlintMargin() const {
     return _leftMargin;
 }
 
-Line* SunImage::getRightMargin() const {
+Line* SunImage::getRightGlintMargin() const {
     return _rightMargin;
 }
 
@@ -169,3 +175,4 @@ float SunImage::getVariance() const {
 float SunImage::getMean() const {
     return _mean;
 }
+
