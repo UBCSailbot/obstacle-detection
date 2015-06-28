@@ -55,3 +55,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Test file
+drop.avi
+demo_metainfo.label
