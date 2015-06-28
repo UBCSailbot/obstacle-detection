@@ -24,8 +24,21 @@ while(cap.isOpened()):
     cv2.namedWindow('frame')
     cv2.cv.SetMouseCallback('frame', on_mouse, 0)
     cv2.imshow('frame',frame)
-    while not cv2.waitKey(2555904):
-        pass
+
+    k=-1
+    while k not in (ord('u'), ord('n'), 2555904):
+	    k = cv2.waitKey(0)
+	    
+    if k==27:    # Esc key to stop
+        break
+    elif k==ord('u'):
+        print "undefined"
+        continue
+    elif k==ord('n'):
+        print "nothing interesting"
+        continue
+    elif k==2555904:  # right arrow
+        continue
 
 cap.release()
 cv2.destroyAllWindows()
