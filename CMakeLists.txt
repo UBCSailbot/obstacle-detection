@@ -56,6 +56,12 @@ add_executable(displayTest
                ${DEVICE_TEST_FILES}
 )
 
+# Lepton testing
+add_executable(leptonShutter
+               test/mains/LeptonShutterTest.cpp
+               ${DEVICE_TEST_FILES}
+)
+
 # The following command copies the resources folder into the binary directory,
 #  making it possible to load resources from a relative path within the project
 add_custom_command(TARGET runCoreTests POST_BUILD
@@ -117,7 +123,8 @@ add_custom_target(
 )
 add_dependencies(displayTest leptonSDK)
 add_dependencies(rigRunner leptonSDK)
-add_dependencies(runCoreTests leptonSDK)
+add_dependencies(leptonShutter leptonSDK)
+
 list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
 
@@ -134,6 +141,7 @@ add_custom_target(
 )
 add_dependencies(rigRunner rpusbdisp)
 add_dependencies(displayTest rpusbdisp)
+add_dependencies(leptonShutter rpusbdisp)
 list(APPEND DEVICE_LIBS ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
 list(APPEND DEVICE_LIBS ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
 
@@ -157,3 +165,4 @@ target_link_libraries(runCoreTests ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
 
 target_link_libraries(imuTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
 target_link_libraries(displayTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
+target_link_libraries(leptonShutter ${CORE_LIBS} ${DEVICE_LIBS})

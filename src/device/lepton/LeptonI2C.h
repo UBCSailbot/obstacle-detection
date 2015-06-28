@@ -9,7 +9,9 @@
 #include "LEPTON_SYS.h"
 #include "LEPTON_Types.h"
 
+int lepton_connect();
 void lepton_perform_ffc();
-
+void lepton_openShutter();
+void lepton_closeShutter();
 
 #endif //OBSTACLE_AVOIDANCE_LEPTONI2C_H
