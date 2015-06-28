@@ -9,6 +9,9 @@
 
 int main() {
 
+
+    lepton_connect();
+
     lepton_closeShutter();
 
     sleep(5);

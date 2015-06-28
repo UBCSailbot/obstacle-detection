@@ -9,7 +9,7 @@ bool _connected;
 
 
 LEP_CAMERA_PORT_DESC_T _port;
-LEP_SYS_SHUTTER_POSITION_E_PTR lep_sys_shutter_position_e_ptr;
+LEP_SYS_SHUTTER_POSITION_E _lep_sys_shutter_position_e;
 
 int lepton_connect() {
     LEP_OpenPort(1, LEP_CCI_TWI, 400, &_port);
@@ -27,16 +27,16 @@ void lepton_perform_ffc() {
 
 
 void lepton_openShutter() {
-    LEP_GetSysShutterPosition(&_port, lep_sys_shutter_position_e_ptr);
+    LEP_GetSysShutterPosition(&_port, &_lep_sys_shutter_position_e);
 
-    if (*lep_sys_shutter_position_e_ptr == LEP_SYS_SHUTTER_POSITION_CLOSED) {
+    if (_lep_sys_shutter_position_e == LEP_SYS_SHUTTER_POSITION_CLOSED) {
         LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_OPEN);
     }
 }
 
 void lepton_closeShutter() {
-    LEP_GetSysShutterPosition(&_port, lep_sys_shutter_position_e_ptr);
-    if (*lep_sys_shutter_position_e_ptr == LEP_SYS_SHUTTER_POSITION_OPEN) {
+    LEP_GetSysShutterPosition(&_port, &_lep_sys_shutter_position_e);
+    if (_lep_sys_shutter_position_e == LEP_SYS_SHUTTER_POSITION_OPEN) {
         LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_CLOSED);
     }
 
