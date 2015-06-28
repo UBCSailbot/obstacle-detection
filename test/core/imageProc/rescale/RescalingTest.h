@@ -10,8 +10,8 @@
 #include "ImageLoaderForTests.h"
 
 #include "imageProc/rescale/Rescaling.h"
-#include "imageTypes/Image16bit.h"
-#include "imageTypes/Image8bit.h"
+#include "types/Image16bit.h"
+#include "types/Image8bit.h"
 
 class RescalingTest : public ImageLoaderForTests {
 

@@ -11,12 +11,14 @@
 #include "features/SunImage.h"
 #include "display/Display.h"
 #include "display/RoboPeakUSBDisplay.h"
+#include "types/Image8bit.h"
+#include "types/Image16bit.h"
+#include "geometry/Horizon.h"
+#include "imageProc/rescale/SimpleRescaler.h"
 
 #include <signal.h>
 #include <fstream>
 
-#include <imageTypes/Image8bit.h>
-#include "imageProc/rescale/SimpleRescaler.h"
 
 using namespace std;
 using namespace cv;

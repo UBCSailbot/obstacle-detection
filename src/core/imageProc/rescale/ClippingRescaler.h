@@ -6,9 +6,9 @@
 #define OBSTACLE_AVOIDANCE_HORIZONMEDIALRESCALER_H
 
 
-#include "imageTypes/Image16bit.h"
+#include "types/Image16bit.h"
 #include "geometry/Horizon.h"
-#include "imageTypes/Image8bit.h"
+#include "types/Image8bit.h"
 #include "imageProc/smoothing/AveragedBufferedSmoother.h"
 #include "Rescaling.h"
 #include "imageProc/histogram/CentralTendencyGetter.h"

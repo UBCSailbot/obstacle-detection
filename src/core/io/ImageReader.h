@@ -8,8 +8,8 @@
 #include <string>
 
 #include <opencv2/highgui/highgui.hpp>
-#include <imageTypes/Image16bit.h>
-#include <imageTypes/Image8bit.h>
+#include <types/Image16bit.h>
+#include <types/Image8bit.h>
 
 class ImageReader {
 

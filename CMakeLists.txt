@@ -15,9 +15,11 @@ include_directories( src/device )
 file(GLOB_RECURSE CORE_SOURCE_FILES src/core/*.cpp src/core/*.h)
 file(GLOB_RECURSE DEVICE_SOURCE_FILES src/device/*.cpp src/device/*.h)
 
-add_executable(rigRunner src/mains/RigRunner.cpp ${CORE_SOURCE_FILES} ${DEVICE_SOURCE_FILES})
+add_executable(rigRunner src/main/RigRunner.cpp ${CORE_SOURCE_FILES} ${DEVICE_SOURCE_FILES})
 
-add_executable(rescale src/mains/RunRescaling.cpp ${CORE_SOURCE_FILES})
+add_executable(rescale src/main/RunRescaling.cpp ${CORE_SOURCE_FILES})
+
+add_executable(sunImageRunner src/main/SunImageRunner.cpp ${CORE_SOURCE_FILES})
 
 
 #########
@@ -38,19 +40,19 @@ set(DEVICE_TEST_FILES ${DEVICE_TEST_FILES} ${DEVICE_SOURCE_FILES} ${SUPPORT_TEST
 
 # Create target for automated unit tests
 add_executable(runCoreTests
-               test/mains/CoreTestRunner.cpp
+               test/main/CoreTestRunner.cpp
                ${CORE_TEST_FILES}
 )
 
 # IMU testing
 add_executable(imuTest
-               test/mains/IMUTest.cpp
+               test/main/IMUTest.cpp
                ${DEVICE_TEST_FILES}
 )
 
 # Display testing
 add_executable(displayTest
-               test/mains/DisplayTest.cpp
+               test/main/DisplayTest.cpp
                ${DEVICE_TEST_FILES}
 )
 
@@ -157,6 +159,7 @@ list(APPEND CORE_LIBS ${CMAKE_THREAD_LIBS_INIT})
 #  executables as necessary
 target_link_libraries(rigRunner ${CORE_LIBS} ${DEVICE_LIBS})
 target_link_libraries(rescale ${CORE_LIBS})
+target_link_libraries(sunImageRunner ${CORE_LIBS})
 
 target_link_libraries(runCoreTests ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
 
