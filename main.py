@@ -44,8 +44,9 @@ while(cap.isOpened()):
     cv2.imshow('frame',frame)
 
     k=-1
-    while k not in (27, ord('u'), ord('n'), ord('s'), 2555904):
-	    k = cv2.waitKey(0)
+    while k not in (27, ord('u'), ord('n'), ord('s'), 2490368, 2621440, 2555904):
+        k = cv2.waitKey(0)
+        print str(k) + " was pressed"
 
     if k==27:    # Esc key to stop
         break
@@ -55,7 +56,9 @@ while(cap.isOpened()):
     elif k==ord('n'):
         print "nothing interesting"
         continue
-    elif k==ord('s'):
+    elif k==2490368:
+        cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES) - 25)
+    elif k==2621440:
         cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES) + 23)
     elif k==2555904:  # right arrow for next frame
         continue
