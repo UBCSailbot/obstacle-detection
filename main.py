@@ -4,6 +4,7 @@ import sys
 import collections
 import logWrite
 
+frame_metadata = {}
 ROIs = set()
 start_position = None
 
@@ -43,12 +44,12 @@ def main(argv):
         ROIs.clear()
         ret, frame = cap.read()
 
-        if cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES) == cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT):
+        if int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)) == cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT):
             break
 
         frame = cv2.resize(frame, (0,0), fx=4, fy=4, interpolation=cv2.INTER_NEAREST)
         cv2.putText(frame,
-        str(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)),
+        str(int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))),
         (25, 50),
         cv2.FONT_HERSHEY_SIMPLEX,
         2,
@@ -66,16 +67,28 @@ def main(argv):
         if k==27:    # Esc key to stop
             break
         elif k==ord('u'):
+            ROIs.clear()
+            frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = "undefined"
             print "undefined"
         elif k==ord('n'):
+            ROIs.clear()
+            frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = "nothing interesting"
             print "nothing interesting"
         elif k==2490368: # up arrow for fast reverse
-            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES) - 25)
+            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)) - 25)
         elif k==2621440: # down arrow for fast forward
-            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES) + 23)
+            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)) + 23)
         elif k==2555904: # right arrow for next frame
             pass
 
+        print ROIs
+        print frame_metadata
+        if len(ROIs) > 0:
+            print ROIs
+            frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = ROIs
+
+    print collections.OrderedDict(sorted(frame_metadata.items(), key=lambda t: t[0]))      
+    log.write(collections.OrderedDict(sorted(frame_metadata.items(), key=lambda t: t[0])))
     log.close()
 
     cap.release()
