@@ -1,25 +1,35 @@
 import numpy as np
 import cv2
+import copy
+
+def on_mouse(event, x, y, flags, frame):
+    frameRect = copy.copy(frame)
+    global start_position
+    if event == cv2.cv.CV_EVENT_LBUTTONDOWN:
+        print 'Start Left Mouse Position: '+str(x)+', '+str(y)
+        start_position = (x, y)
+         
+    elif event == cv2.cv.CV_EVENT_LBUTTONUP:
+        print 'End Left Mouse Position: '+str(x)+', '+str(y)
+        ROIs.add((start_position, (x, y)))
+        for ROI in ROIs:
+            cv2.rectangle(frameRect, ROI[0], ROI[1], (0,0,255), 1)
+        cv2.imshow('frame',frameRect)
+
+    elif event == cv2.cv.CV_EVENT_RBUTTONDOWN:
+        print 'End Right Mouse Position: '+str(x)+', '+str(y)
+        ROIs.clear()
+        cv2.imshow('frame',frameRect)
 
 cap = cv2.VideoCapture('drop.avi')
+ROIs = set()
 start_position = (0, 0)
 
 if not cap.isOpened():
   print "Error when reading image file"
 
-def on_mouse(event, x, y, flags, frame):
-    if event == cv2.cv.CV_EVENT_LBUTTONDOWN:
-        global start_position
-        print 'Start Mouse Position: '+str(x)+', '+str(y)
-        start_position = (x, y)
-         
-    elif event == cv2.cv.CV_EVENT_LBUTTONUP:
-        global start_position
-        print 'End Mouse Position: '+str(x)+', '+str(y)
-        cv2.rectangle(frame, start_position, (x, y), (0,0,255), 1)
-        cv2.imshow('frame',frame)
-
 while(cap.isOpened()):
+    ROIs.clear()
     ret, frame = cap.read()
 
     cv2.putText(frame,
