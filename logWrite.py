@@ -8,8 +8,7 @@ class logWrite:
 
 	def write(self, dictionary):
 		for key, value in dictionary.items():
-			self.log.write(str(key) + " " + json.dumps(value))
-			print key, json.dumps(value)
+			self.log.write(str(key) + " " + str(value) + "\n")
 
 	def close(self):
 		self.log.close()

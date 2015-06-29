@@ -12,18 +12,18 @@ def on_mouse(event, x, y, flags, frame):
     frameRect = copy.copy(frame)
     global start_position
     if event == cv2.cv.CV_EVENT_LBUTTONDOWN:
-        print 'Start Left Mouse Position: '+str(x)+', '+str(y)
+        #print 'Start Left Mouse Position: '+str(x)+', '+str(y)
         start_position = (x, y)
          
     elif event == cv2.cv.CV_EVENT_LBUTTONUP:
-        print 'End Left Mouse Position: '+str(x)+', '+str(y)
+        #print 'End Left Mouse Position: '+str(x)+', '+str(y)
         ROIs.add((start_position, (x, y)))
         for ROI in ROIs:
             cv2.rectangle(frameRect, ROI[0], ROI[1], (0,0,255), 1)
         cv2.imshow('frame',frameRect)
 
     elif event == cv2.cv.CV_EVENT_RBUTTONDOWN:
-        print 'End Right Mouse Position: '+str(x)+', '+str(y)
+        #print 'End Right Mouse Position: '+str(x)+', '+str(y)
         ROIs.clear()
         cv2.imshow('frame',frameRect)
 
@@ -81,13 +81,9 @@ def main(argv):
         elif k==2555904: # right arrow for next frame
             pass
 
-        print ROIs
-        print frame_metadata
         if len(ROIs) > 0:
-            print ROIs
-            frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = ROIs
-
-    print collections.OrderedDict(sorted(frame_metadata.items(), key=lambda t: t[0]))      
+            frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = tuple(ROIs)
+   
     log.write(collections.OrderedDict(sorted(frame_metadata.items(), key=lambda t: t[0])))
     log.close()
 
