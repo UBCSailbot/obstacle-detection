@@ -1,7 +1,8 @@
-import numpy as np
 import cv2
 import copy
 import sys
+import collections
+import logWrite
 
 ROIs = set()
 start_position = None
@@ -35,10 +36,17 @@ def main(argv):
     if not cap.isOpened():
       print "Error when reading image file"
 
+    log = logWrite.logWrite()
+    log.new(str(sys.argv[1]))
+
     while(cap.isOpened()):
         ROIs.clear()
         ret, frame = cap.read()
 
+        if cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES) == cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT):
+            break
+
+        frame = cv2.resize(frame, (0,0), fx=4, fy=4, interpolation=cv2.INTER_NEAREST)
         cv2.putText(frame,
         str(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)),
         (25, 50),
@@ -59,16 +67,16 @@ def main(argv):
             break
         elif k==ord('u'):
             print "undefined"
-            continue
         elif k==ord('n'):
             print "nothing interesting"
-            continue
         elif k==2490368: # up arrow for fast reverse
             cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES) - 25)
         elif k==2621440: # down arrow for fast forward
             cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES) + 23)
         elif k==2555904: # right arrow for next frame
-            continue
+            pass
+
+    log.close()
 
     cap.release()
     cv2.destroyAllWindows()
