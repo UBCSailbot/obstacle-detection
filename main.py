@@ -13,13 +13,15 @@ def on_mouse(event, x, y, flags, frame):
     global start_position
     if event == cv2.cv.CV_EVENT_LBUTTONDOWN:
         #print 'Start Left Mouse Position: '+str(x)+', '+str(y)
-        start_position = (x, y)
+        start_position = (x/4, y/4)
          
     elif event == cv2.cv.CV_EVENT_LBUTTONUP:
         #print 'End Left Mouse Position: '+str(x)+', '+str(y)
-        ROIs.add((start_position, (x, y)))
+        ROIs.add((start_position, (x/4, y/4)))
         for ROI in ROIs:
-            cv2.rectangle(frameRect, ROI[0], ROI[1], (0,0,255), 1)
+            start = tuple([4*x for x in ROI[0]])
+            end = tuple([4*x for x in ROI[1]])
+            cv2.rectangle(frameRect, start, end, (0,0,255), 1)
         cv2.imshow('frame',frameRect)
 
     elif event == cv2.cv.CV_EVENT_RBUTTONDOWN:
