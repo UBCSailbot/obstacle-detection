@@ -71,14 +71,14 @@ def main(argv):
             break
         elif k=='u':
             ROIs.clear()
-            frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = "undefined"
-            print "undefined"
+            frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = "UNCERTAIN"
+            print "UNCERTAIN"
         elif k=='n':
             ROIs.clear()
-            frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = "nothing interesting"
-            print "nothing interesting"
+            frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = "EMPTY"
+            print "EMPTY"
         elif k=='w':
-            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)) - constant.FRAME_SKIP + 1)
+            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)) - constant.FRAME_SKIP - 1)
         elif k=='s':
             cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)) + constant.FRAME_SKIP - 1)
         elif k=='a':
@@ -87,7 +87,7 @@ def main(argv):
             pass
 
         if len(ROIs) > 0:
-            frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = tuple(ROIs)
+            frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = list(ROIs)
 
     log.write(collections.OrderedDict(sorted(frame_metadata.items(), key=lambda t: t[0])))
     log.close()
