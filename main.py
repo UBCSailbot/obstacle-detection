@@ -3,6 +3,7 @@ import copy
 import sys
 import collections
 import logWrite
+import constant
 
 frame_metadata = {}
 ROIs = set()
@@ -13,14 +14,14 @@ def on_mouse(event, x, y, flags, frame):
     global start_position
     if event == cv2.cv.CV_EVENT_LBUTTONDOWN:
         #print 'Start Left Mouse Position: '+str(x)+', '+str(y)
-        start_position = (x/4, y/4)
+        start_position = (x/constant.RESCALE_FACTOR, y/constant.RESCALE_FACTOR)
          
     elif event == cv2.cv.CV_EVENT_LBUTTONUP:
         #print 'End Left Mouse Position: '+str(x)+', '+str(y)
-        ROIs.add((start_position, (x/4, y/4)))
+        ROIs.add((start_position, (x/constant.RESCALE_FACTOR, y/constant.RESCALE_FACTOR)))
         for ROI in ROIs:
-            start = tuple([4*x for x in ROI[0]])
-            end = tuple([4*x for x in ROI[1]])
+            start = tuple([constant.RESCALE_FACTOR*x for x in ROI[0]])
+            end = tuple([constant.RESCALE_FACTOR*x for x in ROI[1]])
             cv2.rectangle(frameRect, start, end, (0,0,255), 1)
         cv2.imshow('frame',frameRect)
 
@@ -49,7 +50,7 @@ def main(argv):
         if int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)) == cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT):
             break
 
-        frame = cv2.resize(frame, (0,0), fx=4, fy=4, interpolation=cv2.INTER_NEAREST)
+        frame = cv2.resize(frame, (0,0), fx=constant.RESCALE_FACTOR, fy=constant.RESCALE_FACTOR, interpolation=cv2.INTER_NEAREST)
         cv2.putText(frame,
         str(int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))),
         (25, 50),
@@ -62,30 +63,32 @@ def main(argv):
         cv2.imshow('frame',frame)
 
         k=-1
-        while k not in (27, ord('u'), ord('n'), ord('s'), 2490368, 2621440, 2555904):
-            k = cv2.waitKey(0)
-            print str(k) + " was pressed"
+        while k not in ('q', 'u', 'n', 's', 'w', 's', 'a', 'd'):
+            k = chr(cv2.waitKey(0) & 255)
+            print k + " was pressed"
 
-        if k==27:    # Esc key to stop
+        if k=='q':    # Esc key to stop
             break
-        elif k==ord('u'):
+        elif k=='u':
             ROIs.clear()
             frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = "undefined"
             print "undefined"
-        elif k==ord('n'):
+        elif k=='n':
             ROIs.clear()
             frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = "nothing interesting"
             print "nothing interesting"
-        elif k==2490368: # up arrow for fast reverse
-            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)) - 25)
-        elif k==2621440: # down arrow for fast forward
-            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)) + 23)
-        elif k==2555904: # right arrow for next frame
+        elif k=='w':
+            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)) - constant.FRAME_SKIP - 1)
+        elif k=='s':
+            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)) + constant.FRAME_SKIP + 1)
+        elif k=='a':
+            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)) - 2)
+        elif k=='d':
             pass
 
         if len(ROIs) > 0:
             frame_metadata[int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))] = tuple(ROIs)
-   
+
     log.write(collections.OrderedDict(sorted(frame_metadata.items(), key=lambda t: t[0])))
     log.close()
 
