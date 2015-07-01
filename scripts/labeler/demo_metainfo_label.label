@@ -1,0 +1,27 @@
+# This is a comment line.
+# Empty lines should be ignored.
+# Each non-comment line in this file should be formatted as follows:
+#
+#       <FRAME_NUM> <LABEL>
+# 
+# <FRAME_NUM> is an integer identifying the frame by its order of appearance in the video.
+#   For ease of readibility and compliance with the naming standards that we use in 
+#   directories containing frames, each number should be 6 characters wide.
+#    
+# <LABEL> can be any of the following:
+#   EMPTY
+#       -indicates that it is clear to the labeler that the frame contains no obstacles.
+#   UNCERTAIN
+#       -indicates that it is difficult to judge if an obstacle is visible or not.
+#   <NUM> [(x1,y1),(x2,y2),(x3,y3),(x4,y4)]...
+#       -<NUM> indicates the number of ROIs identified by the labeler.
+#       -It is followed by a space and a comma-separated list of convex polygons, each
+#         defined within a set of square brackets. There should be <NUM> pairs of square
+#         brackets. If not, the file is malformed.
+#       -Within the square brackets, a convex polygon is specified by a comma-separated
+#         set of points.
+
+000001 EMPTY
+000020 1 [(10,10),(10,30),(40,10),(40,30)]
+000045 UNCERTAIN
+000057 2 [(8,20),(8,22),(20,20),(20,22)],[(31,23),(31,25),(40,23),(40,25)]
