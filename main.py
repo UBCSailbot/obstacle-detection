@@ -67,7 +67,7 @@ def main(argv):
             k = chr(cv2.waitKey(0) & 255)
             print k + " was pressed"
 
-        if k==chr('27'):    # Esc key to stop
+        if k==chr(27):    # Esc key to stop
             break
         elif k=='u':
             ROIs.clear()
