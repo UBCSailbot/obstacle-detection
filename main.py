@@ -63,11 +63,11 @@ def main(argv):
         cv2.imshow('frame',frame)
 
         k=-1
-        while k not in ('q', 'u', 'n', 's', 'w', 's', 'a', 'd'):
+        while k not in (chr(27), 'u', 'n', 's', 'w', 's', 'a', 'd'):
             k = chr(cv2.waitKey(0) & 255)
             print k + " was pressed"
 
-        if k=='q':    # Esc key to stop
+        if k==chr('27'):    # Esc key to stop
             break
         elif k=='u':
             ROIs.clear()
