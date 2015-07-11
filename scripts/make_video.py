@@ -19,7 +19,7 @@ def rescale(repo_dir, raw_dir, output_dir="", options="-t 3 -w 100 -p ", horizon
   os.system( cmd )
   
 
-def convert_to_video(frame_dir, video_name="out.avi", frame_rate=24, rotate=False):
+def convert_to_video(frame_dir, video_name="out.avi", frame_rate=27, rotate=False):
   top_dir = os.path.dirname(frame_dir)
   rotate_str = ""
   if rotate:

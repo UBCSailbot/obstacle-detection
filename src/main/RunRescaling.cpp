@@ -167,7 +167,6 @@ void rescale(const string &inputFrameDir, const string &outputFrameDir, const st
             cv::cvtColor(rescaledFrame, displayed, cv::COLOR_GRAY2BGR);
             line(displayed, h.getStartPoint(), h.getEndPoint(), Scalar(0,0,255), 1);
             imwrite(outputFilePath, displayed);
-            resize(displayed, displayed, Size(0, 0), 6, 6, INTER_NEAREST);
         }
         else {
             displayed = rescaledFrame;
@@ -175,6 +174,7 @@ void rescale(const string &inputFrameDir, const string &outputFrameDir, const st
         }
 
         if (display) {
+            resize(displayed, displayed, Size(0, 0), 6, 6, INTER_NEAREST);
             imshow("rescaled", displayed);
 
             Image8bit simpleRescaled;
