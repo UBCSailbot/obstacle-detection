@@ -23,13 +23,15 @@ RoboPeakUSBDisplay::RoboPeakUSBDisplay() {
     display = RoboPeakUsbDisplayDevice::openFirstDevice();
 
     if (!display) {
-        fprintf(stderr, "No display found\n");
+        fprintf(stderr, "No USB display found!\n");
+        _connected = false;
     }
     else {
         printf("Display with S/N %s is chosen\n", display->getDevice()->getSerialNumber().c_str());
 
         display->setStatusUpdatedCallback(onStatusUpdated);
         display->enable();
+        _connected = true;
     }
 }
 
@@ -70,4 +72,3 @@ void RoboPeakUSBDisplay::putMatIntoFrameBuffer(cv::Mat &displayed) {
         p += (RoboPeakUSBDisplay::DISPLAY_WIDTH - displayed.cols);
     }
 }
-

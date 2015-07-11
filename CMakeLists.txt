@@ -56,6 +56,12 @@ add_executable(displayTest
                ${DEVICE_TEST_FILES}
 )
 
+add_executable(displayInitTest
+               test/main/DisplayInitializationTest.cpp
+               ${CORE_SOURCE_FILES}
+               ${DEVICE_TEST_FILES}
+)
+
 # Lepton testing
 add_executable(leptonShutter
                test/mains/LeptonShutterTest.cpp
@@ -134,13 +140,19 @@ include_directories(${RPUSBDISP_DIR})
 include_directories(${RPUSBDISP_DIR}/infra/include)
 include_directories(${RPUSBDISP_DIR}/rpusbdisp-drv/include)
 include_directories(${RPUSBDISP_DIR}/deps-wraps/libusbx_wrap/include)
+if(NOT EXISTS ${RPUSBDISP_DIR}/Makefile)
+    execute_process(COMMAND ./configure
+                    WORKING_DIRECTORY ${RPUSBDISP_DIR}
+    )
+endif(NOT EXISTS ${RPUSBDISP_DIR}/Makefile)
 add_custom_target(
    rpusbdisp
-   COMMAND ./configure && make
+   COMMAND make
    WORKING_DIRECTORY ${RPUSBDISP_DIR}
 )
 add_dependencies(rigRunner rpusbdisp)
 add_dependencies(displayTest rpusbdisp)
+add_dependencies(displayInitTest rpusbdisp)
 add_dependencies(leptonShutter rpusbdisp)
 list(APPEND DEVICE_LIBS ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
 list(APPEND DEVICE_LIBS ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
@@ -165,4 +177,5 @@ target_link_libraries(runCoreTests ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
 
 target_link_libraries(imuTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
 target_link_libraries(displayTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
+target_link_libraries(displayInitTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
 target_link_libraries(leptonShutter ${CORE_LIBS} ${DEVICE_LIBS})

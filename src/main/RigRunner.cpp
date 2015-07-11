@@ -42,7 +42,7 @@ void record(char* output_dir, bool verbose) {
 
     cout << "Connecting to screen" << endl;
 
-    RoboPeakUSBDisplay display;
+    Display* display = DisplayUtils::connectToDisplay();
 
     cout << "Starting Capture" << endl;
 
@@ -64,7 +64,7 @@ void record(char* output_dir, bool verbose) {
         if ((frame_counter % LEPTON_FPS) * 3 == 0) {
             // convert to 8 bit and display
             rescaler.scale16bitTo8bit(frame, displayed);
-            displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), display);
+            displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), *display);
             //d.displayFrame(displayed);
         }
 

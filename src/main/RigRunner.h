@@ -18,6 +18,8 @@
 
 #include <signal.h>
 #include <fstream>
+#include <display/DisplayUtils.h>
+
 
 
 using namespace std;
