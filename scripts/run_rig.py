@@ -3,8 +3,10 @@
 import RPi.GPIO as GPIO
 import time
 import os
+
 import rig_record as rig
-import make_video as vid
+from shared import repo_dir
+from shared import data_dir
 
 
 # GPIO configuration
@@ -16,15 +18,12 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(button_pin, GPIO.IN)
 GPIO.setup(LED_pin, GPIO.OUT)
 
-# path configuration
-repo_dir = "/home/pi/obstacle_avoidance"
-data_dir = "/home/pi/data"
-current_dir = ""
-
 
 # Control loop
 recording = False
 current_proc = 0
+current_dir = ""
+
 
 while True:
     button_pressed = GPIO.input(button_pin)
@@ -44,6 +43,6 @@ while True:
           GPIO.output(LED_pin, False)
           rig.stop(current_proc)
           print "Stopped recording."
-          vid.convert_to_video(repo_dir, current_dir, os.path.join(current_dir, 'raw'))
+          rig.convert_to_video( os.path.join(current_dir, 'raw'), os.path.join(current_dir, 'imuLog.txt')  )
           time.sleep(1)
 
