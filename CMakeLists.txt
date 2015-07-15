@@ -65,7 +65,7 @@ add_executable(displayInitTest
 
 # Lepton testing
 add_executable(leptonShutter
-               test/mains/LeptonShutterTest.cpp
+               test/main/LeptonShutterTest.cpp
                ${DEVICE_TEST_FILES}
 )
 
