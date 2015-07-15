@@ -53,6 +53,7 @@ add_executable(imuTest
 # Display testing
 add_executable(displayTest
                test/main/DisplayTest.cpp
+               ${CORE_SOURCE_FILES}
                ${DEVICE_TEST_FILES}
 )
 
@@ -70,12 +71,13 @@ add_executable(leptonShutter
 
 # The following command copies the resources folder into the binary directory,
 #  making it possible to load resources from a relative path within the project
-add_custom_command(TARGET runCoreTests POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+add_custom_target(migrateResources
+                        COMMAND ${CMAKE_COMMAND} -E copy_directory
                         ${CMAKE_SOURCE_DIR}/resources
                         ${CMAKE_BINARY_DIR}/resources
 )
-
+add_dependencies(runCoreTests migrateResources)
+add_dependencies(displayInitTest migrateResources)
 
 ##################
 # TEST FRAMEWORK #

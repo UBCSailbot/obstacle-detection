@@ -15,10 +15,10 @@ class Display {
 
 public:
     virtual ~Display() {}
-    virtual void displayFrame(Image8bit image) = 0;
-    virtual void displayColorFrame(cv::Mat image) = 0;
+    virtual void display8bitGray(const Image8bit &image) = 0;
+    virtual void displayColored(const cv::Mat &image) = 0;
 
-    bool connected() {
+    bool connected() const {
         return _connected;
     }
 

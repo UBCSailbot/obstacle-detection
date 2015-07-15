@@ -64,7 +64,7 @@ void record(char* output_dir, bool verbose) {
         if ((frame_counter % LEPTON_FPS) * 3 == 0) {
             // convert to 8 bit and display
             rescaler.scale16bitTo8bit(frame, displayed);
-            displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), *display);
+            DisplayUtils::displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), *display);
             //d.displayFrame(displayed);
         }
 
@@ -75,18 +75,11 @@ void record(char* output_dir, bool verbose) {
         frame_counter ++;
     }
 
+    imuLog.flush();
     imuLog.close();
     cout << "Recording received stopping signal " <<
     "and terminated gracefully." << endl;
 
-}
-
-void displayFrameWithHorizonLine(Image8bit frame, double roll, double pitch, Display &d) {
-    Horizon h(roll, pitch);
-    cv::Mat displayed(frame.rows, frame.cols, CV_16U);
-    cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
-    line(displayed, h.getStartPoint(), h.getEndPoint(), Scalar(255,0,0), 1);
-    d.displayColorFrame(displayed);
 }
 
 void printUsage(int argc, char** argv) {

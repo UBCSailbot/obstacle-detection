@@ -4,9 +4,10 @@
 
 #include <dirent.h>
 #include <iostream>
+
 #include <opencv2/highgui/highgui.hpp>
 
-#include "display/RoboPeakUSBDisplay.h"
+#include <display/DisplayUtils.h>
 
 using namespace std;
 using namespace cv;
@@ -46,20 +47,23 @@ void loopOverDir(string frameDir) {
     if (dp != NULL) {
         while (ep = readdir (dp)) {
             string fileName(ep->d_name);
+
             if (!validFrameFile(fileName))
                 continue;
-//            cout << "displaying " << fileName << endl;
-            if (frameCounter % 3 == 0) {
-                Mat frame = imread(frameDir + "/" + fileName, -1);
-//                Image8bit frame = Image8bit::fromMat(temp);
-                cv::Mat displayed(frame.rows, frame.cols, CV_16U);
-                cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
 
+            if (frameCounter % 3 == 0   ) {
+                Mat frame = imread(frameDir + "/" + fileName, -1);
+//                Image16bit displayed(frame, false);
+
+                Image8bit displayed(frame, false);
+                cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
                 line(displayed, Point(0,30), Point(80, 40), Scalar(255,0,0), 1);
-                d.displayColorFrame(displayed);
+
+                d.displayColored(displayed);
+//                d.display8bitGray(displayed);
+                waitKey(50);
             }
             frameCounter ++;
-            waitKey(15);
         }
         (void) closedir (dp);
     }

@@ -4,15 +4,13 @@
 
 #include "RoboPeakUSBDisplay.h"
 
-void putMatIntoFrameBuffer(cv::Mat &displayed, uint16_t *p);
-
 static void onStatusUpdated(const rpusbdisp_status_normal_packet_t& status) {
     printf("Status: %02X, Touch: %02X, X: %d, Y: %d\n", status.display_status, status.touch_status, status.touch_x, status.touch_y);
 }
 
 RoboPeakUSBDisplay::RoboPeakUSBDisplay() {
-    frameBuffer = (uint16_t*)malloc(DISPLAY_WIDTH* DISPLAY_HEIGHT*2);
-    uint16_t* p = frameBuffer;
+    _frameBuffer = (uint16_t*)malloc(DISPLAY_WIDTH* DISPLAY_HEIGHT*2);
+    uint16_t* p = _frameBuffer;
 
     for (int y = 0; y < DISPLAY_HEIGHT; y++) {
         for (int x = 0; x < DISPLAY_WIDTH; x++, p++) {
@@ -20,50 +18,46 @@ RoboPeakUSBDisplay::RoboPeakUSBDisplay() {
         }
     }
 
-    display = RoboPeakUsbDisplayDevice::openFirstDevice();
+    _display = RoboPeakUsbDisplayDevice::openFirstDevice();
 
-    if (!display) {
+    if (!_display) {
         fprintf(stderr, "No USB display found!\n");
         _connected = false;
     }
     else {
-        printf("Display with S/N %s is chosen\n", display->getDevice()->getSerialNumber().c_str());
+        printf("Display with S/N %s is chosen\n", _display->getDevice()->getSerialNumber().c_str());
 
-        display->setStatusUpdatedCallback(onStatusUpdated);
-        display->enable();
+        _display->setStatusUpdatedCallback(onStatusUpdated);
+        _display->enable();
         _connected = true;
     }
 }
 
 RoboPeakUSBDisplay::~RoboPeakUSBDisplay() {
-    free(frameBuffer);
+    free(_frameBuffer);
 }
 
-void RoboPeakUSBDisplay::displayFrame(Image8bit image) {
-    convertMatToUnsignedIntArray(image);
-    display->bitblt(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, RoboPeakUsbDisplayBitOperationCopy, frameBuffer);
-}
-
-void RoboPeakUSBDisplay::displayColorFrame(cv::Mat image) {
+void RoboPeakUSBDisplay::display8bitGray(const Image8bit &image) {
     cv::Mat displayed(DISPLAY_HEIGHT, DISPLAY_WIDTH, CV_16U);
-    cv::Mat colored(image.rows, image.cols, CV_16U);
-    cv::cvtColor(image, colored, CV_BGR2BGR565);
-    cv::resize(colored, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
-    putMatIntoFrameBuffer(displayed);
-    display->bitblt(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, RoboPeakUsbDisplayBitOperationCopy, frameBuffer);
-}
-
-
-void RoboPeakUSBDisplay::convertMatToUnsignedIntArray(Image8bit image) {
-    cv::Mat displayed(DISPLAY_HEIGHT, DISPLAY_WIDTH, CV_16U);
-    cv::resize(image, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
-    cv::cvtColor(displayed, displayed, cv::COLOR_BGR2BGR565);
+    resize(image, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
+    cvtColor(displayed, displayed, cv::COLOR_GRAY2BGR565);
 
     putMatIntoFrameBuffer(displayed);
+    _display->bitblt(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, RoboPeakUsbDisplayBitOperationCopy, _frameBuffer);
 }
 
-void RoboPeakUSBDisplay::putMatIntoFrameBuffer(cv::Mat &displayed) {
-    uint16_t* p = frameBuffer;
+void RoboPeakUSBDisplay::displayColored(const cv::Mat &image) {
+    cv::Mat displayed(DISPLAY_HEIGHT, DISPLAY_WIDTH, CV_16U);
+    cv::Mat bgr565(image.rows, image.cols, CV_16U);
+    cv::cvtColor(image, bgr565, CV_BGR2BGR565);
+    cv::resize(bgr565, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
+    putMatIntoFrameBuffer(displayed);
+    _display->bitblt(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, RoboPeakUsbDisplayBitOperationCopy, _frameBuffer);
+}
+
+
+void RoboPeakUSBDisplay::putMatIntoFrameBuffer(const cv::Mat &displayed) {
+    uint16_t* p = _frameBuffer;
     for(int y =0; y < displayed.rows; y++) {
         for (int x =0; x < displayed.cols; x++, p++) {
             uint16_t value = displayed.at<uint16_t>(y, x);

@@ -15,9 +15,14 @@ class DesktopDisplay: public Display {
 public:
     DesktopDisplay();
     virtual ~DesktopDisplay();
-    void displayFrame(Image8bit image);
-    void displayColorFrame(cv::Mat image);
+    void display8bitGray(const Image8bit &image);
+    void displayColored(const cv::Mat &image);
 
+    static const size_t MIN_WIDTH = 640;
+    static const size_t MIN_HEIGHT = 480;
+
+private:
+    void calculateScaleFactors(const cv::Mat &image, size_t &xScaleFactor, size_t &yScaleFactor) const;
 };
 
 
