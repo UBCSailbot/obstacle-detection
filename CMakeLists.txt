@@ -57,6 +57,12 @@ add_executable(displayTest
                ${DEVICE_TEST_FILES}
 )
 
+add_executable(displayVideoTest
+               test/main/DisplayVideoTest.cpp
+               ${CORE_SOURCE_FILES}
+               ${DEVICE_TEST_FILES}
+)
+
 add_executable(displayInitTest
                test/main/DisplayInitializationTest.cpp
                ${CORE_SOURCE_FILES}

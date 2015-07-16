@@ -1,93 +1,48 @@
 //
-// Created by paul on 12/05/15.
+// Created by paul on 15/07/15.
 //
 
-#include <dirent.h>
 #include <iostream>
 
-#include <opencv2/highgui/highgui.hpp>
-
+#include <Resources.h>
+#include <types/Image16bit.h>
+#include <imageProc/rescale/Rescaler.h>
+#include <imageProc/rescale/SimpleRescaler.h>
 #include <display/DisplayUtils.h>
+#include "display/RoboPeakUSBDisplay.h"
 
-using namespace std;
 using namespace cv;
+using namespace std;
 
-bool startsWith (string const &fullString, string const &start) {
-    if (fullString.length() >= start.length()) {
-        return (0 == fullString.compare (0, start.length(), start));
-    } else {
-        return false;
-    }
+void testDisplay8bitGray(Display* d, Image8bit img) {
+    d->display8bitGray(img);
+    waitKey(0);
 }
 
-bool endsWith (string const &fullString, string const &ending) {
-    if (fullString.length() >= ending.length()) {
-        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
-    } else {
-        return false;
-    }
+void testDisplayColored(Display* d, cv::Mat img) {
+    line(img, Point(10,10), Point(80,60), Scalar(255,255,0), 1);
+    d->displayColored(img);
+    waitKey(0);
 }
 
-bool validFrameFile(string fileName) {
-    return startsWith(fileName, "img_") && endsWith(fileName, ".png");
-}
+int main() {
 
-void loopOverDir(string frameDir) {
-    // Iterate over each frame in frameDir,
-    //   and paint a horizon line over it
-    DIR *dp;
-    struct dirent *ep;
-    dp = opendir (frameDir.c_str());
+    Display* d = DisplayUtils::connectToDisplay();
 
-    RoboPeakUSBDisplay d;
+    Mat img = imread(Resources::getImagePath("fishingBoat01.png"), CV_LOAD_IMAGE_UNCHANGED);
+    Image16bit img16bit(img, false);
 
-    cout << "Successfully instatiated RoboPeakUSBDisplay" << endl;
+    Image8bit img8bit(img.rows, img.cols);
+    Rescaler* r = new SimpleRescaler();
+    r->scale16bitTo8bit(img16bit, img8bit);
 
-    int frameCounter = 0;
-    if (dp != NULL) {
-        while (ep = readdir (dp)) {
-            string fileName(ep->d_name);
+    testDisplay8bitGray(d, img8bit);
 
-            if (!validFrameFile(fileName))
-                continue;
+    Mat color(img.rows, img.cols, CV_8UC3);
+    cvtColor(img8bit, color, COLOR_GRAY2BGR);
 
-            if (frameCounter % 3 == 0   ) {
-                Mat frame = imread(frameDir + "/" + fileName, -1);
-//                Image16bit displayed(frame, false);
+    testDisplayColored(d, color);
 
-                Image8bit displayed(frame, false);
-                cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
-                line(displayed, Point(0,30), Point(80, 40), Scalar(255,0,0), 1);
+    cout << "Display tests passed successfully :)" << endl;
 
-                d.displayColored(displayed);
-//                d.display8bitGray(displayed);
-                waitKey(50);
-            }
-            frameCounter ++;
-        }
-        (void) closedir (dp);
-    }
-    else
-        cerr << "Couldn't open directory " << frameDir << endl;
-}
-
-void printUsage(int argc, char** argv) {
-    cout << "Usage: displayTest <video_dir>" << endl;
-    cout << "You entered: " << endl;
-    for (int i=0; i<argc; i++)
-        cout << argv[i];
-    cout << endl;
-}
-
-int main(int argc, char** argv) {
-
-    if (argc != 2) {
-        printUsage(argc, argv);
-        return 1;
-    }
-    string videoDir(argv[1]);
-    cout << "videoDir: " << videoDir << endl;
-    loopOverDir(videoDir);
-
-    return 0;
 }
