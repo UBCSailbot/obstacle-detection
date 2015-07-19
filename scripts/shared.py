@@ -2,7 +2,7 @@ import os
 
 
 # Shared global constants
-repo_dir = "/home/pi/obstacle_avoidance"
+repo_dir = "/home/pi/obstacle-avoidance"
 
 data_dir = "/home/pi/data"
 
