@@ -37,12 +37,17 @@ void record(char* output_dir, bool verbose) {
 
     std::ofstream imuLog;
 
+    // timing
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    unsigned float leptonPeriodSeconds = 1 / LEPTON_FPS;
+
     sprintf(imu_file_name, "%s/imuLog.txt", output_dir);
     imuLog.open (imu_file_name);
 
     cout << "Connecting to screen" << endl;
 
     Display* display = DisplayUtils::connectToDisplay();
+
 
     cout << "Starting Capture" << endl;
 
@@ -55,22 +60,33 @@ void record(char* output_dir, bool verbose) {
             usleep(600 * 1000);
         }
 */
+        start = std::chrono::system_clock::now();
         lepton.captureFrame(frame);
 
-        // save the current frame as a .png file
-        sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
-        imwrite(img_name, frame);
 
-        if ((frame_counter % LEPTON_FPS) * 3 == 0) {
+        // read only ever 3rd frame
+        if ((frame_counter % 3) == 0) {
+            // save the current frame as a .png file
+            sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
+            imwrite(img_name, frame);
+            imuLog << imu.toDataString();
+
+//            Image8bit displayed(frame, false);
+//            cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
+//            line(displayed, Point(0,30), Point(80, 40), Scalar(255,0,0), 1);
+//
+//            d.displayColored(displayed);
+
             // convert to 8 bit and display
             rescaler.scale16bitTo8bit(frame, displayed);
             DisplayUtils::displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), *display);
-            //d.displayFrame(displayed);
         }
 
-        imuLog << imu.toDataString();
-//        if (verbose)
- //           cout << imu.toPrettyString();
+        end = std::chrono::system_clock::now();
+        std::chrono::duration<unsigned float> elapsed_seconds = end-start;
+
+        unsigned int sleepTimeMicros = (unsigned int) (leptonPeriodSeconds - elapsed_seconds.count()) * 1000000;
+        usleep(sleepTimeMicros);
 
         frame_counter ++;
     }

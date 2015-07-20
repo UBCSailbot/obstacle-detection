@@ -26,7 +26,7 @@ public:
         return display;
     }
 
-    static void displayFrameWithHorizonLine(Image8bit frame, double roll, double pitch, Display &d) {
+    static void displayFrameWithHorizonLine(const Image8bit &frame, double roll, double pitch, Display &d) {
         Horizon h(roll, pitch);
         cv::Mat displayed(frame.rows, frame.cols, CV_16U);
         cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);

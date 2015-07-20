@@ -16,6 +16,7 @@
 #include "geometry/Horizon.h"
 #include "imageProc/rescale/SimpleRescaler.h"
 
+#include <unistd.h>
 #include <signal.h>
 #include <fstream>
 #include <display/DisplayUtils.h>
