@@ -39,7 +39,7 @@ void record(char* output_dir, bool verbose) {
 
     // timing
     std::chrono::time_point<std::chrono::system_clock> start, end;
-    unsigned float leptonPeriodSeconds = 1 / LEPTON_FPS;
+    float leptonPeriodSeconds = 1 / LEPTON_FPS;
 
     sprintf(imu_file_name, "%s/imuLog.txt", output_dir);
     imuLog.open (imu_file_name);
@@ -63,7 +63,6 @@ void record(char* output_dir, bool verbose) {
         start = std::chrono::system_clock::now();
         lepton.captureFrame(frame);
 
-
         // read only ever 3rd frame
         if ((frame_counter % 3) == 0) {
             // save the current frame as a .png file
@@ -82,13 +81,16 @@ void record(char* output_dir, bool verbose) {
             DisplayUtils::displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), *display);
         }
 
-        end = std::chrono::system_clock::now();
-        std::chrono::duration<unsigned float> elapsed_seconds = end-start;
-
-        unsigned int sleepTimeMicros = (unsigned int) (leptonPeriodSeconds - elapsed_seconds.count()) * 1000000;
-        usleep(sleepTimeMicros);
-
         frame_counter ++;
+
+        end = std::chrono::system_clock::now();
+        std::chrono::duration<float> elapsed_seconds = end-start;
+
+        if (elapsed_seconds.count() < leptonPeriodSeconds) {
+            unsigned int sleepTimeMicros = (unsigned int) (leptonPeriodSeconds - elapsed_seconds.count()) * 1000000;
+            usleep(sleepTimeMicros);
+        }
+
     }
 
     imuLog.flush();

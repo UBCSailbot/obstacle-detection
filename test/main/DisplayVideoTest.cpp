@@ -8,6 +8,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include <display/DisplayUtils.h>
+#include <lepton/Lepton.h>
 
 using namespace std;
 using namespace cv;
@@ -41,31 +42,54 @@ void loopOverDir(string frameDir) {
 
     RoboPeakUSBDisplay d;
 
-    cout << "Successfully instatiated RoboPeakUSBDisplay" << endl;
+    // timing
+    bool previousReadSuccessful = true;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    float leptonPeriodSeconds = (float) 3 / LEPTON_FPS;
+
+    cout << "Successfully instantiated RoboPeakUSBDisplay" << endl;
+    cout << "Lepton period is " << leptonPeriodSeconds << " s" << endl;
 
     int frameCounter = 0;
     if (dp != NULL) {
         while (ep = readdir (dp)) {
-            string fileName(ep->d_name);
 
-            if (!validFrameFile(fileName))
-                continue;
+            if (previousReadSuccessful) {
+                start = std::chrono::system_clock::now();
+            }
+
+            previousReadSuccessful = false;
 
             if (frameCounter % 3 == 0   ) {
+                string fileName(ep->d_name);
+
+                if (!validFrameFile(fileName)) {
+                    continue;
+                }
+
                 Mat frame = imread(frameDir + "/" + fileName, -1);
-//                Image16bit displayed(frame, false);
 
                 Image8bit displayed(frame, false);
                 cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
                 line(displayed, Point(0,30), Point(80, 40), Scalar(255,0,0), 1);
 
                 d.displayColored(displayed);
-//                d.display8bitGray(displayed);
-                waitKey(50);
+
+                previousReadSuccessful = true;
+
+                end = std::chrono::system_clock::now();
+                std::chrono::duration<float> elapsed_seconds = end-start;
+
+                if (elapsed_seconds.count() < leptonPeriodSeconds) {
+                    float sleepTimeMicros = (leptonPeriodSeconds - elapsed_seconds.count()) * 1000000;
+                    usleep((__useconds_t) sleepTimeMicros);
+                }
             }
+
             frameCounter ++;
+
         }
-        (void) closedir (dp);
+        closedir(dp);
     }
     else
         cerr << "Couldn't open directory " << frameDir << endl;

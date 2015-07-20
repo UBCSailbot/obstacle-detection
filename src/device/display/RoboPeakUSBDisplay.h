@@ -41,6 +41,8 @@ private:
 
     std::shared_ptr<RoboPeakUsbDisplayDevice> _display;
 
+    int _frameCounter;
+
 };
 
 
