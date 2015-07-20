@@ -184,8 +184,8 @@ target_link_libraries(sunImageRunner ${CORE_LIBS})
 
 target_link_libraries(runCoreTests ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
 
-target_link_libraries(imuTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
-target_link_libraries(displayTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
-target_link_libraries(displayInitTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
-target_link_libraries(displayVideoTest ${CORE_LIBS} ${DEVICE_LIBS} ${TEST_FRAMEWORK_LIBS})
+target_link_libraries(imuTest ${CORE_LIBS} ${DEVICE_LIBS})
+target_link_libraries(displayTest ${CORE_LIBS} ${DEVICE_LIBS})
+target_link_libraries(displayInitTest ${CORE_LIBS} ${DEVICE_LIBS})
+target_link_libraries(displayVideoTest ${CORE_LIBS} ${DEVICE_LIBS})
 target_link_libraries(leptonShutter ${CORE_LIBS} ${DEVICE_LIBS})
