@@ -24,6 +24,7 @@
 #define FRAME_SIZE_UINT16 (PACKET_SIZE_UINT16*PACKETS_PER_FRAME)
 
 #define LEPTON_FPS 27
+#define LEPTON_IDENTICAL_FRAMES 3
 #define FFC_FREQ_SEC 30
 
 static const char *device = "/dev/spidev0.0";

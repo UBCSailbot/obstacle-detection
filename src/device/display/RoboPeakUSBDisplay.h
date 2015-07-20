@@ -18,6 +18,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include "Display.h"
+#include <display/DisplayUtils.h>
 
 using namespace rp::util;
 using namespace rp::deps::libusbx_wrap;

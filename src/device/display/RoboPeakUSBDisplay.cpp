@@ -50,6 +50,7 @@ void RoboPeakUSBDisplay::displayColored(const cv::Mat &image) {
     cv::Mat displayed(DISPLAY_HEIGHT, DISPLAY_WIDTH, CV_16U);
     cv::Mat bgr565(image.rows, image.cols, CV_16U);
     cv::cvtColor(image, bgr565, CV_BGR2BGR565);
+
     cv::resize(bgr565, displayed, displayed.size(), 0, 0, cv::INTER_NEAREST);
     putMatIntoFrameBuffer(displayed);
     _display->bitblt(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, RoboPeakUsbDisplayBitOperationCopy, _frameBuffer);
@@ -59,8 +60,7 @@ void RoboPeakUSBDisplay::displayColored(const cv::Mat &image) {
 void RoboPeakUSBDisplay::putMatIntoFrameBuffer(const cv::Mat &displayed) {
     uint16_t* p = _frameBuffer;
     for(int y = 0; y < displayed.rows; y++) {
-        p += (y + _frameCounter) % 2;
-        for (int x = (y + _frameCounter) % 2; x < displayed.cols; x += 2, p += 2) {
+        for (int x = 0; x < displayed.cols; x ++, p ++) {
             uint16_t value = displayed.at<uint16_t>(y, x);
             *p = value;
         }
@@ -68,4 +68,16 @@ void RoboPeakUSBDisplay::putMatIntoFrameBuffer(const cv::Mat &displayed) {
     }
 
     _frameCounter ++;
+
+//    uint16_t* p = _frameBuffer;
+//    for(int y = 0; y < displayed.rows; y++) {
+//        p += (y + _frameCounter) % 2;
+//        for (int x = (y + _frameCounter) % 2; x < displayed.cols; x += 2, p += 2) {
+//            uint16_t value = displayed.at<uint16_t>(y, x);
+//            *p = value;
+//        }
+//        p = _frameBuffer + (y * RoboPeakUSBDisplay::DISPLAY_WIDTH);
+//    }
+//
+//    _frameCounter ++;
 }

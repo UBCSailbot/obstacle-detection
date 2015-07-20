@@ -17,31 +17,16 @@ class DisplayUtils {
 
 public:
 
-    static Display* connectToDisplay() {
-        Display* display = new RoboPeakUSBDisplay();
-        if (!display->connected()) {
-            delete display;
-            display = new DesktopDisplay();
-        }
-        return display;
-    }
+    static Display* connectToDisplay();
 
-    static void displayFrameWithHorizonLine(const Image8bit &frame, double roll, double pitch, Display &d) {
-        Horizon h(roll, pitch);
-        cv::Mat displayed(frame.rows, frame.cols, CV_16U);
-        cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
-        cv::line(displayed, h.getStartPoint(), h.getEndPoint(), cv::Scalar(255,0,0), 1);
-        d.displayColored(displayed);
-    }
+    static void displayFrameWithHorizonLine(const Image8bit &frame,
+                                                          double roll, double pitch, Display &d);
 
-    static void rescaleAndDisplay(Image16bit img, Rescaler* r, Display &d) {
-        Image8bit img8bit(img.rows, img.cols);
+    static void rescaleAndDisplay(Image16bit img, Rescaler* r, Display &d);
 
-        r->scale16bitTo8bit(img, img8bit);
+    static size_t calculateScaleFactor(const cv::Mat &image, const size_t &displayWidth,
+                                       const size_t &displayHeight);
 
-        d.display8bitGray(img8bit);
-
-    }
 };
 
 #endif //OBSTACLE_AVOIDANCE_DISPLAYUTILS_H

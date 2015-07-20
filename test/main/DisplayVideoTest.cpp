@@ -44,8 +44,11 @@ void loopOverDir(string frameDir) {
 
     // timing
     bool previousReadSuccessful = true;
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    float leptonPeriodSeconds = (float) 3 / LEPTON_FPS;
+    chrono::time_point<chrono::system_clock> start, end, startRead, endRead, startDisp, endDisp;
+    int numFramesAtATime = 3;
+    int frameIncrement = numFramesAtATime * LEPTON_IDENTICAL_FRAMES;
+    float leptonPeriodSeconds = (float) frameIncrement / LEPTON_FPS;
+
 
     cout << "Successfully instantiated RoboPeakUSBDisplay" << endl;
     cout << "Lepton period is " << leptonPeriodSeconds << " s" << endl;
@@ -55,30 +58,38 @@ void loopOverDir(string frameDir) {
         while (ep = readdir (dp)) {
 
             if (previousReadSuccessful) {
-                start = std::chrono::system_clock::now();
+                start = chrono::system_clock::now();
             }
 
             previousReadSuccessful = false;
 
-            if (frameCounter % 3 == 0   ) {
+            if (frameCounter % frameIncrement == 0   ) {
                 string fileName(ep->d_name);
 
                 if (!validFrameFile(fileName)) {
                     continue;
                 }
 
+                startRead = chrono::system_clock::now();
                 Mat frame = imread(frameDir + "/" + fileName, -1);
+                endRead = chrono::system_clock::now();
+                chrono::duration<float> elapsedRead = endRead - startRead;
+                cout << "Image read took " << elapsedRead.count() << " s" << endl;
 
                 Image8bit displayed(frame, false);
                 cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
                 line(displayed, Point(0,30), Point(80, 40), Scalar(255,0,0), 1);
 
+                startDisp = chrono::system_clock::now();
                 d.displayColored(displayed);
+                endDisp = chrono::system_clock::now();
+                chrono::duration<float> elapsedDisp = endDisp - startDisp;
+                cout << "Image display took " << elapsedDisp.count() << " s" << endl;
 
                 previousReadSuccessful = true;
 
-                end = std::chrono::system_clock::now();
-                std::chrono::duration<float> elapsed_seconds = end-start;
+                end = chrono::system_clock::now();
+                chrono::duration<float> elapsed_seconds = end-start;
 
                 if (elapsed_seconds.count() < leptonPeriodSeconds) {
                     float sleepTimeMicros = (leptonPeriodSeconds - elapsed_seconds.count()) * 1000000;
