@@ -30,7 +30,6 @@ void record(char* output_dir, bool verbose) {
     SimpleRescaler rescaler;
 
     Image8bit displayed(60, 80);
-    Image16bit frame(60, 80);
     int frame_counter = 1;
     char img_name[128];
     char imu_file_name[128];
@@ -61,13 +60,13 @@ void record(char* output_dir, bool verbose) {
         }
 */
         start = std::chrono::system_clock::now();
-        lepton.captureFrame(frame);
+        std::unique_ptr<Image16bit> frame = lepton.getFrame();
 
         // read only ever 3rd frame
         if ((frame_counter % 3) == 0) {
             // save the current frame as a .png file
             sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
-            imwrite(img_name, frame);
+            imwrite(img_name, *frame);
             imuLog << imu.toDataString();
 
 //            Image8bit displayed(frame, false);
@@ -77,7 +76,7 @@ void record(char* output_dir, bool verbose) {
 //            d.displayColored(displayed);
 
             // convert to 8 bit and display
-            rescaler.scale16bitTo8bit(frame, displayed);
+            rescaler.scale16bitTo8bit(*frame, displayed);
             DisplayUtils::displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), *display);
         }
 

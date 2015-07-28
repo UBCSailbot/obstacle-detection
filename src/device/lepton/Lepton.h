@@ -11,7 +11,11 @@
 #include <opencv2/core/core.hpp>
 
 #include <iostream>
+#include <memory>
+#include <chrono>
 #include <ctime>
+#include <mutex>
+
 #include <stdint.h>
 
 #include "LeptonI2C.h"
@@ -37,13 +41,36 @@ public:
     Lepton();
     ~Lepton();
 
-    void captureFrame(Image16bit &frame);
+    /**
+     * Delegates memory allocated by this class to a new Image16bit object,
+     *  and sends it off via unique_ptr to communicate to the receiver
+     *  that they should take care of memory from there on out.
+     */
+    std::unique_ptr<Image16bit> getFrame();
+
+    /**
+     * Perform Flat Field Correction, recalibrating the Lepton's sensor array
+     *  based on the thermally level surface of the inside of the shutter.
+     */
     void performFFC();
 
 private:
 
-    uint8_t result[PACKET_SIZE*PACKETS_PER_FRAME];
-    uint16_t *frameBuffer;
+    std::thread _leptonThread;
+
+    uint8_t _result[PACKET_SIZE*PACKETS_PER_FRAME];
+    uint16_t *_frameBuffer;
+
+    uint16_t* _latestFrame;
+
+    volatile bool _canOverwriteLatestFrame;
+
+    /* Provides a lock to make sure that only one thread at a time can check and
+     *  modify the _canOverwriteLatestFrame variable. */
+    std::mutex _mtx;
+
+    void startCapture();
+    void captureFrame();
 
 };
 
