@@ -49,7 +49,7 @@ public:
      *  and sends it off via unique_ptr to communicate to the receiver
      *  that they should take care of memory from there on out.
      */
-    std::unique_ptr<Image16bit> getFrame();
+    void getFrame(Image16bit &frame);
 
     /**
      * Perform Flat Field Correction, recalibrating the Lepton's sensor array

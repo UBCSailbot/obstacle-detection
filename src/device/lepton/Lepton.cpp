@@ -65,9 +65,8 @@ Lepton::~Lepton() {
     free(_latestFrame);
 }
 
-std::unique_ptr<Image16bit> Lepton::getFrame() {
+void Lepton::getFrame(Image16bit &frame) {
     // wait to get the lock before grabbing the latest frame
-    std::unique_ptr<Image16bit> img(new Image16bit(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX));
 
     {
         std::unique_lock<std::mutex> lock(_mtx);
@@ -77,13 +76,15 @@ std::unique_ptr<Image16bit> Lepton::getFrame() {
         _canOverwriteLatestFrame = false;
     }
 
-    img->data = (uchar*) _latestFrame;
+    for(int row=0; row < frame.rows; row++) {
+        for (int col=0; col < frame.cols; col++) {
+            frame.pixelAt(row, col) = _latestFrame[row * VIEWPORT_WIDTH_PIX + col];
+        }
+    }
 
-    _latestFrame = (uint16_t*) malloc(VIEWPORT_WIDTH_PIX * VIEWPORT_HEIGHT_PIX * sizeof(uint16_t));
     _newFrameAvailable = false;
     _canOverwriteLatestFrame = true;
 
-    return std::move(img);
 }
 
 void Lepton::captureFrame() {

@@ -21,6 +21,7 @@ public:
     }
 
     Image8bit(int rows, int cols) : cv::Mat(rows, cols, CV_8UC1) { }
+    Image8bit(int rows, int cols, void* data) : Mat(rows, cols, CV_8UC1, data) {}
 
     /**
      * PARAM m: Mat used to seed this Image8bit. Must be of type CV_8UC1,

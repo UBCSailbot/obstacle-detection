@@ -20,6 +20,7 @@ public:
     }
 
     Image16bit(int rows, int cols) : Mat(rows, cols, CV_16UC1) { }
+    Image16bit(int rows, int cols, void* data) : Mat(rows, cols, CV_16UC1, data) {}
 
     /**
      * PARAM m: Mat used to seed this Image16bit. Must be of type CV_16UC1,
@@ -31,7 +32,6 @@ public:
     Image16bit(const cv::Mat &m, bool copyData) : Mat( copyData ? m.clone() : m ) {
         assert(m.type() == CV_16UC1);
     }
-
 
     /**
      * Overloads square brackets to work as a getter.
