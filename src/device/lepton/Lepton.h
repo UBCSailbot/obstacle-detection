@@ -15,6 +15,9 @@
 #include <chrono>
 #include <ctime>
 #include <mutex>
+#include <thread>
+#include <condition_variable>
+
 
 #include <stdint.h>
 
@@ -39,7 +42,7 @@ static uint32_t speed = 16000000;
 class Lepton {
 public:
     Lepton();
-    ~Lepton();
+    virtual ~Lepton();
 
     /**
      * Delegates memory allocated by this class to a new Image16bit object,
@@ -64,10 +67,12 @@ private:
     uint16_t* _latestFrame;
 
     volatile bool _canOverwriteLatestFrame;
+    volatile bool _newFrameAvailable;
 
     /* Provides a lock to make sure that only one thread at a time can check and
      *  modify the _canOverwriteLatestFrame variable. */
     std::mutex _mtx;
+    std::condition_variable _cv;
 
     void startCapture();
     void captureFrame();

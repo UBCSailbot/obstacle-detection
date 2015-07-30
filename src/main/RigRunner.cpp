@@ -60,10 +60,11 @@ void record(char* output_dir, bool verbose) {
         }
 */
         start = std::chrono::system_clock::now();
-        std::unique_ptr<Image16bit> frame = lepton.getFrame();
 
         // read only ever 3rd frame
         if ((frame_counter % 3) == 0) {
+            std::unique_ptr<Image16bit> frame = lepton.getFrame();
+
             // save the current frame as a .png file
             sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
             imwrite(img_name, *frame);

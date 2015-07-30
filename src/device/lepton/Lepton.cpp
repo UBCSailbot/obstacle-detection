@@ -2,7 +2,6 @@
 // Created by paul on 10/05/15.
 //
 
-#include <thread>
 #include "Lepton.h"
 
 Lepton::Lepton() {
@@ -54,6 +53,8 @@ Lepton::Lepton() {
     }
 
     _latestFrame = (uint16_t*) malloc(VIEWPORT_WIDTH_PIX * VIEWPORT_HEIGHT_PIX * sizeof(uint16_t));
+    _newFrameAvailable = false;
+    _canOverwriteLatestFrame = true;
 
     std::thread tempThread(&Lepton::startCapture, this);
     std::swap(tempThread, _leptonThread);
@@ -66,14 +67,20 @@ Lepton::~Lepton() {
 
 std::unique_ptr<Image16bit> Lepton::getFrame() {
     // wait to get the lock before grabbing the latest frame
-    _mtx.lock();
-    _canOverwriteLatestFrame = false;
-    _mtx.unlock();
+    std::unique_ptr<Image16bit> img(new Image16bit(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX));
 
-    std::unique_ptr<Image16bit> img(new Image16bit(VIEWPORT_WIDTH_PIX, VIEWPORT_HEIGHT_PIX));
+    {
+        std::unique_lock<std::mutex> lock(_mtx);
+        if (!_newFrameAvailable){
+            _cv.wait(lock);
+        }
+        _canOverwriteLatestFrame = false;
+    }
+
     img->data = (uchar*) _latestFrame;
 
     _latestFrame = (uint16_t*) malloc(VIEWPORT_WIDTH_PIX * VIEWPORT_HEIGHT_PIX * sizeof(uint16_t));
+    _newFrameAvailable = false;
     _canOverwriteLatestFrame = true;
 
     return std::move(img);
@@ -133,6 +140,8 @@ void Lepton::captureFrame() {
             row = i / PACKET_SIZE_UINT16;
             _latestFrame[row * VIEWPORT_WIDTH_PIX + column] = _frameBuffer[i];
         }
+
+        _cv.notify_one();
     }
     _mtx.unlock();
 }
