@@ -7,7 +7,7 @@ def convert_to_video(frame_dir, video_file, frame_rate=27, rotate=False):
   if rotate:
     rotate_str = "-vf \"transpose=2\""
 
-  cmd_str = "ffmpeg -i \"{input}\" -r {fps} {transform} {output}"\
+  cmd_str = "ffmpeg -r {fps} -i \"{input}\" {transform} {output}"\
     .format(input=os.path.join(frame_dir, "img_%06d.png"), \
             fps=frame_rate,\
             transform=rotate_str,
