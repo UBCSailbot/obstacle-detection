@@ -18,7 +18,7 @@ typedef enum {
 class Rescaling {
 
 public:
-    static void clipTo8bits(const Image16bit &src, Image8bit &dst, const int &newMinPixelValue);
+    static void clipTo8bits(const Image16bit &src, Image8bit &dst, const int &newMidPixelValue);
 
 };
 

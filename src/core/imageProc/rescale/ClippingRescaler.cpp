@@ -22,9 +22,10 @@ void ClippingRescaler::scale16bitTo8bit(const Image16bit &src, Image8bit &dst) {
 
     int localPeakValue = _centralTendencyGetter->getCentralTendency(histogram);
 
-    int newMinPixelValue, newMaxPixelValue;
-    histogram.find8bitWindow(localPeakValue, newMinPixelValue, newMaxPixelValue);
-    Rescaling::clipTo8bits(src, dst, newMinPixelValue);
+//    int newMinPixelValue, newMaxPixelValue;
+//    histogram.find8bitWindow(localPeakValue, newMinPixelValue, newMaxPixelValue);
+//    Rescaling::clipTo8bits(src, dst, newMinPixelValue);
+    Rescaling::clipTo8bits(src, dst, localPeakValue);
 
 }
 
