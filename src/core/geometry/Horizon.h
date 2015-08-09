@@ -19,6 +19,9 @@
 class Horizon : public Line {
 
 public:
+    static const double ROLL_ADJUST = 0.09;
+    static const double PITCH_ADJUST = 0.15;
+
     Horizon(double roll, double pitch);
     Horizon(cv::Point2f startPoint, cv::Point2f endPoint);
     ~Horizon();
