@@ -16,7 +16,7 @@ class DangerZone {
 
 public:
 
-    DangerZone(float portAngleDeg, float starboardAngleDeg, float lateralOffsetMeters) :
+    DangerZone(double portAngleDeg, double starboardAngleDeg, double lateralOffsetMeters) :
             _portAngleDeg(portAngleDeg), _starboardAngleDeg(starboardAngleDeg),
             _lateralOffsetMeters(lateralOffsetMeters)
     {    }

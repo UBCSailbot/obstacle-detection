@@ -21,7 +21,7 @@ class ObstaclePositionFrame {
 
 public:
     ObstaclePositionFrame(const cv::Mat &frame, int xFOV, int yFOV,
-                          const std::vector<std::pair<int, int>> &obstacleEdges) :
+                          const std::vector<std::pair<double, double>> &obstacleEdges) :
             _rows(frame.rows), _cols(frame.cols), _xFOV(xFOV), _yFOV(yFOV),
             _obstacleEdges(obstacleEdges)
     {    }
@@ -30,7 +30,7 @@ public:
         return !_obstacleEdges.empty();
     }
 
-    const auto getObstacleEdges() const {
+    const std::vector<std::pair<double, double>> getObstacleEdges() const {
         return _obstacleEdges;
     }
 
@@ -42,20 +42,21 @@ public:
         return _cols;
     }
 
-    const int getXFOV() const {
+    const double getXFOV() const {
         return _xFOV;
     }
 
-    const int getYFOV() const {
+    const double getYFOV() const {
         return _yFOV;
     }
 
 private:
-    std::vector<std::pair<int, int>> _obstacleEdges;
+    //with reference to the horizon
+    std::vector<std::pair<double, double>> _obstacleEdges;
     int _rows;
     int _cols;
-    int _xFOV;
-    int _yFOV;
+    double _xFOV;
+    double _yFOV;
 
 };
 
