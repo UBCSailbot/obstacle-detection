@@ -23,8 +23,8 @@ class DangerZoneEncoder {
 
 public:
 
-    virtual const std::vector<DangerZone> identifyDangerZones(const ObstaclePositionFrame &positions,
-                                                 const Horizon &horizon)=0;
+    virtual std::vector<DangerZone> identifyDangerZones(const ObstaclePositionFrame &positions,
+                                                 const Horizon &horizon) const =0 ;
 
 };
 
