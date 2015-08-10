@@ -7,14 +7,6 @@
 #include <iostream>
 
 
-
-SimpleDangerZoneEncoder::SimpleDangerZoneEncoder()
-
-
-{
-
-}
-
 std::vector<DangerZone> SimpleDangerZoneEncoder::identifyDangerZones(const ObstaclePositionFrame &positions,
                                                   const Horizon &horizon) const
 {
@@ -39,7 +31,7 @@ std::vector<DangerZone> SimpleDangerZoneEncoder::identifyDangerZones(const Obsta
         zones.push_back(dangerZone);
     }
 
-    
+
     return zones;
 
 }

@@ -25,7 +25,7 @@ public:
      * Returns the distance, in degrees, of the left-most edge of the
      *  danger zone from the current heading.
      */
-    const float getPortAngleDeg() const {
+    const double getPortAngleDeg() const {
         return _portAngleDeg;
     }
 
@@ -33,7 +33,7 @@ public:
      * Returns the distance, in degrees, of the right-most edge of the
      *  danger zone from the current heading.
      */
-    const float getStarboardAngleDeg() const {
+    const double getStarboardAngleDeg() const {
         return _starboardAngleDeg;
     }
 
@@ -45,14 +45,14 @@ public:
      *
      * This function returns that lateral offset, in meters.
      */
-    const float getLateralOffsetMeters() const {
+    const double getLateralOffsetMeters() const {
         return _lateralOffsetMeters;
     }
 
 private:
-    const float _portAngleDeg;
-    const float _starboardAngleDeg;
-    const float _lateralOffsetMeters;
+    const double _portAngleDeg;
+    const double _starboardAngleDeg;
+    const double _lateralOffsetMeters;
 
 };
 
