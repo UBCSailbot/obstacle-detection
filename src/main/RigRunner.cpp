@@ -1,5 +1,5 @@
 //
-// Created by paul on 09/05/15.
+// Created by paul on 09/05/15 (dd/mm/yy, of course)
 //
 
 #include "RigRunner.h"
@@ -67,7 +67,7 @@ void record(char* output_dir, bool verbose) {
             lepton.getFrame(frame);
 
             // save the current frame as a .png file
-            sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
+            sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter/3);
             imwrite(img_name, frame);
             imuLog << imu.toDataString();
 
