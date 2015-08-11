@@ -72,6 +72,7 @@ add_executable(displayInitTest
 # Lepton testing
 add_executable(leptonShutter
                test/main/LeptonShutterTest.cpp
+               ${CORE_SOURCE_FILES}
                ${DEVICE_TEST_FILES}
 )
 
