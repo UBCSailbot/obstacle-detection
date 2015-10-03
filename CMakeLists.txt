@@ -91,8 +91,8 @@ add_dependencies(displayInitTest migrateResources)
 ##################
 
 # Add google test framework
-add_subdirectory(lib/gtest-1.7.0 gtest)
-include_directories(gtest STATIC lib/gtest-1.7.0/include )
+add_subdirectory(lib/googletest/googletest gtest)
+include_directories(gtest STATIC lib/googletest/googletest/include )
 
 set(TEST_FRAMEWORK_LIBS gtest)
 
