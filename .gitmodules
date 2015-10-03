@@ -10,3 +10,7 @@
 	path = lib/RTIMULib
 	url = git@github.com:richards-tech/RTIMULib.git
 	branch= master
+[submodule "lib/LeptonModule"]
+		path = lib/LeptonModule
+		url = git@github.com:groupgets/LeptonModule.git
+		branch= master
