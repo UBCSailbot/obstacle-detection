@@ -5,3 +5,8 @@
 [submodule "lib/tclap"]
 	path = lib/tclap
 	url = git@github.com:eile/tclap.git
+	branch = master
+[submodule "lib/RTIMULib"]
+	path = lib/RTIMULib
+	url = git@github.com:richards-tech/RTIMULib.git
+	branch= master
