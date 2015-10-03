@@ -1,8 +1,0 @@
-Win32
-Release
-Debug
-*.ipch
-build
-Makefile.conf
-config.log
-config.status

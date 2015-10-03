@@ -10,3 +10,6 @@
 	path = lib/RTIMULib
 	url = git@github.com:richards-tech/RTIMULib.git
 	branch= master
+[submodule "lib/rpusbdisp"]
+	path = lib/rpusbdisp
+	url = git@github.com:robopeak/rpusbdisp.git
