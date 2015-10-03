@@ -129,8 +129,8 @@ list(APPEND DEVICE_LIBS RTIMULib)
 
 
 # Lepton SDK is compiled with the project
-include_directories(lib/leptonSDKEmb32PUB)
-set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/leptonSDKEmb32PUB)
+include_directories(lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
+set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 add_custom_target(
    leptonSDK
    COMMAND make
@@ -144,7 +144,7 @@ list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
 
 # rpusbdisp is compiled with the project
-set(RPUSBDISP_DIR ${CMAKE_SOURCE_DIR}/lib/rpusbdisp/drivers/usermode-sdk)
+set(RPUSBDISP_DIR ${CMAKE_SOURCE_DIR}/lib/rpusbdisp/usermode-sdk)
 include_directories(${RPUSBDISP_DIR})
 include_directories(${RPUSBDISP_DIR}/infra/include)
 include_directories(${RPUSBDISP_DIR}/rpusbdisp-drv/include)
