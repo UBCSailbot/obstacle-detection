@@ -10,10 +10,7 @@
 ```
   git clone https://github.com/UBCSailbot/obstacle-avoidance.git
   cd obstacle-avoidance
-  cd lib/googletest
-  git submodule init
-  git submodule update
-  cd ../..
+  git submodule update --init --recursive 
   mkdir bin
   cd bin
   cmake ..
