@@ -79,7 +79,7 @@ pixel_shift: 0 when horizon centred, +height/2 when horizon from top left to bot
 May exceed magnitude height/2 for large angles.
 */
 double Horizon::rollHorizonPixelShift(double angle) {
-    return -tan(angle) * (double) VIEWPORT_WIDTH_PIX / 2.0;
+    return tan(angle) * (double) VIEWPORT_WIDTH_PIX / 2.0;
 }
 
 /*
@@ -88,9 +88,6 @@ PRE: pitch, roll angles in radians given
 POST: pitch, roll, and intersection heights stored in class.
 */
 void Horizon::setPitchRoll(double pitch, double roll) {
-    roll += ROLL_ADJUST;
-    pitch += PITCH_ADJUST;
-
     double pitchShift = pitchHorizonPixelShift(pitch);
     heightLeft = (int) (pitchShift + VIEWPORT_HEIGHT_PIX / 2);
     heightRight = (int) (pitchShift + VIEWPORT_HEIGHT_PIX / 2);
