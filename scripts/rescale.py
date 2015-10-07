@@ -23,8 +23,8 @@ def main():
 
     top_dir = sys.argv[1]
     video_name = sys.argv[2]
-    
-    options = "-t 2 -w 100 -p"
+
+    # TODO: Read in rescaling options from config
 
     from make_video import convert_to_video
 
