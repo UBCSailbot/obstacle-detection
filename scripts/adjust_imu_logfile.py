@@ -19,28 +19,28 @@ import shared
 
 def adjust_imu_logfile(logfile_path, roll_offset, pitch_offset, invert_roll=False, invert_pitch=False):
 
-	new_text = []
+  new_text = []
 
-	for line in open(logfile_path).readlines():
-		roll, pitch, yaw = map(float, line.split())
-		roll += roll_offset
-		pitch += pitch_offset
-		if invert_roll:
-			roll *= -1
-		if invert_pitch:
-			pitch *= -1
-		new_text.append(' '.join([str(roll), str(pitch), str(yaw)]) + '\n')
+  for line in open(logfile_path).readlines():
+    roll, pitch, yaw = map(float, line.split())
+    roll += roll_offset
+    pitch += pitch_offset
+    if invert_roll:
+      roll *= -1
+    if invert_pitch:
+      pitch *= -1
+    new_text.append(' '.join([str(roll), str(pitch), str(yaw)]) + '\n')
 
-	dot_index = logfile_path.find('.')
-	pre_ext = logfile_path[:dot_index]
-	post_ext = logfile_path[dot_index + 1:]
+  dot_index = logfile_path.find('.')
+  pre_ext = logfile_path[:dot_index]
+  post_ext = logfile_path[dot_index + 1:]
 
   new_imu_logfile = pre_ext + "_adjusted." + post_ext
 
-	open(new_imu_logfile, 'w').writelines(new_text)
+  open(new_imu_logfile, 'w').writelines(new_text)
   return new_imu_logfile
 
-def adjust_imu_logfiles(experiment_dir, roll_offset, pitch_offset, invert_roll=False, invert_pitch=False):
+def batch_adjust_imu_logfiles(experiment_dir, roll_offset, pitch_offset, invert_roll=False, invert_pitch=False):
 
   import os
 
@@ -78,16 +78,16 @@ if __name__ == "__main__":
   invert_pitch = "--invert-pitch" in sys.argv
 
   # if "--invert-roll" in sys.argv:
-  # 	invert_roll = True
+  #   invert_roll = True
 
   # if "--invert-pitch" in sys.argv:
-  # 	invert_pitch = True
+  #   invert_pitch = True
 
   if flag == "-f":
     adjust_imu_logfile(logfile_path, roll_offset, pitch_offset, invert_roll, invert_pitch)
 
   elif flag == "-d":
-    adjust_imu_logfiles(logfile_path, roll_offset, pitch_offset, invert_roll, invert_pitch)
+    batch_adjust_imu_logfiles(logfile_path, roll_offset, pitch_offset, invert_roll, invert_pitch)
 
   else:
     print_usage()
