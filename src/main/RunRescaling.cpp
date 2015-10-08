@@ -178,7 +178,13 @@ void rescale(const string &inputFrameDir, const string &outputFrameDir, const st
         Image16bit rawFrame = ImageReader::read16bitImage(frameFilePath);
         Image8bit rescaledFrame(rawFrame.rows, rawFrame.cols);
 
-        rescaler->scale16bitTo8bit(rawFrame, rescaledFrame);
+        try{
+            rescaler->scale16bitTo8bit(rawFrame, rescaledFrame);
+        }
+        catch (NoSuchElementException e) {
+            cout << "WARNING: Ran out of IMU coordinates in imu logfile at frame " << i << endl;
+            exit(0);
+        }
 
         string outputFilePath = Paths::join(outputFrameDir, frameFile);
 
@@ -203,8 +209,9 @@ void rescale(const string &inputFrameDir, const string &outputFrameDir, const st
         }
         else {
             outputFrame = rescaledFrame;
-            imwrite(outputFilePath, outputFrame);
         }
+
+        imwrite(outputFilePath, outputFrame);
 
         if (display) {
             resize(outputFrame, outputFrame, Size(0, 0), 6, 6, INTER_NEAREST);
