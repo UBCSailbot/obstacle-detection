@@ -7,6 +7,8 @@
 
 
 #include <opencv2/core/core.hpp>
+#include <exceptions/IncorrectImageType.h>
+
 
 /**
  * A convenience class to distinguish 16-bit images from 8-bit images.
@@ -31,7 +33,10 @@ public:
      *      results in a change in the other.
      */
     Image8bit(const cv::Mat &m, bool copyData) : cv::Mat( copyData ? m.clone() : m ) {
-        assert(m.type() == CV_8UC1);
+        if(m.type() != CV_8UC1){
+            throw IncorrectImageType("parameter m is of wrong type");
+        }
+
     }
 
     /**
@@ -48,11 +53,10 @@ public:
         return this->at<uint8_t>(row, col);
     }
 
-    /**
-     * Performs some under-the-hood OpenCV voodoo magic to force
-     *  the given cv::Mat to become of type CV_8UC1.
+     /**
+     * Force the given cv::Mat to become of type CV_16UC1.
      *
-     * CAUTION: Use wisely.
+     * CAUTION: always sets the flag to CV_16UC1 even if mat is malformed.
      */
     static void forceConversion(cv::Mat &mat) {
         mat.flags = mat.flags & (1 << 12);
