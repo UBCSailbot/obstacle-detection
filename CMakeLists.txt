@@ -91,8 +91,8 @@ add_dependencies(displayInitTest migrateResources)
 ##################
 
 # Add google test framework
-add_subdirectory(lib/googletest/googletest gtest)
-include_directories(gtest STATIC lib/googletest/googletest/include )
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/googletest/googletest gtest)
+include_directories(gtest STATIC ${CMAKE_SOURCE_DIR}/lib/googletest/googletest/include )
 
 set(TEST_FRAMEWORK_LIBS gtest)
 
@@ -129,7 +129,7 @@ list(APPEND DEVICE_LIBS RTIMULib)
 
 
 # Lepton SDK is compiled with the project
-include_directories(lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
+include_directories(${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 add_custom_target(
    leptonSDK
@@ -141,6 +141,10 @@ add_dependencies(rigRunner leptonSDK)
 add_dependencies(leptonShutter leptonSDK)
 
 list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
+
+
+# dlib is complied with the  project
+include_directories(${CMAKE_SOURCE_DIR})
 
 
 # rpusbdisp is compiled with the project
