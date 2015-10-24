@@ -21,6 +21,9 @@ add_executable(rescale src/main/RunRescaling.cpp ${CORE_SOURCE_FILES})
 
 add_executable(sunImageRunner src/main/SunImageRunner.cpp ${CORE_SOURCE_FILES})
 
+add_executable(objectDetectionRunner src/main/ObjectDetectionRunner.cpp)
+
+add_executable(objectDetectionTrainer src/main/ObjectDetectionTrainer.cpp)
 
 #########
 # TESTS #
@@ -144,7 +147,8 @@ list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
 
 # dlib is complied with the  project
-include_directories(${CMAKE_SOURCE_DIR})
+include(${CMAKE_SOURCE_DIR}/lib/dlib/dlib/cmake)
+
 
 
 # rpusbdisp is compiled with the project
@@ -188,6 +192,11 @@ target_link_libraries(rescale ${CORE_LIBS})
 target_link_libraries(sunImageRunner ${CORE_LIBS})
 
 target_link_libraries(runCoreTests ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
+
+
+target_link_libraries(objectDetectionRunner dlib)
+target_link_libraries(objectDetectionTrainer dlib)
+
 
 target_link_libraries(imuTest ${CORE_LIBS} ${DEVICE_LIBS})
 target_link_libraries(displayTest ${CORE_LIBS} ${DEVICE_LIBS})
