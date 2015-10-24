@@ -48,12 +48,12 @@ int main(int argc, char** argv)
         // thing we do is load that dataset.  This means you need to supply the
         // path to this faces folder as a command line argument so we will know
         // where it is.
-        if (argc != 3)
+        if (argc !=2)
         {
             cout << "Give the path to the examples/faces directory as the argument to this" << endl;
             cout << "program.  For example, if you are in the examples folder then execute " << endl;
             cout << "this program by running: " << endl;
-            cout << "   ./fhog_object_detector_ex faces" << endl;
+            cout << "   ./fhog_object_detector_ex path/to/dir" << endl;
             cout << endl;
             return 0;
         }
