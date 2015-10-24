@@ -54,36 +54,35 @@ int main(int argc, char** argv)
         dlib::array<array2d<unsigned char> > images_test;
         std::vector<std::vector<rectangle> > boxes_test;
 
+        typedef scan_fhog_pyramid<pyramid_down<6> > image_scanner_type;
+
+        std::vector<object_detector<image_scanner_type> > my_detectors;
+        object_detector<image_scanner_type> detector;
+        for(int i = 2; i < argc; i++){
+          deserialize(argv[i]) >> detector;
+          my_detectors.push_back(detector);
+        }
+
         const std::string testing_directory = argv[1];
         cout << "num testing images:  " << images_test.size() << endl;
 
 
 
-
         load_image_dataset(images_test, boxes_test, testing_directory+"/testing.xml");
 
-        typedef scan_fhog_pyramid<pyramid_down<6> > image_scanner_type;
-
-        object_detector<image_scanner_type> detector;
-        deserialize(argv[2]) >> detector;
-
-
-        cout << "testing results:  " << test_object_detection_function(detector, images_test, boxes_test) << endl;
-
-        image_window hogwin(draw_fhog(detector), "Learned fHOG detector");
+        //need to figure out how to test multiple models
+        //cout << "testing results:  " << test_object_detection_function(my_detectors, images_test, boxes_test) << endl;
 
         // Now for the really fun part.  Let's display the testing images on the screen and
-        // show the output of the face detector overlaid on each image.  You will see that
-        // it finds all the faces without false alarming on any non-faces.
+        // show the output of the face detector overlaid on each image.
         image_window win;
         for (unsigned long i = 0; i < images_test.size(); ++i)
         {
-            // Run the detector and get the face detections.
-            std::vector<rectangle> dets = detector(images_test[i]);
+            std::vector<rectangle> dets =   evaluate_detectors(my_detectors, images_test[i]);
             win.clear_overlay();
             win.set_image(images_test[i]);
             win.add_overlay(dets, rgb_pixel(255,0,0));
-             cout << "Hit enter to start..." << endl;
+             cout << "Hit enter to continue..." << endl;
               cin.get();
         }
 
