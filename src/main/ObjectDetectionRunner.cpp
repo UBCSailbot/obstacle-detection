@@ -47,7 +47,7 @@ int main(int argc, char** argv)
                 {
                         cout << "Give the path to the testing directory and your model as the argument to this" << endl;
                         cout << "You can do this this program by running: " << endl;
-                        cout << "   ./ObjectDetectionRunner path/to/images model.svm " << endl;
+                        cout << "   ./ObjectDetectionRunner path/to/images model.svm ..." << endl;
                         cout << endl;
                         return 0;
                 }
