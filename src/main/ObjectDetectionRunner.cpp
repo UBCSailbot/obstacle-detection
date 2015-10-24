@@ -21,7 +21,7 @@
     instructions.  Note that AVX is the fastest but requires a CPU from at least
     2011.  SSE4 is the next fastest and is supported by most current machines.
 
-*/
+ */
 
 
 #include <dlib/svm_threaded.h>
@@ -41,58 +41,58 @@ using namespace dlib;
 int main(int argc, char** argv)
 {
 
-    try
-    {
-        if (argc != 3)
+        try
         {
-            cout << "Give the path to the testing directory and your model as the argument to this" << endl;
-            cout << "You can do this this program by running: " << endl;
-            cout << "   ./ObjectDetectionRunner path/to/images model.svm " << endl;
-            cout << endl;
-            return 0;
+                if (argc != 3)
+                {
+                        cout << "Give the path to the testing directory and your model as the argument to this" << endl;
+                        cout << "You can do this this program by running: " << endl;
+                        cout << "   ./ObjectDetectionRunner path/to/images model.svm " << endl;
+                        cout << endl;
+                        return 0;
+                }
+                dlib::array<array2d<unsigned char> > images_test;
+                std::vector<std::vector<rectangle> > boxes_test;
+
+                typedef scan_fhog_pyramid<pyramid_down<6> > image_scanner_type;
+
+                std::vector<object_detector<image_scanner_type> > my_detectors;
+                object_detector<image_scanner_type> detector;
+                for(int i = 2; i < argc; i++) {
+                        deserialize(argv[i]) >> detector;
+                        my_detectors.push_back(detector);
+                }
+
+                const std::string testing_directory = argv[1];
+                cout << "num testing images:  " << images_test.size() << endl;
+
+
+
+                load_image_dataset(images_test, boxes_test, testing_directory+"/testing.xml");
+
+                //need to figure out how to test multiple models
+                //cout << "testing results:  " << test_object_detection_function(my_detectors, images_test, boxes_test) << endl;
+
+                // Now for the really fun part.  Let's display the testing images on the screen and
+                // show the output of the face detector overlaid on each image.
+                image_window win;
+                for (unsigned long i = 0; i < images_test.size(); ++i)
+                {
+                        std::vector<rectangle> dets =   evaluate_detectors(my_detectors, images_test[i]);
+                        win.clear_overlay();
+                        win.set_image(images_test[i]);
+                        win.add_overlay(dets, rgb_pixel(255,0,0));
+                        cout << "Hit enter to continue..." << endl;
+                        cin.get();
+                }
+
+
         }
-        dlib::array<array2d<unsigned char> > images_test;
-        std::vector<std::vector<rectangle> > boxes_test;
-
-        typedef scan_fhog_pyramid<pyramid_down<6> > image_scanner_type;
-
-        std::vector<object_detector<image_scanner_type> > my_detectors;
-        object_detector<image_scanner_type> detector;
-        for(int i = 2; i < argc; i++){
-          deserialize(argv[i]) >> detector;
-          my_detectors.push_back(detector);
-        }
-
-        const std::string testing_directory = argv[1];
-        cout << "num testing images:  " << images_test.size() << endl;
-
-
-
-        load_image_dataset(images_test, boxes_test, testing_directory+"/testing.xml");
-
-        //need to figure out how to test multiple models
-        //cout << "testing results:  " << test_object_detection_function(my_detectors, images_test, boxes_test) << endl;
-
-        // Now for the really fun part.  Let's display the testing images on the screen and
-        // show the output of the face detector overlaid on each image.
-        image_window win;
-        for (unsigned long i = 0; i < images_test.size(); ++i)
+        catch (exception& e)
         {
-            std::vector<rectangle> dets =   evaluate_detectors(my_detectors, images_test[i]);
-            win.clear_overlay();
-            win.set_image(images_test[i]);
-            win.add_overlay(dets, rgb_pixel(255,0,0));
-             cout << "Hit enter to continue..." << endl;
-              cin.get();
+                cout << "\nexception thrown!" << endl;
+                cout << e.what() << endl;
         }
-
-
-    }
-    catch (exception& e)
-    {
-        cout << "\nexception thrown!" << endl;
-        cout << e.what() << endl;
-    }
 }
 
 // ----------------------------------------------------------------------------------------
