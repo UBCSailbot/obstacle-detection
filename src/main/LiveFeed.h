@@ -2,8 +2,8 @@
 // Created by paul on 12/05/15.
 //
 
-#ifndef OBSTACLE_AVOIDANCE_RIGRUNNER_H
-#define OBSTACLE_AVOIDANCE_RIGRUNNER_H
+#ifndef OBSTACLE_AVOIDANCE_LIVEFEED_H
+#define OBSTACLE_AVOIDANCE_LIVEFEED_H
 
 #include "imu/IMU.h"
 #include "imu/ParallelIMU.h"
@@ -18,6 +18,7 @@
 
 #include "imageProc/liveFeed/base64EncDec.h"
 
+#include <vector>
 #include <unistd.h>
 #include <signal.h>
 #include <fstream>
@@ -36,4 +37,4 @@ void displayFrameWithHorizonLine(Image8bit image, double roll, double pitch, Dis
 
 void printUsage(int argc, char** argv);
 
-#endif //OBSTACLE_AVOIDANCE_RIGRUNNER_H
+#endif //OBSTACLE_AVOIDANCE_LIVEFEED_H
