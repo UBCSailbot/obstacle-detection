@@ -2,7 +2,7 @@
 // Created by paul on 09/05/15 (dd/mm/yy, of course)
 //
 
-#include "RigRunner.h"
+#include "LiveFeed.h"
 
 #define APP_NAME "rig_record"
 
@@ -12,6 +12,20 @@ static void hangup_handler(int signum) {
     if (signum == SIGHUP)
         stop_record = true;
 }
+
+
+vector<uchar> imgToBuff(Image8bit img){
+    vector<uchar> buff;//buffer for coding
+    vector<int> param = vector<int>(2);
+
+    param[0]=CV_IMWRITE_PNG_COMPRESSION;
+
+    param[1]=3;//default(3)  0-9.
+    imencode(".png",img,buff,param);
+    cout<<"coded file size(png)"<<buff.size()<<endl;
+    return buff;
+}
+
 
 void setup_sighandler() {
     struct sigaction sa;
@@ -81,9 +95,21 @@ void record(char* output_dir, bool verbose) {
             rescaler.scale16bitTo8bit(frame, displayed);
 
             //encode the frame for livefeed
-            ret = base64_encode(displayed);
+            vector<uchar> buff = imgToBuff(displayed);
+            string encoded = base64_encode(buff.data(), buff.size());
+            //zeroMQ here
 
-            DisplayUtils::displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), *display);
+//            cout << "size" << buff.size();
+//            vector<uchar> decoded = base64_decode(encoded, buff.size());
+
+
+//            Mat pngimage = imdecode(decoded,CV_LOAD_IMAGE_COLOR);
+//            cout << pngimage << endl;
+//            imwrite(outputFilePath, pngimage);
+
+
+
+           // DisplayUtils::displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), *display);
         }
 
         frame_counter ++;
