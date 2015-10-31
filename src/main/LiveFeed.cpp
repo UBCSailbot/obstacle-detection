@@ -70,13 +70,6 @@ void record(char* output_dir, bool verbose) {
 
     while (!stop_record) {
 
-        // Perform FFC every FFC_FREQ_SEC seconds
-/*        if ( (frame_counter / LEPTON_FPS) % FFC_FREQ_SEC == FFC_FREQ_SEC - 1) {
-            cout << "Performing FFC" << endl;
-            lepton.performFFC();
-            usleep(600 * 1000);
-        }
-*/
         start = std::chrono::system_clock::now();
 
         // read only every 3rd frame
@@ -88,12 +81,6 @@ void record(char* output_dir, bool verbose) {
             imwrite(img_name, frame);
             imuLog << imu.toDataString();
 
-//            Image8bit displayed(frame, false);
-//            cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
-//            line(displayed, Point(0,30), Point(80, 40), Scalar(255,0,0), 1);
-//
-//            d.displayColored(displayed);
-
             // convert to 8 bit and display
             rescaler.scale16bitTo8bit(frame, displayed);
 
@@ -102,17 +89,6 @@ void record(char* output_dir, bool verbose) {
             string encoded = base64_encode(buff.data(), buff.size());
             //zeroMQ here
 
-//            cout << "size" << buff.size();
-//            vector<uchar> decoded = base64_decode(encoded, buff.size());
-
-
-//            Mat pngimage = imdecode(decoded,CV_LOAD_IMAGE_COLOR);
-//            cout << pngimage << endl;
-//            imwrite(outputFilePath, pngimage);
-
-
-
-           // DisplayUtils::displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), *display);
         }
 
         frame_counter ++;
