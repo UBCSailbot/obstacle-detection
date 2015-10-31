@@ -16,22 +16,6 @@ static const string base64_chars =
 
 
 
-
-string convert8BitImgToString(Image8bit img){
-    stringstream ss (stringstream::in | stringstream::out);
-
-    for(int i = 0; i < img.rows; i++){
-        for(int j = 0; j < img.cols; j++){
-            ss <<  (int) img.pixelAt(i,j) << ", ";
-        }
-    }
-    cout << ss.str() << endl;
-    cout << "length after convert" << ss.str().length() << endl;
-    return ss.str();
-}
-
-
-
 string base64_encode(unsigned char const*  bytes_to_encode, unsigned int in_len) {
 
     string ret;
@@ -82,6 +66,8 @@ static inline bool is_base64(unsigned char c) {
 }
 
 
+
+
 vector<uchar> base64_decode(std::string const& encoded_string, int size) {
     vector<uchar> decoded(size);
     int iterDec = 0;
@@ -90,7 +76,6 @@ vector<uchar> base64_decode(std::string const& encoded_string, int size) {
     size_t j = 0;
     int in_ = 0;
     unsigned char char_array_4[4], char_array_3[3];
-    std::string ret;
 
     while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
         char_array_4[i++] = encoded_string[in_]; in_++;
@@ -105,7 +90,6 @@ vector<uchar> base64_decode(std::string const& encoded_string, int size) {
             for (i = 0; (i < 3); i++) {
                 decoded[iterDec] = char_array_3[i];
                 iterDec++;
-                ret += char_array_3[i];
             }
             i = 0;
         }
@@ -125,7 +109,6 @@ vector<uchar> base64_decode(std::string const& encoded_string, int size) {
         for (j = 0; (j < i - 1); j++) {
             decoded[iterDec] = char_array_3[j];
             iterDec++;
-            ret += char_array_3[j];
         }
     }
 

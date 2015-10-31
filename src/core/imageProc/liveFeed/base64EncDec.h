@@ -15,9 +15,16 @@ using namespace std;
 
 
 
-
+/**
+  * encodes binary data of in_len bytes into base64
+**/
 string base64_encode(unsigned char const*  bytes_to_encode, unsigned int in_len);
-//string base64_encode(Image8bit img,vector<uchar> buffToStoreBinaryImg);
+
+
+/**
+  * decodes base64 string into binary data of size bites
+**/
+
 vector<uchar> base64_decode(std::string const& encoded_string, int size);
 
 
