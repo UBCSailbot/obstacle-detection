@@ -25,6 +25,8 @@ add_executable(objectDetectionRunner src/main/ObjectDetectionRunner.cpp)
 
 add_executable(objectDetectionTrainer src/main/ObjectDetectionTrainer.cpp)
 
+add_executable(objectDetectionModelGenerator src/main/ObjectDetectionModelGenerator.cpp)
+
 #########
 # TESTS #
 #########
@@ -196,7 +198,7 @@ target_link_libraries(runCoreTests ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
 
 target_link_libraries(objectDetectionRunner dlib)
 target_link_libraries(objectDetectionTrainer dlib)
-
+target_link_libraries(objectDetectionModelGenerator dlib)
 
 target_link_libraries(imuTest ${CORE_LIBS} ${DEVICE_LIBS})
 target_link_libraries(displayTest ${CORE_LIBS} ${DEVICE_LIBS})
