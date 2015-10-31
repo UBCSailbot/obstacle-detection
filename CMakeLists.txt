@@ -17,6 +17,8 @@ file(GLOB_RECURSE DEVICE_SOURCE_FILES src/device/*.cpp src/device/*.h)
 
 add_executable(rigRunner src/main/RigRunner.cpp ${CORE_SOURCE_FILES} ${DEVICE_SOURCE_FILES})
 
+add_executable(liveFeeder src/main/LiveFeed.cpp ${CORE_SOURCE_FILES} ${DEVICE_SOURCE_FILES})
+
 add_executable(rescale src/main/RunRescaling.cpp ${CORE_SOURCE_FILES})
 
 add_executable(sunImageRunner src/main/SunImageRunner.cpp ${CORE_SOURCE_FILES})
@@ -145,6 +147,7 @@ add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
 add_dependencies(displayTest leptonSDK)
 add_dependencies(rigRunner leptonSDK)
+add_dependencies(liveFeeder leptonSDK)
 add_dependencies(leptonShutter leptonSDK)
 
 list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
@@ -172,6 +175,7 @@ add_custom_target(
    WORKING_DIRECTORY ${RPUSBDISP_DIR}
 )
 add_dependencies(rigRunner rpusbdisp)
+add_dependencies(liveFeeder rpusbdisp)
 add_dependencies(displayTest rpusbdisp)
 add_dependencies(displayInitTest rpusbdisp)
 add_dependencies(displayVideoTest rpusbdisp)
@@ -192,6 +196,7 @@ list(APPEND CORE_LIBS ${CMAKE_THREAD_LIBS_INIT})
 # Once all the libraries have been loaded, they can be linked to the
 #  executables as necessary
 target_link_libraries(rigRunner ${CORE_LIBS} ${DEVICE_LIBS})
+target_link_libraries(liveFeeder ${CORE_LIBS} ${DEVICE_LIBS})
 target_link_libraries(rescale ${CORE_LIBS})
 target_link_libraries(sunImageRunner ${CORE_LIBS})
 
