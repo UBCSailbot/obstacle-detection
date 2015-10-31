@@ -45,11 +45,20 @@ list(APPEND DEVICE_LIBS RTIMULib)
 include_directories(${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 add_custom_command(
+<<<<<<< HEAD
    OUTPUT ${LEPTONSDK_DIR}/Debug
    COMMAND make
    WORKING_DIRECTORY ${LEPTONSDK_DIR}
  )
 add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug)
+=======
+   OUTPUT ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a
+   COMMAND echo doing stuff
+   COMMAND make
+   WORKING_DIRECTORY ${LEPTONSDK_DIR}
+ )
+add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
+>>>>>>> d6f1035... Rearrange CMakeLists.txt
 
 
 list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
@@ -108,7 +117,6 @@ add_executable(sunImageRunner src/main/SunImageRunner.cpp ${CORE_SOURCE_FILES})
 add_executable(objectDetectionRunner src/main/ObjectDetectionRunner.cpp)
 
 add_executable(objectDetectionTrainer src/main/ObjectDetectionTrainer.cpp)
-
 add_executable(objectDetectionModelGenerator src/main/ObjectDetectionModelGenerator.cpp)
 
 add_dependencies(rigRunner leptonSDK)
