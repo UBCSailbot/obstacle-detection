@@ -1,5 +1,5 @@
 //
-// Created by paul on 12/05/15.
+// Created by paul on 2015/05/12
 //
 
 #ifndef OBSTACLE_AVOIDANCE_LIVEFEED_H
@@ -23,11 +23,6 @@
 #include <signal.h>
 #include <fstream>
 #include <display/DisplayUtils.h>
-
-
-
-using namespace std;
-using namespace cv;
 
 static void hangup_handler(int signum);
 void setup_sighandler();

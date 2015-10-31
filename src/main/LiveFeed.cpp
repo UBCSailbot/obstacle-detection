@@ -1,6 +1,5 @@
 //
-// Created by paul on 09/05/15 (dd/mm/yy, of course)
-//
+// Created by paul on 2015/05/09 
 
 #include "LiveFeed.h"
 
@@ -13,6 +12,10 @@ static void hangup_handler(int signum) {
         stop_record = true;
 }
 
+int imgbuf_zmq_init() {
+
+}
+
 
 vector<uchar> imgToBuff(Image8bit img){
     vector<uchar> buff;//buffer for coding
@@ -22,7 +25,7 @@ vector<uchar> imgToBuff(Image8bit img){
 
     param[1]=3;//default(3)  0-9.
     imencode(".png",img,buff,param);
-    cout<<"coded file size(png)"<<buff.size()<<endl;
+    std::cout<<"coded file size(png)"<<buff.size()<<endl;
     return buff;
 }
 
@@ -58,12 +61,12 @@ void record(char* output_dir, bool verbose) {
     sprintf(imu_file_name, "%s/imuLog.txt", output_dir);
     imuLog.open (imu_file_name);
 
-    cout << "Connecting to screen" << endl;
+    std::cout << "Connecting to screen" << endl;
 
     Display* display = DisplayUtils::connectToDisplay();
 
 
-    cout << "Starting Capture" << endl;
+    std::cout << "Starting Capture" << endl;
 
     while (!stop_record) {
 
@@ -126,17 +129,17 @@ void record(char* output_dir, bool verbose) {
 
     imuLog.flush();
     imuLog.close();
-    cout << "Recording received stopping signal " <<
+    std::cout << "Recording received stopping signal " <<
     "and terminated gracefully." << endl;
 
 }
 
 void printUsage(int argc, char** argv) {
-    cout << "Usage: rig_record <output_dir>" << endl;
-    cout << "You entered: " << endl;
+    std::cout << "Usage: rig_record <output_dir>" << endl;
+    std::cout << "You entered: " << endl;
     for (int i=0; i<argc; i++)
-        cout << argv[i];
-    cout << endl;
+        std::cout << argv[i];
+    std::cout << endl;
 }
 
 int main(int argc, char** argv) {

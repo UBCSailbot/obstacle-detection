@@ -121,6 +121,10 @@ list(APPEND CORE_LIBS ${QT_LIBRARIES})
 # Include tclap - a header-only library for command-line parsing
 include_directories( lib/tclap/include )
 
+# Include the ZeroMQ pkgconfig
+find_package(PkgConfig REQUIRED)
+pkg_search_module(ZMQ REQUIRED libzmq)
+list(APPEND CORE_LIBS ${ZMQ_LIBRARIES})
 
 ####################
 # DEVICE LIBRARIES #
