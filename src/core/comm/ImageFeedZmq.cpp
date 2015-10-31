@@ -22,7 +22,7 @@ bool ImageFeedZmq::init() {
     return true;
 }
 
-bool ImageFeedZmq::sendFrame(uint8_t *buf, size_t size) {
+bool ImageFeedZmq::sendFrame(const uint8_t *buf, size_t size) {
     // Check that we've initialized first
     if(m_socket = NULL) {
         return false;
