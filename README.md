@@ -2,7 +2,7 @@
 
 # dependencies
 
-- opencv 3.0
+- opencv 2.4
 - QT 4.8
 - libusb-1.0-0-dev
 
@@ -17,12 +17,7 @@
   cmake ..
   make runCoreTests
   make rescale
-  ------ temporary fix until cmake is working
-  cd lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB
-  make
-  ------
-
-  make rigRunner // Doesn't work currently - Josh 10/3/2015
+  make rigRunner
 
 
 ```
