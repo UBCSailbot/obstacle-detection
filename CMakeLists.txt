@@ -124,6 +124,7 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(ZMQ REQUIRED libzmq)
 list(APPEND CORE_LIBS ${ZMQ_LIBRARIES})
 include_directories(${ZMQ_INCLUDE_DIRS})
+link_directories(${ZMQ_LIBRARY_DIRS})
 
 ####################
 # DEVICE LIBRARIES #
