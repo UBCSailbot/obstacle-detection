@@ -1,19 +1,19 @@
 [submodule "lib/googletest"]
 	path = lib/googletest
-	url = http://github.com/google/googletest.git
+	url = git@github.com:google/googletest.git
   branch = master
 [submodule "lib/tclap"]
 	path = lib/tclap
-	url = http://github.com/eile/tclap.git
+	url = git@github.com:eile/tclap.git
 	branch = master
 [submodule "lib/RTIMULib"]
 	path = lib/RTIMULib
-	url = http://github.com/richards-tech/RTIMULib.git
+	url = git@github.com:richards-tech/RTIMULib.git
 	branch= master
 [submodule "lib/LeptonModule"]
 		path = lib/LeptonModule
-		url = http://github.com/groupgets/LeptonModule.git
+		url = git@github.com:groupgets/LeptonModule.git
 		branch= master
 [submodule "lib/dlib"]
 	path = lib/dlib
-	url = http://github.com/davisking/dlib.git
+	url = git@github.com:davisking/dlib.git
