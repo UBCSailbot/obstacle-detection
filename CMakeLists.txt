@@ -45,12 +45,11 @@ list(APPEND DEVICE_LIBS RTIMULib)
 include_directories(${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 add_custom_command(
-   OUTPUT ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a
-   COMMAND echo doing stuff
+   OUTPUT ${LEPTONSDK_DIR}/Debug
    COMMAND make
    WORKING_DIRECTORY ${LEPTONSDK_DIR}
  )
-add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
+add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug)
 
 
 list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
@@ -222,4 +221,3 @@ target_link_libraries(displayTest ${CORE_LIBS} ${DEVICE_LIBS})
 target_link_libraries(displayInitTest ${CORE_LIBS} ${DEVICE_LIBS})
 target_link_libraries(displayVideoTest ${CORE_LIBS} ${DEVICE_LIBS})
 target_link_libraries(leptonShutter ${CORE_LIBS} ${DEVICE_LIBS})
-
