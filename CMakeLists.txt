@@ -46,6 +46,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_li
 set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 add_custom_command(
 <<<<<<< HEAD
+<<<<<<< HEAD
    OUTPUT ${LEPTONSDK_DIR}/Debug
    COMMAND make
    WORKING_DIRECTORY ${LEPTONSDK_DIR}
@@ -59,6 +60,13 @@ add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug)
  )
 add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 >>>>>>> d6f1035... Rearrange CMakeLists.txt
+=======
+   OUTPUT ${LEPTONSDK_DIR}/Debug
+   COMMAND make
+   WORKING_DIRECTORY ${LEPTONSDK_DIR}
+ )
+add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug)
+>>>>>>> 2f73e4b... made cmake work on clone
 
 
 list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
