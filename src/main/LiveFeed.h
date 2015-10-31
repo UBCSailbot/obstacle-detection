@@ -18,6 +18,9 @@
 
 #include "imageProc/liveFeed/base64EncDec.h"
 
+#include "comm/ZmqContextSingleton.h"
+#include "comm/ImageFeedZmq.h"
+
 #include <vector>
 #include <unistd.h>
 #include <signal.h>

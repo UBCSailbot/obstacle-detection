@@ -14,7 +14,7 @@ public:
     ImageFeedZmq(zmq::context_t& ctx);
     ~ImageFeedZmq();
     bool init();
-    bool sendFrame(uint8_t *buf, size_t size);
+    bool sendFrame(const uint8_t *buf, size_t size);
     static void zmqFree(void *data, void *hint);
 };
 

@@ -6,16 +6,12 @@
 #define APP_NAME "rig_record"
 
 bool stop_record = false;
+ImageFeedZmq zmqfeed(ZmqContextSingleton::getContext());
 
 static void hangup_handler(int signum) {
     if (signum == SIGHUP)
         stop_record = true;
 }
-
-int imgbuf_zmq_init() {
-
-}
-
 
 vector<uchar> imgToBuff(Image8bit img){
     vector<uchar> buff;//buffer for coding
@@ -68,6 +64,8 @@ void record(char* output_dir, bool verbose) {
 
     std::cout << "Starting Capture" << endl;
 
+    zmqfeed.init();
+
     while (!stop_record) {
 
         start = std::chrono::system_clock::now();
@@ -87,7 +85,7 @@ void record(char* output_dir, bool verbose) {
             //encode the frame for livefeed
             vector<uchar> buff = imgToBuff(displayed);
             string encoded = base64_encode(buff.data(), buff.size());
-            //zeroMQ here
+            zmqfeed.sendFrame((const uint8_t *) encoded.c_str(), encoded.size());
 
         }
 
