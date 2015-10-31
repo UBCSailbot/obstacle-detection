@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(obstacle_avoidance)
-
+include(ExternalProject)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 
@@ -136,11 +136,15 @@ list(APPEND DEVICE_LIBS RTIMULib)
 # Lepton SDK is compiled with the project
 include_directories(${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
-add_custom_target(
-   leptonSDK
+add_custom_command(
+   OUTPUT ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a
+   COMMAND echo doing stuff
    COMMAND make
    WORKING_DIRECTORY ${LEPTONSDK_DIR}
-)
+ )
+add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
+
+
 add_dependencies(displayTest leptonSDK)
 add_dependencies(rigRunner leptonSDK)
 add_dependencies(leptonShutter leptonSDK)
@@ -159,11 +163,11 @@ include_directories(${RPUSBDISP_DIR})
 include_directories(${RPUSBDISP_DIR}/infra/include)
 include_directories(${RPUSBDISP_DIR}/rpusbdisp-drv/include)
 include_directories(${RPUSBDISP_DIR}/deps-wraps/libusbx_wrap/include)
-if(NOT EXISTS ${RPUSBDISP_DIR}/Makefile)
+if(NOT EXISTS ${RPUSBDISP_DIR}/Makefile OR NOT EXISTS ${RPUSBDISP_DIR}/Makefile.conf)
     execute_process(COMMAND ./configure
                     WORKING_DIRECTORY ${RPUSBDISP_DIR}
     )
-endif(NOT EXISTS ${RPUSBDISP_DIR}/Makefile)
+endif(NOT EXISTS ${RPUSBDISP_DIR}/Makefile OR NOT EXISTS ${RPUSBDISP_DIR}/Makefile.conf)
 add_custom_target(
    rpusbdisp
    COMMAND make

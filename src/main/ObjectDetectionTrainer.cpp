@@ -53,7 +53,7 @@ int main(int argc, char** argv)
                         cout << "Give the path to the examples/faces directory as the argument to this" << endl;
                         cout << "program.  For example, if you are in the examples folder then execute " << endl;
                         cout << "this program by running: " << endl;
-                        cout << "   ./fhog_object_detector_ex path/to/dir" << endl;
+                        cout << "   ./objectDetectionTrainer path/to/dir" << endl;
                         cout << endl;
                         return 0;
                 }
@@ -113,7 +113,7 @@ int main(int argc, char** argv)
                 typedef scan_fhog_pyramid<pyramid_down<6> > image_scanner_type;
                 image_scanner_type scanner;
                 // The sliding window detector will be 80 pixels wide and 80 pixels tall.
-                scanner.set_detection_window_size(50, 30);
+                scanner.set_detection_window_size(70, 30);
                 structural_object_detection_trainer<image_scanner_type> trainer(scanner);
                 // Set this to the number of processing cores on your machine.
                 trainer.set_num_threads(4);
@@ -123,7 +123,7 @@ int main(int argc, char** argv)
                 // empirically by checking how well the trained detector works on a test set of
                 // images you haven't trained on.  Don't just leave the value set at 1.  Try a few
                 // different C values and see what works best for your data.
-                trainer.set_c(7);
+                trainer.set_c(10);
                 // We can tell the trainer to print it's progress to the console if we want.
                 trainer.be_verbose();
                 // The trainer will run until the "risk gap" is less than 0.01.  Smaller values
@@ -131,7 +131,7 @@ int main(int argc, char** argv)
                 // take longer to train.  For most problems a value in the range of 0.1 to 0.01 is
                 // plenty accurate.  Also, when in verbose mode the risk gap is printed on each
                 // iteration so you can see how close it is to finishing the training.
-                trainer.set_epsilon(0.0000001);
+                trainer.set_epsilon(0.00001);
                 trainer.set_match_eps(0.1);
 
 
