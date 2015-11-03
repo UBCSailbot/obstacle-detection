@@ -51,7 +51,7 @@ object_detector<image_scanner_type> train_object_detector(std::string file_name,
 
                 upsample_image_dataset<pyramid_down<2> >(images_train, boxes_train);
                 add_image_left_right_flips(images_train, boxes_train);
-	
+
                 // Finally we get to the training code.  dlib contains a number of
                 // object detectors.  This typedef tells it that you want to use the one
                 // based on Felzenszwalb's version of the Histogram of Oriented
@@ -80,7 +80,7 @@ object_detector<image_scanner_type> train_object_detector(std::string file_name,
                 // take longer to train.  For most problems a value in the range of 0.1 to 0.01 is
                 // plenty accurate.  Also, when in verbose mode the risk gap is printed on each
                 // iteration so you can see how close it is to finishing the training.
-                trainer.set_epsilon(0.0000001);
+                trainer.set_epsilon(0.001);
                 trainer.set_match_eps(eps_value);
 
 
@@ -112,21 +112,21 @@ void generate_optimal_model(std::string train_file_name, std::string test_file_n
 
         upsample_image_dataset<pyramid_down<2> >(images_test, boxes_test);
         add_image_left_right_flips(images_test, boxes_test);
-		
+
 	// Acquire the results of testing on 1/3 of range and 2/3 of range
 	object_detector<image_scanner_type> third_detector = train_object_detector(train_file_name, c_third, 0.1);
-        matrix<double> third_results = test_object_detection_function(third_detector, images_test, boxes_test);	
+        matrix<double> third_results = test_object_detection_function(third_detector, images_test, boxes_test);
 
 	object_detector<image_scanner_type> twothirds_detector = train_object_detector(train_file_name, c_two_thirds, 0.1);
-        matrix<double> twothird_results = test_object_detection_function(twothirds_detector, images_test, boxes_test);	
-	
+        matrix<double> twothird_results = test_object_detection_function(twothirds_detector, images_test, boxes_test);
+
 	// We've found our optimal object detector.
 	// 0.1 is our arbitrarily decided precision.
-	if((twothird_results(0, 2) - third_results(0, 2)) < 0.01) 
+	if((twothird_results(0, 2) - third_results(0, 2)) < 0.01)
 	{
 		cout << "C - VALUE: " << c_third << endl;
 		serialize(model_name) << third_detector;
-		cout << "Found optimal detector" << endl;	
+		cout << "Found optimal detector" << endl;
 
 	}
 	// This condition tells us that the the test results are better with the c_value set to 1/3 of the range
@@ -162,8 +162,8 @@ int main(int argc, char** argv)
 		train_file_name += "/testing.xml";
 		std::string test_file_name = argv[i+1];
 		test_file_name += "/training.xml";
-		generate_optimal_model(train_file_name, test_file_name, argv[i+2], 0.01, 100);		
-		
+		generate_optimal_model(train_file_name, test_file_name, argv[i+2], 0.01, 100);
+
 	}
 
 	return 0;
