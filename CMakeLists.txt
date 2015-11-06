@@ -113,7 +113,6 @@ add_dependencies(rigRunner leptonSDK)
 add_dependencies(liveFeeder leptonSDK)
 
 add_dependencies(rigRunner rpusbdisp)
-add_dependencies(liveFeeder rpusbdisp)
 
 #########
 # TESTS #
