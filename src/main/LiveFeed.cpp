@@ -2,16 +2,11 @@
 // Created by paul on 2015/05/09 
 
 #include "LiveFeed.h"
+#define APP_NAME "live_feed"
 
-#define APP_NAME "rig_record"
 
-bool stop_record = false;
+bool makeConnection = true;
 ImageFeedZmq zmqfeed(ZmqContextSingleton::getContext());
-
-static void hangup_handler(int signum) {
-    if (signum == SIGHUP)
-        stop_record = true;
-}
 
 vector<uchar> imgToBuff(Image8bit img){
     vector<uchar> buff;//buffer for coding
@@ -26,19 +21,10 @@ vector<uchar> imgToBuff(Image8bit img){
 }
 
 
-void setup_sighandler() {
-    struct sigaction sa;
-
-    sa.sa_handler = hangup_handler;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_RESTART; /* Restart functions if interrupted by handler */
-    if (sigaction(SIGHUP, &sa, NULL) == -1)
-        cerr << "Failed to initialize signal handler for " << APP_NAME << endl;
-}
-
 void record(char* output_dir, bool verbose) {
-
     Lepton lepton;
+    // Connection made, set to 0 so doesn't try to connect again
+    makeConnection = false;
     ParallelIMU imu;
     SimpleRescaler rescaler;
 
@@ -47,7 +33,6 @@ void record(char* output_dir, bool verbose) {
     int frame_counter = 1;
     char img_name[128];
     char imu_file_name[128];
-
     std::ofstream imuLog;
 
     // timing
@@ -57,20 +42,15 @@ void record(char* output_dir, bool verbose) {
     sprintf(imu_file_name, "%s/imuLog.txt", output_dir);
     imuLog.open (imu_file_name);
 
-    std::cout << "Connecting to screen" << endl;
-
-    Display* display = DisplayUtils::connectToDisplay();
-
-
     std::cout << "Starting Capture" << endl;
 
     zmqfeed.init();
 
-    while (!stop_record) {
+    while (1) {
 
         start = std::chrono::system_clock::now();
 
-        // read only every 3rd frame
+        // read only every 3rd frame ( the frames are triplets)
         if ((frame_counter % 3) == 0) {
             lepton.getFrame(frame);
 
@@ -109,7 +89,7 @@ void record(char* output_dir, bool verbose) {
 }
 
 void printUsage(int argc, char** argv) {
-    std::cout << "Usage: rig_record <output_dir>" << endl;
+    std::cout << "Usage: live Feed <output_dir>" << endl;
     std::cout << "You entered: " << endl;
     for (int i=0; i<argc; i++)
         std::cout << argv[i];
@@ -118,26 +98,34 @@ void printUsage(int argc, char** argv) {
 
 int main(int argc, char** argv) {
 
-    if(argc < 2) {
-        printUsage(argc, argv);
-        return 1;
-    }
+    while(makeConnection){
+        try{
+            if(argc < 2){
+	        printUsage(argc, argv);
+                return 1;
+            }
 
-    char* output_dir = argv[1];
-    setup_sighandler();
+            char* output_dir = argv[1];
 
-    if (argc == 2) {
-        record(output_dir);
-    }
+            if (argc == 2) {
+	        record(output_dir);
+            }
 
-    else if (argc == 3) {
-        char* arg2 = argv[2];
-        if (!strcmp(arg2, "--silent"))
-            record(output_dir, false);
-    }
+            else if (argc == 3) {
+                char* arg2 = argv[2];
+                if (!strcmp(arg2, "--silent"))
+                    record(output_dir, false);
+            }
 
-    else
-        printUsage(argc, argv);
-
+            else
+                printUsage(argc, argv);
+        } catch (LeptonSPIException& e){
+            // try to reconnect
+            makeConnection = true;
+            std::cout << e.what() << endl;
+            sleep(5);
+        }
+     }
     return 0;
 }
+

@@ -11,7 +11,7 @@ unsigned char spi_mode = SPI_MODE_3;
 unsigned char spi_bitsPerWord = 8;
 unsigned int spi_speed = 10000000;
 
-int SpiOpenPort (int spi_device)
+int SpiOpenPort (int spi_device) 
 {
     int status_value = -1;
     int *spi_cs_fd;
@@ -44,8 +44,7 @@ int SpiOpenPort (int spi_device)
 
     if (*spi_cs_fd < 0)
     {
-        perror("Error - Could not open SPI device");
-        exit(1);
+	throw LeptonSPIException("Error - Could not open SPI device");
     }
 
     status_value = ioctl(*spi_cs_fd, SPI_IOC_WR_MODE, &spi_mode);
