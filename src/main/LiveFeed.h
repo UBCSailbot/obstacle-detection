@@ -1,3 +1,4 @@
+
 //
 // Created by paul on 2015/05/12
 //
@@ -9,15 +10,14 @@
 #include "imu/ParallelIMU.h"
 #include "lepton/Lepton.h"
 #include "features/SunImage.h"
-#include "display/Display.h"
-#include "display/RoboPeakUSBDisplay.h"
+
 #include "types/Image8bit.h"
 #include "types/Image16bit.h"
 #include "geometry/Horizon.h"
 #include "imageProc/rescale/SimpleRescaler.h"
-
 #include "imageProc/liveFeed/base64EncDec.h"
 
+#include "exceptions/LeptonSPIException.h"
 #include "comm/ZmqContextSingleton.h"
 #include "comm/ImageFeedZmq.h"
 
