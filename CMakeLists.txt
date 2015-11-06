@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(obstacle_avoidance)
-
+include(ExternalProject)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 
@@ -21,6 +21,11 @@ add_executable(rescale src/main/RunRescaling.cpp ${CORE_SOURCE_FILES})
 
 add_executable(sunImageRunner src/main/SunImageRunner.cpp ${CORE_SOURCE_FILES})
 
+add_executable(objectDetectionRunner src/main/ObjectDetectionRunner.cpp)
+
+add_executable(objectDetectionTrainer src/main/ObjectDetectionTrainer.cpp)
+
+add_executable(objectDetectionModelGenerator src/main/ObjectDetectionModelGenerator.cpp)
 
 #########
 # TESTS #
@@ -91,8 +96,8 @@ add_dependencies(displayInitTest migrateResources)
 ##################
 
 # Add google test framework
-add_subdirectory(lib/googletest/googletest gtest)
-include_directories(gtest STATIC lib/googletest/googletest/include )
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/googletest/googletest gtest)
+include_directories(gtest STATIC ${CMAKE_SOURCE_DIR}/lib/googletest/googletest/include )
 
 set(TEST_FRAMEWORK_LIBS gtest)
 
@@ -129,18 +134,27 @@ list(APPEND DEVICE_LIBS RTIMULib)
 
 
 # Lepton SDK is compiled with the project
-include_directories(lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
+include_directories(${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
-add_custom_target(
-   leptonSDK
+add_custom_command(
+   OUTPUT ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a
+   COMMAND echo doing stuff
    COMMAND make
    WORKING_DIRECTORY ${LEPTONSDK_DIR}
-)
+ )
+add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
+
+
 add_dependencies(displayTest leptonSDK)
 add_dependencies(rigRunner leptonSDK)
 add_dependencies(leptonShutter leptonSDK)
 
 list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
+
+
+# dlib is complied with the  project
+include(${CMAKE_SOURCE_DIR}/lib/dlib/dlib/cmake)
+
 
 
 # rpusbdisp is compiled with the project
@@ -149,11 +163,11 @@ include_directories(${RPUSBDISP_DIR})
 include_directories(${RPUSBDISP_DIR}/infra/include)
 include_directories(${RPUSBDISP_DIR}/rpusbdisp-drv/include)
 include_directories(${RPUSBDISP_DIR}/deps-wraps/libusbx_wrap/include)
-if(NOT EXISTS ${RPUSBDISP_DIR}/Makefile)
+if(NOT EXISTS ${RPUSBDISP_DIR}/Makefile OR NOT EXISTS ${RPUSBDISP_DIR}/Makefile.conf)
     execute_process(COMMAND ./configure
                     WORKING_DIRECTORY ${RPUSBDISP_DIR}
     )
-endif(NOT EXISTS ${RPUSBDISP_DIR}/Makefile)
+endif(NOT EXISTS ${RPUSBDISP_DIR}/Makefile OR NOT EXISTS ${RPUSBDISP_DIR}/Makefile.conf)
 add_custom_target(
    rpusbdisp
    COMMAND make
@@ -184,6 +198,11 @@ target_link_libraries(rescale ${CORE_LIBS})
 target_link_libraries(sunImageRunner ${CORE_LIBS})
 
 target_link_libraries(runCoreTests ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
+
+
+target_link_libraries(objectDetectionRunner dlib)
+target_link_libraries(objectDetectionTrainer dlib)
+target_link_libraries(objectDetectionModelGenerator dlib)
 
 target_link_libraries(imuTest ${CORE_LIBS} ${DEVICE_LIBS})
 target_link_libraries(displayTest ${CORE_LIBS} ${DEVICE_LIBS})
