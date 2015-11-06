@@ -1,5 +1,5 @@
 //
-// Created by paul on 2015/05/09 
+// Created by paul on 2015/05/09
 
 #include "LiveFeed.h"
 #define APP_NAME "live_feed"
@@ -7,6 +7,10 @@
 
 bool makeConnection = true;
 ImageFeedZmq zmqfeed(ZmqContextSingleton::getContext());
+
+typedef dlib::scan_fhog_pyramid<dlib::pyramid_down<6> > image_scanner_type;
+std::vector<dlib::object_detector<image_scanner_type> > my_detectors;
+
 
 vector<uchar> imgToBuff(Image8bit img){
     vector<uchar> buff;//buffer for coding
@@ -62,6 +66,11 @@ void record(char* output_dir, bool verbose) {
             // convert to 8 bit and display
             rescaler.scale16bitTo8bit(frame, displayed);
 
+            dlib::cv_image<dlib::hsi_pixel> img(displayed);
+
+            std::vector<dlib::rectangle> dets =   evaluate_detectors(my_detectors, img);
+
+
             //encode the frame for livefeed
             vector<uchar> buff = imgToBuff(displayed);
             string encoded = base64_encode(buff.data(), buff.size());
@@ -97,6 +106,13 @@ void printUsage(int argc, char** argv) {
 }
 
 int main(int argc, char** argv) {
+  dlib::object_detector<image_scanner_type> detector;
+
+  for(int i = 4; i < argc; i++) {
+          dlib::deserialize(argv[i]) >> detector;
+          my_detectors.push_back(detector);
+  }
+
 
     while(makeConnection){
         try{
@@ -128,4 +144,3 @@ int main(int argc, char** argv) {
      }
     return 0;
 }
-
