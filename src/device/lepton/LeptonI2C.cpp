@@ -41,3 +41,5 @@ void lepton_closeShutter() {
     }
 
 }
+
+LEP_RESULT LEP_GetAgcHistogramStatistics(&_port, *
