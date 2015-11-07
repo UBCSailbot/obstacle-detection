@@ -33,5 +33,3 @@ void lepton_openShutter() {
 void lepton_closeShutter() {
     LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_CLOSED);
 }
-
-LEP_RESULT LEP_GetAgcHistogramStatistics(&_port, *
