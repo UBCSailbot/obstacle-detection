@@ -17,7 +17,7 @@
 #include "imageProc/rescale/SimpleRescaler.h"
 #include "imageProc/liveFeed/base64EncDec.h"
 
-#include "exceptions/LeptonSPIException.h"
+#include "exceptions/LeptonSPIOpenException.h"
 #include "comm/ZmqContextSingleton.h"
 #include "comm/ImageFeedZmq.h"
 

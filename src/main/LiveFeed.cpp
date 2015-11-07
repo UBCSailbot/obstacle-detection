@@ -5,7 +5,6 @@
 #define APP_NAME "live_feed"
 
 
-bool makeConnection = true;
 ImageFeedZmq zmqfeed(ZmqContextSingleton::getContext());
 
 vector<uchar> imgToBuff(Image8bit img){
@@ -23,8 +22,6 @@ vector<uchar> imgToBuff(Image8bit img){
 
 void record(char* output_dir, bool verbose) {
     Lepton lepton;
-    // Connection made, set to 0 so doesn't try to connect again
-    makeConnection = false;
     ParallelIMU imu;
     SimpleRescaler rescaler;
 
@@ -97,8 +94,8 @@ void printUsage(int argc, char** argv) {
 }
 
 int main(int argc, char** argv) {
-
-    while(makeConnection){
+// always try to connect
+    while(1){
         try{
             if(argc < 2){
 	        printUsage(argc, argv);
@@ -119,11 +116,10 @@ int main(int argc, char** argv) {
 
             else
                 printUsage(argc, argv);
-        } catch (LeptonSPIException& e){
-            // try to reconnect
-            makeConnection = true;
+        } catch (LeptonSPIOpenException& e){
             std::cout << e.what() << endl;
-            sleep(5);
+	    // wait 5 seconds and try to record
+	    sleep(5);
         }
      }
     return 0;
