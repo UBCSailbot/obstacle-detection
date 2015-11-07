@@ -1,5 +1,5 @@
 //
-// Created by paul on 2015/05/09
+// Created by paul on 2015/05/09 
 
 #include "LiveFeed.h"
 #define APP_NAME "live_feed"
@@ -114,7 +114,11 @@ int main(int argc, char** argv) {
   }
 
 
-    while(makeConnection){
+
+
+
+// always try to connect
+    while(1){
         try{
             if(argc < 2){
 	        printUsage(argc, argv);
@@ -135,12 +139,12 @@ int main(int argc, char** argv) {
 
             else
                 printUsage(argc, argv);
-        } catch (LeptonSPIException& e){
-            // try to reconnect
-            makeConnection = true;
+        } catch (LeptonSPIOpenException& e){
             std::cout << e.what() << endl;
-            sleep(5);
+	    // wait 5 seconds and try to record
+	    sleep(5);
         }
      }
     return 0;
 }
+

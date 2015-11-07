@@ -2,11 +2,11 @@
 // Created by Amy Khosa on 15-11-05.
 //
 
-#include "LeptonSPIException.h"
+#include "LeptonSPIOpenException.h"
 
 const char* errMessage_;
 
-const char* LeptonSPIException::what(){
+const char* LeptonSPIOpenException::what(){
        return errMessage_;
  }
 
