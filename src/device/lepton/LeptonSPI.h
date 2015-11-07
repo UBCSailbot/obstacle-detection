@@ -17,8 +17,8 @@
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 
-#include "exceptions/LeptonSPIException.h"
-
+#include "exceptions/LeptonSPIOpenException.h"
+#include "exceptions/LeptonSPICloseException.h"
 
 extern int spi_cs0_fd;
 extern int spi_cs1_fd;
