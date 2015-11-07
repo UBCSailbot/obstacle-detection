@@ -1,5 +1,5 @@
 //
-// Created by paul on 2015/05/09 
+// Created by paul on 2015/05/09
 
 #include "LiveFeed.h"
 #define APP_NAME "live_feed"
@@ -98,7 +98,7 @@ void record(char* output_dir, bool verbose) {
 }
 
 void printUsage(int argc, char** argv) {
-    std::cout << "Usage: live Feed <output_dir>" << endl;
+    std::cout << "Usage: live Feed <output_dir> -silent/verbose model.svm ..." << endl;
     std::cout << "You entered: " << endl;
     for (int i=0; i<argc; i++)
         std::cout << argv[i];
@@ -108,37 +108,25 @@ void printUsage(int argc, char** argv) {
 int main(int argc, char** argv) {
   dlib::object_detector<image_scanner_type> detector;
 
-  for(int i = 4; i < argc; i++) {
+  for(int i = 3; i < argc; i++) {
           dlib::deserialize(argv[i]) >> detector;
           my_detectors.push_back(detector);
   }
-
-
-
-
-
 // always try to connect
     while(1){
         try{
-            if(argc < 2){
+            if(argc < 3){
 	        printUsage(argc, argv);
                 return 1;
             }
-
             char* output_dir = argv[1];
+            char* arg2 = argv[2];
+            if (!strcmp(arg2, "--silent")){
+                record(output_dir, false);}
+            else{
+                record(output_dir);
+              }
 
-            if (argc == 2) {
-	        record(output_dir);
-            }
-
-            else if (argc == 3) {
-                char* arg2 = argv[2];
-                if (!strcmp(arg2, "--silent"))
-                    record(output_dir, false);
-            }
-
-            else
-                printUsage(argc, argv);
         } catch (LeptonSPIOpenException& e){
             std::cout << e.what() << endl;
 	    // wait 5 seconds and try to record
@@ -147,4 +135,3 @@ int main(int argc, char** argv) {
      }
     return 0;
 }
-
