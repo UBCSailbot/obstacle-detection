@@ -16,4 +16,4 @@ If your changes are significant then make a new branch that is named after the J
     `master` branch.
 * Make commits of logical units.
 * Check for unnecessary whitespace with `git diff --check` before committing.
-* Make sure your commit messages are in accurate and coherent.
+* Make sure your commit messages are accurate and coherent.
