@@ -29,3 +29,6 @@
 
 # If you have problems
   If you have failed with your builds and they are still failing, try deleting the CmakeCache file and try building again
+
+# Contributing
+Please read the [contribution guide](CONTRIBUTING.md).
