@@ -18,8 +18,6 @@
   make runCoreTests
   make rescale
   make rigRunner
-
-
 ```
 If you are building on the Pi use:
 ```
