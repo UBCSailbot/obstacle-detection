@@ -221,7 +221,7 @@ set(TEST_FRAMEWORK_LIBS gtest)
 
 # Once all the libraries have been loaded, they can be linked to the
 #  executables as necessary
-target_link_libraries(rigRunner ${CORE_LIBS} ${DEVICE_LIBS})
+target_link_libraries(rigRunner ${CORE_LIBS} ${DEVICE_LIBS} dlib)
 target_link_libraries(liveFeeder ${CORE_LIBS} ${DEVICE_LIBS} dlib)
 target_link_libraries(rescale ${CORE_LIBS})
 target_link_libraries(sunImageRunner ${CORE_LIBS})
