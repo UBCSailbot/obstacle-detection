@@ -22,7 +22,19 @@ vector<uchar> imgToBuff(Image8bit img){
     std::cout<<"coded file size(png)"<<buff.size()<<endl;
     return buff;
 }
+//format x, y, width, height
+std::string makeJSON(std::string img,std::vector<dlib::rectangle> boxes){
 
+  std::string temp = std::string("{") + "\"image\":" + "\""+img+ "\", \"boxes:\"[";
+  for(std::vector<int>::size_type i = 0; i != boxes.size(); i++) {
+    dlib::rectangle a = boxes[i];
+    temp = temp +"{" + std::to_string(a.left()) + "," + std::to_string(a.top())+","+std::to_string(a.width())+","+std::to_string(a.height())+"},";
+
+  }
+
+temp = temp + "]}";
+  return temp;
+}
 
 void record(char* output_dir, bool verbose) {
     Lepton lepton;
@@ -71,7 +83,8 @@ void record(char* output_dir, bool verbose) {
             //encode the frame for livefeed
             vector<uchar> buff = imgToBuff(displayed);
             string encoded = base64_encode(buff.data(), buff.size());
-            zmqfeed.sendFrame((const uint8_t *) encoded.c_str(), encoded.size());
+            string JSON = makeJSON(encoded,dets);
+            zmqfeed.sendFrame((const uint8_t *) JSON.c_str(), JSON.size()) ;
 
         }
 
