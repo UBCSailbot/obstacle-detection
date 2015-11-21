@@ -22,13 +22,25 @@ vector<uchar> imgToBuff(Image8bit img){
     std::cout<<"coded file size(png)"<<buff.size()<<endl;
     return buff;
 }
-//format x, y, width, height
+/*
+  Converts information to JSON.
+  The format is
+  {image:"image_blob",
+  boxes:[
+  {x,
+  y,
+  w,
+  h}
+  ]
+  }
+*/
 std::string makeJSON(std::string img,std::vector<dlib::rectangle> boxes){
 
   std::string temp = std::string("{") + "\"image\":" + "\""+img+ "\", \"boxes:\"[";
   for(std::vector<int>::size_type i = 0; i != boxes.size(); i++) {
     dlib::rectangle a = boxes[i];
-    temp = temp +"{" + std::to_string(a.left()) + "," + std::to_string(a.top())+","+std::to_string(a.width())+","+std::to_string(a.height())+"},";
+    temp = temp +"{" + "x:"+ std::to_string(a.left()) + "," + "y:"+
+    std::to_string(a.top())+","+ "w:"+std::to_string(a.width())+","+"h:"+std::to_string(a.height())+"},";
 
   }
 
