@@ -6,13 +6,16 @@ import shared
 rescaling_name = "rescale"
 rescaling_command = "{binary} {input_dir} {output_dir} {opts}"
 
-def rescale(raw_dir, output_dir, options="-t 3 -w 100 -p ", horizon_file=""):
+rescaling_types = ['simple', 'modal', 'median']
+
+def rescale(raw_dir, output_dir, options="-t 3 -w 100 -p ", orientation_file=""):
   top_dir = os.path.dirname(raw_dir)
   shared.mkdir_graceful( output_dir )
   rescaling_bin = os.path.join(shared.repo_dir, shared.bin_dir, rescaling_name)
-  if horizon_file:
-    options += " -i " + horizon_file
+  if not orientation_file is "":
+    options += " --imu-logfile " + orientation_file
   cmd = rescaling_command.format(binary=rescaling_bin, input_dir=raw_dir, output_dir=output_dir, opts=options)
+  print "Running rescaling: "
   print cmd
   os.system( cmd )
 
@@ -23,8 +26,8 @@ def main():
 
     top_dir = sys.argv[1]
     video_name = sys.argv[2]
-    
-    options = "-t 2 -w 100 -p"
+
+    # TODO: Read in rescaling options from config
 
     from make_video import convert_to_video
 

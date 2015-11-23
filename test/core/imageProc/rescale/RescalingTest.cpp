@@ -8,28 +8,54 @@ TEST_F(RescalingTest, eightBitWindowSizeAssertion) {
     Image16bit src(5,6);
     Image8bit dst(4,5);
     int newMinPixelValue = 1;
-    EXPECT_DEATH(Rescaling::clipTo8bits(src, dst, newMinPixelValue), "c*");
+    EXPECT_DEATH(Rescaling::clipTo8bitsCompress2to1(src, dst, newMinPixelValue), "c*");
 }
 
-TEST_F(RescalingTest, testAllValues) {
+TEST_F(RescalingTest, testAllValuesNoCompression) {
     double min, max;
     // The image we use for this test has a very wide window in 16-bit
     minMaxLoc(_freighterSunImg, &min, &max);
+    double avg = (min + max) / 2;
 
     Image16bit src(_freighterSunImg, false);
     Image8bit dst(_freighterSunImg.rows, _freighterSunImg.cols);
-    Rescaling::clipTo8bits(src, dst, (int) min);
+    Rescaling::clipTo8bitsNoCompression(src, dst, (int) avg);
 
     for (int row = 0; row < src.rows; row++) {
         for (int col = 0; col < src.cols; col++) {
-            if (src.pixelAt(row, col) >= min + 255) {
+            if (src.pixelAt(row, col) >= avg + 128) {
                 EXPECT_EQ(255, dst.pixelAt(row, col));
             }
-            else if (src.pixelAt(row, col) <= min) {
+            else if (src.pixelAt(row, col) <= avg - 127) {
                 EXPECT_EQ(0, dst.pixelAt(row, col));
             }
             else {
-                EXPECT_EQ(src.pixelAt(row, col) - min, dst.pixelAt(row, col));
+                EXPECT_EQ(src.pixelAt(row, col) - avg + 127, dst.pixelAt(row, col));
+            }
+        }
+    }
+}
+
+TEST_F(RescalingTest, testAllValuesCompress2to1) {
+    double min, max;
+    // The image we use for this test has a very wide window in 16-bit
+    minMaxLoc(_freighterSunImg, &min, &max);
+    double avg = (min + max) / 2;
+
+    Image16bit src(_freighterSunImg, false);
+    Image8bit dst(_freighterSunImg.rows, _freighterSunImg.cols);
+    Rescaling::clipTo8bitsCompress2to1(src, dst, (int) avg);
+
+    for (int row = 0; row < src.rows; row++) {
+        for (int col = 0; col < src.cols; col++) {
+            if (src.pixelAt(row, col) >= avg + 256) {
+                EXPECT_EQ(255, dst.pixelAt(row, col));
+            }
+            else if (src.pixelAt(row, col) <= avg - 255) {
+                EXPECT_EQ(0, dst.pixelAt(row, col));
+            }
+            else {
+                EXPECT_EQ((int)(src.pixelAt(row, col) - avg + 255)/2, dst.pixelAt(row, col));
             }
         }
     }

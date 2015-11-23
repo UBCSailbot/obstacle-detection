@@ -29,6 +29,8 @@ public:
      */
     virtual std::string toDataString();
 
+    static constexpr double ROLL_ADJUST = 0.09;
+    static constexpr double PITCH_ADJUST = 0.15;
 private:
     std::ostringstream stringStream;
 

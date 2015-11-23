@@ -79,7 +79,7 @@ pixel_shift: 0 when horizon centred, +height/2 when horizon from top left to bot
 May exceed magnitude height/2 for large angles.
 */
 double Horizon::rollHorizonPixelShift(double angle) {
-    return -tan(angle) * (double) VIEWPORT_WIDTH_PIX / 2.0;
+    return tan(angle) * (double) VIEWPORT_WIDTH_PIX / 2.0;
 }
 
 /*

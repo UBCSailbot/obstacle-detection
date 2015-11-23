@@ -6,7 +6,7 @@
 #define OBSTACLE_AVOIDANCE_VALUESMOOTHENERTEST_H
 
 #include <gtest/gtest.h>
-#include "imageProc/smoothing/AveragedBufferedSmoother.h"
+#include "imageProc/smoothing/WeightedAverageBufferedSmoother.h"
 
 class AveragedBufferedSmootherTest : public ::testing::Test {
 
