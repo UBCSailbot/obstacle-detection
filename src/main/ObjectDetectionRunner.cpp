@@ -75,6 +75,7 @@ int main(int argc, char** argv)
 
                 // Now for the really fun part.  Let's display the testing images on the screen and
                 // show the output of the face detector overlaid on each image.
+                image_window hogwin(draw_fhog(detector), "Learned fHOG detector");
                 image_window win;
                 for (unsigned long i = 0; i < images_test.size(); ++i)
                 {
