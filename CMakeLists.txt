@@ -14,9 +14,11 @@ find_package (OpenCV REQUIRED)
 list(APPEND CORE_LIBS ${OpenCV_LIBS} )
 
 # We use QT for handling file system paths
-FIND_PACKAGE(Qt4 REQUIRED)
-INCLUDE(${QT_USE_FILE})
-list(APPEND CORE_LIBS ${QT_LIBRARIES})
+#set(CMAKE_AUTOMOC ON)
+FIND_PACKAGE(Qt5Core REQUIRED)
+include_directories(${Qt5Core_LIBRARIES})
+list(APPEND CORE_LIBS ${Qt5Core_LIBRARIES})
+link_directories(${Qt5Core_LIBRARY_DIRS})
 
 # Include tclap - a header-only library for command-line parsing
 include_directories( lib/tclap/include )
