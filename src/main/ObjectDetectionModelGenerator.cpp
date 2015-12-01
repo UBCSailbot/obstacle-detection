@@ -133,7 +133,7 @@ void generate_optimal_model(std::string train_file_name, std::string test_file_n
 	// than with the c_value said to 2/3 of the range.
 	else if(third_results > twothird_results)
 	{
-		generate_optimal_model(train_file_name, test_file_name, model_name, c_mid, c_high);
+		generate_optimal_model(train_file_name, test_file_name, model_name, c_low, c_mid);
 	}
 	// On the other hand if the two third results are better, we go to the right.
 	else {
@@ -145,12 +145,11 @@ void generate_optimal_model(std::string train_file_name, std::string test_file_n
 
 int main(int argc, char** argv)
 {
-
 	// We should have 3*k command-line arguments, where k is the number of models we want to output.
 	// For each model, we should have (1) training directory, (2) testing directory, (3) model name.
-	if (argc % 3 != 1)
+	if (argc % 3 != 1 || argc == 1)
 	{
-	        cout << "Give the arguments for each model as a list. For each model give the training" << endl;
+        cout << "Give the arguments for each model as a list. For each model give the training" << endl;
 		cout << "directory, the testing directory and the model name. An example for the one mode" << endl;
 		cout << "would be: ./objectDetectionModelGenerator path/to/training/dir path/to/testing/dir model_name" << endl;
 	        cout << endl;
