@@ -27,17 +27,9 @@ void lepton_perform_ffc() {
 
 
 void lepton_openShutter() {
-    LEP_GetSysShutterPosition(&_port, &_lep_sys_shutter_position_e);
-
-    if (_lep_sys_shutter_position_e == LEP_SYS_SHUTTER_POSITION_CLOSED) {
-        LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_OPEN);
-    }
+    LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_OPEN);
 }
 
 void lepton_closeShutter() {
-    LEP_GetSysShutterPosition(&_port, &_lep_sys_shutter_position_e);
-    if (_lep_sys_shutter_position_e == LEP_SYS_SHUTTER_POSITION_OPEN) {
-        LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_CLOSED);
-    }
-
+    LEP_SetSysShutterPosition(&_port, LEP_SYS_SHUTTER_POSITION_CLOSED);
 }
