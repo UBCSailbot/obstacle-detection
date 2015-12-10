@@ -14,3 +14,6 @@
 		path = lib/LeptonModule
 		url = git@github.com:groupgets/LeptonModule.git
 		branch= master
+[submodule "lib/dlib"]
+	path = lib/dlib
+	url = git@github.com:davisking/dlib.git
