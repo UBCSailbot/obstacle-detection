@@ -2,23 +2,25 @@ cmake_minimum_required(VERSION 2.8)
 project(obstacle_detection)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+
 ############
 # INCLUDES #
 ############
 
-# include core libraries
+# include libraries that are used more or less in all places throughout the code
 include(lib/core_libs.cmake)
 
-# include device libraries
+# include libraries for interacting with sensors and other peripherals
 include(lib/device_libs.cmake)
 
-# include test framework
+# include unit test framework
 include(lib/test_libs.cmake)
 
-# include source files
+# include source files. This defines two intermediary targets, both of which are versions
+# of the UBC Sailbot obstacle detecton library: `obstdetect_core` and `obstdetect_full`.
 include(src/src.cmake)
 
-# include test files
+# include test files. This defines two intermediary targets: `test_core` and `test_device`.
 include(test/test.cmake)
 
 # defines the target `migrateResources`, used in tests
@@ -37,20 +39,11 @@ list(APPEND DEVICE_LIBS RTIMULib)
 include_directories(${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 add_custom_command(
-<<<<<<< HEAD
-<<<<<<< HEAD
    OUTPUT ${LEPTONSDK_DIR}/Debug
    COMMAND make
    WORKING_DIRECTORY ${LEPTONSDK_DIR}
  )
 add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug)
-=======
-   OUTPUT ${LEPTONSDK_DIR}/Debug
-   COMMAND make
-   WORKING_DIRECTORY ${LEPTONSDK_DIR}
- )
-add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug)
->>>>>>> 2f73e4b... made cmake work on clone
 
 
 list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
@@ -107,6 +100,15 @@ add_library(obstdetect_full STATIC $<TARGET_OBJECTS:src_core> ${DEVICE_SOURCE_FI
 # EXECUTABLES #
 ###############
 >>>>>>> 0b8e678... massive cleanup in CMakeLists.txt
+=======
+
+
+############
+# PROGRAMS #
+############
+
+# NOTE: Each of these should be documented in its own source code.
+>>>>>>> 81709e3... minor refactoring in CMake files for improved comprehension
 
 add_executable(liveFeeder src/main/LiveFeed.cpp)
 target_link_libraries(liveFeeder obstdetect_full)
@@ -133,9 +135,10 @@ target_link_libraries(objectDetectionTrainer dlib)
 # TESTS #
 #########
 
-# Create target for automated unit tests
-add_executable(runCoreTests test/main/CoreTestRunner.cpp ${CORE_TEST_FILES} $<TARGET_OBJECTS:test_support>)
-target_link_libraries(runCoreTests obstdetect_core ${TEST_FRAMEWORK_LIBS})
+# This is the target for running the entire suite of automated unit tests.
+# (CORE_TEST_FILES must be added directly to this compilation unit for gtest to work properly.)
+add_executable(runCoreTests test/main/CoreTestRunner.cpp ${CORE_TEST_FILES})
+target_link_libraries(runCoreTests obstdetect_core test_core ${TEST_FRAMEWORK_LIBS})
 
 # IMU testing
 add_executable(imuTest test/main/IMUTest.cpp)
@@ -152,5 +155,5 @@ add_executable(displayInitTest test/main/DisplayInitializationTest.cpp)
 target_link_libraries(displayInitTest obstdetect_full test_device)
 
 # Lepton testing
-add_executable(leptonShutter test/main/LeptonShutterTest.cpp)
-target_link_libraries(leptonShutter obstdetect_full test_device)
+add_executable(leptonShutterTest test/main/LeptonShutterTest.cpp)
+target_link_libraries(leptonShutterTest obstdetect_full test_device)
