@@ -7,7 +7,8 @@
 
 
 #include <opencv2/core/core.hpp>
-#include <exceptions/IncorrectImageType.h>
+
+#include "exceptions/IncorrectImageTypeException.h"
 
 
 /**
@@ -34,7 +35,7 @@ public:
      */
     Image8bit(const cv::Mat &m, bool copyData) : cv::Mat( copyData ? m.clone() : m ) {
         if(m.type() != CV_8UC1){
-            throw IncorrectImageType("parameter m is of wrong type");
+            throw IncorrectImageTypeException("parameter m is of wrong type");
         }
 
     }
