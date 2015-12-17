@@ -1,36 +1,28 @@
 cmake_minimum_required(VERSION 2.8)
-project(obstacle_avoidance)
-include(ExternalProject)
+project(obstacle_detection)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-#################
-# CORE LIBRARIES #
-#################
+############
+# INCLUDES #
+############
 
-set( CORE_LIBS )
+# include core libraries
+include(lib/core_libs.cmake)
 
-# OpenCV must be independently preinstalled on the host machine
-find_package (OpenCV REQUIRED)
-list(APPEND CORE_LIBS ${OpenCV_LIBS} )
+# include device libraries
+include(lib/device_libs.cmake)
 
-# We use QT for handling file system paths
-FIND_PACKAGE(Qt4 REQUIRED)
-INCLUDE(${QT_USE_FILE})
-list(APPEND CORE_LIBS ${QT_LIBRARIES})
+# include test framework
+include(lib/test_libs.cmake)
 
-# Include tclap - a header-only library for command-line parsing
-include_directories( lib/tclap/include )
+# include source files
+include(src/src.cmake)
 
-# Include the ZeroMQ pkgconfig
-find_package(PkgConfig REQUIRED)
-pkg_search_module(ZMQ REQUIRED libzmq)
-list(APPEND CORE_LIBS ${ZMQ_LIBRARIES})
-include_directories(${ZMQ_INCLUDE_DIRS})
-link_directories(${ZMQ_LIBRARY_DIRS})
+# include test files
+include(test/test.cmake)
 
-####################
-# DEVICE LIBRARIES #
-####################
+# defines the target `migrateResources`, used in tests
+include(resources/res.cmake)
 
 set( DEVICE_LIBS )
 
@@ -52,14 +44,6 @@ add_custom_command(
    WORKING_DIRECTORY ${LEPTONSDK_DIR}
  )
 add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug)
-=======
-   OUTPUT ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a
-   COMMAND echo doing stuff
-   COMMAND make
-   WORKING_DIRECTORY ${LEPTONSDK_DIR}
- )
-add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
->>>>>>> d6f1035... Rearrange CMakeLists.txt
 =======
    OUTPUT ${LEPTONSDK_DIR}/Debug
    COMMAND make
@@ -118,121 +102,55 @@ file(GLOB_RECURSE DEVICE_SOURCE_FILES src/device/*.cpp src/device/*.h)
 add_library(src_core OBJECT ${CORE_SOURCE_FILES})
 add_library(obstdetect_core STATIC $<TARGET_OBJECTS:src_core>)
 add_library(obstdetect_full STATIC $<TARGET_OBJECTS:src_core> ${DEVICE_SOURCE_FILES})
+=======
+###############
+# EXECUTABLES #
+###############
+>>>>>>> 0b8e678... massive cleanup in CMakeLists.txt
 
 add_executable(liveFeeder src/main/LiveFeed.cpp)
+target_link_libraries(liveFeeder obstdetect_full)
 
 add_executable(rigRunner src/main/RigRunner.cpp)
+target_link_libraries(rigRunner obstdetect_full)
 
 add_executable(rescale src/main/RunRescaling.cpp)
+target_link_libraries(rescale obstdetect_core)
 
 add_executable(sunImageRunner src/main/SunImageRunner.cpp)
+target_link_libraries(sunImageRunner obstdetect_core)
 
 add_executable(objectDetectionRunner src/main/ObjectDetectionRunner.cpp)
+target_link_libraries(objectDetectionRunner dlib)
 
 add_executable(objectDetectionTrainer src/main/ObjectDetectionTrainer.cpp)
 add_executable(objectDetectionModelGenerator src/main/ObjectDetectionModelGenerator.cpp)
+target_link_libraries(objectDetectionTrainer dlib)
 
-add_dependencies(rigRunner leptonSDK)
-add_dependencies(liveFeeder leptonSDK)
 
-add_dependencies(rigRunner rpusbdisp)
 
 #########
 # TESTS #
 #########
 
-# Add test folders to header search path so that we don't have to `#include` relative paths
-include_directories( test/core )
-include_directories( test/device )
-include_directories( test/support )
-
-file(GLOB_RECURSE CORE_TEST_FILES test/core/*.cpp test/core/*.h)
-file(GLOB_RECURSE DEVICE_TEST_FILES test/device/*.cpp test/device/*.h)
-file(GLOB_RECURSE SUPPORT_TEST_FILES test/support/*.cpp test/support/*.h)
-
-set(CORE_TEST_FILES ${CORE_TEST_FILES} ${SUPPORT_TEST_FILES})
-set(DEVICE_TEST_FILES ${DEVICE_TEST_FILES} ${SUPPORT_TEST_FILES})
-
-add_library(test_support OBJECT ${SUPPORT_TEST_FILES})
-add_library(test_core STATIC $<TARGET_OBJECTS:test_support> ${CORE_TEST_FILES})
-add_library(test_device STATIC $<TARGET_OBJECTS:test_support> ${DEVICE_TEST_FILES})
-
 # Create target for automated unit tests
-add_executable(runCoreTests
-               test/main/CoreTestRunner.cpp
-)
+add_executable(runCoreTests test/main/CoreTestRunner.cpp ${CORE_TEST_FILES} $<TARGET_OBJECTS:test_support>)
+target_link_libraries(runCoreTests obstdetect_core ${TEST_FRAMEWORK_LIBS})
 
 # IMU testing
-add_executable(imuTest
-               test/main/IMUTest.cpp
-)
+add_executable(imuTest test/main/IMUTest.cpp)
+target_link_libraries(imuTest obstdetect_full test_device)
 
 # Display testing
-add_executable(displayTest
-               test/main/DisplayTest.cpp
-)
+add_executable(displayTest test/main/DisplayTest.cpp)
+target_link_libraries(displayTest obstdetect_full test_device)
 
-add_executable(displayVideoTest
-               test/main/DisplayVideoTest.cpp
-)
+add_executable(displayVideoTest test/main/DisplayVideoTest.cpp)
+target_link_libraries(displayVideoTest obstdetect_full test_device)
 
-add_executable(displayInitTest
-               test/main/DisplayInitializationTest.cpp
-)
+add_executable(displayInitTest test/main/DisplayInitializationTest.cpp)
+target_link_libraries(displayInitTest obstdetect_full test_device)
 
 # Lepton testing
-add_executable(leptonShutter
-               test/main/LeptonShutterTest.cpp
-)
-
-# The following command copies the resources folder into the binary directory,
-#  making it possible to load resources from a relative path within the project
-add_custom_target(migrateResources
-                        COMMAND ${CMAKE_COMMAND} -E copy_directory
-                        ${CMAKE_SOURCE_DIR}/resources
-                        ${CMAKE_BINARY_DIR}/resources
-)
-add_dependencies(runCoreTests migrateResources)
-add_dependencies(displayInitTest migrateResources)
-
-add_dependencies(displayTest rpusbdisp)
-add_dependencies(displayInitTest rpusbdisp)
-add_dependencies(displayVideoTest rpusbdisp)
-add_dependencies(leptonShutter rpusbdisp)
-
-add_dependencies(displayTest leptonSDK)
-add_dependencies(leptonShutter leptonSDK)
-
-##################
-# TEST FRAMEWORK #
-##################
-
-# Add google test framework
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/googletest/googletest gtest)
-include_directories(gtest STATIC ${CMAKE_SOURCE_DIR}/lib/googletest/googletest/include )
-
-set(TEST_FRAMEWORK_LIBS gtest)
-
-###################
-# LIBRARY LINKING #
-###################
-
-# Once all the libraries have been loaded, they can be linked to the
-#  executables as necessary
-target_link_libraries(rigRunner obstdetect_full ${CORE_LIBS} ${DEVICE_LIBS} dlib)
-target_link_libraries(liveFeeder obstdetect_full ${CORE_LIBS} ${DEVICE_LIBS} dlib)
-target_link_libraries(rescale obstdetect_core ${CORE_LIBS})
-target_link_libraries(sunImageRunner obstdetect_core ${CORE_LIBS})
-
-target_link_libraries(runCoreTests obstdetect_core test_core ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
-
-
-target_link_libraries(objectDetectionRunner dlib)
-target_link_libraries(objectDetectionTrainer dlib)
-target_link_libraries(objectDetectionModelGenerator dlib)
-
-target_link_libraries(imuTest obstdetect_full test_device ${CORE_LIBS} ${DEVICE_LIBS})
-target_link_libraries(displayTest obstdetect_full test_device ${CORE_LIBS} ${DEVICE_LIBS})
-target_link_libraries(displayInitTest obstdetect_full test_device ${CORE_LIBS} ${DEVICE_LIBS})
-target_link_libraries(displayVideoTest obstdetect_full test_device ${CORE_LIBS} ${DEVICE_LIBS})
-target_link_libraries(leptonShutter obstdetect_full test_device ${CORE_LIBS} ${DEVICE_LIBS})
+add_executable(leptonShutter test/main/LeptonShutterTest.cpp)
+target_link_libraries(leptonShutter obstdetect_full test_device)
