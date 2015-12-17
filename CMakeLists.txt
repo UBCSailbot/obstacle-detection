@@ -114,13 +114,18 @@ include_directories( src/device )
 file(GLOB_RECURSE CORE_SOURCE_FILES src/core/*.cpp src/core/*.h)
 file(GLOB_RECURSE DEVICE_SOURCE_FILES src/device/*.cpp src/device/*.h)
 
-add_executable(rigRunner src/main/RigRunner.cpp ${CORE_SOURCE_FILES} ${DEVICE_SOURCE_FILES})
+# Add targets for separately compiling source files
+add_library(src_core OBJECT ${CORE_SOURCE_FILES})
+add_library(obstdetect_core STATIC $<TARGET_OBJECTS:src_core>)
+add_library(obstdetect_full STATIC $<TARGET_OBJECTS:src_core> ${DEVICE_SOURCE_FILES})
 
-add_executable(liveFeeder src/main/LiveFeed.cpp ${CORE_SOURCE_FILES} ${DEVICE_SOURCE_FILES})
+add_executable(liveFeeder src/main/LiveFeed.cpp)
 
-add_executable(rescale src/main/RunRescaling.cpp ${CORE_SOURCE_FILES})
+add_executable(rigRunner src/main/RigRunner.cpp)
 
-add_executable(sunImageRunner src/main/SunImageRunner.cpp ${CORE_SOURCE_FILES})
+add_executable(rescale src/main/RunRescaling.cpp)
+
+add_executable(sunImageRunner src/main/SunImageRunner.cpp)
 
 add_executable(objectDetectionRunner src/main/ObjectDetectionRunner.cpp)
 
@@ -145,45 +150,39 @@ file(GLOB_RECURSE CORE_TEST_FILES test/core/*.cpp test/core/*.h)
 file(GLOB_RECURSE DEVICE_TEST_FILES test/device/*.cpp test/device/*.h)
 file(GLOB_RECURSE SUPPORT_TEST_FILES test/support/*.cpp test/support/*.h)
 
-set(CORE_TEST_FILES ${CORE_TEST_FILES} ${CORE_SOURCE_FILES} ${SUPPORT_TEST_FILES})
-set(DEVICE_TEST_FILES ${DEVICE_TEST_FILES} ${DEVICE_SOURCE_FILES} ${SUPPORT_TEST_FILES})
+set(CORE_TEST_FILES ${CORE_TEST_FILES} ${SUPPORT_TEST_FILES})
+set(DEVICE_TEST_FILES ${DEVICE_TEST_FILES} ${SUPPORT_TEST_FILES})
+
+add_library(test_support OBJECT ${SUPPORT_TEST_FILES})
+add_library(test_core STATIC $<TARGET_OBJECTS:test_support> ${CORE_TEST_FILES})
+add_library(test_device STATIC $<TARGET_OBJECTS:test_support> ${DEVICE_TEST_FILES})
 
 # Create target for automated unit tests
 add_executable(runCoreTests
                test/main/CoreTestRunner.cpp
-               ${CORE_TEST_FILES}
 )
 
 # IMU testing
 add_executable(imuTest
                test/main/IMUTest.cpp
-               ${DEVICE_TEST_FILES}
 )
 
 # Display testing
 add_executable(displayTest
                test/main/DisplayTest.cpp
-               ${CORE_SOURCE_FILES}
-               ${DEVICE_TEST_FILES}
 )
 
 add_executable(displayVideoTest
                test/main/DisplayVideoTest.cpp
-               ${CORE_SOURCE_FILES}
-               ${DEVICE_TEST_FILES}
 )
 
 add_executable(displayInitTest
                test/main/DisplayInitializationTest.cpp
-               ${CORE_SOURCE_FILES}
-               ${DEVICE_TEST_FILES}
 )
 
 # Lepton testing
 add_executable(leptonShutter
                test/main/LeptonShutterTest.cpp
-               ${CORE_SOURCE_FILES}
-               ${DEVICE_TEST_FILES}
 )
 
 # The following command copies the resources folder into the binary directory,
@@ -214,27 +213,26 @@ include_directories(gtest STATIC ${CMAKE_SOURCE_DIR}/lib/googletest/googletest/i
 
 set(TEST_FRAMEWORK_LIBS gtest)
 
-
 ###################
 # LIBRARY LINKING #
 ###################
 
 # Once all the libraries have been loaded, they can be linked to the
 #  executables as necessary
-target_link_libraries(rigRunner ${CORE_LIBS} ${DEVICE_LIBS} dlib)
-target_link_libraries(liveFeeder ${CORE_LIBS} ${DEVICE_LIBS} dlib)
-target_link_libraries(rescale ${CORE_LIBS})
-target_link_libraries(sunImageRunner ${CORE_LIBS})
+target_link_libraries(rigRunner obstdetect_full ${CORE_LIBS} ${DEVICE_LIBS} dlib)
+target_link_libraries(liveFeeder obstdetect_full ${CORE_LIBS} ${DEVICE_LIBS} dlib)
+target_link_libraries(rescale obstdetect_core ${CORE_LIBS})
+target_link_libraries(sunImageRunner obstdetect_core ${CORE_LIBS})
 
-target_link_libraries(runCoreTests ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
+target_link_libraries(runCoreTests obstdetect_core test_core ${CORE_LIBS} ${TEST_FRAMEWORK_LIBS})
 
 
 target_link_libraries(objectDetectionRunner dlib)
 target_link_libraries(objectDetectionTrainer dlib)
 target_link_libraries(objectDetectionModelGenerator dlib)
 
-target_link_libraries(imuTest ${CORE_LIBS} ${DEVICE_LIBS})
-target_link_libraries(displayTest ${CORE_LIBS} ${DEVICE_LIBS})
-target_link_libraries(displayInitTest ${CORE_LIBS} ${DEVICE_LIBS})
-target_link_libraries(displayVideoTest ${CORE_LIBS} ${DEVICE_LIBS})
-target_link_libraries(leptonShutter ${CORE_LIBS} ${DEVICE_LIBS})
+target_link_libraries(imuTest obstdetect_full test_device ${CORE_LIBS} ${DEVICE_LIBS})
+target_link_libraries(displayTest obstdetect_full test_device ${CORE_LIBS} ${DEVICE_LIBS})
+target_link_libraries(displayInitTest obstdetect_full test_device ${CORE_LIBS} ${DEVICE_LIBS})
+target_link_libraries(displayVideoTest obstdetect_full test_device ${CORE_LIBS} ${DEVICE_LIBS})
+target_link_libraries(leptonShutter obstdetect_full test_device ${CORE_LIBS} ${DEVICE_LIBS})
