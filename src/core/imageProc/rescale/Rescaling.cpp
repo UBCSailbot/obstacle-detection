@@ -2,10 +2,13 @@
 // Created by paul on 25/05/15.
 //
 
+#include <exceptions/ImageSizeMismatchException.h>
 #include "Rescaling.h"
 
 void Rescaling::clipTo8bitsCompress2to1(const Image16bit &src, Image8bit &dst, const int &newMidPixelValue) {
-    assert(dst.size == src.size);
+    if(dst.size != src.size) {
+        throw ImageSizeMismatchException(src.size().width, src.size().height, dst.size().width, dst.size().height);
+    }
 
     for (int row = 0; row < src.rows; row++) {
         for (int col = 0; col < src.cols; col++) {

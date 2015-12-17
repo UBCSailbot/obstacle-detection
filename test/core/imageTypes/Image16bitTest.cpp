@@ -29,7 +29,7 @@ TEST_F(Image16bitTest, constructNoCopyData) {
 TEST_F(Image16bitTest, assert16bit) {
     cv::Mat m(5,5,CV_8UC1);
 
-    EXPECT_DEATH(Image16bit img(m, true), "c*");
+    EXPECT_THROW(Image16bit img(m, true), IncorrectImageTypeException);
 }
 
 TEST_F(Image16bitTest, force16bit) {

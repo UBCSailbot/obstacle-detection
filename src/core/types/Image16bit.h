@@ -7,7 +7,7 @@
 
 
 #include <opencv2/core/core.hpp>
-#include <exceptions/IncorrectImageType.h>
+#include "exceptions/IncorrectImageTypeException.h"
 
 /**
  * A convenience class to distinguish 16-bit images from 8-bit images.
@@ -32,7 +32,7 @@ public:
      */
     Image16bit(const cv::Mat &m, bool copyData) : Mat( copyData ? m.clone() : m ) {
         if(m.type() != CV_16UC1){
-            throw IncorrectImageType("parameter m is of wrong type");
+            throw IncorrectImageTypeException("parameter m is of wrong type");
         }
     }
 
