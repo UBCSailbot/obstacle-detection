@@ -7,9 +7,9 @@
 Horizon::Horizon(cv::Point2f startPoint, cv::Point2f endPoint) :
         Line(startPoint, endPoint) {}
 
-Horizon::Horizon(double roll, double pitch) :
+Horizon::Horizon(double rollRad, double pitchRad) :
         Line(cv::Point(0,0), cv::Point(0,0)) {
-    setPitchRoll(pitch, roll);
+    setPitchRoll(pitchRad, rollRad);
 }
 
 Horizon::~Horizon() {
