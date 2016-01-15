@@ -9,6 +9,7 @@
 #include <utility>
 #include <opencv2/core/core.hpp>
 #include <geometry/Horizon.h>
+#include "Obstacle.h"
 
 /**
  * When an obstacle is detected in a frame, the most useful pieces of information
@@ -21,24 +22,24 @@ class ObstaclePositionFrame {
 
 public:
     ObstaclePositionFrame(const cv::Mat &frame, int xFOV, int yFOV,
-                          const std::vector<std::pair<double, double>> &obstacleEdges) :
+                          const std::vector<Obstacle> &obstacles) :
             _rows(frame.rows), _cols(frame.cols), _xFOV(xFOV), _yFOV(yFOV),
-            _obstacleEdges(obstacleEdges)
+            _obstacles(obstacles)
     {    }
 
     const bool containsObstacle() {
-        return !_obstacleEdges.empty();
+        return !_obstacles.empty();
     }
 
-    const std::vector<std::pair<double, double>> getObstacleEdges() const {
-        return _obstacleEdges;
+    const std::vector<Obstacle> getObstacles() const {
+        return _obstacles;
     }
 
-    const int getRows() const {
+    const int getFrameHeight() const {
         return _rows;
     }
 
-    const int getCols() const {
+    const int getFrameWidth() const {
         return _cols;
     }
 
@@ -52,7 +53,7 @@ public:
 
 private:
     //with reference to the horizon
-    std::vector<std::pair<double, double>> _obstacleEdges;
+    std::vector<Obstacle> _obstacles;
     int _rows;
     int _cols;
     double _xFOV;
