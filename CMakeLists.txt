@@ -26,81 +26,6 @@ include(test/test.cmake)
 # defines the target `migrateResources`, used in tests
 include(resources/res.cmake)
 
-set( DEVICE_LIBS )
-
-# RTIMULib is compiled with the project
-include_directories(RTIMULib STATIC
-lib/RTIMULib/RTIMULib)
-add_subdirectory(lib/RTIMULib/RTIMULib RTIMULib)
-list(APPEND DEVICE_LIBS RTIMULib)
-
-
-# Lepton SDK is compiled with the project
-include_directories(${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
-set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
-add_custom_command(
-   OUTPUT ${LEPTONSDK_DIR}/Debug
-   COMMAND make
-   WORKING_DIRECTORY ${LEPTONSDK_DIR}
- )
-add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug)
-
-
-list(APPEND DEVICE_LIBS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
-
-
-# dlib is complied with the  project
-include(${CMAKE_SOURCE_DIR}/lib/dlib/dlib/cmake)
-
-
-
-# rpusbdisp is compiled with the project
-set(RPUSBDISP_DIR ${CMAKE_SOURCE_DIR}/lib/rpusbdisp/usermode-sdk)
-include_directories(${RPUSBDISP_DIR})
-include_directories(${RPUSBDISP_DIR}/infra/include)
-include_directories(${RPUSBDISP_DIR}/rpusbdisp-drv/include)
-include_directories(${RPUSBDISP_DIR}/deps-wraps/libusbx_wrap/include)
-if(NOT EXISTS ${RPUSBDISP_DIR}/Makefile OR NOT EXISTS ${RPUSBDISP_DIR}/Makefile.conf)
-    execute_process(COMMAND ./configure
-                    WORKING_DIRECTORY ${RPUSBDISP_DIR}
-    )
-endif(NOT EXISTS ${RPUSBDISP_DIR}/Makefile OR NOT EXISTS ${RPUSBDISP_DIR}/Makefile.conf)
-add_custom_target(
-   rpusbdisp
-   COMMAND make
-   WORKING_DIRECTORY ${RPUSBDISP_DIR}
-)
-
-list(APPEND DEVICE_LIBS ${RPUSBDISP_DIR}/build/output/rpusbdisp-drv.a)
-list(APPEND DEVICE_LIBS ${RPUSBDISP_DIR}/build/output/librpusbdisp-drv.so)
-
-
-# Threads library must be independently preinstalled on the host machine
-find_package (Threads REQUIRED)
-list(APPEND CORE_LIBS ${CMAKE_THREAD_LIBS_INIT})
-
-
-###########
-# SOURCES #
-###########
-
-# Add src folders to header search path so that we don't have to `#include` relative paths
-include_directories( src/core )
-include_directories( src/device )
-
-file(GLOB_RECURSE CORE_SOURCE_FILES src/core/*.cpp src/core/*.h)
-file(GLOB_RECURSE DEVICE_SOURCE_FILES src/device/*.cpp src/device/*.h)
-
-# Add targets for separately compiling source files
-add_library(src_core OBJECT ${CORE_SOURCE_FILES})
-add_library(obstdetect_core STATIC $<TARGET_OBJECTS:src_core>)
-add_library(obstdetect_full STATIC $<TARGET_OBJECTS:src_core> ${DEVICE_SOURCE_FILES})
-=======
-###############
-# EXECUTABLES #
-###############
->>>>>>> 0b8e678... massive cleanup in CMakeLists.txt
-=======
 
 
 ############
@@ -108,7 +33,6 @@ add_library(obstdetect_full STATIC $<TARGET_OBJECTS:src_core> ${DEVICE_SOURCE_FI
 ############
 
 # NOTE: Each of these should be documented in its own source code.
->>>>>>> 81709e3... minor refactoring in CMake files for improved comprehension
 
 add_executable(liveFeeder src/main/LiveFeed.cpp)
 target_link_libraries(liveFeeder obstdetect_full)
@@ -128,6 +52,7 @@ target_link_libraries(objectDetectionRunner dlib)
 add_executable(objectDetectionTrainer src/main/ObjectDetectionTrainer.cpp)
 add_executable(objectDetectionModelGenerator src/main/ObjectDetectionModelGenerator.cpp)
 target_link_libraries(objectDetectionTrainer dlib)
+
 
 
 
