@@ -10,6 +10,7 @@ ImageFeedZmq zmqfeed(ZmqContextSingleton::getContext());
 typedef dlib::scan_fhog_pyramid<dlib::pyramid_down<6> > image_scanner_type;
 std::vector<dlib::object_detector<image_scanner_type> > my_detectors;
 
+bool makeConnection = true;
 
 vector<uchar> imgToBuff(Image8bit img){
     vector<uchar> buff;//buffer for coding
@@ -152,6 +153,7 @@ int main(int argc, char** argv) {
         } catch (LeptonSPIOpenException& e){
             std::cout << e.what() << endl;
 	    // wait 5 seconds and try to record
+      makeConnection = false;
 	    sleep(5);
         }
      }
