@@ -16,6 +16,7 @@
 #include "geometry/Horizon.h"
 #include "imageProc/rescale/SimpleRescaler.h"
 #include "imageProc/liveFeed/base64EncDec.h"
+#include "io/JSONSerializer.h"
 
 #include "exceptions/LeptonSPIOpenException.h"
 #include "comm/ZmqContextSingleton.h"
