@@ -88,3 +88,7 @@ target_link_libraries(leptonShutterTest obstdetect_full test_device)
 # FileSystemImageStreamTest - streaming images from file system
 add_executable(fsStreamTest test/main/FileSystemImageStreamTest.cpp)
 target_link_libraries(fsStreamTest obstdetect_core test_core)
+
+# Testing getting video from two leptons simultaneously over SPI
+add_executable(twoLeptonsTest test/main/TwoLeptonsTest.cpp)
+target_link_libraries(twoLeptonsTest obstdetect_full test_device)
