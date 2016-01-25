@@ -7,9 +7,8 @@
 
 #include <math.h>
 
-static double projectAontoB(double Ax, double Ay, double Bx, double By)
+static double scalarProjectAontoB(double Ax, double Ay, double Bx, double By)
 {
-
     double dotProduct = Ax * Bx + Ay * By;
     double vectorMagnitude = pow((pow(Bx, 2) + pow(By, 2)), 0.5);
 

@@ -12,9 +12,6 @@ Horizon::Horizon(double rollRad, double pitchRad) :
     setPitchRoll(pitchRad, rollRad);
 }
 
-Horizon::~Horizon() {
-}
-
 /*
 Check if given point is above horizon.
 IN: point of interest
@@ -96,9 +93,6 @@ void Horizon::setPitchRoll(double pitch, double roll) {
     // NOTE: The two signs below have been flipped from their original states to invert the roll axis of the IMU. If the IMU configuration changes and this is no longer necessary, feel free to switch them back.
     heightLeft -= rollShift;
     heightRight += rollShift;
-//    heightLeft += rollShift;
-//    heightRight -= rollShift;
-
 
     // XXX: Assumes that the horizon intersects both
     //  vertical edges of the frame

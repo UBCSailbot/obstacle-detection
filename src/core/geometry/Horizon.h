@@ -13,7 +13,7 @@
 #include <cmath>
 #include <math.h>
 
-#include "lepton/LeptonCameraDimensions.h"
+#include "camera/lepton/LeptonCameraSpecifications.h"
 #include "Line.h"
 
 class Horizon : public Line {
@@ -21,7 +21,6 @@ class Horizon : public Line {
 public:
     Horizon(double rollRad, double pitchRad);
     Horizon(cv::Point2f startPoint, cv::Point2f endPoint);
-    ~Horizon();
 
     /*
     Check if given point is above horizon.
