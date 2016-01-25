@@ -20,11 +20,13 @@ public:
 
     AveragedBufferedSmoother();
     AveragedBufferedSmoother(int bufferSize);
-    virtual int calculateSmoothedValue(int currentValue);
+    virtual int calculateSmoothedValue(int currentValue, float weight=1);
 
 protected:
-    std::queue<int> _valueBuffer;
-    int _bufferRunningSum = 0;
+    std::queue<long> _valueBuffer;
+    long _bufferRunningSum = 0;
+    std::queue<float> _weightBuffer;
+    float _weightsRunningSum = 0;
     int _bufferCapacity;
 };
 

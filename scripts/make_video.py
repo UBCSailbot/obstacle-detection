@@ -13,6 +13,7 @@ def convert_to_video(frame_dir, video_file, frame_rate=27, rotate=False):
             transform=rotate_str,
             output=video_file
             )
+  print "Converting frames to video:"
   print cmd_str
   os.system( cmd_str )
 

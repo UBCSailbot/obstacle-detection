@@ -12,21 +12,26 @@
 class HorizonHistogramGenerator : public HistogramGenerator {
 
 public:
-    HorizonHistogramGenerator(ObjectStream<Horizon>* horizonStream) :
-            _horizonStream(horizonStream)
-    { }
+    HorizonHistogramGenerator(ObjectStream<Orientation>* orientationStream) :
+            _orientationStream(orientationStream),
+            _horizonFactory(HorizonFactory(LeptonCameraSpecifications))
+    {
+
+    }
 
     virtual ~HorizonHistogramGenerator() {
-        delete _horizonStream;
+        delete _orientationStream;
     }
 
     ImageHistogram generateHistogram(const cv::Mat &image) const {
-        return HorizonImageHistogram(image, _horizonStream->next());
+        return HorizonImageHistogram(image,
+                                     _horizonFactory.makeHorizon(_orientationStream->next()));
     }
 
 
 private:
-    ObjectStream<Horizon>* _horizonStream;
+    ObjectStream<Orientation>*_orientationStream;
+    HorizonFactory _horizonFactory;
 
 };
 

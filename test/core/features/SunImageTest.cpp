@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 #include "geometry/Horizon.h"
 #include "features/SunImage.h"
-#include "lepton/LeptonCameraDimensions.h"
+#include "camera/lepton/LeptonCameraSpecifications.h"
 
 TEST(SunImageTest, FindSunPositive) {
     cv::Mat frame = cv::imread("resources/img/freighterAndSun01.png", CV_LOAD_IMAGE_UNCHANGED);

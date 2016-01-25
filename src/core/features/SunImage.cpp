@@ -6,7 +6,8 @@ SunImage::SunImage(const Horizon &horizon, const cv::Mat &frame, unsigned int mi
         _frame(frame),
         _minSunPixelValue(minSunPixelValue),
         _minGlintPixelValue(minGlintPixelValue),
-        _margin(glintColumnMargin)
+        _margin(glintColumnMargin),
+        HorizonImage(frame, horizon)
 {
     findSunPosition();
     findGlintColumn();
