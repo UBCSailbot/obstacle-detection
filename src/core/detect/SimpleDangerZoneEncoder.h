@@ -30,13 +30,19 @@ class SimpleDangerZoneEncoder: public DangerZoneEncoder {
 
 public:
 
-
+    SimpleDangerZoneEncoder(ICameraSpecifications specs);
 
     std::vector<DangerZone> identifyDangerZones(const ObstaclePositionFrame &obstacleFrame,
-                                                              const Horizon &horizon) const;
+                                                const Horizon &horizon) const;
 
 private:
-    std::vector<DangerZone> identifyDangerZones2(const ObstaclePositionFrame &obstacleFrame, const Horizon &horizon) const;
+    ICameraSpecifications _cameraSpecs;
+
+    double _pixToDegMultiplier;
+
+    Line findCenterLine(ObstaclePositionFrame frame, Horizon h) const;
+
+    double calculateDistanceFromCenterLine(Line centerLine, cv::Point2d p)const;
 };
 
 

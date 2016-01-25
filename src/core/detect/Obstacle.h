@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <limits>
+#include <algorithm>
 #include <opencv2/core/core.hpp>
 #include <geometry/Horizon.h>
 
@@ -16,22 +17,57 @@
 class Obstacle {
 
 public:
-    Obstacle(const std::vector<cv::Point2f> vertices);
 
+    /**
+     * Constructs an obstacle from the given set of points. A typical way to
+     *  represent an obstacle is using a bounding box, but this class is not
+     *  restricted to that type of representation for an obstacle.
+     *
+     * Also takes in a Horizon to determine the orientation of the obstacle.
+     *  Since an obstacle exists in the context of the image frame in which
+     *  it was detected, the horizon line of that image is a useful tool
+     *  for situating the obstacle within the scene.
+     */
+    Obstacle(std::vector<cv::Point2f> vertices, const Horizon& horizon);
+
+    /**
+     * Returns the vector of points that was passed in to construct this
+     *  object.
+     */
     const std::vector<cv::Point2f> getVertices() const;
 
-    const cv::Point2f getPortmostVertex(Horizon frameOfReference);
+    /**
+     * Returns the vertex of the obstacle that is the furthest to the port
+     *  side relative to the boat's current heading. (PORT == LEFT)
+     */
+    const cv::Point2f getPortmostVertex();
 
-    const cv::Point2f getStarboardmostVertex(Horizon frameOfReference);
+    /**
+     * Returns the vertex of the obstacle that is the furthest to the starboard
+     *  side relative to the boat's current heading. (STARBOARD == RIGHT)
+     */
+    const cv::Point2f getStarboardmostVertex();
 
+    /**
+     * Return the number of vertices used to represent this obstacle.
+     */
     size_t numVertices() const;
 
 private:
     std::vector<cv::Point2f> _vertices;
-    cv::Point2f _portmostVertex;
-    bool _portmostSet;
-    cv::Point2f _starboardmostVertex;
-    bool _starboardmostSet;
+    Horizon _horizon;
+
+    /**
+     * This is a custom comparator used to sort the vertices of this obstacle
+     *  according to how far they are to the port side of the boat's current
+     *  heading.
+     */
+    struct ObstaclePointComparator {
+        ObstaclePointComparator(const Horizon &h) : _horizon(h) {}
+        bool operator() (cv::Point2f p1, cv::Point2f p2);
+        const Horizon& _horizon;
+    } ;
+
 };
 
 #endif //OBSTACLE_DETECTION_OBSTACLE_H
