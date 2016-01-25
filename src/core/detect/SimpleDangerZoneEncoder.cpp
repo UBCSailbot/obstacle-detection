@@ -4,8 +4,6 @@
 
 #include "SimpleDangerZoneEncoder.h"
 
-#include <iostream>
-
 
 SimpleDangerZoneEncoder::SimpleDangerZoneEncoder(ICameraSpecifications specs) :
         _cameraSpecs(specs)
@@ -21,16 +19,15 @@ double SimpleDangerZoneEncoder::calculateDistanceFromCenterLine(Line centerLine,
 
     double numerator = normalizedPoint.x * normalizedCenterLine.y -
             normalizedPoint.y * normalizedCenterLine.x;
-    double denominator = centerLine.getMagnitude();
+    double denominator = centerLine.calculateMagnitude();
 
     return numerator / denominator;
 }
 
 std::vector<DangerZone> SimpleDangerZoneEncoder::identifyDangerZones(
-        const ObstaclePositionFrame &obstacleFrame,
-        const Horizon &horizon) const
+        const ObstaclePositionFrame &obstacleFrame) const
 {
-    Line centerLine = findCenterLine(obstacleFrame, horizon);
+    Line centerLine = obstacleFrame.calculateCenterLine();
     std::vector<DangerZone> zones;
 
     for (Obstacle o : obstacleFrame.getObstacles()) {
@@ -42,15 +39,4 @@ std::vector<DangerZone> SimpleDangerZoneEncoder::identifyDangerZones(
 
     return zones;
 
-}
-
-Line SimpleDangerZoneEncoder::findCenterLine(ObstaclePositionFrame frame, Horizon h) const {
-    cv::Point2d normalizedHorizon(h.getEndPoint().x - h.getStartPoint().x,
-                                  h.getEndPoint().y - h.getStartPoint().y);
-
-    cv::Point2d normalToHorizon(-normalizedHorizon.y, normalizedHorizon.x);
-
-    cv::Point2f centerOfFrame(frame.getFrameWidth() / 2, frame.getFrameHeight() / 2);
-    return Line(centerOfFrame, cv::Point2d(centerOfFrame.x + normalToHorizon.x,
-                                           centerOfFrame.y + normalToHorizon.y) );
 }

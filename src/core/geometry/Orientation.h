@@ -6,7 +6,7 @@
 #define OBSTACLE_DETECTION_ORIENTATION_H
 
 #include <sstream>
-#include <math.h>
+#include <cmath>
 
 struct Orientation {
     Orientation(double rollRad, double pitchRad, double yawRad);
@@ -36,9 +36,9 @@ public:
     bool operator==(const Orientation &other) const;
 
 private:
-    const double RAD_TO_DEG = 180 / M_PI;
+    static const double RAD_TO_DEG;
 
-    double _EPSILON = 0.001;
+    static const double _EPSILON;
 };
 
 #endif //OBSTACLE_DETECTION_ORIENTATION_H

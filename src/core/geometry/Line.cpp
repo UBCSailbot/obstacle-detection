@@ -27,14 +27,16 @@ bool Line::operator==(const Line &other) const {
             (_endPoint.y - other._endPoint.y <= _endPoint.y / EPSILON_FACTOR);
 }
 
-double Line::getMagnitude() {
-    if (!_magnitudeCalculated) {
-        _magnitude = pow( pow(_xComponent, 2) + pow(_yComponent, 2), 0.5);
-        _magnitudeCalculated = true;
-    }
-    return _magnitude;
+double Line::calculateMagnitude() const {
+    return pow( pow(_xComponent, 2) + pow(_yComponent, 2), 0.5);
 }
 
+double Line::calculateSlope() const {
+    if (_xComponent == 0) {
+        return std::numeric_limits<double>::max();
+    }
+    return _yComponent / _xComponent;
+}
 
 double Line::projectPointOnto(const cv::Point2f pointOfInterest) const {
     double vectorx = pointOfInterest.x - _startPoint.x;

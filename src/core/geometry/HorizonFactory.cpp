@@ -12,8 +12,8 @@ HorizonFactory::HorizonFactory(ICameraSpecifications specs) : _cameraSpecs(specs
 
 Horizon HorizonFactory::makeHorizon(Orientation o) const {
     double pitchShift = pitchHorizonPixelShift(o.pitchRadians, _cameraSpecs);
-    int heightLeft = (int) (pitchShift + _cameraSpecs.pixelHeight / 2);
-    int heightRight = (int) (pitchShift + _cameraSpecs.pixelWidth / 2);
+    double heightLeft = (int) (pitchShift + _cameraSpecs.pixelHeight / 2);
+    double heightRight = (int) (pitchShift + _cameraSpecs.pixelHeight / 2);
 
     double rollShift = rollHorizonPixelShift(o.rollRadians, _cameraSpecs);
     heightLeft -= rollShift;
@@ -26,11 +26,16 @@ Horizon HorizonFactory::makeHorizon(Orientation o) const {
 }
 
 double HorizonFactory::pitchHorizonPixelShift(double angle, ICameraSpecifications spec) const{
-    return angle / (spec.FOVDegreesVertical * M_PI / 180.0) * spec.pixelHeight;
+    return angle * 180 / (spec.FOVDegreesVertical * M_PI) * spec.pixelHeight;
 }
 
 double HorizonFactory::rollHorizonPixelShift(double angle, ICameraSpecifications spec) const {
-    return tan(angle) * (double) spec.pixelWidth / 2.0;
+    if (std::abs(angle - M_PI / 2) < 0.0001) {
+        return std::numeric_limits<double>::max();
+    }
+    else {
+        return tan(angle) * (double) spec.pixelWidth / 2.0;
+    }
 }
 
 Horizon HorizonFactory::makeNeutralHorizon() const {
