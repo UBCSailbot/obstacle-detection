@@ -26,3 +26,8 @@ std::string Orientation::toDataString() {
     return stringStream.str();
 }
 
+bool Orientation::operator==(const Orientation &other) const {
+    return fabs(rollRadians - other.rollRadians) < _EPSILON &&
+           fabs(pitchRadians - other.pitchRadians) < _EPSILON &&
+           fabs(yawRadians - other.yawRadians) < _EPSILON;
+}

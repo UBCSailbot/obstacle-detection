@@ -25,7 +25,7 @@ void testIMU()
 
         //  display 10 times per second
         if ((now - displayTimer) > 100000) {
-            printf("Sample rate %d: %s\r", sampleRate, imu.toPrettyString().c_str());
+            printf("Sample rate %d: %s\r", sampleRate, imu.getOrientation().toPrettyString().c_str());
             fflush(stdout);
             displayTimer = now;
         }

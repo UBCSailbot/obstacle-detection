@@ -9,23 +9,24 @@
 #include <queue>
 #include <iostream>
 #include <fstream>
+#include <geometry/Orientation.h>
 
 #include "io/ObjectStream.h"
-#include "geometry/Horizon.h"
 #include "exceptions/NoSuchElementException.h"
 
-class HorizonFileReader : public ObjectStream<Horizon> {
+
+class OrientationFileReader : public ObjectStream<Orientation> {
 
 public:
-    HorizonFileReader(const std::string &imuLogFile,
-                      bool invertRoll = false, bool invertPitch = false);
+    OrientationFileReader(const std::string &imuLogFile,
+                          bool invertRoll = false, bool invertPitch = false);
 
     /**
      * PRE: This object contained n Horizon objects.
      * POST: Horizon h is added to this object, at the
      *  end of the queue.
      */
-    void push(const Horizon &h);
+    void push(const Orientation &o);
 
     /**
      * PRE: This object is populated with one or more Horizon objects.
@@ -34,10 +35,10 @@ public:
      * RETURN: The Horizon object that was added least recently.
      * THROWS: NoSuchElementException if this object is empty.
      */
-    Horizon next();
+    Orientation next();
 
 private:
-    std::queue<Horizon> _horizons;
+    std::queue<Orientation> _orientations;
     bool _invertRoll;
     bool _invertPitch;
 
