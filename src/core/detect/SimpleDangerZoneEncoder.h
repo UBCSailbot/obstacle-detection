@@ -37,9 +37,8 @@ public:
     std::vector<DangerZone> identifyDangerZones(const ObstaclePositionFrame &obstacleFrame) const;
 
 private:
-    ICameraSpecifications _cameraSpecs;
-
-    double _pixToDegMultiplier;
+    const ICameraSpecifications _cameraSpecs;
+    const double _pixToDegMultiplier;
 
     double calculateDistanceFromCenterLine(Line centerLine, cv::Point2d p)const;
 };
