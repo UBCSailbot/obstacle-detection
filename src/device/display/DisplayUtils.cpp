@@ -13,8 +13,7 @@ Display* DisplayUtils::connectToDisplay() {
     return display;
 }
 
-void DisplayUtils::displayFrameWithHorizonLine(const Image8bit &frame, double roll, double pitch, Display &d) {
-    Horizon h(roll, pitch);
+void DisplayUtils::displayFrameWithHorizonLine(const Image8bit &frame, const Horizon &h, Display &d) {
     cv::Mat displayed(frame.rows, frame.cols, CV_16U);
     cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
     cv::line(displayed, h.getStartPoint(), h.getEndPoint(), cv::Scalar(255,0,0), 1);
