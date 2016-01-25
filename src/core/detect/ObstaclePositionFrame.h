@@ -21,10 +21,9 @@
 class ObstaclePositionFrame {
 
 public:
-    ObstaclePositionFrame(const cv::Mat &frame, int xFOV, int yFOV,
+    ObstaclePositionFrame(const cv::Mat &frame,
                           const std::vector<Obstacle> &obstacles) :
-            _rows(frame.rows), _cols(frame.cols), _xFOV(xFOV), _yFOV(yFOV),
-            _obstacles(obstacles)
+            _rows(frame.rows), _cols(frame.cols), _obstacles(obstacles)
     {    }
 
     const bool containsObstacle() {
