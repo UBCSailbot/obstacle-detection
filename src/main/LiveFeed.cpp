@@ -83,7 +83,7 @@ void record(char* output_dir, bool verbose) {
             // save the current frame as a .png file
             sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter/3);
             imwrite(img_name, frame);
-            imuLog << imu.toDataString();
+            imuLog << imu.getOrientation().toDataString();
 
             // convert to 8 bit and display
             rescaler.scale16bitTo8bit(frame, displayed);
