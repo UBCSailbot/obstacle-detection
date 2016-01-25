@@ -5,8 +5,10 @@
 #ifndef OBSTACLE_AVOIDANCE_SIMPLEDANGERZONEENCODER_H
 #define OBSTACLE_AVOIDANCE_SIMPLEDANGERZONEENCODER_H
 
+#include <iostream>
+
 #include "geometry/Horizon.h"
-#include "ObstaclePositionFrame.h"
+#include "features/ObstaclePositionFrame.h"
 #include "DangerZone.h"
 #include "DangerZoneEncoder.h"
 
@@ -32,15 +34,12 @@ public:
 
     SimpleDangerZoneEncoder(ICameraSpecifications specs);
 
-    std::vector<DangerZone> identifyDangerZones(const ObstaclePositionFrame &obstacleFrame,
-                                                const Horizon &horizon) const;
+    std::vector<DangerZone> identifyDangerZones(const ObstaclePositionFrame &obstacleFrame) const;
 
 private:
     ICameraSpecifications _cameraSpecs;
 
     double _pixToDegMultiplier;
-
-    Line findCenterLine(ObstaclePositionFrame frame, Horizon h) const;
 
     double calculateDistanceFromCenterLine(Line centerLine, cv::Point2d p)const;
 };

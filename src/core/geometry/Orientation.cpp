@@ -4,6 +4,10 @@
 
 #include "Orientation.h"
 
+const double Orientation::RAD_TO_DEG = 180 / M_PI;
+
+const double Orientation::_EPSILON = 0.0001;
+
 Orientation::Orientation(double rollRad, double pitchRad, double yawRad) :
     rollRadians(rollRad), pitchRadians(pitchRad), yawRadians(yawRad),
     rollDegrees(rollRad * RAD_TO_DEG), pitchDegrees(pitchRad * RAD_TO_DEG),
@@ -27,7 +31,7 @@ std::string Orientation::toDataString() {
 }
 
 bool Orientation::operator==(const Orientation &other) const {
-    return fabs(rollRadians - other.rollRadians) < _EPSILON &&
-           fabs(pitchRadians - other.pitchRadians) < _EPSILON &&
-           fabs(yawRadians - other.yawRadians) < _EPSILON;
+    return std::abs(rollRadians - other.rollRadians) < _EPSILON &&
+           std::abs(pitchRadians - other.pitchRadians) < _EPSILON &&
+           std::abs(yawRadians - other.yawRadians) < _EPSILON;
 }

@@ -9,7 +9,8 @@
 #include <utility>
 #include <opencv2/core/core.hpp>
 #include <geometry/Horizon.h>
-#include "Obstacle.h"
+#include <features/HorizonImage.h>
+#include "detect/Obstacle.h"
 
 /**
  * When an obstacle is detected in a frame, the most useful pieces of information
@@ -18,12 +19,15 @@
  *  triangular region within which the obstacle might be present in the real world,
  *  relative to the boat's current heading.
  */
-class ObstaclePositionFrame {
+class ObstaclePositionFrame : public HorizonImage {
 
 public:
-    ObstaclePositionFrame(const cv::Mat &frame,
+    ObstaclePositionFrame(const cv::Mat &frame, const Horizon &horizon,
+                          const ICameraSpecifications &cameraSpec,
                           const std::vector<Obstacle> &obstacles) :
-            _rows(frame.rows), _cols(frame.cols), _obstacles(obstacles)
+            HorizonImage(frame, horizon),
+            _obstacles(obstacles),
+            _cameraSpec(cameraSpec)
     {    }
 
     const bool containsObstacle() {
@@ -35,28 +39,25 @@ public:
     }
 
     const int getFrameHeight() const {
-        return _rows;
+        return _image.rows;
     }
 
     const int getFrameWidth() const {
-        return _cols;
+        return _image.cols;
     }
 
     const double getXFOV() const {
-        return _xFOV;
+        return _cameraSpec.FOVDegreesHorizontal;
     }
 
     const double getYFOV() const {
-        return _yFOV;
+        return _cameraSpec.FOVDegreesVertical;
     }
 
 private:
     //with reference to the horizon
     std::vector<Obstacle> _obstacles;
-    int _rows;
-    int _cols;
-    double _xFOV;
-    double _yFOV;
+    ICameraSpecifications _cameraSpec;
 
 };
 

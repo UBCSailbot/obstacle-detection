@@ -12,6 +12,7 @@
 #include "geometry/Horizon.h"
 #include "types/Rect2f.h"
 #include "camera/lepton/LeptonCameraSpecifications.h"
+#include "HorizonImage.h"
 
 /**
  * Uses a simple heuristic to determine the parts of an image that are likely
@@ -29,7 +30,7 @@
  *        are found perpendicular to the horizon that delimit a column in
  *        which higher-intensity pixels are likely to be sun glint.
  */
-class SunImage
+class SunImage : public HorizonImage
 {
 public:
     SunImage(const Horizon &horizon,

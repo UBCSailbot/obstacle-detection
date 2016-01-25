@@ -25,7 +25,9 @@ public:
 
     bool operator==(const Line &other) const;
 
-    double getMagnitude();
+    double calculateMagnitude() const;
+
+    double calculateSlope() const;
 
     /**
      * Projects the point onto this line and returns the distance of the
@@ -36,9 +38,6 @@ public:
 protected:
     cv::Point2f _startPoint;
     cv::Point2f _endPoint;
-
-    double _magnitude;
-    bool _magnitudeCalculated = false;
 
     // For performing certain geometric operations it is useful to store a
     //  representation of this line as a vector starting from the origin.
