@@ -11,7 +11,7 @@
 
 #include "geometry/Horizon.h"
 #include "types/Rect2f.h"
-#include "lepton/LeptonCameraDimensions.h"
+#include "camera/lepton/LeptonCameraSpecifications.h"
 
 /**
  * Uses a simple heuristic to determine the parts of an image that are likely
