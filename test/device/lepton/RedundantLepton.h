@@ -5,7 +5,8 @@
 #ifndef OBSTACLE_DETECTION_REDUNDANTLEPTON_H
 #define OBSTACLE_DETECTION_REDUNDANTLEPTON_H
 
-
+#include <lepton/LeptonSPI.h>
+#include <lepton/Lepton.h>
 #include <types/Image16bit.h>
 
 class RedundantLepton {

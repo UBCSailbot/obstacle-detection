@@ -42,6 +42,7 @@ static uint32_t speed = 16000000;
 class Lepton {
 public:
     Lepton();
+    Lepton(int spi_cs);
     virtual ~Lepton();
 
     /**
