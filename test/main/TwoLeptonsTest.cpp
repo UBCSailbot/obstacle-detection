@@ -2,10 +2,10 @@
 // Created by paul on 09/05/15 (dd/mm/yy, of course)
 //
 
-#include <lepton/Lepton.h>
 #include <imageProc/rescale/SimpleRescaler.h>
 #include "display/Display.h"
 #include <display/DisplayUtils.h>
+#include <lepton/RedundantLepton.h>
 #include "types/Image8bit.h"
 #include "types/Image16bit.h"
 #include "imageProc/rescale/SimpleRescaler.h"
@@ -18,7 +18,7 @@ using namespace std;
 
 void run() {
 
-    Lepton lepton0(0);
+    RedundantLepton lepton0(0);
     //Lepton lepton1(1);
     SimpleRescaler rescaler;
 

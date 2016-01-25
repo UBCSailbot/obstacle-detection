@@ -2,8 +2,6 @@
 // Created by paul on 20/01/16.
 //
 
-#include <lepton/LeptonSPI.h>
-#include <lepton/Lepton.h>
 #include "RedundantLepton.h"
 
 RedundantLepton::RedundantLepton(int spiChipSelect) {

@@ -43,6 +43,7 @@ static uint32_t speed = 16000000;
 class Lepton : public ImageStream{
 public:
     Lepton();
+    Lepton(int spi_cs);
     virtual ~Lepton();
 
     /**
