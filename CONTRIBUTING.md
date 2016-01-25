@@ -5,7 +5,10 @@ We currently have three distinct development stages.
 * Testing: for testing complete features
 * Master: for tested features
 
-If your changes are significant then make a new branch that is named after the Jira issue.
+If your changes are significant then make a new branch that is named after the Jira issue,
+in the format SOFTWARE-XXX-brief-description
+
+E.g. SOFTWARE-753-boxes2headings
 
 ## Making Changes
 
