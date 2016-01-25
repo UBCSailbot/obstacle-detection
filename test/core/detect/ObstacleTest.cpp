@@ -129,3 +129,26 @@ TEST_F(ObstacleTest, failOnTooFewVerts)
 
     EXPECT_THROW(Obstacle o(vertices, _factory.makeNeutralHorizon()), std::invalid_argument);
 }
+
+TEST_F(ObstacleTest, sortingMultipleVerts)
+{
+    cv::Point2f p2(10, 0);
+    cv::Point2f p1(0, 22);
+    cv::Point2f p5(79, 46);
+    cv::Point2f p4(53, 67);
+    cv::Point2f p3(22, 83);
+
+    std::vector<cv::Point2f> vertices;
+    vertices.push_back(p2);
+    vertices.push_back(p1);
+    vertices.push_back(p5);
+    vertices.push_back(p4);
+    vertices.push_back(p3);
+
+    Obstacle o(vertices, _factory.makeNeutralHorizon());
+
+    EXPECT_FLOAT_EQ(79, o.getStarboardmostVertex().x);
+    EXPECT_FLOAT_EQ(46, o.getStarboardmostVertex().y);
+    EXPECT_FLOAT_EQ(0, o.getPortmostVertex().x);
+    EXPECT_FLOAT_EQ(22, o.getPortmostVertex().y);
+}

@@ -27,6 +27,8 @@ public:
      *  Since an obstacle exists in the context of the image frame in which
      *  it was detected, the horizon line of that image is a useful tool
      *  for situating the obstacle within the scene.
+     *
+     * TODO: How to break ties on getPortmost and getStarboardmost vertices?
      */
     Obstacle(std::vector<cv::Point2f> vertices, const Horizon& horizon);
 

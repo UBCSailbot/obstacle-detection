@@ -6,9 +6,9 @@
 
 
 SimpleDangerZoneEncoder::SimpleDangerZoneEncoder(ICameraSpecifications specs) :
-        _cameraSpecs(specs)
+        _cameraSpecs(specs), _pixToDegMultiplier(_cameraSpecs.FOVDegreesHorizontal / _cameraSpecs.pixelWidth)
 {
-    _pixToDegMultiplier = _cameraSpecs.FOVDegreesHorizontal / _cameraSpecs.pixelWidth;
+
 }
 
 double SimpleDangerZoneEncoder::calculateDistanceFromCenterLine(Line centerLine, cv::Point2d p)const {

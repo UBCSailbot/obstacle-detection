@@ -15,7 +15,14 @@
 #include "detect/DangerZoneEncoder.h"
 #include "detect/SimpleDangerZoneEncoder.h"
 
-class SimpleDangerZoneEncoderTest {
+class SimpleDangerZoneEncoderTest : public testing::Test {
+
+public:
+    SimpleDangerZoneEncoder encoder = SimpleDangerZoneEncoder(LeptonCameraSpecifications);
+    Image8bit frame = Image8bit(LeptonCameraSpecifications.pixelHeight,
+                                LeptonCameraSpecifications.pixelWidth);
+    HorizonFactory factory = HorizonFactory(LeptonCameraSpecifications);
+
 
 };
 
