@@ -15,7 +15,7 @@
 /**
  *
  */
-const ICameraSpecifications LeptonCameraSpecifications = {
+static const ICameraSpecifications LeptonCameraSpecifications = {
         60,  // pixelHeight
         80,  // pixelWidth
         37,  // FOVDegreesVertical

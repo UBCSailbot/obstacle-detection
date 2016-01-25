@@ -16,11 +16,11 @@
  *  included in multiple files.
  */
 struct ICameraSpecifications {
-    unsigned int pixelHeight;
-    unsigned int pixelWidth;
+    const unsigned int pixelHeight;
+    const unsigned int pixelWidth;
 
-    double FOVDegreesVertical;
-    double FOVDegreesHorizontal;
+    const double FOVDegreesVertical;
+    const double FOVDegreesHorizontal;
 };
 
 #endif //OBSTACLE_DETECTION_ICAMERASPECIFICATIONS_H
