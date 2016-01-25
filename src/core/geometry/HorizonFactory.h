@@ -21,7 +21,14 @@ public:
     PRE: pitch, roll angles in radians given
     POST: pitch, roll, and intersection heights stored in class.
     */
-    Horizon makeHorizon(Orientation o);
+    Horizon makeHorizon(Orientation o) const;
+
+    /**
+     * Makes a level horizon that passes through the middle
+     *  of the image, as if it had been produced with 0 pitch
+     *  and 0 roll.
+     */
+    Horizon makeNeutralHorizon() const;
 
 private:
     ICameraSpecifications _cameraSpecs;
@@ -36,7 +43,7 @@ private:
     pixel_shift: 0 when horizon centred, +height/2 when horizon at top, -height/2 at bottom.
     May exceed magnitude height/2 for large angles.
     */
-    double pitchHorizonPixelShift(double angle, ICameraSpecifications spec);
+    double pitchHorizonPixelShift(double angle, ICameraSpecifications spec) const;
 
     /*
     Determine the number of pixels by which the image of the horizon is differentially shifted.
@@ -49,7 +56,7 @@ private:
     pixel_shift: 0 when horizon centred, +height/2 when horizon from top left to bottom right.
     May exceed magnitude height/2 for large angles.
     */
-    double rollHorizonPixelShift(double angle, ICameraSpecifications spec);
+    double rollHorizonPixelShift(double angle, ICameraSpecifications spec) const;
 };
 
 

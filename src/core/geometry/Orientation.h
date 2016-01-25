@@ -30,9 +30,15 @@ public:
      */
     std::string toDataString();
 
+    /**
+     * Returns true if the roll, pitch, and yaw angles are the same.
+     */
+    bool operator==(const Orientation &other) const;
+
 private:
     const double RAD_TO_DEG = 180 / M_PI;
 
+    double _EPSILON = 0.001;
 };
 
 #endif //OBSTACLE_DETECTION_ORIENTATION_H

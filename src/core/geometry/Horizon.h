@@ -19,7 +19,6 @@
 class Horizon : public Line {
 
 public:
-    Horizon(double rollRad, double pitchRad);
     Horizon(cv::Point2f startPoint, cv::Point2f endPoint);
 
     /*

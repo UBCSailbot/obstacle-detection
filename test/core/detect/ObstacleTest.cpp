@@ -127,5 +127,5 @@ TEST_F(ObstacleTest, failOnTooFewVerts)
     std::vector<cv::Point2f> vertices;
     vertices.push_back(p);
 
-    EXPECT_THROW(Obstacle o(vertices, Horizon(0, 0)), std::invalid_argument);
+    EXPECT_THROW(Obstacle o(vertices, _factory.makeNeutralHorizon()), std::invalid_argument);
 }
