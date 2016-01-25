@@ -4,7 +4,10 @@
 
 #include "DesktopDisplay.h"
 
-DesktopDisplay::DesktopDisplay() {
+DesktopDisplay::DesktopDisplay() : DesktopDisplay("Display")
+{ }
+
+DesktopDisplay::DesktopDisplay(std::string windowName) : _windowName(windowName){
     _connected = true;
 }
 
@@ -23,6 +26,6 @@ void DesktopDisplay::displayColored(const cv::Mat &image) {
     size_t scaleFactor = DisplayUtils::calculateScaleFactor(image, MIN_WIDTH, MIN_HEIGHT);
     cv::Mat displayed;
     cv::resize(image, displayed, cv::Size(0,0), scaleFactor, scaleFactor, cv::INTER_NEAREST);
-    cv::imshow("Image", displayed);
+    cv::imshow(_windowName, displayed);
     cv::waitKey(20);
 }

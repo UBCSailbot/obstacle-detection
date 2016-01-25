@@ -3,14 +3,28 @@
 //
 
 #include "RedundantLepton.h"
+#include <iostream>
 
 RedundantLepton::RedundantLepton(int spiChipSelect) {
-    SpiOpenPort(spiChipSelect);
+    try {
+        SpiOpenPort(spiChipSelect);
+        std::cout << "SpiOpenPort succeeded!" << std::endl;
+    } catch(const std::exception& e) {
+        std::cout << e.what() << std::endl;
+        exit(1);
+    }
 
     int ret = 0;
     int fd;
 
-    sprintf(_device, "/dev/spidev%d.0", spiChipSelect);
+    sprintf(_device, "/dev/spidev0.%d", spiChipSelect);
+
+    if(spiChipSelect) {
+        _spiFileDescriptor = spi_cs1_fd;
+    }
+    else {
+        _spiFileDescriptor = spi_cs0_fd;
+    }
 
     fd = open(_device, O_RDWR);
     if (fd < 0)
@@ -65,7 +79,7 @@ void RedundantLepton::getFrame(Image16bit &frame) {
     int resets = 0;
     for (int j = 0; j < PACKETS_PER_FRAME; j++) {
         //if it's a drop packet, reset j to 0, set to -1 so he'll be at 0 again loop
-        read(spi_cs0_fd, _result + sizeof(uint8_t) * PACKET_SIZE * j, sizeof(uint8_t) * PACKET_SIZE);
+        read(_spiFileDescriptor, _result + sizeof(uint8_t) * PACKET_SIZE * j, sizeof(uint8_t) * PACKET_SIZE);
         int packetNumber = _result[j * PACKET_SIZE + 1];
         if (packetNumber != j) {
             j = -1;
@@ -98,10 +112,17 @@ void RedundantLepton::getFrame(Image16bit &frame) {
 
     }
 
-    for(int row=0; row < frame.rows; row++) {
-        for (int col=0; col < frame.cols; col++) {
-            frame.pixelAt(row, col) = _frameBuffer[row * VIEWPORT_WIDTH_PIX + col];
+    int row, col;
+
+    for (int i = 0; i < FRAME_SIZE_UINT16; i++) {
+        //skip the first 2 uint16_t's of every packet, they're 4 header bytes
+        if (i % PACKET_SIZE_UINT16 < 2) {
+            continue;
         }
+
+        col = (i % PACKET_SIZE_UINT16) - 2;
+        row = i / PACKET_SIZE_UINT16;
+        frame.pixelAt(row, col) = _frameBuffer[i];
     }
 
 
