@@ -7,7 +7,7 @@
 
 #include "imu/IMU.h"
 #include "imu/ParallelIMU.h"
-#include "lepton/Lepton.h"
+#include <camera/lepton/Lepton.h>
 #include "features/SunImage.h"
 #include "display/Display.h"
 #include "display/RoboPeakUSBDisplay.h"
