@@ -7,7 +7,7 @@
 
 TEST_F(HorizonTest, centeredHorizon) {
     cv::Point2f pointOfInterest;
-    Horizon h(0, 0);
+    Horizon h = hf.makeNeutralHorizon();
 
     pointOfInterest = cv::Point2f(69,20);
     testIsPointAbove(pointOfInterest, h, true);
