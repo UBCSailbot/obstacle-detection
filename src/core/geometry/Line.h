@@ -7,6 +7,7 @@
 
 
 #include <opencv2/core/core.hpp>
+#include "VectorMath.h"
 
 /**
  * A simple class that represents a two-dimensional line, as defined
@@ -24,9 +25,23 @@ public:
 
     bool operator==(const Line &other) const;
 
+    double calculateMagnitude() const;
+
+    double calculateSlope() const;
+
+    /**
+     * Projects the point onto this line and returns the distance of the
+     *  projected point from the left endpoint of this line.
+     */
+    double projectPointOnto(cv::Point2f pointOfInterest) const;
+
 protected:
     cv::Point2f _startPoint;
     cv::Point2f _endPoint;
+
+    // For performing certain geometric operations it is useful to store a
+    //  representation of this line as a vector starting from the origin.
+    double _xComponent, _yComponent;
 
 };
 

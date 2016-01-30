@@ -9,6 +9,8 @@
 #include <QtCore/qstring.h>
 #include <QtCore/qdir.h>
 #include <opencv2/highgui/highgui.hpp>
+#include <io/OrientationFileReader.h>
+#include <geometry/HorizonFactory.h>
 
 #include "imageProc/rescale/Rescaling.h"
 #include "imageProc/rescale/SimpleRescaler.h"
@@ -18,9 +20,9 @@
 #include "imageProc/histogram/ModeGetter.h"
 #include "imageProc/histogram/MedianGetter.h"
 #include "imageProc/histogram/SmoothingGetter.h"
+#include "imageProc/liveFeed/base64EncDec.h"
 
 #include "io/ImageReader.h"
-#include "io/HorizonFileReader.h"
 #include "io/Paths.h"
 
 using namespace std;
@@ -30,9 +32,21 @@ using namespace TCLAP;
 const string VERSION_NUMBER = "0.9";
 
 void rescale(const string &inputFrameDir, const string &outputFrameDir, const string &imuLogFilePath,
-             RescalingType typeOfRescaling, int smoothingWindow, bool paintHorizon, bool invertRoll, bool invertPitch,
-             bool display);
+             RescalingType typeOfRescaling, int smoothingWindow, bool paintHorizon, bool numberFrames,
+             bool invertRoll, bool invertPitch, bool display);
 
+
+vector<uchar> imgToBuff(Image8bit img){
+    vector<uchar> buff;//buffer for coding
+    vector<int> param = vector<int>(2);
+
+    param[0]=CV_IMWRITE_PNG_COMPRESSION;
+
+    param[1]=3;//default(3)  0-9.
+    imencode(".png",img,buff,param);
+    cout<<"coded file size(png)"<<buff.size()<<endl;
+    return buff;
+}
 
 Rescaler *buildRescaler(const string &imuLogFilePath, const RescalingType &typeOfRescaling, int smoothingWindow,
                         bool invertRoll, bool invertPitch);
@@ -73,6 +87,12 @@ int main(int argc, const char* const* argv) {
                cmd,
                false);
 
+        SwitchArg numberFramesArg("n",
+                "number-frames",
+                "Label each frame with its number (helps with debugging).",
+                cmd,
+                false);
+
         SwitchArg invertRollArg("",
                "invert-roll",
                "Invert the roll axis in parsing horizon info.",
@@ -106,7 +126,7 @@ int main(int argc, const char* const* argv) {
         ValuesConstraint<int> typeConstraint( typesOfRescaling );
 
         ValueArg<int> typeArg("t",
-                 "type",
+                 "rescaling-type",
                  "Type of rescaling to perform (default is `simple'): "
                  "\t1: simple"
                  "\t2: modal"
@@ -123,13 +143,14 @@ int main(int argc, const char* const* argv) {
         string imuLogFilePath = horizonRescaleArg.getValue();
         RescalingType typeOfRescaling = (RescalingType) typeArg.getValue();
         bool paintHorizon = paintHorizonArg.getValue();
+        bool numberFrames = numberFramesArg.getValue();
         bool invertRoll = invertRollArg.getValue();
         bool invertPitch = invertPitchArg.getValue();
         int smoothingWindow = smoothingArg.getValue();
         bool display = displayArg.getValue();
 
         rescale(inputFrameDir, outputFrameDir, imuLogFilePath, typeOfRescaling, smoothingWindow, paintHorizon,
-                invertRoll, invertPitch, display);
+                numberFrames, invertRoll, invertPitch, display);
     }
     catch (ArgException &e) {
         cerr << "error: " << e.error() << " for arg " << e.argId() << endl;
@@ -138,52 +159,91 @@ int main(int argc, const char* const* argv) {
 }
 
 void rescale(const string &inputFrameDir, const string &outputFrameDir, const string &imuLogFilePath,
-             RescalingType typeOfRescaling, int smoothingWindow, bool paintHorizon, bool invertRoll, bool invertPitch,
+             RescalingType typeOfRescaling, int smoothingWindow, bool paintHorizon, bool numberFrames, bool invertRoll, bool invertPitch,
              bool display) {
 
     vector<string> frameList = Paths::generateListOfFiles(inputFrameDir, "*.png");
 
     Rescaler *rescaler = buildRescaler(imuLogFilePath, typeOfRescaling, smoothingWindow, invertRoll, invertPitch);
 
-    HorizonFileReader horizonStream2(imuLogFilePath, invertRoll, invertPitch);
+    OrientationFileReader orientationStream2(imuLogFilePath, invertRoll, invertPitch);
+    HorizonFactory horizonFactory(LeptonCameraSpecifications);
     SimpleRescaler exampleRescaler;
 
     for (int i=0; i < frameList.size(); i++) {
         string frameFile = frameList[i];
+#ifdef DEBUG
+        cout << frameFile << endl;
+#endif
         string frameFilePath = Paths::join(inputFrameDir, frameFile);
 
         Image16bit rawFrame = ImageReader::read16bitImage(frameFilePath);
         Image8bit rescaledFrame(rawFrame.rows, rawFrame.cols);
 
-        rescaler->scale16bitTo8bit(rawFrame, rescaledFrame);
+        try{
+            rescaler->scale16bitTo8bit(rawFrame, rescaledFrame);
+        }
+        catch (NoSuchElementException e) {
+            cout << "WARNING: Ran out of IMU coordinates in imu logfile at frame " << i << endl;
+            exit(0);
+        }
 
         string outputFilePath = Paths::join(outputFrameDir, frameFile);
 
-        cv::Mat displayed;
+        cv::Mat outputFrame = Mat(rescaledFrame.rows, rescaledFrame.cols, CV_8UC3);
+        cv::cvtColor(rescaledFrame, outputFrame, cv::COLOR_GRAY2BGR);
+
+        if (numberFrames) {
+            ostringstream text;
+            text << i;
+            putText(outputFrame, text.str().c_str(), cv::Point(4,14), cv::FONT_HERSHEY_PLAIN, 0.8, Scalar(0,255,0));
+        }
 
         if (paintHorizon) {
-            Horizon h = horizonStream2.next();
-            displayed = Mat(rescaledFrame.rows, rescaledFrame.cols, CV_8UC3);
-            cv::cvtColor(rescaledFrame, displayed, cv::COLOR_GRAY2BGR);
-            line(displayed, h.getStartPoint(), h.getEndPoint(), Scalar(0,0,255), 1);
-            imwrite(outputFilePath, displayed);
+            try{
+                Horizon h = horizonFactory.makeHorizon(orientationStream2.next());
+                line(outputFrame, h.getStartPoint(), h.getEndPoint(), Scalar(0,0,255), 1);
+            }
+            catch (NoSuchElementException e) {
+                cout << "WARNING: Ran out of IMU coordinates in imu logfile at frame " << i << endl;
+                exit(0);
+            }
         }
         else {
-            displayed = rescaledFrame;
-            imwrite(outputFilePath, rescaledFrame);
+            outputFrame = rescaledFrame;
         }
 
+        imwrite(outputFilePath, outputFrame);
+
         if (display) {
-            resize(displayed, displayed, Size(0, 0), 6, 6, INTER_NEAREST);
-            imshow("rescaled", displayed);
+            resize(outputFrame, outputFrame, Size(0, 0), 6, 6, INTER_NEAREST);
+            imshow("rescaled", outputFrame);
 
             Image8bit simpleRescaled;
             exampleRescaler.scale16bitTo8bit(rawFrame, simpleRescaled);
             resize(simpleRescaled, simpleRescaled, Size(0, 0), 6, 6, INTER_NEAREST);
             imshow("original", simpleRescaled);
-            waitKey(33);
+            int k = waitKey(33 * 3) & 255;
+            if (k == 32 ) {
+                waitKey(0);
+            }
+            else if (k == 27) {
+                break;
+            }
         }
+
+        vector<uchar> buff = imgToBuff(rescaledFrame);
+        string encoded = base64_encode(buff.data(), buff.size());
+        cout << encoded << endl;
+        //cout << "size" << buff.size();
+        vector<uchar> decoded = base64_decode(encoded, buff.size());
+
+
+        Mat pngimage = imdecode(decoded,CV_LOAD_IMAGE_COLOR);
+        //cout << pngimage << endl;
+        imwrite(outputFilePath, pngimage);
     }
+
 }
 
 Rescaler *buildRescaler(const string &imuLogFilePath, const RescalingType &typeOfRescaling, int smoothingWindow,
@@ -193,12 +253,12 @@ Rescaler *buildRescaler(const string &imuLogFilePath, const RescalingType &typeO
     bool horizon = imuLogFilePath != "NULL";
 
     HistogramGenerator* histoGenerator;
-    ObjectStream<Horizon>* horizonStream;
+    ObjectStream<Orientation>* orientationStream;
     CentralTendencyGetter* ctg;
 
     if (horizon) {
-        horizonStream = new HorizonFileReader(imuLogFilePath, invertRoll, invertPitch);
-        histoGenerator = new HorizonHistogramGenerator(horizonStream);
+        orientationStream = new OrientationFileReader(imuLogFilePath, invertRoll, invertPitch);
+        histoGenerator = new HorizonHistogramGenerator(orientationStream);
     }
     else {
         histoGenerator = new SimpleHistogramGenerator();

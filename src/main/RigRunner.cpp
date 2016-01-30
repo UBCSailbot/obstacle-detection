@@ -2,6 +2,7 @@
 // Created by paul on 09/05/15 (dd/mm/yy, of course)
 //
 
+#include <geometry/HorizonFactory.h>
 #include "RigRunner.h"
 
 #define APP_NAME "rig_record"
@@ -28,8 +29,9 @@ void record(char* output_dir, bool verbose) {
     Lepton lepton;
     ParallelIMU imu;
     SimpleRescaler rescaler;
+    HorizonFactory horizonFactory(LeptonCameraSpecifications);
 
-    Image16bit frame(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX);
+    Image16bit frame(LeptonCameraSpecifications.pixelHeight, LeptonCameraSpecifications.pixelWidth);
     Image8bit displayed(60, 80);
     int frame_counter = 1;
     char img_name[128];
@@ -69,7 +71,7 @@ void record(char* output_dir, bool verbose) {
             // save the current frame as a .png file
             sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter/3);
             imwrite(img_name, frame);
-            imuLog << imu.toDataString();
+            imuLog << imu.getOrientation().toDataString();
 
 //            Image8bit displayed(frame, false);
 //            cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
@@ -79,7 +81,8 @@ void record(char* output_dir, bool verbose) {
 
             // convert to 8 bit and display
             rescaler.scale16bitTo8bit(frame, displayed);
-            DisplayUtils::displayFrameWithHorizonLine(displayed, imu.getRollRad(), imu.getPitchRad(), *display);
+            Horizon horizon = horizonFactory.makeHorizon(imu.getOrientation());
+            DisplayUtils::displayFrameWithHorizonLine(displayed, horizon, *display);
         }
 
         frame_counter ++;

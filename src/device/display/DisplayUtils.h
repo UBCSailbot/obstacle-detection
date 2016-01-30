@@ -19,8 +19,7 @@ public:
 
     static Display* connectToDisplay();
 
-    static void displayFrameWithHorizonLine(const Image8bit &frame,
-                                                          double roll, double pitch, Display &d);
+    static void displayFrameWithHorizonLine(const Image8bit &frame, const Horizon &h, Display &d);
 
     static void rescaleAndDisplay(Image16bit img, Rescaler* r, Display &d);
 

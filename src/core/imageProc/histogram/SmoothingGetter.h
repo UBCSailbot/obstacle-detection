@@ -20,7 +20,14 @@ public:
 
     int getCentralTendency(ImageHistogram histogram) {
         int centralValue = _decoratedGetter->getCentralTendency(histogram);
-        return _bufferedSmoother->calculateSmoothedValue(centralValue);
+        int smoothedCentralValue = _bufferedSmoother->calculateSmoothedValue(centralValue, histogram.getNumPixels());
+
+        if (smoothedCentralValue == 0) {
+            return centralValue;
+        }
+        else {
+            return smoothedCentralValue;
+        }
     }
 
 private:
