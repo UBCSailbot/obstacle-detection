@@ -9,6 +9,8 @@
 #include <QtCore/qstring.h>
 #include <QtCore/qdir.h>
 #include <opencv2/highgui/highgui.hpp>
+#include <io/OrientationFileReader.h>
+#include <geometry/HorizonFactory.h>
 
 #include "imageProc/rescale/Rescaling.h"
 #include "imageProc/rescale/SimpleRescaler.h"
@@ -21,7 +23,6 @@
 #include "imageProc/liveFeed/base64EncDec.h"
 
 #include "io/ImageReader.h"
-#include "io/HorizonFileReader.h"
 #include "io/Paths.h"
 
 using namespace std;
@@ -165,7 +166,8 @@ void rescale(const string &inputFrameDir, const string &outputFrameDir, const st
 
     Rescaler *rescaler = buildRescaler(imuLogFilePath, typeOfRescaling, smoothingWindow, invertRoll, invertPitch);
 
-    HorizonFileReader horizonStream2(imuLogFilePath, invertRoll, invertPitch);
+    OrientationFileReader orientationStream2(imuLogFilePath, invertRoll, invertPitch);
+    HorizonFactory horizonFactory(LeptonCameraSpecifications);
     SimpleRescaler exampleRescaler;
 
     for (int i=0; i < frameList.size(); i++) {
@@ -199,7 +201,7 @@ void rescale(const string &inputFrameDir, const string &outputFrameDir, const st
 
         if (paintHorizon) {
             try{
-                Horizon h = horizonStream2.next();
+                Horizon h = horizonFactory.makeHorizon(orientationStream2.next());
                 line(outputFrame, h.getStartPoint(), h.getEndPoint(), Scalar(0,0,255), 1);
             }
             catch (NoSuchElementException e) {
@@ -251,12 +253,12 @@ Rescaler *buildRescaler(const string &imuLogFilePath, const RescalingType &typeO
     bool horizon = imuLogFilePath != "NULL";
 
     HistogramGenerator* histoGenerator;
-    ObjectStream<Horizon>* horizonStream;
+    ObjectStream<Orientation>* orientationStream;
     CentralTendencyGetter* ctg;
 
     if (horizon) {
-        horizonStream = new HorizonFileReader(imuLogFilePath, invertRoll, invertPitch);
-        histoGenerator = new HorizonHistogramGenerator(horizonStream);
+        orientationStream = new OrientationFileReader(imuLogFilePath, invertRoll, invertPitch);
+        histoGenerator = new HorizonHistogramGenerator(orientationStream);
     }
     else {
         histoGenerator = new SimpleHistogramGenerator();

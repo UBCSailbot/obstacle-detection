@@ -8,7 +8,7 @@
 #include <gtest/gtest.h>
 
 #include "Resources.h"
-#include "io/HorizonFileReader.h"
+#include "io/OrientationFileReader.h"
 
 class HorizonFileReaderTest : public ::testing::Test {
 

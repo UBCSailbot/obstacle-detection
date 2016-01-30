@@ -5,8 +5,24 @@
 #ifndef OBSTACLE_AVOIDANCE_SIMPLEDANGERZONEENCODERTEST_H
 #define OBSTACLE_AVOIDANCE_SIMPLEDANGERZONEENCODERTEST_H
 
+#include <gtest/gtest.h>
+#include <opencv2/core/core.hpp>
+#include <geometry/Horizon.h>
+#include <geometry/HorizonFactory.h>
 
-class SimpleDangerZoneEncoderTest {
+#include "features/ObstaclePositionFrame.h"
+#include "detect/DangerZone.h"
+#include "detect/DangerZoneEncoder.h"
+#include "detect/SimpleDangerZoneEncoder.h"
+
+class SimpleDangerZoneEncoderTest : public testing::Test {
+
+public:
+    SimpleDangerZoneEncoder encoder = SimpleDangerZoneEncoder(LeptonCameraSpecifications);
+    Image8bit frame = Image8bit(LeptonCameraSpecifications.pixelHeight,
+                                LeptonCameraSpecifications.pixelWidth);
+    HorizonFactory factory = HorizonFactory(LeptonCameraSpecifications);
+
 
 };
 

@@ -15,15 +15,13 @@ class ParallelIMU : public IMU {
 
 public:
     ParallelIMU();
-    ~ParallelIMU();
 
-    double getRollDeg();
-    double getPitchDeg();
-    double getYawDeg();
+    Orientation getOrientation();
 
-    double getRollRad();
-    double getPitchRad();
-    double getYawRad();
+    // TODO: These are not currently being used anywhere.
+    // Move them to a configuration section.
+    static constexpr double ROLL_ADJUST = 0.09;
+    static constexpr double PITCH_ADJUST = 0.15;
 
 private:
     RTIMU *imu;

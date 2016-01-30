@@ -5,7 +5,11 @@
 #include "Line.h"
 
 Line::Line(const cv::Point2f startPoint, const cv::Point2f endPoint) :
-    _startPoint(startPoint), _endPoint(endPoint) {}
+    _startPoint(startPoint), _endPoint(endPoint)
+    {
+        _xComponent = _endPoint.x - _startPoint.x;
+        _yComponent = _endPoint.y - _startPoint.y;
+    }
 
 cv::Point2f Line::getStartPoint() const {
     return _startPoint;
@@ -21,4 +25,22 @@ bool Line::operator==(const Line &other) const {
             (_startPoint.y - other._startPoint.y <= _startPoint.y / EPSILON_FACTOR) &&
             (_endPoint.x - other._endPoint.x <= _endPoint.x / EPSILON_FACTOR) &&
             (_endPoint.y - other._endPoint.y <= _endPoint.y / EPSILON_FACTOR);
+}
+
+double Line::calculateMagnitude() const {
+    return pow( pow(_xComponent, 2) + pow(_yComponent, 2), 0.5);
+}
+
+double Line::calculateSlope() const {
+    if (_xComponent == 0) {
+        return std::numeric_limits<double>::max();
+    }
+    return _yComponent / _xComponent;
+}
+
+double Line::projectPointOnto(const cv::Point2f pointOfInterest) const {
+    double vectorx = pointOfInterest.x - _startPoint.x;
+    double vectory = pointOfInterest.y - _startPoint.y;
+
+    return scalarProjectAontoB(vectorx, vectory, _xComponent, _yComponent);
 }

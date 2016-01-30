@@ -2,6 +2,7 @@
 // Created by paul on 10/05/15.
 //
 
+#include <RTIMULibDefs.h>
 #include "ParallelIMU.h"
 
 ParallelIMU::ParallelIMU() {
@@ -35,22 +36,6 @@ ParallelIMU::ParallelIMU() {
 
 }
 
-ParallelIMU::~ParallelIMU() {
-
-}
-
-double ParallelIMU::getRollDeg() {
-    return imuData.fusionPose.x() * RTMATH_RAD_TO_DEGREE;
-}
-
-double ParallelIMU::getPitchDeg() {
-    return imuData.fusionPose.y() * RTMATH_RAD_TO_DEGREE;;
-}
-
-double ParallelIMU::getYawDeg() {
-    return imuData.fusionPose.z() * RTMATH_RAD_TO_DEGREE;
-}
-
 void ParallelIMU::startCapture() {
     //  now just process data
     while (1) {
@@ -63,14 +48,8 @@ void ParallelIMU::startCapture() {
     }
 }
 
-double ParallelIMU::getRollRad() {
-    return imuData.fusionPose.x();
-}
-
-double ParallelIMU::getPitchRad() {
-    return imuData.fusionPose.y();
-}
-
-double ParallelIMU::getYawRad() {
-    return imuData.fusionPose.z();
+Orientation ParallelIMU::getOrientation() {
+    return Orientation(imuData.fusionPose.x(),
+                       imuData.fusionPose.y(),
+                       imuData.fusionPose.z());
 }

@@ -9,6 +9,8 @@
 #include <utility>
 #include <opencv2/core/core.hpp>
 #include <geometry/Horizon.h>
+#include <features/HorizonImage.h>
+#include "detect/Obstacle.h"
 
 /**
  * When an obstacle is detected in a frame, the most useful pieces of information
@@ -17,46 +19,45 @@
  *  triangular region within which the obstacle might be present in the real world,
  *  relative to the boat's current heading.
  */
-class ObstaclePositionFrame {
+class ObstaclePositionFrame : public HorizonImage {
 
 public:
-    ObstaclePositionFrame(const cv::Mat &frame, int xFOV, int yFOV,
-                          const std::vector<std::pair<double, double>> &obstacleEdges) :
-            _rows(frame.rows), _cols(frame.cols), _xFOV(xFOV), _yFOV(yFOV),
-            _obstacleEdges(obstacleEdges)
+    ObstaclePositionFrame(const cv::Mat &frame, const Horizon &horizon,
+                          const ICameraSpecifications &cameraSpec,
+                          const std::vector<Obstacle> &obstacles) :
+            HorizonImage(frame, horizon),
+            _obstacles(obstacles),
+            _cameraSpec(cameraSpec)
     {    }
 
     const bool containsObstacle() {
-        return !_obstacleEdges.empty();
+        return !_obstacles.empty();
     }
 
-    const std::vector<std::pair<double, double>> getObstacleEdges() const {
-        return _obstacleEdges;
+    const std::vector<Obstacle> getObstacles() const {
+        return _obstacles;
     }
 
-    const int getRows() const {
-        return _rows;
+    const int getFrameHeight() const {
+        return _image.rows;
     }
 
-    const int getCols() const {
-        return _cols;
+    const int getFrameWidth() const {
+        return _image.cols;
     }
 
     const double getXFOV() const {
-        return _xFOV;
+        return _cameraSpec.FOVDegreesHorizontal;
     }
 
     const double getYFOV() const {
-        return _yFOV;
+        return _cameraSpec.FOVDegreesVertical;
     }
 
 private:
     //with reference to the horizon
-    std::vector<std::pair<double, double>> _obstacleEdges;
-    int _rows;
-    int _cols;
-    double _xFOV;
-    double _yFOV;
+    std::vector<Obstacle> _obstacles;
+    ICameraSpecifications _cameraSpec;
 
 };
 

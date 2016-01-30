@@ -1,28 +1,55 @@
 //
 // Created by Aditi Chakravarthi on 15-08-09.
 //
-#include <gtest/gtest.h>
-#include <opencv2/core/core.hpp>
-#include <geometry/Horizon.h>
 
-#include "detect/ObstaclePositionFrame.h"
-#include "detect/DangerZone.h"
-#include "detect/DangerZoneEncoder.h"
-#include "detect/SimpleDangerZoneEncoder.h"
+#include "SimpleDangerZoneEncoderTest.h"
 
+TEST_F(SimpleDangerZoneEncoderTest, singleObstacle) {
 
-TEST(SimpleDangerZoneEncoderTest, doesItWork) {
+    Horizon h(cv::Point2f(0, 30), cv::Point2f(80, 30));
+    std::vector<Obstacle> obstacles;
 
-    SimpleDangerZoneEncoder encoder;
-    std::vector<std::pair<double, double>> obstacleEdges;
-    obstacleEdges.push_back(std::make_pair(20.0,40.0));
-    Horizon h (0,0);
-    cv::Mat frame = cv::Mat(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX, CV_16UC1, cv::Scalar(0));
-    ObstaclePositionFrame positions (frame, 51, 37,obstacleEdges);
-    encoder.identifyDangerZones(positions,h);
-    std::vector<DangerZone> zones = encoder.identifyDangerZones(positions,h);
+    cv::Point2f p1(20, 40);
+    cv::Point2f p2(40, 40);
+    Obstacle o({p1, p2}, h);
+    obstacles.push_back(o);
 
+    ObstaclePositionFrame positions (frame, h, LeptonCameraSpecifications, obstacles);
+    std::vector<DangerZone> zones = encoder.identifyDangerZones(positions);
 
-    EXPECT_FLOAT_EQ(zones[0].getPortAngleDeg(), -12.75);
-    EXPECT_FLOAT_EQ(zones[0].getStarboardAngleDeg(), 0.0);
+    EXPECT_FLOAT_EQ(-12.75, zones[0].getPortAngleDeg());
+    EXPECT_FLOAT_EQ(0.0, zones[0].getStarboardAngleDeg());
+}
+
+TEST_F(SimpleDangerZoneEncoderTest, passOnNoObstacles) {
+    std::vector<Obstacle> emptyObstacles;
+    ObstaclePositionFrame positions(frame, factory.makeNeutralHorizon(), LeptonCameraSpecifications,
+        emptyObstacles);
+    std::vector<DangerZone> zones = encoder.identifyDangerZones(positions);
+    EXPECT_TRUE(zones.empty());
+}
+
+TEST_F(SimpleDangerZoneEncoderTest, multipleObstacles) {
+    Horizon h(cv::Point2f(0, 40), cv::Point2f(80, 20));
+    std::vector<Obstacle> obstacles;
+
+    obstacles.push_back(Obstacle({cv::Point2f(7, 36), cv::Point2f(18,24), cv::Point2f(27,21)}, h));
+    obstacles.push_back(Obstacle({cv::Point2f(78, 11), cv::Point2f(69,25)}, h));
+    obstacles.push_back(Obstacle({cv::Point2f(37, 33), cv::Point2f(32,28), cv::Point2f(29,31)}, h));
+
+    ObstaclePositionFrame positionFrame(frame, h, LeptonCameraSpecifications, obstacles);
+    std::vector<DangerZone> zones = encoder.identifyDangerZones(positionFrame);
+
+    EXPECT_EQ(obstacles.size(), zones.size());
+    // TODO: Make this test more comprehensive
+}
+
+// TODO: Implement test
+TEST_F(SimpleDangerZoneEncoderTest, rotatedClockwise) {
+
+}
+
+// TODO: Implement test
+TEST_F(SimpleDangerZoneEncoderTest, rotatedCounterClockwise) {
+
 }
