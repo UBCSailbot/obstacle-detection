@@ -29,8 +29,6 @@ TEST(Vector2dTest, dotProduct) {
 
 /**
  * Tests for Vector2d::angleBetween
- *
- * TODO: What about negative angles?
  */
 
 TEST(Vector2dTest, angleBetweenAssociativity) {
@@ -63,6 +61,32 @@ TEST(Vector2dTest, angleBetweenOpposite) {
     Vector2d v2(2, -3);
 
     EXPECT_TRUE(Compare::areAnglesEqual(v1.angleBetween(v2), M_PI));
+}
+
+
+/**
+ * Tests for Vector2d::isParallelTo
+ */
+
+TEST(Vector2dTest, isParallelToSameDirections) {
+    Vector2d v(2, 3);
+    Vector2d u(4, 6);
+    EXPECT_TRUE(v.isParallelTo(u));
+    EXPECT_TRUE(u.isParallelTo(v));
+}
+
+TEST(Vector2dTest, isParallelToOppositeDirections) {
+    Vector2d v(2, 3);
+    Vector2d u(-4, -6);
+    EXPECT_TRUE(v.isParallelTo(u));
+    EXPECT_TRUE(u.isParallelTo(v));
+}
+
+TEST(Vector2dTest, isParallelToFail) {
+    Vector2d v(-6, 19);
+    Vector2d u(1, 1);
+    EXPECT_FALSE(v.isParallelTo(u));
+    EXPECT_FALSE(u.isParallelTo(v));
 }
 
 

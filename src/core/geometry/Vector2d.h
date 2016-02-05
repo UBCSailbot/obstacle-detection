@@ -30,9 +30,16 @@ public:
 
     /**
      * Return the angle between this vector and an input vector
-     *  in radians.
+     *  in radians, in range [0, pi]. Note that the angle
+     *  is always positive, therefore is direction-independent.
      */
     double angleBetween(const Vector2d &otherVector) const;
+
+    /**
+     * Returns whether this vector and the given vector are pointing
+     *  in the same direction.
+     */
+    bool isParallelTo(const Vector2d &otherVector) const;
 
     /**
      * Return the magnitude of the vector, calculated as the square root

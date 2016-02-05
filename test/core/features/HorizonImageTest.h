@@ -7,7 +7,10 @@
 
 
 #include <gtest/gtest.h>
+
 #include <geometry/HorizonFactory.h>
+#include <geometry/Vector2d.h>
+#include <features/HorizonImage.h>
 
 class HorizonImageTest : public ::testing::Test {
 

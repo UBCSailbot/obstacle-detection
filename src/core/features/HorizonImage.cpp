@@ -17,10 +17,9 @@ cv::Mat HorizonImage::getImage() const {
 }
 
 Line HorizonImage::calculateCenterLine() const {
-    cv::Point2d normalizedHorizon(_horizon.getEndPoint().x - _horizon.getStartPoint().x,
-                                  _horizon.getEndPoint().y - _horizon.getStartPoint().y);
+    Vector2d horizonVector = _horizon.getVector();
 
-    cv::Point2d normalToHorizon(-normalizedHorizon.y, normalizedHorizon.x);
+    Vector2d normalToHorizon(-horizonVector.y, horizonVector.x);
 
     cv::Point2f centerOfFrame(_image.cols / 2, _image.rows / 2);
     Line centerline(centerOfFrame, cv::Point2d(centerOfFrame.x + normalToHorizon.x,

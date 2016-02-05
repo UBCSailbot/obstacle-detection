@@ -84,3 +84,8 @@ bool Vector2d::isZeroVector() const {
     return Compare::areCoordinatesEqual(x, 0) &&
            Compare::areCoordinatesEqual(y, 0);
 }
+
+bool Vector2d::isParallelTo(const Vector2d &otherVector) const {
+    return Compare::areAnglesEqual(0, angleBetween(otherVector)) ||
+            Compare::areAnglesEqual(M_PI, angleBetween(otherVector));
+}

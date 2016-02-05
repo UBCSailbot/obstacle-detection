@@ -8,6 +8,8 @@
 
 #include <types/Image8bit.h>
 #include <geometry/Horizon.h>
+#include <features/HorizonImage.h>
+
 
 /**
  * A simple container class that pairs an image with an object

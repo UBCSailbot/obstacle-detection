@@ -27,8 +27,8 @@ size_t Obstacle::numVertices() const
 }
 
 bool Obstacle::ObstaclePointComparator::operator()(cv::Point2f p1, cv::Point2f p2) {
-    double p1DistanceAlongHorizon = _horizon.projectPointOnto(p1);
-    double p2DistanceAlongHorizon = _horizon.projectPointOnto(p2);
+    double p1DistanceAlongHorizon = _horizon.findPointClosestTo(p1);
+    double p2DistanceAlongHorizon = _horizon.findPointClosestTo(p2);
 
     return p1DistanceAlongHorizon < p2DistanceAlongHorizon;
 
