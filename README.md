@@ -5,11 +5,28 @@
 - opencv 2.4
 - QT 4.8
 - libusb-1.0-0-dev
+- ZeroMQ 2.2.0
 
 # How to build the system
 
+## Cloning the repository
+
 ```
   git clone https://github.com/UBCSailbot/obstacle-avoidance.git
+```
+
+## If building on Ubuntu or other Debian flavor of Linux
+
+Try running our setup script for debian systems, [debiansetup.sh](debiansetup.sh).
+
+```
+  chmod +x debiansetup.sh
+  ./debiansetup
+```
+
+## In general
+
+```
   cd obstacle-avoidance
   git submodule update --init --recursive
   mkdir bin
@@ -19,18 +36,26 @@
   make rescale
   make rigRunner
 ```
-If you are building on the Pi use:
+
+Specific CMake flags for the Pi:
+
 ```
 cmake -DDLIB_NO_GUI_SUPPORT=ON -DDLIB_LINK_WITH_SQLITE3=OFF ..
 make liveFeeder
 ```  
+
 Otherwise just
+
 ```
   make liveFeeder
 ```    
-# If you have problems
-  If you have failed with your builds and they are still failing, try deleting the CmakeCache file and try building again.
 
+# If you have problems
+ - check that you've initiated the git submodules
+ - check that all dependencies are met
+ - re-run `cmake ..`
+ - if all else fails, delete your build directory and try again.
+  
 # Contributing
 Please read the [contribution guide](CONTRIBUTING.md).
 
