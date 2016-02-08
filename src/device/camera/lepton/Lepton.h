@@ -7,6 +7,8 @@
 
 
 #include "LeptonSPI.h"
+#include "LeptonCameraDimensions.h"
+#include "io/ImageStream.h"
 #include "LeptonCameraSpecifications.h"
 #include <opencv2/core/core.hpp>
 
@@ -17,7 +19,6 @@
 #include <mutex>
 #include <thread>
 #include <condition_variable>
-
 
 #include <stdint.h>
 
@@ -39,7 +40,7 @@ static uint8_t mode;
 static uint8_t bits = 8;
 static uint32_t speed = 16000000;
 
-class Lepton {
+class Lepton : public ImageStream{
 public:
     Lepton();
     virtual ~Lepton();

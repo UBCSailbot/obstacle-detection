@@ -33,14 +33,36 @@
 #include <dlib/image_processing.h>
 #include <dlib/data_io.h>
 #include <dlib/opencv.h>
+#include <imageProc/liveFeed/FeedReader.h>
+#include "imageProc/dlib/DLibProcessor.h"
+
+class liveFeedImpl;
+
+class LiveFeed: public FeedReader { ;
+public:
+     static void hangup_handler(int signum);
+
+     void setup_sighandler();
+
+    void displayFrameWithHorizonLine(Image8bit image, double roll, double pitch, Display &d);
+
+    static void printUsage(int argc, char **argv);
+
+    DLibProcessor dLibProcessor;
+
+    ImageFeedZmq zmqfeed;
+
+public:
+
+    LiveFeed(const DLibProcessor &dLibProcessor)
+            : dLibProcessor(dLibProcessor), zmqfeed(ZmqContextSingleton::getContext()) { };
 
 
-static void hangup_handler(int signum);
-void setup_sighandler();
+    virtual ~LiveFeed() { };
 
-void record(char* output_dir, bool verbose=true );
-void displayFrameWithHorizonLine(Image8bit image, double roll, double pitch, Display &d);
+protected:
+    virtual void beforeCapture() override;
 
-void printUsage(int argc, char** argv);
-
+    virtual void onImageRead(Image8bit image) override;
+};
 #endif //OBSTACLE_AVOIDANCE_LIVEFEED_H
