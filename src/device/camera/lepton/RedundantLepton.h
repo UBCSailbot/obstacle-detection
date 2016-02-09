@@ -7,9 +7,9 @@
 
 
 #include <types/Image16bit.h>
-#include <lepton/Lepton.h>
-#include <lepton/LeptonSPI.h>
- 
+#include <camera/lepton/Lepton.h>
+#include <camera/lepton/LeptonSPI.h>
+
 class RedundantLepton {
 
 public:
@@ -23,6 +23,7 @@ private:
     uint8_t _result[PACKET_SIZE*PACKETS_PER_FRAME];
     uint16_t *_frameBuffer;
     int _spiFileDescriptor;
+    int _spiID;
 };
 
 
