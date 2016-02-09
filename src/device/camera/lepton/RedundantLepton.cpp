@@ -5,9 +5,9 @@
 #include "RedundantLepton.h"
 #include <iostream>
 
-RedundantLepton::RedundantLepton(int spiChipSelect) {
+RedundantLepton::RedundantLepton(int spiChipSelect) : _spiID(spiChipSelect) {
     try {
-        SpiOpenPort(spiChipSelect);
+        SpiOpenPort(_spiID);
         std::cout << "SpiOpenPort succeeded!" << std::endl;
     } catch(const std::exception& e) {
         std::cout << e.what() << std::endl;
@@ -71,7 +71,7 @@ RedundantLepton::RedundantLepton(int spiChipSelect) {
 }
 
 RedundantLepton::~RedundantLepton() {
-    SpiClosePort(0);
+    SpiClosePort(_spiID);
 }
 
 void RedundantLepton::getFrame(Image16bit &frame) {
@@ -86,9 +86,9 @@ void RedundantLepton::getFrame(Image16bit &frame) {
             resets += 1;
             usleep(1000);
             if (resets == 750) {
-                SpiClosePort(0);
+                SpiClosePort(_spiID);
                 usleep(750000);
-                SpiOpenPort(0);
+                SpiOpenPort(_spiID);
             }
         }
     }
