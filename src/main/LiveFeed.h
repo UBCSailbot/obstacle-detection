@@ -58,7 +58,7 @@ protected:
 
     std::ofstream imuLog;
 
-    std::string image_name;
+    char* image_name;
 
     ParallelIMU imu;
 

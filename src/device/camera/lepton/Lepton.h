@@ -7,7 +7,6 @@
 
 
 #include "LeptonSPI.h"
-#include "LeptonCameraDimensions.h"
 #include "io/ImageStream.h"
 #include "LeptonCameraSpecifications.h"
 #include <opencv2/core/core.hpp>

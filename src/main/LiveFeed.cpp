@@ -19,8 +19,7 @@ vector<uchar> imgToBuff(Image8bit img) {
 }
 
 LiveFeed::LiveFeed(const DLibProcessor &dLibProcessor, char *output_dir) : dLibProcessor(dLibProcessor),
-                                                                           zmqfeed(ZmqContextSingleton::getContext()),
-                                                                           imuLog(imuLog), output_dir() {
+                                                                           zmqfeed(ZmqContextSingleton::getContext()) {
 
 }
 
@@ -90,7 +89,6 @@ int main(int argc, char **argv) {
             sleep(5);
         }
     }
-
-
+    
     return 0;
 }

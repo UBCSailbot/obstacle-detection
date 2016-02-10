@@ -5,10 +5,10 @@
 #include <io/ImageStream.h>
 #include <imu/ParallelIMU.h>
 #include <imageProc/rescale/SimpleRescaler.h>
-#include <lepton/LeptonCameraDimensions.h>
 #include <fstream>
 #include <iostream>
 #include <io/JSONSerializer.h>
+#include <camera/lepton/LeptonCameraSpecifications.h>
 #include "FeedReader.h"
 #include "base64EncDec.h"
 
