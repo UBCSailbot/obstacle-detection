@@ -14,9 +14,21 @@
 #include "Paths.h"
 #include "ImageStream.h"
 
+/**
+ * "Streams" pre-recorded images directly from the file system
+ *  to simulate a camera stream offline.
+ */
 class FileSystemImageStream : public ImageStream {
 
 public:
+
+    /**
+     * PARAM: imageDirectory - a string describing the full path to a directory
+     *  containing the image files from which to build the stream.
+     * PARAM: imageFileFilter - a string expression indicating which files to
+     *  use from the given directory. E.g. "*.png" matches all files whose names
+     *  end with the .png file extension. "*" matches all files.
+     */
     FileSystemImageStream(std::string imageDirectory, std::string imageFileFilter);
 
     Image16bit nextImage();
