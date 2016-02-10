@@ -4,7 +4,11 @@
 
 #include "Lepton.h"
 
-Lepton::Lepton() {
+Lepton::Lepton() : Lepton(0) {
+
+}
+
+Lepton::Lepton(int spi_cs) {
     SpiOpenPort(0);
 
     int ret = 0;

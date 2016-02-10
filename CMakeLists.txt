@@ -82,3 +82,7 @@ target_link_libraries(displayInitTest obstdetect_full test_device)
 # Lepton testing
 add_executable(leptonShutterTest test/main/LeptonShutterTest.cpp)
 target_link_libraries(leptonShutterTest obstdetect_full test_device)
+
+# Testing getting video from two leptons simultaneously over SPI
+add_executable(twoLeptonsTest test/main/TwoLeptonsTest.cpp)
+target_link_libraries(twoLeptonsTest obstdetect_full test_device)

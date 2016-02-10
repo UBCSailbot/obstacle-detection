@@ -4,12 +4,15 @@
 
 #include <iostream>
 #include <gtest/gtest.h>
+#include <Resources.h>
 #include "geometry/Horizon.h"
 #include "features/SunImage.h"
 #include "camera/lepton/LeptonCameraSpecifications.h"
 
 TEST(SunImageTest, FindSunPositive) {
-    cv::Mat frame = cv::imread("resources/img/freighterAndSun01.png", CV_LOAD_IMAGE_UNCHANGED);
+    cv::Mat frame = cv::imread(
+            Resources::getImagePath("16bit/freighterAndSun01.png"),
+            CV_LOAD_IMAGE_UNCHANGED);
     Horizon h = Horizon(cv::Point2f (0, 50), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
     SunImage sunImage = SunImage(h, frame, 9000, 0, 1);
 
@@ -17,7 +20,9 @@ TEST(SunImageTest, FindSunPositive) {
 }
 
 TEST(SunImageTest, FindSunNegative) {
-    cv::Mat frame = cv::imread("resources/img/fishingBoat01.png", CV_LOAD_IMAGE_UNCHANGED);
+    cv::Mat frame = cv::imread(
+            Resources::getImagePath("16bit/fishingBoat01.png"),
+            CV_LOAD_IMAGE_UNCHANGED);
     Horizon h = Horizon(cv::Point2f (0, 50), cv::Point2f (VIEWPORT_WIDTH_PIX - 1, 50));
     SunImage sunImage = SunImage(h, frame, 9000, 0, 1);
 
