@@ -11,11 +11,12 @@ std::string Paths::join(const std::string &path1, const std::string path2) {
     return QDir( qPath1 ).filePath( qPath2 ).toStdString();
 }
 
-std::vector<std::string> Paths::generateListOfFiles(const std::string &inputFrameDir, const std::string &fileNameFilter) {
+std::vector<std::string> Paths::generateListOfFiles(const std::string &inputDir,
+                                                    const std::string &fileNameFilter) {
     QString imageFileExt = QString::fromStdString(fileNameFilter);
     QStringList nameFilters( imageFileExt );
 
-    QDir inputFrameQDir = pathStringToQDir(inputFrameDir);
+    QDir inputFrameQDir = pathStringToQDir(inputDir);
     QStringList frameQList = inputFrameQDir.entryList(nameFilters, QDir::Files);
 
     std::vector<std::string> frameList;

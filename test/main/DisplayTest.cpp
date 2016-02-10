@@ -29,7 +29,7 @@ int main() {
 
     Display* d = DisplayUtils::connectToDisplay();
 
-    Mat img = imread(Resources::getImagePath("fishingBoat01.png"), CV_LOAD_IMAGE_UNCHANGED);
+    Mat img = imread(Resources::getImagePath("16bit/fishingBoat01.png"), CV_LOAD_IMAGE_UNCHANGED);
     Image16bit img16bit(img, false);
 
     Image8bit img8bit(img.rows, img.cols);

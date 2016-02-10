@@ -8,7 +8,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include <display/DisplayUtils.h>
-#include <lepton/Lepton.h>
+#include <camera/lepton/Lepton.h>
 
 using namespace std;
 using namespace cv;
