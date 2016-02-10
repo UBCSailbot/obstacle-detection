@@ -5,6 +5,7 @@
 
 #define APP_NAME "live_feed"
 
+
 vector<uchar> imgToBuff(Image8bit img) {
     vector<uchar> buff;//buffer for coding
     vector<int> param = vector<int>(2);
@@ -17,14 +18,29 @@ vector<uchar> imgToBuff(Image8bit img) {
     return buff;
 }
 
+LiveFeed::LiveFeed(const DLibProcessor &dLibProcessor, char *output_dir) : dLibProcessor(dLibProcessor),
+                                                                           zmqfeed(ZmqContextSingleton::getContext()),
+                                                                           imuLog(imuLog), output_dir() {
+
+}
+
 void LiveFeed::beforeCapture() {
 
     std::cout << "Starting Capture" << endl;
     zmqfeed.init();
+    char imuFileName[128];
+    sprintf(imuFileName, "%s/imuLog.txt", this->output_dir);
+    imuLog.open(imuFileName);
 
+    std::cout << "Starting Capture" << endl;
 }
 
 void LiveFeed::onImageRead(Image8bit image) {
+    frame_counter++;
+       sprintf(image_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
+                imwrite(image_name, image);
+                imuLog << imu.getOrientation().toDataString();
+
     vector<uchar> buff = imgToBuff(image);
     string encoded = base64_encode(buff.data(), buff.size());
     std::vector<dlib::rectangle> dets = dLibProcessor.getBoxes(image);
@@ -51,30 +67,30 @@ int main(int argc, char **argv) {
 
     DLibProcessor dLibProcessor(detectors);
 
-    LiveFeed liveFeed(dLibProcessor);
+    LiveFeed liveFeed(dLibProcessor, argv[1]);
     ImageStream *stream = new Lepton;
     liveFeed.setStream(stream);
+    while (1) {
+        try {
+            if (argc < 3) {
+                liveFeed.printUsage(argc, argv);
+                return 1;
+            }
+            char *arg2 = argv[2];
+            if (!strcmp(arg2, "--silent")) {
+                liveFeed.record();
+            }
+            else {
+                liveFeed.record();
+            }
 
-    try {
-        if (argc < 3) {
-            liveFeed.printUsage(argc, argv);
-            return 1;
+        } catch (LeptonSPIOpenException &e) {
+            std::cout << e.what() << endl;
+            // wait 5 seconds and try to record
+            sleep(5);
         }
-        char *output_dir = argv[1];
-        char *arg2 = argv[2];
-        if (!strcmp(arg2, "--silent")) {
-            liveFeed.record();
-        }
-        else {
-            liveFeed.record();
-        }
-
-    } catch (LeptonSPIOpenException &e) {
-        std::cout << e.what() << endl;
-        // wait 5 seconds and try to record
-        sleep(5);
     }
 
 
-return 0;
+    return 0;
 }

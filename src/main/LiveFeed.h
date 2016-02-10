@@ -40,27 +40,32 @@ class liveFeedImpl;
 
 class LiveFeed: public FeedReader { ;
 public:
-     static void hangup_handler(int signum);
+    LiveFeed(const DLibProcessor &dLibProcessor,char* output_dir);
 
-     void setup_sighandler();
+    static void printUsage(int argc, char **argv);
+protected:
+
+    static void hangup_handler(int signum);
+
+    void setup_sighandler();
 
     void displayFrameWithHorizonLine(Image8bit image, double roll, double pitch, Display &d);
 
-    static void printUsage(int argc, char **argv);
 
     DLibProcessor dLibProcessor;
 
     ImageFeedZmq zmqfeed;
 
-public:
+    std::ofstream imuLog;
 
-    LiveFeed(const DLibProcessor &dLibProcessor)
-            : dLibProcessor(dLibProcessor), zmqfeed(ZmqContextSingleton::getContext()) { };
+    std::string image_name;
 
+    ParallelIMU imu;
 
-    virtual ~LiveFeed() { };
+    char* output_dir;
 
-protected:
+    int frame_counter = 0;
+
     virtual void beforeCapture() override;
 
     virtual void onImageRead(Image8bit image) override;
