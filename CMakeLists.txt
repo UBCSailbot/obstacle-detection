@@ -92,3 +92,7 @@ target_link_libraries(twoLeptonsTest obstdetect_full test_device)
 # FileSystemImageStreamTest - streaming images from file system
 add_executable(fsStreamTest test/main/FileSystemImageStreamTest.cpp)
 target_link_libraries(fsStreamTest obstdetect_core test_core)
+
+# ImageServerTest - streaming images from file system
+add_executable(imageServerTest test/main/ImageServerTest.cpp)
+target_link_libraries(imageServerTest obstdetect_core test_core)
