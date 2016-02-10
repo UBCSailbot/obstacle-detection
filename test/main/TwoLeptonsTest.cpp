@@ -5,7 +5,7 @@
 #include <imageProc/rescale/SimpleRescaler.h>
 #include "display/Display.h"
 #include <display/DisplayUtils.h>
-#include <lepton/RedundantLepton.h>
+#include <camera/lepton/RedundantLepton.h>
 #include "types/Image8bit.h"
 #include "types/Image16bit.h"
 #include "imageProc/rescale/SimpleRescaler.h"
