@@ -37,13 +37,13 @@ void LiveFeed::beforeCapture() {
 
 void LiveFeed::onImageRead(Image8bit image) {
     frame_counter++;
-       sprintf(image_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
-                imwrite(image_name, image);
-                imuLog << imu.getOrientation().toDataString();
+    sprintf(image_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
+    imwrite(image_name, image);
+    imuLog << imu.getOrientation().toDataString();
 
     vector<uchar> buff = imgToBuff(image);
     string encoded = base64_encode(buff.data(), buff.size());
-    std::vector<dlib::rectangle> dets = dLibProcessor.getBoxes(image);
+    std::vector<dlib::rectangle> dets = dLibProcessor.getObjectedDetectionBoxes(image);
 
     string JSON = makeJSON(encoded, dets);
     zmqfeed.sendFrame((const uint8_t *) JSON.c_str(), JSON.size());

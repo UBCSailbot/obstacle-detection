@@ -15,12 +15,13 @@
 class DLibProcessor {
 public:
     typedef dlib::scan_fhog_pyramid<dlib::pyramid_down<6> > image_scanner_type;
+
     DLibProcessor(std::vector<dlib::object_detector<image_scanner_type> > detectors);
-    virtual ~DLibProcessor();
-    virtual std::vector<dlib::rectangle> getBoxes(Image8bit image);
+
+    virtual std::vector<dlib::rectangle> getObjectedDetectionBoxes(Image8bit image);
+
 private:
     std::vector<dlib::object_detector<image_scanner_type> > detectors;
-
 
 
 };

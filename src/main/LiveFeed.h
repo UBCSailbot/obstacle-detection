@@ -1,4 +1,3 @@
-
 //
 // Created by paul on 2015/05/12
 //
@@ -38,11 +37,12 @@
 
 class liveFeedImpl;
 
-class LiveFeed: public FeedReader { ;
+class LiveFeed : public FeedReader { ;
 public:
-    LiveFeed(const DLibProcessor &dLibProcessor,char* output_dir);
+    LiveFeed(const DLibProcessor &dLibProcessor, char *output_dir);
 
     static void printUsage(int argc, char **argv);
+
 protected:
 
     static void hangup_handler(int signum);
@@ -62,7 +62,7 @@ protected:
 
     ParallelIMU imu;
 
-    char* output_dir;
+    char *output_dir;
 
     int frame_counter = 0;
 
@@ -70,4 +70,5 @@ protected:
 
     virtual void onImageRead(Image8bit image) override;
 };
+
 #endif //OBSTACLE_AVOIDANCE_LIVEFEED_H
