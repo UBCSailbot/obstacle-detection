@@ -13,7 +13,7 @@ protected:
     virtual void startRecording();
     virtual void stopRecording();
     virtual void beforeCapture();
-    virtual void onImageRead(Image8bit image);
+    virtual void onImageRead(Image16bit image);
 
 
 public:

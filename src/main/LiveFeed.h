@@ -68,7 +68,9 @@ protected:
 
     virtual void beforeCapture() override;
 
-    virtual void onImageRead(Image8bit image) override;
+    virtual void onImageRead(Image16bit image) override;
+
+    SimpleRescaler rescaler;
 };
 
 #endif //OBSTACLE_AVOIDANCE_LIVEFEED_H

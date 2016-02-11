@@ -16,31 +16,23 @@ void FeedReader::beforeCapture() {
 
 }
 
-void FeedReader::onImageRead(Image8bit image) {
+void FeedReader::onImageRead(Image16bit image) {
 
 }
 
 void FeedReader::record() {
     ParallelIMU imu;
-    SimpleRescaler rescaler;
-
     Image16bit frame(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX);
-    Image8bit displayed(60, 80);
     int frame_counter = 1;
-    char img_name[128];
-    char imu_file_name[128];
 
     beforeCapture();
 
     while (this->shouldRecord) {
         // read only every 3rd frame ( the frames are triplets)
         if ((frame_counter % 3) == 0) {
-            this->stream->getFrame(frame);
+            frame = this->stream->nextImage();
 
-            // convert to 8 bit and display
-            rescaler.scale16bitTo8bit(frame, displayed);
-
-            onImageRead(displayed);
+            onImageRead(frame);
 
         }
 
@@ -50,8 +42,8 @@ void FeedReader::record() {
 }
 
 void FeedReader::startRecording() {
-shouldRecord = true;
-   record();
+    shouldRecord = true;
+    record();
 }
 
 void FeedReader::stopRecording() {
