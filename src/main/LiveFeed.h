@@ -39,7 +39,7 @@ class liveFeedImpl;
 
 class LiveFeed : public FeedReader { ;
 public:
-    LiveFeed(const DLibProcessor &dLibProcessor, char *output_dir);
+    LiveFeed(const DLibProcessor &dLibProcessor, char *output_dir,bool rumImu);
 
     static void printUsage(int argc, char **argv);
 
@@ -60,7 +60,7 @@ protected:
 
     char* image_name;
 
-    ParallelIMU imu;
+    ParallelIMU* imu;
 
     char *output_dir;
 
@@ -71,6 +71,8 @@ protected:
     virtual void onImageRead(Image16bit image) override;
 
     SimpleRescaler rescaler;
+
+    bool runImu;
 };
 
 #endif //OBSTACLE_AVOIDANCE_LIVEFEED_H

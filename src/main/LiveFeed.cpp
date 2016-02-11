@@ -20,8 +20,9 @@ vector<uchar> imgToBuff(Image8bit img) {
     return buff;
 }
 
-LiveFeed::LiveFeed(const DLibProcessor &dLibProcessor, char *output_dir) : dLibProcessor(dLibProcessor),
-                                                                           zmqfeed(ZmqContextSingleton::getContext()) {
+LiveFeed::LiveFeed(const DLibProcessor &dLibProcessor, char *output_dir, bool runImu) : dLibProcessor(dLibProcessor),
+                                                                                        zmqfeed(ZmqContextSingleton::getContext()),
+                                                                                        runImu(runImu) {
 
 }
 
@@ -29,9 +30,12 @@ void LiveFeed::beforeCapture() {
 
     std::cout << "Starting Capture" << endl;
     zmqfeed.init();
-    char imuFileName[128];
-    sprintf(imuFileName, "%s/imuLog.txt", this->output_dir);
-    imuLog.open(imuFileName);
+    if (runImu) {
+        imu = new ParallelIMU;
+        char imuFileName[128];
+        sprintf(imuFileName, "%s/imuLog.txt", this->output_dir);
+        imuLog.open(imuFileName);
+    }
 
     std::cout << "Starting Capture" << endl;
 }
@@ -46,8 +50,9 @@ void LiveFeed::onImageRead(Image16bit image) {
 
     sprintf(image_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
     imwrite(image_name, image);
-    imuLog << imu.getOrientation().toDataString();
-
+    if (runImu) {
+        imuLog << imu->getOrientation().toDataString();
+    }
     vector<uchar> buff = imgToBuff(frameRescaled);
     string encoded = base64_encode(buff.data(), buff.size());
     std::vector<dlib::rectangle> dets = dLibProcessor.getObjectedDetectionBoxes(frameRescaled);
@@ -74,9 +79,9 @@ int main(int argc, char **argv) {
 
     DLibProcessor dLibProcessor(detectors);
 
-    LiveFeed liveFeed(dLibProcessor, argv[1]);
+    LiveFeed liveFeed(dLibProcessor, argv[1], false);
 
-    ImageStream *stream = new FileSystemImageStream("/images", "png");
+    ImageStream *stream = new FileSystemImageStream("images", "*.png");
     liveFeed.setStream(stream);
     while (1) {
         try {
@@ -84,16 +89,11 @@ int main(int argc, char **argv) {
                 liveFeed.printUsage(argc, argv);
                 return 1;
             }
-            char *arg2 = argv[2];
-            if (!strcmp(arg2, "--silent")) {
-                liveFeed.record();
-            }
             else {
                 liveFeed.record();
             }
-
-        } catch (LeptonSPIOpenException &e) {
-            std::cout << e.what() << endl;
+        } catch (Exception &e) {
+            std::cout << e.description() << endl;
             // wait 5 seconds and try to record
             sleep(5);
         }
