@@ -8,6 +8,8 @@
 
 class FeedReader {
 public:
+    FeedReader(bool shouldRecord, ImageStream *stream) : shouldRecord(shouldRecord), stream(stream) { }
+
     virtual void record();
 protected:
     virtual void startRecording();
@@ -28,7 +30,5 @@ private:
     bool shouldRecord;
 
 };
-
-
 
 #endif //OBSTACLE_DETECTION_LIVEFEEDERRECORD_H

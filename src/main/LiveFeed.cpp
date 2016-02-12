@@ -8,6 +8,7 @@
 #define APP_NAME "live_feed"
 
 
+
 vector<uchar> imgToBuff(Image8bit img) {
     vector<uchar> buff;//buffer for coding
     vector<int> param = vector<int>(2);
@@ -20,9 +21,9 @@ vector<uchar> imgToBuff(Image8bit img) {
     return buff;
 }
 
-LiveFeed::LiveFeed(const DLibProcessor &dLibProcessor, char *output_dir, bool runImu) : dLibProcessor(dLibProcessor),
-                                                                                        zmqfeed(ZmqContextSingleton::getContext()),
-                                                                                        runImu(runImu) {
+LiveFeed::LiveFeed(bool shouldRecord, ImageStream *stream, const DLibProcessor &dLibProcessor, char *output_dir,
+                   bool runImu) : FeedReader(shouldRecord, stream), dLibProcessor(dLibProcessor),
+                                  zmqfeed(ZmqContextSingleton::getContext()), runImu(runImu) ,output_dir(output_dir){
 
 }
 
@@ -36,29 +37,29 @@ void LiveFeed::beforeCapture() {
         sprintf(imuFileName, "%s/imuLog.txt", this->output_dir);
         imuLog.open(imuFileName);
     }
-
-    std::cout << "Starting Capture" << endl;
 }
 
 void LiveFeed::onImageRead(Image16bit image) {
     frame_counter++;
+    char image_name[128];
 
     Image8bit frameRescaled(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX);
 
-    // convert to 8 bit and display
+    // convert to 8 bit
     rescaler.scale16bitTo8bit(image, frameRescaled);
 
-    sprintf(image_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
+    sprintf(image_name, "%s/img_%06d.png", output_dir, frame_counter);
     imwrite(image_name, image);
     if (runImu) {
         imuLog << imu->getOrientation().toDataString();
     }
+
     vector<uchar> buff = imgToBuff(frameRescaled);
     string encoded = base64_encode(buff.data(), buff.size());
     std::vector<dlib::rectangle> dets = dLibProcessor.getObjectedDetectionBoxes(frameRescaled);
 
-    string JSON = makeJSON(encoded, dets);
-    zmqfeed.sendFrame((const uint8_t *) JSON.c_str(), JSON.size());
+    string* JSON =  new string(makeJSON(encoded, dets));
+    zmqfeed.sendFrame((const uint8_t *) JSON->c_str(), JSON->size());
 }
 
 void LiveFeed::printUsage(int argc, char **argv) {
@@ -79,10 +80,8 @@ int main(int argc, char **argv) {
 
     DLibProcessor dLibProcessor(detectors);
 
-    LiveFeed liveFeed(dLibProcessor, argv[1], false);
+    LiveFeed liveFeed(true,new FileSystemImageStream("images", "*.png"), dLibProcessor, argv[1], false);
 
-    ImageStream *stream = new FileSystemImageStream("images", "*.png");
-    liveFeed.setStream(stream);
     while (1) {
         try {
             if (argc < 3) {

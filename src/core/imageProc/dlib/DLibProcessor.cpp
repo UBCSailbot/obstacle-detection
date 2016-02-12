@@ -13,7 +13,7 @@ DLibProcessor::DLibProcessor(std::vector<dlib::object_detector<image_scanner_typ
 
 std::vector<dlib::rectangle> DLibProcessor::getObjectedDetectionBoxes(Image8bit image) {
 
-    dlib::cv_image<dlib::hsi_pixel> img(image);
+    dlib::cv_image<unsigned char> img(image);
 
     std::vector<dlib::rectangle> dets = evaluate_detectors(detectors, img);
 

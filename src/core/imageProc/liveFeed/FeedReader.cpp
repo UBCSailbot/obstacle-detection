@@ -20,9 +20,7 @@ void FeedReader::onImageRead(Image16bit image) {
 
 }
 
-void FeedReader::record() {
-    ParallelIMU imu;
-    Image16bit frame(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX);
+void FeedReader::record() { Image16bit frame(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX);
     int frame_counter = 1;
 
     beforeCapture();

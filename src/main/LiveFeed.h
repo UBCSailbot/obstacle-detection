@@ -39,7 +39,8 @@ class liveFeedImpl;
 
 class LiveFeed : public FeedReader { ;
 public:
-    LiveFeed(const DLibProcessor &dLibProcessor, char *output_dir,bool rumImu);
+    LiveFeed(bool shouldRecord, ImageStream *stream, const DLibProcessor &dLibProcessor, char *output_dir,
+                 bool rumImu);
 
     static void printUsage(int argc, char **argv);
 
@@ -57,8 +58,6 @@ protected:
     ImageFeedZmq zmqfeed;
 
     std::ofstream imuLog;
-
-    char* image_name;
 
     ParallelIMU* imu;
 
