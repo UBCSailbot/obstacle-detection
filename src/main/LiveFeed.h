@@ -40,7 +40,7 @@ class liveFeedImpl;
 
 class LiveFeed : public FeedReader { ;
 public:
-    LiveFeed(bool shouldRecord, ImageStream *stream, const DLibProcessor &dLibProcessor, char *output_dir,
+    LiveFeed(ImageStream *stream, const DLibProcessor &dLibProcessor, char *output_dir,
              bool rumImu);
 
     static void printUsage(int argc, char **argv);

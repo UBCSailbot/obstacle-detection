@@ -18,8 +18,8 @@ vector<uchar> imgToBuff(Image8bit img) {
     return buff;
 }
 
-LiveFeed::LiveFeed(bool shouldRecord, ImageStream *stream, const DLibProcessor &dLibProcessor, char *output_dir,
-                   bool runImu) : FeedReader(shouldRecord, stream), dLibProcessor(dLibProcessor),
+LiveFeed::LiveFeed(ImageStream *stream, const DLibProcessor &dLibProcessor, char *output_dir,
+                   bool runImu) : FeedReader(true, stream), dLibProcessor(dLibProcessor),
                                   zmqfeed(ZmqContextSingleton::getContext()), runImu(runImu), output_dir(output_dir) {
 
 }
@@ -41,12 +41,11 @@ void LiveFeed::onImageRead(Image16bit image) {
     char image_name[128];
 
     Image8bit frameRescaled(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX);
-
-    // convert to 8 bit
     rescaler.scale16bitTo8bit(image, frameRescaled);
 
     sprintf(image_name, "%s/img_%06d.png", output_dir, frame_counter);
     imwrite(image_name, image);
+
     if (runImu) {
         imuLog << imu->getOrientation().toDataString();
     }
@@ -54,13 +53,14 @@ void LiveFeed::onImageRead(Image16bit image) {
     vector<uchar> buff = imgToBuff(frameRescaled);
     string encoded = base64_encode(buff.data(), buff.size());
     std::vector<dlib::rectangle> dets = dLibProcessor.getObjectedDetectionBoxes(frameRescaled);
-
     string *JSON = new string(makeJSON(encoded, dets));
     zmqfeed.sendFrame((const uint8_t *) JSON->c_str(), JSON->size());
 }
 
 void LiveFeed::printUsage(int argc, char **argv) {
-    std::cout << "Usage: live Feed <output_dir> -silent/verbose model.svm ..." << endl;
+    std::cout << "Usage:\n"
+            "liveFeeder file <input dir> <output dir> dlib_model.svm ...\n"
+            "liveFeeder lepton imu_enabled/imu_disabled <output dir> dlib_model.svm ..." << endl;
     std::cout << "You entered: " << endl;
     for (int i = 0; i < argc; i++)
         std::cout << argv[i];
@@ -68,31 +68,28 @@ void LiveFeed::printUsage(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
+    if (argc < 3) {
+        LiveFeed::printUsage(argc, argv);
+        return 1;
+    }
     dlib::object_detector<DLibProcessor::image_scanner_type> detector;
     std::vector<dlib::object_detector<DLibProcessor::image_scanner_type> > detectors;
-    for (int i = 3; i < argc; i++) {
+    for (int i = 4; i < argc; i++) {
         dlib::deserialize(argv[i]) >> detector;
         detectors.push_back(detector);
     }
-
     DLibProcessor dLibProcessor(detectors);
-
-    LiveFeed liveFeed(true, new FileSystemImageStream("images", "*.png"), dLibProcessor, argv[1], false);
-
-    while (1) {
+    if (string(argv[1]) == "file") {
+        LiveFeed liveFeed(new FileSystemImageStream(argv[2], "*.png"), dLibProcessor, argv[3], false);
         try {
-            if (argc < 3) {
-                liveFeed.printUsage(argc, argv);
-                return 1;
-            }
-            else {
-                liveFeed.record();
-            }
+            liveFeed.record();
         } catch (Exception &e) {
             std::cout << e.description() << endl;
-            // wait 5 seconds and try to record
-            sleep(5);
         }
+    } else if (string(argv[1]) == "lepton") {
+        //TODO write lepton code
+    } else {
+        LiveFeed::printUsage(argc, argv);
     }
 
     return 0;
