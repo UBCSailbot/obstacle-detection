@@ -26,7 +26,8 @@
 #include <signal.h>
 #include <fstream>
 #include <display/DisplayUtils.h>
-
+#include <io/ImageStream.h>
+#include <io/FileSystemImageStream.h>
 #include <dlib/svm_threaded.h>
 #include <dlib/gui_widgets.h>
 #include <dlib/image_processing.h>
@@ -40,7 +41,7 @@ class liveFeedImpl;
 class LiveFeed : public FeedReader { ;
 public:
     LiveFeed(bool shouldRecord, ImageStream *stream, const DLibProcessor &dLibProcessor, char *output_dir,
-                 bool rumImu);
+             bool rumImu);
 
     static void printUsage(int argc, char **argv);
 
@@ -59,7 +60,7 @@ protected:
 
     std::ofstream imuLog;
 
-    ParallelIMU* imu;
+    ParallelIMU *imu;
 
     char *output_dir;
 

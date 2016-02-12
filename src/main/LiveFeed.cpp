@@ -1,12 +1,9 @@
 //
 // Created by paul on 2015/05/09
 
-#include <io/ImageStream.h>
-#include <io/FileSystemImageStream.h>
 #include "LiveFeed.h"
 
 #define APP_NAME "live_feed"
-
 
 
 vector<uchar> imgToBuff(Image8bit img) {
@@ -23,7 +20,7 @@ vector<uchar> imgToBuff(Image8bit img) {
 
 LiveFeed::LiveFeed(bool shouldRecord, ImageStream *stream, const DLibProcessor &dLibProcessor, char *output_dir,
                    bool runImu) : FeedReader(shouldRecord, stream), dLibProcessor(dLibProcessor),
-                                  zmqfeed(ZmqContextSingleton::getContext()), runImu(runImu) ,output_dir(output_dir){
+                                  zmqfeed(ZmqContextSingleton::getContext()), runImu(runImu), output_dir(output_dir) {
 
 }
 
@@ -58,7 +55,7 @@ void LiveFeed::onImageRead(Image16bit image) {
     string encoded = base64_encode(buff.data(), buff.size());
     std::vector<dlib::rectangle> dets = dLibProcessor.getObjectedDetectionBoxes(frameRescaled);
 
-    string* JSON =  new string(makeJSON(encoded, dets));
+    string *JSON = new string(makeJSON(encoded, dets));
     zmqfeed.sendFrame((const uint8_t *) JSON->c_str(), JSON->size());
 }
 
@@ -80,7 +77,7 @@ int main(int argc, char **argv) {
 
     DLibProcessor dLibProcessor(detectors);
 
-    LiveFeed liveFeed(true,new FileSystemImageStream("images", "*.png"), dLibProcessor, argv[1], false);
+    LiveFeed liveFeed(true, new FileSystemImageStream("images", "*.png"), dLibProcessor, argv[1], false);
 
     while (1) {
         try {
