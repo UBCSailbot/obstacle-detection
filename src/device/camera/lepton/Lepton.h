@@ -20,6 +20,7 @@
 
 
 #include <stdint.h>
+#include <io/ImageStream.h>
 
 #include "LeptonI2C.h"
 
@@ -39,7 +40,7 @@ static uint8_t mode;
 static uint8_t bits = 8;
 static uint32_t speed = 16000000;
 
-class Lepton {
+class Lepton : public ImageStream{
 public:
     Lepton();
     virtual ~Lepton();
@@ -77,6 +78,14 @@ private:
     void startCapture();
     void captureFrame();
 
+public:
+    virtual Image16bit nextImage() override;
+
+    virtual bool hasNext() const override;
+
+    virtual int getImageWidth() const override;
+
+    virtual int getImageHeight() const override;
 };
 
 static void pabort(const char *s)

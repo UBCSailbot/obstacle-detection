@@ -87,9 +87,21 @@ int main(int argc, char **argv) {
             std::cout << e.description() << endl;
         }
     } else if (string(argv[1]) == "lepton") {
-        //TODO write lepton code
-    } else {
-        LiveFeed::printUsage(argc, argv);
+        while (1) {
+            LiveFeed liveFeed(new Lepton, dLibProcessor, argv[3], false);
+            try {
+                liveFeed.record();
+            } catch (LeptonSPIOpenException &e) {
+                std::cout << e.what() << endl;
+                // wait 5 seconds and try to record
+                sleep(5);
+            }
+        }
+    }
+
+    else {
+        LiveFeed::printUsage(argc, argv
+        );
     }
 
     return 0;
