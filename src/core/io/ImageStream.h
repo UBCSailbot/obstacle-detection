@@ -8,8 +8,8 @@
 #include "types/Image16bit.h"
 
 /**
- * Represents a stream of images that can come from a file system,
- *  from a database, or live from a camera.
+ * Represents a stream of images of a constant size that can
+ *  come from a file system, from a database, or live from a camera.
  */
 class ImageStream {
 
@@ -20,27 +20,29 @@ public:
      *  available. If the image is coming from an I/O operation, this
      *  call may block until the I/O operation in this stream completes.
      *
-     * RETURN: A new image. If this function is called twice within the
+     * @return A new image. If this function is called twice within the
      *  refresh period of the stream, rather than return the same image
      *  twice, the stream should block until it can produce a new, updated
      *  image.
      *
-     * THROW: EndOfStreamException - if called when hasNext() returns false.
+     * @throws EndOfStreamException - if called when hasNext() == false.
      */
     virtual Image16bit nextImage() = 0;
 
     /**
-     * RETURN: Whether there remain any images in this stream.
+     * @return Whether there remain any images in this stream.
      */
     virtual bool hasNext() const = 0;
 
     /**
-     * RETURN: The width of the images produced by this image stream, in pixels.
+     * Should always return the same value.
+     * @return The width of the images produced by this image stream, in pixels.
      */
     virtual int getImageWidth() const = 0;
 
     /**
-     * RETURN: The height of the images produced by this image stream, in pixels.
+     * Should always return the same value.
+     * @return The height of the images produced by this image stream, in pixels.
      */
     virtual int getImageHeight() const = 0;
 
