@@ -1,30 +1,26 @@
-//
-// Created by paul on 09/02/16.
-//
+#include "TCPImageServer.h"
 
-#include <iostream>
-#include "ImageServer.h"
+int TCPImageServer::_interrupted = 0;
 
-int ImageServer::_interrupted = 0;
-
-ImageServer::ImageServer(ImageStream &stream, std::string address) :
-        _stream(stream), _address(address)
+TCPImageServer::TCPImageServer(ImageStream &stream, const std::string &endpointAddress,
+                               const std::string &portNumber)
+        : _stream(stream), _fullAddress("tcp://" + endpointAddress + ":" + portNumber)
 {
-    std::thread tempThread(&ImageServer::startListener, this);
+    std::thread tempThread(&TCPImageServer::startListener, this);
     std::swap(tempThread, _listenerThread);
     _listenerThread.detach();
 }
 
-ImageServer::~ImageServer() {
+TCPImageServer::~TCPImageServer() {
     _interrupted = true;
 }
 
-void ImageServer::handleSignal(int signal_value)
+void TCPImageServer::handleSignal(int signal_value)
 {
     _interrupted = true;
 }
 
-void ImageServer::catchSignals(void)
+void TCPImageServer::catchSignals(void)
 {
     struct sigaction action;
     action.sa_handler = handleSignal;
@@ -34,10 +30,10 @@ void ImageServer::catchSignals(void)
     sigaction (SIGTERM, &action, NULL);
 }
 
-void ImageServer::startListener() {
+void TCPImageServer::startListener() {
     zmq::context_t context(1);
     zmq::socket_t socket(context, ZMQ_REP);
-    socket.bind(_address.c_str());
+    socket.bind(_fullAddress.c_str());
 
     catchSignals();
 
