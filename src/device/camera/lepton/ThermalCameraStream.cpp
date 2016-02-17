@@ -16,25 +16,23 @@ ThermalCameraStream::~ThermalCameraStream() {
 
 Image16bit ThermalCameraStream::nextImage() {
 
+    Image16bit frame(LeptonCameraSpecifications.pixelHeight,
+                     LeptonCameraSpecifications.pixelWidth);
+
     {
         std::unique_lock<std::mutex> lock(_mtx);
         if (!_newFrameAvailable){
             _cv.wait(lock);
         }
-        _canOverwriteLatestFrame = false;
-    }
 
-    Image16bit frame(LeptonCameraSpecifications.pixelHeight,
-                     LeptonCameraSpecifications.pixelWidth);
-
-    for(int row=0; row < frame.rows; row++) {
-        for (int col=0; col < frame.cols; col++) {
-            frame.pixelAt(row, col) = _latestFrame[row * VIEWPORT_WIDTH_PIX + col];
+        for(int row=0; row < frame.rows; row++) {
+            for (int col=0; col < frame.cols; col++) {
+                frame.pixelAt(row, col) = _latestFrame[row * VIEWPORT_WIDTH_PIX + col];
+            }
         }
-    }
 
-    _newFrameAvailable = false;
-    _canOverwriteLatestFrame = true;
+        _newFrameAvailable = false;
+    }
 
     return frame;
 }
@@ -51,18 +49,16 @@ void ThermalCameraStream::startCapture() {
         /* Obtain the lock to check if allowed to overwrite the latest frame.
          *  If so, keep the lock until done overwriting it. */
         _mtx.lock();
-        if (_canOverwriteLatestFrame) {
 
-            _lepton.captureFrame(_latestFrame);
+        _lepton.captureFrame();
             _frameCounter++;
 
             if (_frameCounter >= 3) {
                 _newFrameAvailable = true;
                 _frameCounter = _frameCounter % 3;
+                _cv.notify_one();
             }
 
-            _cv.notify_one();
-        }
         _mtx.unlock();
 
         end = std::chrono::system_clock::now();

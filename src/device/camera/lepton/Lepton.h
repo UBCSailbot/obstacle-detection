@@ -53,7 +53,7 @@ public:
      */
 
 
-    void captureFrame(uint16_t *frame);
+    Image16bit captureFrame();
 
     /**
      * Perform Flat Field Correction, recalibrating the Lepton's sensor array
