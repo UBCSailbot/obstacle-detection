@@ -9,14 +9,16 @@
 
 int run(std::string endpointAddress, std::string portNumber, int leptonID) {
 
+    ImageStream* stream;
+
 #ifdef DEBUG
     std::string inputFrameDir = Paths::join(Resources::RESOURCE_DIR, "img/16bit");
-    FileSystemImageStream stream(inputFrameDir, "*.png");
+    stream = new FileSystemImageStream(inputFrameDir, "*.png");
 #else
-    ThermalCameraStream stream(Lepton(leptonID));
+    stream = new ThermalCameraStream(Lepton(leptonID));
 #endif
 
-    TCPImageServer server(stream, endpointAddress, portNumber);
+    TCPImageServer server(*stream, endpointAddress, portNumber);
 
     while (true) {
         // block indefinitely, keeping the server thread alive
