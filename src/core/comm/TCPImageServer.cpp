@@ -35,7 +35,8 @@ void TCPImageServer::startListener() {
     zmq::socket_t socket(context, ZMQ_REP);
     socket.bind(_fullAddress.c_str());
 
-    catchSignals();
+    // TODO: This signal handler doesn't work on the command line. The program freezes.
+//    catchSignals();
 
     // The server only stays active as long as its image stream has more images.
     while(!_interrupted) {
@@ -76,6 +77,8 @@ void TCPImageServer::startListener() {
         }
     }
 
-    socket.close();
+    if (socket.connected()) {
+        socket.close();
+    }
     context.close();
 }
