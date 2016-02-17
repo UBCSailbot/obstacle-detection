@@ -3,6 +3,9 @@
 #include <imageProc/rescale/SimpleRescaler.h>
 #include <comm/TCPImageServer.h>
 #include <io/TCPImageStream.h>
+#include <opencv2/imgproc/imgproc.hpp>
+
+#define APPNAME "leptonServerTest"
 
 /**
  * This tests the ability to connect to a separate server streaming Lepton images.
@@ -12,23 +15,30 @@
  *  with an image. The client side then displays its received images one
  *  by one, waiting for keyboard input from the user to show the
  *  next image.
- *
- * Note that the images are very small (60 by 80 pixels), so they might be hard
- *  to spot on your screen.
  */
-int main() {
+int main(int argc, char** argv) {
+
 #ifdef DEBUG
     TCPImageStream client("localhost", "5555");
 #else
-    TCPImageStream client("10.42.0.10", "5555");
+    if (argc < 2) {
+        std::cout << "Usage: " << APPNAME << " [IPv4_address] [port#]" << std::endl;
+        exit(0);
+    }
+    std::string address(argv[1]), port(argv[2]);
+    int leptonID = atoi(argv[3]);
+
+    TCPImageStream client(address, port);
 #endif
 
     SimpleRescaler rescaler;
-    Image8bit displayed(client.getImageHeight(), client.getImageWidth());
+    Image8bit rescaled(client.getImageHeight(), client.getImageWidth());
+    Image8bit displayed;
 
     while (client.hasNext()) {
-        rescaler.scale16bitTo8bit(client.nextImage(), displayed);
+        rescaler.scale16bitTo8bit(client.nextImage(), rescaled);
+        cv::resize(rescaled, displayed, cv::Size(800, 600), cv::INTER_NEAREST);
         cv::imshow("LeptonServer Test", displayed);
-        cv::waitKey(0);
+        cv::waitKey(100);
     }
 }
