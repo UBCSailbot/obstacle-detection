@@ -13,7 +13,6 @@ TCPImageStream::TCPImageStream(const std::string &endpointAddress,
 
 TCPImageStream::~TCPImageStream() {
     _socketToServer.close();
-    _context.close();
 }
 
 Image16bit TCPImageStream::nextImage() {
