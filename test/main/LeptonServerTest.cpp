@@ -17,7 +17,11 @@
  *  to spot on your screen.
  */
 int main() {
+#ifdef DEBUG
+    TCPImageStream client("localhost", "5555");
+#else
     TCPImageStream client("10.42.0.10", "5555");
+#endif
 
     SimpleRescaler rescaler;
     Image8bit displayed(client.getImageHeight(), client.getImageWidth());

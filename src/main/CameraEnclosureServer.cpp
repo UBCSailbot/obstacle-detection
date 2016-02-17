@@ -1,5 +1,3 @@
-#define DEBUG
-
 #include <string>
 #include <comm/TCPImageServer.h>
 #include <io/Paths.h>
