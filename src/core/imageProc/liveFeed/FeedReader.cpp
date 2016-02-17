@@ -34,3 +34,4 @@ void FeedReader::stopRecording() {
     shouldRecord = false;
 
 }
+

@@ -76,11 +76,11 @@ bool Lepton::hasNext() const {
 }
 
 int Lepton::getImageWidth() const {
-    return VIEWPORT_WIDTH_PIX;
+    return LeptonCameraSpecifications.pixelHeight;
 }
 
 int Lepton::getImageHeight() const {
-    return VIEWPORT_HEIGHT_PIX;
+    return LeptonCameraSpecifications.pixelHeight;
 }
 
 void Lepton::getFrame(Image16bit &frame) {

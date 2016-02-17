@@ -19,7 +19,7 @@ vector<uchar> imgToBuff(Image8bit img) {
 }
 
 LiveFeed::LiveFeed(ImageStream *stream, const DLibProcessor &dLibProcessor, char *output_dir,
-                   bool runImu) : FeedReader(true, stream), dLibProcessor(dLibProcessor),
+                   bool runImu) : FeedReader(stream), dLibProcessor(dLibProcessor),
                                   zmqfeed(ZmqContextSingleton::getContext()), runImu(runImu), output_dir(output_dir) {
 
 }
