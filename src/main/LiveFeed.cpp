@@ -52,7 +52,7 @@ void LiveFeed::onImageRead(Image16bit image) {
 
     vector<uchar> buff = imgToBuff(frameRescaled);
     string encoded = base64_encode(buff.data(), buff.size());
-    std::vector<dlib::rectangle> dets = dLibProcessor.getObjectedDetectionBoxes(frameRescaled);
+    std::vector<dlib::rectangle> dets = dLibProcessor.getObjectDetectionBoxes(frameRescaled);
     string *JSON = new string(makeJSON(encoded, dets));
     zmqfeed.sendFrame((const uint8_t *) JSON->c_str(), JSON->size());
 }
