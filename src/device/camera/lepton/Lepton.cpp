@@ -62,7 +62,7 @@ Lepton::~Lepton() {
     SpiClosePort(0);
 }
 
-void Lepton::captureFrame(uint16_t *frame) {
+Image16bit Lepton::captureFrame() {
 
     //read data packets from lepton over SPI
     int resets = 0;
@@ -103,15 +103,19 @@ void Lepton::captureFrame(uint16_t *frame) {
 
     }
 
-        for (int i = 0; i < FRAME_SIZE_UINT16; i++) {
-            if (i % PACKET_SIZE_UINT16 < 2) {
-                continue;
-            }
+    Image16bit frame(LeptonCameraSpecifications.pixelHeight, LeptonCameraSpecifications.pixelWidth);
 
-            column = (i % PACKET_SIZE_UINT16) - 2;
-            row = i / PACKET_SIZE_UINT16;
-            frame[row * VIEWPORT_WIDTH_PIX + column] = _frameBuffer[i];
+    for (int i = 0; i < FRAME_SIZE_UINT16; i++) {
+        if (i % PACKET_SIZE_UINT16 < 2) {
+            continue;
         }
+
+        column = (i % PACKET_SIZE_UINT16) - 2;
+        row = i / PACKET_SIZE_UINT16;
+        frame.pixelAt(row, column) = _frameBuffer[i];
+    }
+
+    return frame;
 
 }
 
