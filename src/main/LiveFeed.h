@@ -1,4 +1,3 @@
-
 //
 // Created by paul on 2015/05/12
 //
@@ -16,6 +15,7 @@
 #include "geometry/Horizon.h"
 #include "imageProc/rescale/SimpleRescaler.h"
 #include "imageProc/liveFeed/base64EncDec.h"
+#include "io/JSONSerializer.h"
 
 #include "exceptions/LeptonSPIOpenException.h"
 #include "comm/ZmqContextSingleton.h"
@@ -26,20 +26,53 @@
 #include <signal.h>
 #include <fstream>
 #include <display/DisplayUtils.h>
-
+#include <io/ImageStream.h>
+#include <io/FileSystemImageStream.h>
 #include <dlib/svm_threaded.h>
 #include <dlib/gui_widgets.h>
 #include <dlib/image_processing.h>
 #include <dlib/data_io.h>
 #include <dlib/opencv.h>
+#include <imageProc/liveFeed/FeedReader.h>
+#include "imageProc/dlib/DLibProcessor.h"
+
+class liveFeedImpl;
+
+class LiveFeed : public FeedReader { ;
+public:
+    LiveFeed(ImageStream *stream, const DLibProcessor &dLibProcessor, char *output_dir,
+             bool rumImu);
+
+    static void printUsage(int argc, char **argv);
+
+protected:
+
+    static void hangup_handler(int signum);
+
+    void setup_sighandler();
+
+    void displayFrameWithHorizonLine(Image8bit image, double roll, double pitch, Display &d);
 
 
-static void hangup_handler(int signum);
-void setup_sighandler();
+    DLibProcessor dLibProcessor;
 
-void record(char* output_dir, bool verbose=true );
-void displayFrameWithHorizonLine(Image8bit image, double roll, double pitch, Display &d);
+    ImageFeedZmq zmqfeed;
 
-void printUsage(int argc, char** argv);
+    std::ofstream imuLog;
+
+    ParallelIMU *imu;
+
+    char *output_dir;
+
+    int frame_counter = 0;
+
+    virtual void beforeCapture() override;
+
+    virtual void onImageRead(Image16bit image) override;
+
+    SimpleRescaler rescaler;
+
+    bool runImu;
+};
 
 #endif //OBSTACLE_AVOIDANCE_LIVEFEED_H

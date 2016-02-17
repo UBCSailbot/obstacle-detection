@@ -65,6 +65,24 @@ Lepton::~Lepton() {
     free(_latestFrame);
 }
 
+Image16bit Lepton::nextImage() {
+    Image16bit* frame = new Image16bit;
+    getFrame(*frame);
+    return Image16bit();
+}
+
+bool Lepton::hasNext() const {
+    return _newFrameAvailable;
+}
+
+int Lepton::getImageWidth() const {
+    return LeptonCameraSpecifications.pixelHeight;
+}
+
+int Lepton::getImageHeight() const {
+    return LeptonCameraSpecifications.pixelHeight;
+}
+
 void Lepton::getFrame(Image16bit &frame) {
     // wait to get the lock before grabbing the latest frame
 
