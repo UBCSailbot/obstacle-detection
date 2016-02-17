@@ -9,7 +9,7 @@ Lepton::Lepton() : Lepton(0) {
 }
 
 Lepton::Lepton(int spi_cs) {
-    SpiOpenPort(0);
+    SpiOpenPort(spi_cs);
 
     int ret = 0;
     int fd;
@@ -56,60 +56,13 @@ Lepton::Lepton(int spi_cs) {
         pabort("can't get max speed hz");
     }
 
-    _latestFrame = (uint16_t*) malloc(VIEWPORT_WIDTH_PIX * VIEWPORT_HEIGHT_PIX * sizeof(uint16_t));
-    _newFrameAvailable = false;
-    _canOverwriteLatestFrame = true;
-
-    std::thread tempThread(&Lepton::startCapture, this);
-    std::swap(tempThread, _leptonThread);
 }
 
 Lepton::~Lepton() {
     SpiClosePort(0);
-    free(_latestFrame);
 }
 
-Image16bit Lepton::nextImage() {
-    Image16bit* frame = new Image16bit;
-    getFrame(*frame);
-    return Image16bit();
-}
-
-bool Lepton::hasNext() const {
-    return _newFrameAvailable;
-}
-
-int Lepton::getImageWidth() const {
-    return LeptonCameraSpecifications.pixelHeight;
-}
-
-int Lepton::getImageHeight() const {
-    return LeptonCameraSpecifications.pixelHeight;
-}
-
-void Lepton::getFrame(Image16bit &frame) {
-    // wait to get the lock before grabbing the latest frame
-
-    {
-        std::unique_lock<std::mutex> lock(_mtx);
-        if (!_newFrameAvailable){
-            _cv.wait(lock);
-        }
-        _canOverwriteLatestFrame = false;
-    }
-
-    for(int row=0; row < frame.rows; row++) {
-        for (int col=0; col < frame.cols; col++) {
-            frame.pixelAt(row, col) = _latestFrame[row * VIEWPORT_WIDTH_PIX + col];
-        }
-    }
-
-    _newFrameAvailable = false;
-    _canOverwriteLatestFrame = true;
-
-}
-
-void Lepton::captureFrame() {
+void Lepton::captureFrame(uint16_t *frame) {
 
     //read data packets from lepton over SPI
     int resets = 0;
@@ -150,11 +103,6 @@ void Lepton::captureFrame() {
 
     }
 
-    /* Obtain the lock to check if allowed to overwrite the latest frame.
-     *  If so, keep the lock until done overwriting it. */
-    _mtx.lock();
-    if (_canOverwriteLatestFrame) {
-
         for (int i = 0; i < FRAME_SIZE_UINT16; i++) {
             if (i % PACKET_SIZE_UINT16 < 2) {
                 continue;
@@ -162,39 +110,11 @@ void Lepton::captureFrame() {
 
             column = (i % PACKET_SIZE_UINT16) - 2;
             row = i / PACKET_SIZE_UINT16;
-            _latestFrame[row * VIEWPORT_WIDTH_PIX + column] = _frameBuffer[i];
+            frame[row * VIEWPORT_WIDTH_PIX + column] = _frameBuffer[i];
         }
 
-        _cv.notify_one();
-    }
-    _mtx.unlock();
 }
-
 
 void Lepton::performFFC() {
     lepton_perform_ffc();
-}
-
-void Lepton::startCapture() {
-
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    std::chrono::duration<float> elapsed_seconds;
-    float leptonPeriodSeconds = 1 / LEPTON_FPS;
-
-    // regularly poll the lepton
-    while (1) {
-        start = std::chrono::system_clock::now();
-
-        captureFrame();
-
-        end = std::chrono::system_clock::now();
-        elapsed_seconds = end-start;
-
-        if (elapsed_seconds.count() < leptonPeriodSeconds) {
-            unsigned int sleepTimeMicros = (unsigned int) (leptonPeriodSeconds - elapsed_seconds.count()) * 1000 * 1000;
-            usleep(sleepTimeMicros);
-        }
-
-    }
-
 }
