@@ -1,15 +1,10 @@
-#ifndef OBSTACLE_DETECTION_LEPTONVIDEOSTREAM_H
-#define OBSTACLE_DETECTION_LEPTONVIDEOSTREAM_H
+#ifndef OBSTACLE_DETECTION_THERMALCAMERASTREAM2_H
+#define OBSTACLE_DETECTION_THERMALCAMERASTREAM2_H
 
 
 #include <io/ImageStream.h>
 #include "Lepton.h"
 
-/**
- * Exposes a connection to an infrared camera as an
- *  ImageStream, in effect encapsulating a live video stream as a
- *  stream of individual frames.
- */
 class ThermalCameraStream : public ImageStream {
 
 public:
@@ -44,23 +39,11 @@ public:
 
 private:
     Lepton _lepton;
-    std::thread _leptonThread;
+    std::chrono::time_point<std::chrono::system_clock> _lastCaptureTime;
+    double _periodSeconds;
 
-    uint16_t* _latestFrame;
-
-    volatile bool _canOverwriteLatestFrame;
-    volatile bool _newFrameAvailable;
-
-    /* Provides a lock to make sure that only one thread at a time can check and
- *  modify the _canOverwriteLatestFrame variable. */
-    std::mutex _mtx;
-    std::condition_variable _cv;
-
-    void startCapture();
-
-    volatile size_t _frameCounter;
-
+    uint16_t *_frameBuffer;
 };
 
 
-#endif //OBSTACLE_DETECTION_LEPTONVIDEOSTREAM_H
+#endif //OBSTACLE_DETECTION_THERMALCAMERASTREAM2_H

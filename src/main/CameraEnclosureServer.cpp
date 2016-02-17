@@ -4,7 +4,6 @@
 #include <Resources.h>
 #include <io/FileSystemImageStream.h>
 #include <camera/lepton/ThermalCameraStream.h>
-#include <camera/lepton/ThermalCameraStream2.h>
 
 #define APPNAME "cameraServer"
 
@@ -16,7 +15,7 @@ int run(std::string endpointAddress, std::string portNumber, int leptonID) {
     std::string inputFrameDir = Paths::join(Resources::RESOURCE_DIR, "img/16bit");
     stream = new FileSystemImageStream(inputFrameDir, "*.png");
 #else
-    stream = new ThermalCameraStream2(Lepton(leptonID));
+    stream = new ThermalCameraStream(Lepton(leptonID));
 #endif
 
     TCPImageServer server(*stream, endpointAddress, portNumber);
