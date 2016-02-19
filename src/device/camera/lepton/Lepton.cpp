@@ -111,7 +111,8 @@ void Lepton::captureFrame() {
     int resets = 0;
     for (int j = 0; j < PACKETS_PER_FRAME; j++) {
         //if it's a drop packet, reset j to 0, set to -1 so he'll be at 0 again loop
-        read(spi_cs0_fd, _result + sizeof(uint8_t) * PACKET_SIZE * j, sizeof(uint8_t) * PACKET_SIZE);
+        ssize_t result = read(spi_cs0_fd, _result + sizeof(uint8_t) * PACKET_SIZE * j, sizeof(uint8_t) * PACKET_SIZE);
+        // TODO: check that read was successful
         int packetNumber = _result[j * PACKET_SIZE + 1];
         if (packetNumber != j) {
             j = -1;

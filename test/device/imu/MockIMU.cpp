@@ -29,30 +29,6 @@ void MockIMU::startCapture() {
     }
 }
 
-MockIMU::~MockIMU() {
-
-}
-
-double MockIMU::getRollDeg() {
-    return mockRoll;
-}
-
-double MockIMU::getPitchDeg() {
-    return mockPitch;
-}
-
-double MockIMU::getYawDeg() {
-    return mockYaw;
-}
-
-double MockIMU::getRollRad() {
-    return mockRoll;
-}
-
-double MockIMU::getPitchRad() {
-    return mockPitch;
-}
-
-double MockIMU::getYawRad() {
-    return mockYaw;
+Orientation MockIMU::getOrientation() {
+    return Orientation(mockRoll, mockPitch, mockYaw);
 }

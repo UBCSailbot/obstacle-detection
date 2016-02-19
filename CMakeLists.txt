@@ -50,8 +50,10 @@ add_executable(objectDetectionRunner src/main/ObjectDetectionRunner.cpp)
 target_link_libraries(objectDetectionRunner dlib)
 
 add_executable(objectDetectionTrainer src/main/ObjectDetectionTrainer.cpp)
-add_executable(objectDetectionModelGenerator src/main/ObjectDetectionModelGenerator.cpp)
 target_link_libraries(objectDetectionTrainer dlib)
+
+add_executable(objectDetectionModelGenerator src/main/ObjectDetectionModelGenerator.cpp)
+target_link_libraries(objectDetectionModelGenerator dlib)
 
 
 

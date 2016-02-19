@@ -1,6 +1,5 @@
 #include <dlib/geometry/rectangle.h>
 #include <io/JSONSerializer.h>
-#include "HorizonFileReaderTest.h"
 #include "JSONSerializerTest.h"
 
 TEST_F(JSONSerializerTest, JSONTest) {

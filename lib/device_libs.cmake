@@ -18,6 +18,7 @@ add_custom_command(
         OUTPUT ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a
         COMMAND make
         WORKING_DIRECTORY ${LEPTONSDK_DIR}
+        COMMENT "Building Lepton SDK using Makefile provided by Lepton repository"
 )
 add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 

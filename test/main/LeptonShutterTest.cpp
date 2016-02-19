@@ -2,13 +2,12 @@
 // Created by Aditi Chakravarthi on 15-06-20.
 //
 
-#include "lepton/LeptonI2C.h"
+#include "camera/lepton/LeptonI2C.h"
 #include <unistd.h>
 
 
 
 int main() {
-
 
     lepton_connect();
 

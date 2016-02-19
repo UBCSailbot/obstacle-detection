@@ -19,7 +19,8 @@ class MockIMU : public IMU {
 
 public:
     MockIMU();
-    ~MockIMU();
+
+    virtual Orientation getOrientation() override;
 
 private:
 
@@ -30,14 +31,6 @@ private:
     double mockRoll;
     double mockPitch;
     double mockYaw;
-
-    double getRollDeg();
-    double getPitchDeg();
-    double getYawDeg();
-
-    double getRollRad();
-    double getPitchRad();
-    double getYawRad();
 };
 
 

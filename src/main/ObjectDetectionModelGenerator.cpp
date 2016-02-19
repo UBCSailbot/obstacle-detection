@@ -42,59 +42,52 @@ typedef scan_fhog_pyramid<pyramid_down<6>> image_scanner_type;
 object_detector<image_scanner_type> train_object_detector(std::string file_name, double c_value, double eps_value)
 {
 	cout << "TRAINING WITH C VALUE " << c_value << endl;
-	try {
 
-                dlib::array<array2d<unsigned char> > images_train;
-                std::vector<std::vector<rectangle> > boxes_train;
+    dlib::array<array2d<unsigned char> > images_train;
+    std::vector<std::vector<rectangle> > boxes_train;
 
-                load_image_dataset(images_train, boxes_train, file_name);
+    load_image_dataset(images_train, boxes_train, file_name);
 
-                upsample_image_dataset<pyramid_down<2> >(images_train, boxes_train);
-                add_image_left_right_flips(images_train, boxes_train);
+    upsample_image_dataset<pyramid_down<2> >(images_train, boxes_train);
+    add_image_left_right_flips(images_train, boxes_train);
 
-                // Finally we get to the training code.  dlib contains a number of
-                // object detectors.  This typedef tells it that you want to use the one
-                // based on Felzenszwalb's version of the Histogram of Oriented
-                // Gradients (commonly called HOG) detector.  The 6 means that you want
-                // it to use an image pyramid that downsamples the image at a ratio of
-                // 5/6.  Recall that HOG detectors work by creating an image pyramid and
-                // then running the detector over each pyramid level in a sliding window
-                // fashion.
-                image_scanner_type scanner;
-                // The sliding window detector will be 80 pixels wide and 80 pixels tall.
-                scanner.set_detection_window_size(50, 30);
-                structural_object_detection_trainer<image_scanner_type> trainer(scanner);
-                // Set this to the number of processing cores on your machine.
-                trainer.set_num_threads(4);
-                // The trainer is a kind of support vector machine and therefore has the usual SVM
-                // C parameter.  In general, a bigger C encourages it to fit the training data
-                // better but might lead to overfitting.  You must find the best C value
-                // empirically by checking how well the trained detector works on a test set of
-                // images you haven't trained on.  Don't just leave the value set at 1.  Try a few
-                // different C values and see what works best for your data.
-                trainer.set_c(c_value);
-                // We can tell the trainer to print it's progress to the console if we want.
-                trainer.be_verbose();
-                // The trainer will run until the "risk gap" is less than 0.01.  Smaller values
-                // make the trainer solve the SVM optimization problem more accurately but will
-                // take longer to train.  For most problems a value in the range of 0.1 to 0.01 is
-                // plenty accurate.  Also, when in verbose mode the risk gap is printed on each
-                // iteration so you can see how close it is to finishing the training.
-                trainer.set_epsilon(0.001);
-                trainer.set_match_eps(eps_value);
+    // Finally we get to the training code.  dlib contains a number of
+    // object detectors.  This typedef tells it that you want to use the one
+    // based on Felzenszwalb's version of the Histogram of Oriented
+    // Gradients (commonly called HOG) detector.  The 6 means that you want
+    // it to use an image pyramid that downsamples the image at a ratio of
+    // 5/6.  Recall that HOG detectors work by creating an image pyramid and
+    // then running the detector over each pyramid level in a sliding window
+    // fashion.
+    image_scanner_type scanner;
+    // The sliding window detector will be 80 pixels wide and 80 pixels tall.
+    scanner.set_detection_window_size(50, 30);
+    structural_object_detection_trainer<image_scanner_type> trainer(scanner);
+    // Set this to the number of processing cores on your machine.
+    trainer.set_num_threads(4);
+    // The trainer is a kind of support vector machine and therefore has the usual SVM
+    // C parameter.  In general, a bigger C encourages it to fit the training data
+    // better but might lead to overfitting.  You must find the best C value
+    // empirically by checking how well the trained detector works on a test set of
+    // images you haven't trained on.  Don't just leave the value set at 1.  Try a few
+    // different C values and see what works best for your data.
+    trainer.set_c(c_value);
+    // We can tell the trainer to print it's progress to the console if we want.
+    trainer.be_verbose();
+    // The trainer will run until the "risk gap" is less than 0.01.  Smaller values
+    // make the trainer solve the SVM optimization problem more accurately but will
+    // take longer to train.  For most problems a value in the range of 0.1 to 0.01 is
+    // plenty accurate.  Also, when in verbose mode the risk gap is printed on each
+    // iteration so you can see how close it is to finishing the training.
+    trainer.set_epsilon(0.001);
+    trainer.set_match_eps(eps_value);
 
+    // Now we run the trainer.  For this example, it should take on the order of 10
+    // seconds to train.
+    object_detector<image_scanner_type> detector =
+            trainer.train(images_train, boxes_train);
 
-                // Now we run the trainer.  For this example, it should take on the order of 10
-                // seconds to train.
-                object_detector<image_scanner_type> detector = trainer.train(images_train, boxes_train);
-		return detector;
-        }
-        catch (exception& e)
-        {
-                cout << "\nexception thrown!" << endl;
-                cout << e.what() << endl;
-        }
-
+    return detector;
 }
 
 void generate_optimal_model(std::string train_file_name, std::string test_file_name, std::string model_name, double c_low, double c_high)
