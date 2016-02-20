@@ -1,11 +1,7 @@
-//
-// Created by paul on 09/05/15 (dd/mm/yy, of course)
-//
-
 #include <imageProc/rescale/SimpleRescaler.h>
 #include "display/Display.h"
 #include <display/DisplayUtils.h>
-#include <camera/lepton/RedundantLepton.h>
+#include <camera/lepton/Lepton.h>
 #include "types/Image8bit.h"
 #include "types/Image16bit.h"
 #include "imageProc/rescale/SimpleRescaler.h"
@@ -16,7 +12,7 @@ using namespace std;
 
 void run_single(int lepton_cs) {
 
-    RedundantLepton lepton0(lepton_cs);
+    Lepton lepton0(lepton_cs);
     SimpleRescaler rescaler;
 
     Image16bit frame0(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX);
@@ -29,11 +25,11 @@ void run_single(int lepton_cs) {
 
     cout << "Starting Capture" << endl;
 
-    while (1) {
+    while (true) {
 
         // read only every 3rd frame
         if ((frame_counter % 3) == 0) {
-            lepton0.getFrame(frame0);
+            frame0 = lepton0.captureFrame();
             cout << "lepton " << lepton_cs << " got frame " << frame_counter << endl; 
 
             // convert to 8 bit and display
@@ -52,12 +48,12 @@ void run_single(int lepton_cs) {
 
 void run_double() {
 
-    RedundantLepton lepton0(0);
-    RedundantLepton lepton1(1);
+    Lepton lepton0(0);
+    Lepton lepton1(1);
     SimpleRescaler rescaler;
 
-    Image16bit frame0(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX);
-    Image16bit frame1(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX);
+    Image16bit frame0;
+    Image16bit frame1;
     Image8bit displayed0(60, 80);
     Image8bit displayed1(60, 80);
     int frame_counter = 1;
@@ -72,11 +68,11 @@ void run_double() {
     while (1) {
 
         // read only every 3rd frame
-        //if ((frame_counter % 3) == 0) {
-            lepton0.getFrame(frame0);
+        if ((frame_counter % 3) == 0) {
+            frame0 = lepton0.captureFrame();
             //cout << "lepton0 got frame " << frame_counter << endl; 
 
-            lepton1.getFrame(frame1);
+            frame1 = lepton1.captureFrame();
             //cout << "lepton1 got frame " << frame_counter << endl; 
 
             // convert to 8 bit and display
@@ -87,7 +83,7 @@ void run_double() {
             display1->display8bitGray(displayed1);
 
 //            cout << "now displaying. can you see it?" << endl;
-        //}
+        }
 
         frame_counter ++;
 

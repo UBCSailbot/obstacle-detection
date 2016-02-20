@@ -1,20 +1,27 @@
-//
-// Created by paul on 10/05/15.
-//
-
 #include "Lepton.h"
 
 Lepton::Lepton() : Lepton(0) {
 
 }
 
-Lepton::Lepton(int spi_cs) {
-    SpiOpenPort(spi_cs);
+Lepton::Lepton(int spiChipSelect) : _spiID(spiChipSelect)
+{
+    // TODO: Error handling in case opening SPI port fails
+    SpiOpenPort(_spiID);
 
     int ret = 0;
     int fd;
 
-    fd = open(device, O_RDWR);
+    sprintf(_device, "/dev/spidev0.%d", spiChipSelect);
+
+    if(spiChipSelect) {
+        _spiFileDescriptor = spi_cs1_fd;
+    }
+    else {
+        _spiFileDescriptor = spi_cs0_fd;
+    }
+
+    fd = open(_device, O_RDWR);
     if (fd < 0)
     {
         pabort("can't open device");
@@ -59,7 +66,7 @@ Lepton::Lepton(int spi_cs) {
 }
 
 Lepton::~Lepton() {
-    SpiClosePort(0);
+    SpiClosePort(_spiID);
 }
 
 Image16bit Lepton::captureFrame() {
@@ -68,7 +75,7 @@ Image16bit Lepton::captureFrame() {
     int resets = 0;
     for (int j = 0; j < PACKETS_PER_FRAME; j++) {
         //if it's a drop packet, reset j to 0, set to -1 so he'll be at 0 again loop
-        ssize_t result = read(spi_cs0_fd, _result + sizeof(uint8_t) * PACKET_SIZE * j, sizeof(uint8_t) * PACKET_SIZE);
+        ssize_t result = read(_spiFileDescriptor, _result + sizeof(uint8_t) * PACKET_SIZE * j, sizeof(uint8_t) * PACKET_SIZE);
         // TODO: check that read was successful
         int packetNumber = _result[j * PACKET_SIZE + 1];
         if (packetNumber != j) {
@@ -76,9 +83,9 @@ Image16bit Lepton::captureFrame() {
             resets += 1;
             usleep(1000);
             if (resets == 750) {
-                SpiClosePort(0);
+                SpiClosePort(_spiID);
                 usleep(750000);
-                SpiOpenPort(0);
+                SpiOpenPort(_spiID);
             }
         }
     }
@@ -88,7 +95,6 @@ Image16bit Lepton::captureFrame() {
     }
 
     _frameBuffer = (uint16_t *) _result;
-    int row, column;
 
     for (int i = 0; i < FRAME_SIZE_UINT16; i++) {
         //skip the first 2 uint16_t's of every packet, they're 4 header bytes
@@ -103,6 +109,7 @@ Image16bit Lepton::captureFrame() {
 
     }
 
+    int row, column;
     Image16bit frame(LeptonCameraSpecifications.pixelHeight, LeptonCameraSpecifications.pixelWidth);
 
     for (int i = 0; i < FRAME_SIZE_UINT16; i++) {
@@ -116,7 +123,6 @@ Image16bit Lepton::captureFrame() {
     }
 
     return frame;
-
 }
 
 void Lepton::performFFC() {

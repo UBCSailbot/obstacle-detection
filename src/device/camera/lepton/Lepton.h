@@ -43,16 +43,16 @@ static uint32_t speed = 16000000;
 class Lepton {
 public:
     Lepton();
-    Lepton(int spi_cs);
+
+    /**
+     *
+     */
+    Lepton(int spiChipSelect);
     virtual ~Lepton();
 
     /**
-     * Delegates memory allocated by this class to a new Image16bit object,
-     *  and sends it off via unique_ptr to communicate to the receiver
-     *  that they should take care of memory from there on out.
+     * Returns the frame most recently recorded by the Lepton.
      */
-
-
     Image16bit captureFrame();
 
     /**
@@ -62,9 +62,12 @@ public:
     void performFFC();
 
 private:
+    char _device[15];
     uint8_t _result[PACKET_SIZE*PACKETS_PER_FRAME];
 
     uint16_t *_frameBuffer;
+    int _spiFileDescriptor;
+    int _spiID;
 };
 
 static void pabort(const char *s)

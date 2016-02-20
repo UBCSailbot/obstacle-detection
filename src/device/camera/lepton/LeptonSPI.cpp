@@ -40,43 +40,44 @@ int SpiOpenPort (int spi_device)
 
     if (*spi_cs_fd < 0)
     {
-	throw LeptonSPIOpenException("Error - Could not open SPI device");
+	    throw LeptonSPIOpenException("Error - Could not open SPI device");
     }
 
     status_value = ioctl(*spi_cs_fd, SPI_IOC_WR_MODE, &spi_mode);
     if(status_value < 0)
     {
-	throw LeptonSPIOpenException("Could not set SPIMode (WR)...ioctl fail");
+	    throw LeptonSPIOpenException("Could not set SPIMode (WR)...ioctl fail");
     }
 
     status_value = ioctl(*spi_cs_fd, SPI_IOC_RD_MODE, &spi_mode);
     if(status_value < 0)
     {
-	throw LeptonSPIOpenException("Could not set SPIMode (RD)...ioctl fail");
+	    throw LeptonSPIOpenException("Could not set SPIMode (RD)...ioctl fail");
     }
     status_value = ioctl(*spi_cs_fd, SPI_IOC_WR_BITS_PER_WORD, &spi_bitsPerWord);
     if(status_value < 0)
     {
-	throw LeptonSPIOpenException("Could not set SPI bitsPerWord (WR)...ioctl fail");
+	    throw LeptonSPIOpenException("Could not set SPI bitsPerWord (WR)...ioctl fail");
     }
 
     status_value = ioctl(*spi_cs_fd, SPI_IOC_RD_BITS_PER_WORD, &spi_bitsPerWord);
     if(status_value < 0)
     {
-	throw LeptonSPIOpenException("Could not set SPI bitsPerWord(RD)...ioctl fail");
+	    throw LeptonSPIOpenException("Could not set SPI bitsPerWord(RD)...ioctl fail");
     }
 
     status_value = ioctl(*spi_cs_fd, SPI_IOC_WR_MAX_SPEED_HZ, &spi_speed);
     if(status_value < 0)
     {
-	throw LeptonSPIOpenException("Could not set SPI speed (WR)...ioctl fail");
+	    throw LeptonSPIOpenException("Could not set SPI speed (WR)...ioctl fail");
     }
 
     status_value = ioctl(*spi_cs_fd, SPI_IOC_RD_MAX_SPEED_HZ, &spi_speed);
     if(status_value < 0)
     {
-	throw LeptonSPIOpenException("Could not set SPI speed (RD)...ioctl fail");
+	    throw LeptonSPIOpenException("Could not set SPI speed (RD)...ioctl fail");
     }
+
     return(status_value);
 }
 
