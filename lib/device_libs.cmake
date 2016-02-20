@@ -14,11 +14,16 @@ list(APPEND DEVICE_LIBS RTIMULib)
 # Lepton SDK is compiled with the project
 include_directories(${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
+# TODO: We run a custom build script for leptonSDK
+#  because otherwise we get lots of annoying and useless output.
+#  This is far from ideal - ideally we'd have a way to remove the -v and -fpermissive
+#  flags from the COMPILE variable in the Makefile, as these are the flags that cause
+#  the useless output. However, modifying the Makefile directly is not an option
+#  as it belongs to the LeptonSDK submodule.
 add_custom_command(
         OUTPUT ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a
-        COMMAND make
-        WORKING_DIRECTORY ${LEPTONSDK_DIR}
-        COMMENT "Building Lepton SDK using Makefile provided by Lepton repository"
+        COMMAND ${CMAKE_SOURCE_DIR}/scripts/build_leptonSDK.sh ${LEPTONSDK_DIR}
+        COMMENT "Building Lepton SDK using scripts/build_leptonSDK.sh"
 )
 add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)
 
