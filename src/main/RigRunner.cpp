@@ -3,6 +3,7 @@
 //
 
 #include <geometry/HorizonFactory.h>
+#include <camera/lepton/ThermalCameraStream.h>
 #include "RigRunner.h"
 
 #define APP_NAME "rig_record"
@@ -26,7 +27,8 @@ void setup_sighandler() {
 
 void record(char* output_dir, bool verbose) {
 
-    Lepton lepton;
+    Lepton lepton(0);
+    ThermalCameraStream leptonStream(lepton);
     ParallelIMU imu;
     SimpleRescaler rescaler;
     HorizonFactory horizonFactory(LeptonCameraSpecifications);
@@ -62,39 +64,20 @@ void record(char* output_dir, bool verbose) {
             usleep(600 * 1000);
         }
 */
-        start = std::chrono::system_clock::now();
 
-        // read only every 3rd frame
-        if ((frame_counter % 3) == 0) {
-            lepton.getFrame(frame);
+        frame = leptonStream.nextImage();
 
-            // save the current frame as a .png file
-            sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter/3);
-            imwrite(img_name, frame);
-            imuLog << imu.getOrientation().toDataString();
+        // save the current frame as a .png file
+        sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
+        imwrite(img_name, frame);
+        imuLog << imu.getOrientation().toDataString();
 
-//            Image8bit displayed(frame, false);
-//            cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
-//            line(displayed, Point(0,30), Point(80, 40), Scalar(255,0,0), 1);
-//
-//            d.displayColored(displayed);
+        frame_counter++;
 
-            // convert to 8 bit and display
-            rescaler.scale16bitTo8bit(frame, displayed);
-            Horizon horizon = horizonFactory.makeHorizon(imu.getOrientation());
-            DisplayUtils::displayFrameWithHorizonLine(displayed, horizon, *display);
-        }
-
-        frame_counter ++;
-
-        end = std::chrono::system_clock::now();
-        std::chrono::duration<float> elapsed_seconds = end-start;
-
-        if (elapsed_seconds.count() < leptonPeriodSeconds) {
-            unsigned int sleepTimeMicros = (unsigned int) (leptonPeriodSeconds - elapsed_seconds.count()) * 1000000;
-            usleep(sleepTimeMicros);
-        }
-
+        // convert to 8 bit and display
+        rescaler.scale16bitTo8bit(frame, displayed);
+        Horizon horizon = horizonFactory.makeHorizon(imu.getOrientation());
+        DisplayUtils::displayFrameWithHorizonLine(displayed, horizon, *display);
     }
 
     imuLog.flush();
