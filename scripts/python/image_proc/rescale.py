@@ -1,6 +1,7 @@
 import os, sys
 
 from shutil import rmtree
+import __init__
 import shared
 
 rescaling_name = "rescale"
@@ -29,7 +30,7 @@ def main():
 
     # TODO: Read in rescaling options from config
 
-    from make_video import convert_to_video
+    from video.make_video import convert_to_video
 
     for dir_name, subdirList, fileList in os.walk(top_dir):
         if dir_name.endswith('raw'):

@@ -1,5 +1,6 @@
 import os, sys
 from shutil import rmtree
+import __init__
 from shared import mkdir_graceful
 
 def convert_to_video(frame_dir, video_file, frame_rate=27, rotate=False):
@@ -23,4 +24,4 @@ if __name__ == "__main__":
     elif len(sys.argv) == 3:
         convert_to_video(sys.argv[1], sys.argv[2])
     else:
-        print "Usage: {0} <frame_dir> <video_file> [frame_rate]"
+        print "Usage: {0} <frame_dir> <video_file> [frame_rate]".format(sys.argv[0])

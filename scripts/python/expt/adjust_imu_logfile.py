@@ -15,6 +15,7 @@ Therefore, for now, we've decided that the best practice is to:
 Of the steps listed above, this script takes care of #2.
 """
 
+import __init__
 import shared
 
 def adjust_imu_logfile(logfile_path, roll_offset, pitch_offset, invert_roll=False, invert_pitch=False):

@@ -10,9 +10,10 @@ This script does the following for an entire experiment directory:
 Uses a config file to specify what to do for every capture directory within the experiment directory. The config file is assumed to be at the top of the experiment directory.
 """
 
+import __init__
 import adjust_imu_logfile
-import rescale
-import make_video
+import image_proc.rescale
+import video.make_video
 import shared
 
 import sys, os

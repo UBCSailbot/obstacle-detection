@@ -22,7 +22,7 @@ set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs
 #  as it belongs to the LeptonSDK submodule.
 add_custom_command(
         OUTPUT ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a
-        COMMAND ${CMAKE_SOURCE_DIR}/scripts/build_leptonSDK.sh ${LEPTONSDK_DIR}
+        COMMAND ${CMAKE_SOURCE_DIR}/scripts/build_scripts/build_leptonSDK.sh ${LEPTONSDK_DIR}
         COMMENT "Building Lepton SDK using scripts/build_leptonSDK.sh"
 )
 add_custom_target(leptonSDK DEPENDS ${LEPTONSDK_DIR}/Debug/libLEPTON_SDK.a)

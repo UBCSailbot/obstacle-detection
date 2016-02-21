@@ -2,8 +2,8 @@
 Rescale an entire experiment directory & generate video from the rescaled frames.
 """
 
-from rescale import rescale
-from make_video import convert_to_video
+from image_proc.rescale import rescale
+from video.make_video import convert_to_video
 
 def rescale_multiple(experiment_dir, horizon_file_name="imuLog.txt", options="--rescaling-type 3 --paint-horizon", description="rescaled_median_w1"):
 
