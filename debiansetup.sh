@@ -15,6 +15,10 @@
 #  - A working internet connection is needed to install any missing 
 # 	  packages as well as the git submodules.
 #
+#  If you're having problems cloning git repos, check that ssh-agent
+#   has your private key loaded. For reference, see e.g.
+#   https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
+#
 
 # Update package manager indices to latest available.
 sudo apt-get update
