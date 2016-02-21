@@ -11,12 +11,16 @@ ImageFeedZmq::~ImageFeedZmq() {
     }
 }
 
-bool ImageFeedZmq::init() {
+bool ImageFeedZmq::init(int port) {
     // Create the socket
     m_socket = new zmq::socket_t(m_ctx, ZMQ_PUB);
 
+    std::string zmq_base = "tcp://127.0.0.1:";
+    std::string port_str = std::to_string(port);
+
     // Bind the socket
-    m_socket->bind("ipc:///tmp/sailbot-irframes");
+    m_socket->bind( (zmq_base.append(port_str)).c_str() );
+
 
     // Apparently this always succeeds
     return true;
@@ -45,4 +49,3 @@ bool ImageFeedZmq::sendFrame(const uint8_t *buf, size_t size) {
 void ImageFeedZmq::zmqFree(void *data, void *hint) {
     free(data);
 }
-

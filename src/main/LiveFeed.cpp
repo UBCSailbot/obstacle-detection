@@ -30,13 +30,13 @@ LiveFeed::LiveFeed(ImageStream *stream, const DLibProcessor &dLibProcessor, char
 void LiveFeed::beforeCapture() {
 
     std::cout << "Starting Capture" << endl;
-    zmqfeed.init();
+    zmqfeed.init(5555);
     if (runImu) {
         imu = new ParallelIMU;
         char imuFileName[128];
         sprintf(imuFileName, "%s/imuLog.txt", this->output_dir);
         imuLog.open(imuFileName);
-    }
+    } 
 }
 
 void LiveFeed::onImageRead(Image16bit image) {
