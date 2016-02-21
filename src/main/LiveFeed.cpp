@@ -36,7 +36,7 @@ void LiveFeed::beforeCapture() {
         char imuFileName[128];
         sprintf(imuFileName, "%s/imuLog.txt", this->output_dir);
         imuLog.open(imuFileName);
-    } 
+    }
 }
 
 void LiveFeed::onImageRead(Image16bit image) {
@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
         DLibProcessor dLibProcessor(detectors);
         while (1) {
             LiveFeed liveFeed(new ThermalCameraStream(LeptonRegistry::getLepton0()),
-                              dLibProcessor, argv[3], false);
+                              dLibProcessor, argv[3], string(argv[2]) == "imu_enabled");
 
             try {
                 liveFeed.record();
