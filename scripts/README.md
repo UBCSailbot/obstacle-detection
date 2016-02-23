@@ -3,7 +3,7 @@
 This folder contains miscellaneous scripts used in the development and operation
  of obstacle-avoidance.
 
- # Contents
+ ## Contents
  -   **build_scripts/** - Accessory scripts used in building various components of the code base,
       usually external libraries included as git submodules. **The relative paths to these are
       referenced directly from CMake and Bamboo, so please do not move them unless you really know what you are doing.**
