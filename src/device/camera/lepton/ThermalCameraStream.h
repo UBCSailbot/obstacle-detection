@@ -5,9 +5,9 @@
 #include <io/ImageStream.h>
 #include "Lepton.h"
 
-class ThermalCameraStream : public ImageStream {
+class ThermalCameraStream: public ImageStream {
 
-public:
+  public:
 
     ThermalCameraStream(Lepton camera);
 
@@ -37,9 +37,9 @@ public:
      */
     int getImageHeight() const override;
 
-private:
+  private:
     Lepton _lepton;
-    std::chrono::time_point<std::chrono::system_clock> _lastCaptureTime;
+    std::chrono::time_point <std::chrono::system_clock> _lastCaptureTime;
     double _periodSeconds;
 
     uint16_t *_frameBuffer;

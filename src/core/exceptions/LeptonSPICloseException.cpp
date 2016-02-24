@@ -4,9 +4,9 @@
 
 #include "LeptonSPICloseException.h"
 
-const char* closeErrMessage_;
+const char *closeErrMessage_;
 
-const char* LeptonSPICloseException::what(){
-       return closeErrMessage_;
- }
+const char *LeptonSPICloseException::what() {
+    return closeErrMessage_;
+}
 

@@ -16,7 +16,7 @@
  */
 class ObstacleDetector {
 
-public:
+  public:
 
     /**
      * Given a frame and a horizon line, detect the presence and/or position of any

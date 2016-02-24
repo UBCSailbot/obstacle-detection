@@ -16,7 +16,7 @@
  */
 class Paths {
 
-public:
+  public:
 
     /**
      * Concatenates two paths, usually a full directory path with the name of
@@ -51,9 +51,9 @@ public:
      * RETURN: a list of the files in the specified directory whose names match
      *  the specified filter.
      */
-    static std::vector<std::string> generateListOfFiles(const std::string &inputDir,
-                                                        const std::string &fileNameFilter);
-private:
+    static std::vector <std::string> generateListOfFiles(const std::string &inputDir,
+                                                         const std::string &fileNameFilter);
+  private:
     /**
     * PARAM: A std string that describes a directory in the file system.
     * RETURN: A QDir object corresponding to the same path.

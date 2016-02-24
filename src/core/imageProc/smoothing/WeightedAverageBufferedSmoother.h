@@ -14,15 +14,15 @@
  * Keeps a running average of the past _BUFFER_SIZE values seen,
  *  where _BUFFER_SIZE is the size of this object's recent memory.
  */
-class AveragedBufferedSmoother : public BufferedSmoother {
-public:
+class AveragedBufferedSmoother: public BufferedSmoother {
+  public:
     static const int DEFAULT_BUFFER_SIZE = 100;
 
     AveragedBufferedSmoother();
     AveragedBufferedSmoother(int bufferSize);
-    virtual int calculateSmoothedValue(int currentValue, float weight=1);
+    virtual int calculateSmoothedValue(int currentValue, float weight = 1);
 
-protected:
+  protected:
     std::queue<long> _valueBuffer;
     long _bufferRunningSum = 0;
     std::queue<float> _weightBuffer;

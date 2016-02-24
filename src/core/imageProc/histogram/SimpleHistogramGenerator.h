@@ -8,13 +8,12 @@
 
 #include "HistogramGenerator.h"
 
-class SimpleHistogramGenerator : public HistogramGenerator {
+class SimpleHistogramGenerator: public HistogramGenerator {
 
-public:
+  public:
     ImageHistogram generateHistogram(const cv::Mat &image) const {
         return ImageHistogram(image);
     }
-
 
 };
 

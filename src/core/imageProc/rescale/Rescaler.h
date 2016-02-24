@@ -10,7 +10,7 @@
 
 class Rescaler {
 
-public:
+  public:
     virtual void scale16bitTo8bit(const Image16bit &src, Image8bit &dst) = 0;
 
 };

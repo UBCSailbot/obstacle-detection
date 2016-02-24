@@ -7,10 +7,10 @@
 
 #include <exception>
 
-class EndOfStreamException : public std::exception {
+class EndOfStreamException: public std::exception {
 
-public:
-    EndOfStreamException() {}
+  public:
+    EndOfStreamException() { }
 };
 
 #endif //OBSTACLE_DETECTION_ENDOFSTREAMEXCEPTION_H

@@ -9,7 +9,7 @@
 
 int run(std::string endpointAddress, std::string portNumber, int leptonID) {
 
-    ImageStream* stream;
+    ImageStream *stream;
 
 #ifdef DEBUG
     std::string inputFrameDir = Paths::join(Resources::RESOURCE_DIR, "img/16bit");
@@ -27,7 +27,7 @@ int run(std::string endpointAddress, std::string portNumber, int leptonID) {
     return 0;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
     if (argc < 3) {
         std::cout << "Usage: " << APPNAME << " [IPv4_address] [port#] [leptonID]" << std::endl;

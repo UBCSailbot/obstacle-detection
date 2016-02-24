@@ -6,11 +6,10 @@
 
 Line::Line(const cv::Point2f startPoint, const cv::Point2f endPoint) :
     _startPoint(startPoint), _endPoint(endPoint),
-    _vector(_endPoint.x - _startPoint.x, _endPoint.y - _startPoint.y)
-    {
-        _xComponent = _endPoint.x - _startPoint.x;
-        _yComponent = _endPoint.y - _startPoint.y;
-    }
+    _vector(_endPoint.x - _startPoint.x, _endPoint.y - _startPoint.y) {
+    _xComponent = _endPoint.x - _startPoint.x;
+    _yComponent = _endPoint.y - _startPoint.y;
+}
 
 Vector2d Line::getVector() const {
     return _vector;
@@ -29,7 +28,7 @@ bool Line::operator==(const Line &other) const {
 }
 
 double Line::calculateMagnitude() const {
-    return pow( pow(_xComponent, 2) + pow(_yComponent, 2), 0.5);
+    return pow(pow(_xComponent, 2) + pow(_yComponent, 2), 0.5);
 }
 
 double Line::findPointClosestTo(const cv::Point2f pointOfInterest) const {

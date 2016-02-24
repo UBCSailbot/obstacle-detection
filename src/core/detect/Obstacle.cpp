@@ -4,25 +4,22 @@
 
 #include "Obstacle.h"
 
-Obstacle::Obstacle(std::vector<cv::Point2f> vertices, const Horizon &horizon) :
-        _vertices(vertices), _horizon(horizon)
-{
-    if (vertices.size() < 2)
-    {
+Obstacle::Obstacle(std::vector <cv::Point2f> vertices, const Horizon &horizon) :
+    _vertices(vertices), _horizon(horizon) {
+
+    if (vertices.size() < 2) {
         throw std::invalid_argument("At least 2 vertices must be passed in to "
-                                            "constructor for Obstacle.");
+                                        "constructor for Obstacle.");
     }
 
     std::sort(_vertices.begin(), _vertices.end(), ObstaclePointComparator(_horizon));
 }
 
-const std::vector<cv::Point2f> Obstacle::getVertices() const
-{
+const std::vector <cv::Point2f> Obstacle::getVertices() const {
     return _vertices;
 }
 
-size_t Obstacle::numVertices() const
-{
+size_t Obstacle::numVertices() const {
     return _vertices.size();
 }
 

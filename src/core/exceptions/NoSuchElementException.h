@@ -7,12 +7,11 @@
 
 #include <stdexcept>
 
-class NoSuchElementException : public std::logic_error {
+class NoSuchElementException: public std::logic_error {
 
-public:
-    NoSuchElementException(const char* message) :
-            std::logic_error::logic_error(message)
-    {}
+  public:
+    NoSuchElementException(const char *message) :
+        std::logic_error::logic_error(message) { }
 
 };
 

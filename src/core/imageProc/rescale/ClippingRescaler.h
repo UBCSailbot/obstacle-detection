@@ -16,18 +16,18 @@
 #include "imageProc/histogram/HorizonImageHistogram.h"
 
 
-class ClippingRescaler : public Rescaler {
+class ClippingRescaler: public Rescaler {
 
-public:
+  public:
     ClippingRescaler(HistogramGenerator *histogramGenerator,
                      CentralTendencyGetter *centralTendencyGetter);
     virtual ~ClippingRescaler();
 
     virtual void scale16bitTo8bit(const Image16bit &src, Image8bit &dst);
 
-private:
-    HistogramGenerator* _histogramGenerator;
-    CentralTendencyGetter* _centralTendencyGetter;
+  private:
+    HistogramGenerator *_histogramGenerator;
+    CentralTendencyGetter *_centralTendencyGetter;
 
 };
 

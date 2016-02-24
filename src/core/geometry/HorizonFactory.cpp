@@ -5,9 +5,7 @@
 //
 // Created by paul on 17/01/16.
 
-HorizonFactory::HorizonFactory(ICameraSpecifications specs) : _cameraSpecs(specs)
-{}
-
+HorizonFactory::HorizonFactory(ICameraSpecifications specs) : _cameraSpecs(specs) { }
 
 
 Horizon HorizonFactory::makeHorizon(Orientation o) const {
@@ -25,15 +23,14 @@ Horizon HorizonFactory::makeHorizon(Orientation o) const {
                    cv::Point2f(_cameraSpecs.pixelWidth, heightRight));
 }
 
-double HorizonFactory::pitchHorizonPixelShift(double angle, ICameraSpecifications spec) const{
+double HorizonFactory::pitchHorizonPixelShift(double angle, ICameraSpecifications spec) const {
     return angle * 180 / (spec.FOVDegreesVertical * M_PI) * spec.pixelHeight;
 }
 
 double HorizonFactory::rollHorizonPixelShift(double angle, ICameraSpecifications spec) const {
     if (std::abs(angle - M_PI / 2) < 0.0001) {
         return std::numeric_limits<double>::max();
-    }
-    else {
+    } else {
         return tan(angle) * (double) spec.pixelWidth / 2.0;
     }
 }

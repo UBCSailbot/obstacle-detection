@@ -4,13 +4,17 @@
 
 #include "RoboPeakUSBDisplay.h"
 
-static void onStatusUpdated(const rpusbdisp_status_normal_packet_t& status) {
-    printf("Status: %02X, Touch: %02X, X: %d, Y: %d\n", status.display_status, status.touch_status, status.touch_x, status.touch_y);
+static void onStatusUpdated(const rpusbdisp_status_normal_packet_t &status) {
+    printf("Status: %02X, Touch: %02X, X: %d, Y: %d\n",
+           status.display_status,
+           status.touch_status,
+           status.touch_x,
+           status.touch_y);
 }
 
 RoboPeakUSBDisplay::RoboPeakUSBDisplay() {
-    _frameBuffer = (uint16_t*)malloc(DISPLAY_WIDTH* DISPLAY_HEIGHT*2);
-    uint16_t* p = _frameBuffer;
+    _frameBuffer = (uint16_t *) malloc(DISPLAY_WIDTH * DISPLAY_HEIGHT * 2);
+    uint16_t *p = _frameBuffer;
 
     for (int y = 0; y < DISPLAY_HEIGHT; y++) {
         for (int x = 0; x < DISPLAY_WIDTH; x++, p++) {
@@ -58,16 +62,16 @@ void RoboPeakUSBDisplay::displayColored(const cv::Mat &image) {
 
 
 void RoboPeakUSBDisplay::putMatIntoFrameBuffer(const cv::Mat &displayed) {
-    uint16_t* p = _frameBuffer;
-    for(int y = 0; y < displayed.rows; y++) {
-        for (int x = 0; x < displayed.cols; x ++, p ++) {
+    uint16_t *p = _frameBuffer;
+    for (int y = 0; y < displayed.rows; y++) {
+        for (int x = 0; x < displayed.cols; x++, p++) {
             uint16_t value = displayed.at<uint16_t>(y, x);
             *p = value;
         }
         p = _frameBuffer + (y * RoboPeakUSBDisplay::DISPLAY_WIDTH);
     }
 
-    _frameCounter ++;
+    _frameCounter++;
 
 //    uint16_t* p = _frameBuffer;
 //    for(int y = 0; y < displayed.rows; y++) {

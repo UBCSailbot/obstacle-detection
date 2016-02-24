@@ -1,6 +1,6 @@
 #include "ImageFeedZmq.h"
 
-ImageFeedZmq::ImageFeedZmq(zmq::context_t& ctx) :
+ImageFeedZmq::ImageFeedZmq(zmq::context_t &ctx) :
     m_ctx(ctx), m_socket(NULL) {
 
 }
@@ -24,14 +24,14 @@ bool ImageFeedZmq::init() {
 
 bool ImageFeedZmq::sendFrame(const uint8_t *buf, size_t size) {
     // Check that we've initialized first
-    if(m_socket == NULL) {
+    if (m_socket == NULL) {
         return false;
     }
 
     /* We need to allocate our own buffer, because we can't
        assume the one we're given will exist long enough */
-    void* nbuf = malloc(size);
-    if(nbuf == NULL) {
+    void *nbuf = malloc(size);
+    if (nbuf == NULL) {
         return false;
     }
     memcpy(nbuf, buf, size);
@@ -43,6 +43,6 @@ bool ImageFeedZmq::sendFrame(const uint8_t *buf, size_t size) {
 }
 
 void ImageFeedZmq::zmqFree(void *data, void *hint) {
-   free(data); 
+    free(data);
 }
 

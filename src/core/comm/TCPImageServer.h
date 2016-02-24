@@ -16,7 +16,7 @@
  */
 class TCPImageServer {
 
-public:
+  public:
 
     /**
      * Sets up a TCPImageServer bound to the given address to
@@ -35,7 +35,7 @@ public:
 
     virtual ~TCPImageServer();
 
-private:
+  private:
     ImageStream &_stream;
     std::string _fullAddress;
 

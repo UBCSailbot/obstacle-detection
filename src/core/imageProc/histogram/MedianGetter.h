@@ -7,9 +7,9 @@
 
 #include "CentralTendencyGetter.h"
 
-class MedianGetter : public CentralTendencyGetter{
+class MedianGetter: public CentralTendencyGetter {
 
-public:
+  public:
 
     MedianGetter() : CentralTendencyGetter(nullptr) { }
 

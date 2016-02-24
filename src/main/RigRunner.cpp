@@ -11,8 +11,9 @@
 bool stop_record = false;
 
 static void hangup_handler(int signum) {
-    if (signum == SIGHUP)
+    if (signum == SIGHUP) {
         stop_record = true;
+    }
 }
 
 void setup_sighandler() {
@@ -25,7 +26,7 @@ void setup_sighandler() {
         cerr << "Failed to initialize signal handler for " << APP_NAME << endl;
 }
 
-void record(char* output_dir, bool verbose) {
+void record(char *output_dir, bool verbose) {
 
     Lepton lepton(0);
     ThermalCameraStream leptonStream(lepton);
@@ -42,15 +43,15 @@ void record(char* output_dir, bool verbose) {
     std::ofstream imuLog;
 
     // timing
-    std::chrono::time_point<std::chrono::system_clock> start, end;
+    std::chrono::time_point <std::chrono::system_clock> start, end;
     float leptonPeriodSeconds = 1 / LEPTON_FPS;
 
     sprintf(imu_file_name, "%s/imuLog.txt", output_dir);
-    imuLog.open (imu_file_name);
+    imuLog.open(imu_file_name);
 
     cout << "Connecting to screen" << endl;
 
-    Display* display = DisplayUtils::connectToDisplay();
+    Display *display = DisplayUtils::connectToDisplay();
 
 
     cout << "Starting Capture" << endl;
@@ -82,27 +83,26 @@ void record(char* output_dir, bool verbose) {
 
     imuLog.flush();
     imuLog.close();
-    cout << "Recording received stopping signal " <<
-    "and terminated gracefully." << endl;
+    cout << "Recording received stopping signal " << "and terminated gracefully." << endl;
 
 }
 
-void printUsage(int argc, char** argv) {
+void printUsage(int argc, char **argv) {
     cout << "Usage: rig_record <output_dir>" << endl;
     cout << "You entered: " << endl;
-    for (int i=0; i<argc; i++)
+    for (int i = 0; i < argc; i++)
         cout << argv[i];
     cout << endl;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
-    if(argc < 2) {
+    if (argc < 2) {
         printUsage(argc, argv);
         return 1;
     }
 
-    char* output_dir = argv[1];
+    char *output_dir = argv[1];
     setup_sighandler();
 
     if (argc == 2) {
@@ -110,7 +110,7 @@ int main(int argc, char** argv) {
     }
 
     else if (argc == 3) {
-        char* arg2 = argv[2];
+        char *arg2 = argv[2];
         if (!strcmp(arg2, "--silent"))
             record(output_dir, false);
     }

@@ -19,22 +19,21 @@
  *  triangular region within which the obstacle might be present in the real world,
  *  relative to the boat's current heading.
  */
-class ObstaclePositionFrame : public HorizonImage {
+class ObstaclePositionFrame: public HorizonImage {
 
-public:
+  public:
     ObstaclePositionFrame(const cv::Mat &frame, const Horizon &horizon,
                           const ICameraSpecifications &cameraSpec,
-                          const std::vector<Obstacle> &obstacles) :
-            HorizonImage(frame, horizon),
-            _obstacles(obstacles),
-            _cameraSpec(cameraSpec)
-    {    }
+                          const std::vector <Obstacle> &obstacles) :
+        HorizonImage(frame, horizon),
+        _obstacles(obstacles),
+        _cameraSpec(cameraSpec) { }
 
     const bool containsObstacle() {
         return !_obstacles.empty();
     }
 
-    const std::vector<Obstacle> getObstacles() const {
+    const std::vector <Obstacle> getObstacles() const {
         return _obstacles;
     }
 
@@ -54,9 +53,9 @@ public:
         return _cameraSpec.FOVDegreesVertical;
     }
 
-private:
+  private:
     //with reference to the horizon
-    std::vector<Obstacle> _obstacles;
+    std::vector <Obstacle> _obstacles;
     ICameraSpecifications _cameraSpec;
 
 };

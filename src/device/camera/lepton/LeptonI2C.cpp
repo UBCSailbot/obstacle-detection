@@ -7,7 +7,6 @@
 bool _connected;
 
 
-
 LEP_CAMERA_PORT_DESC_T _port;
 LEP_SYS_SHUTTER_POSITION_E _lep_sys_shutter_position_e;
 
@@ -18,12 +17,11 @@ int lepton_connect() {
 }
 
 void lepton_perform_ffc() {
-    if(!_connected) {
+    if (!_connected) {
         lepton_connect();
     }
     LEP_RunSysFFCNormalization(&_port);
 }
-
 
 
 void lepton_openShutter() {

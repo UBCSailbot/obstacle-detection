@@ -15,9 +15,9 @@
 #include "exceptions/NoSuchElementException.h"
 
 
-class OrientationFileReader : public ObjectStream<Orientation> {
+class OrientationFileReader: public ObjectStream<Orientation> {
 
-public:
+  public:
     OrientationFileReader(const std::string &imuLogFile,
                           bool invertRoll = false, bool invertPitch = false);
 
@@ -37,8 +37,8 @@ public:
      */
     Orientation next();
 
-private:
-    std::queue<Orientation> _orientations;
+  private:
+    std::queue <Orientation> _orientations;
     bool _invertRoll;
     bool _invertPitch;
 

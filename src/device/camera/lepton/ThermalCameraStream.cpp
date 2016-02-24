@@ -1,9 +1,8 @@
 #include "ThermalCameraStream.h"
 
-ThermalCameraStream::ThermalCameraStream(Lepton camera) : _lepton(camera)
-{
+ThermalCameraStream::ThermalCameraStream(Lepton camera) : _lepton(camera) {
     _lastCaptureTime = std::chrono::system_clock::now();
-    _frameBuffer = (uint16_t*) malloc(VIEWPORT_WIDTH_PIX * VIEWPORT_HEIGHT_PIX * sizeof(uint16_t));
+    _frameBuffer = (uint16_t *) malloc(VIEWPORT_WIDTH_PIX * VIEWPORT_HEIGHT_PIX * sizeof(uint16_t));
     _periodSeconds = 3 / LEPTON_FPS;
 }
 
@@ -14,6 +13,7 @@ ThermalCameraStream::~ThermalCameraStream() {
 Image16bit ThermalCameraStream::nextImage() {
     auto now = std::chrono::system_clock::now();
     auto elapsedSeconds = now - _lastCaptureTime;
+
     if (elapsedSeconds.count() < _periodSeconds) {
         unsigned int sleepTimeMicros = (unsigned int) (_periodSeconds - elapsedSeconds.count()) * 1000 * 1000;
         usleep(sleepTimeMicros);

@@ -7,15 +7,15 @@
 #include <iostream>
 #include <exception>
 
-class LeptonSPICloseException : public std::exception {
-private:
-           const char* closeErrMessage_;
-public:
-	LeptonSPICloseException(const char* errMessage) :
-		closeErrMessage_(errMessage)
-	{};
+class LeptonSPICloseException: public std::exception {
+  private:
+    const char *closeErrMessage_;
 
-	const char* what();
+  public:
+    LeptonSPICloseException(const char *errMessage) :
+        closeErrMessage_(errMessage) { };
+
+    const char *what();
 };
 
 #endif //OBSTACLE_AVOIDANCE_LEPTONSPICLOSEEXCEPTION_H

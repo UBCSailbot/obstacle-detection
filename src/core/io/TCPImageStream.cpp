@@ -2,8 +2,7 @@
 
 TCPImageStream::TCPImageStream(const std::string &endpointAddress,
                                const std::string &portNumber) :
-        _context(1), _socketToServer(_context, ZMQ_REQ)
-{
+    _context(1), _socketToServer(_context, ZMQ_REQ) {
     _socketToServer.connect(("tcp://" + endpointAddress + ":" + portNumber).c_str());
     // TODO: Properly initialize _serverHasNext and the size of the images provided.
     _serverHasNext = true;
@@ -30,7 +29,7 @@ Image16bit TCPImageStream::nextImage() {
     // TODO: Error handling: if the message is of the wrong size
     //   or otherwise malformed, retry a couple times. If that fails,
     //   throw an exception.
-    int status = _socketToServer.recv (&reply);
+    int status = _socketToServer.recv(&reply);
 
     // Deserialize.
     // TODO: Encode serverHasNext in image.

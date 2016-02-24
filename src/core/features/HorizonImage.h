@@ -17,7 +17,7 @@
  */
 class HorizonImage {
 
-public:
+  public:
     HorizonImage(const cv::Mat image, const Horizon &h);
 
     Horizon getHorizon() const;
@@ -35,7 +35,7 @@ public:
      */
     Line calculateCenterLine() const;
 
-protected:
+  protected:
     const cv::Mat _image;
     const Horizon _horizon;
 };

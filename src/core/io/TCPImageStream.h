@@ -12,9 +12,9 @@
  * An image stream that relays images that it receives over a
  *  TCP connection.
  */
-class TCPImageStream : public ImageStream {
+class TCPImageStream: public ImageStream {
 
-public:
+  public:
 
     /**
      * Initializes this image stream by opening a connection to the endpoint at
@@ -52,7 +52,7 @@ public:
      */
     int getImageHeight() const override;
 
-private:
+  private:
     zmq::context_t _context;
     zmq::socket_t _socketToServer;
 

@@ -38,6 +38,7 @@ int ImageHistogram::getMode() {
     if (_tallestBinIndex == -1) {
         calculateModeBinIndex();
     }
+
     return _tallestBinIndex + _minPixelValue;
 }
 
@@ -46,6 +47,7 @@ int ImageHistogram::getMedian() {
     if (_medianBinIndex == -1) {
         calculateMedianBinIndex();
     }
+
     return _medianBinIndex + _minPixelValue;
 }
 
@@ -86,7 +88,8 @@ int ImageHistogram::getNumPixelsWithValue(const int &pixelValue) const {
     if (binIndex < 0 || pixelValue > _maxPixelValue) {
         return 0;
     }
-    return _histogramBins[binIndex]; 
+
+    return _histogramBins[binIndex];
 }
 
 void ImageHistogram::find8bitWindow(const int &middleValue, int &minValue, int &maxValue) const {
@@ -96,16 +99,13 @@ void ImageHistogram::find8bitWindow(const int &middleValue, int &minValue, int &
     if (closeToMin && closeToMax) {
         minValue = _minPixelValue;
         maxValue = _maxPixelValue;
-    }
-    else if (closeToMin) {
+    } else if (closeToMin) {
         minValue = _minPixelValue;
         maxValue = minValue + 255;
-    }
-    else if (closeToMax) {
+    } else if (closeToMax) {
         maxValue = _maxPixelValue;
         minValue = maxValue - 255;
-    }
-    else {
+    } else {
         // range of pixel values in native image is wider than 8 bits
         minValue = middleValue - 127;
         maxValue = middleValue + 128;
@@ -117,8 +117,8 @@ int ImageHistogram::getNumPixels() const {
 }
 
 void ImageHistogram::populateHistogram(const cv::Mat &image) {
-    for (int row=0; row < image.rows; row++) {
-        for (int col=0; col < image.cols; col++) {
+    for (int row = 0; row < image.rows; row++) {
+        for (int col = 0; col < image.cols; col++) {
             int i = image.at<uint16_t>(row, col) - _minPixelValue;
             _histogramBins[i]++;
             _numPixels++;

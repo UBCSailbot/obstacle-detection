@@ -41,7 +41,7 @@ static uint8_t bits = 8;
 static uint32_t speed = 16000000;
 
 class Lepton {
-public:
+  public:
     Lepton();
 
     /**
@@ -61,17 +61,16 @@ public:
      */
     void performFFC();
 
-private:
+  private:
     char _device[15];
-    uint8_t _result[PACKET_SIZE*PACKETS_PER_FRAME];
+    uint8_t _result[PACKET_SIZE * PACKETS_PER_FRAME];
 
     uint16_t *_frameBuffer;
     int _spiFileDescriptor;
     int _spiID;
 };
 
-static void pabort(const char *s)
-{
+static void pabort(const char *s) {
     perror(s);
     abort();
 }

@@ -36,15 +36,15 @@ void rescale(const string &inputFrameDir, const string &outputFrameDir, const st
              bool invertRoll, bool invertPitch, bool display);
 
 
-vector<uchar> imgToBuff(Image8bit img){
-    vector<uchar> buff;//buffer for coding
+vector <uchar> imgToBuff(Image8bit img) {
+    vector <uchar> buff;//buffer for coding
     vector<int> param = vector<int>(2);
 
-    param[0]=CV_IMWRITE_PNG_COMPRESSION;
+    param[0] = CV_IMWRITE_PNG_COMPRESSION;
 
-    param[1]=3;//default(3)  0-9.
-    imencode(".png",img,buff,param);
-    cout<<"coded file size(png)"<<buff.size()<<endl;
+    param[1] = 3;//default(3)  0-9.
+    imencode(".png", img, buff, param);
+    cout << "coded file size(png)" << buff.size() << endl;
     return buff;
 }
 
@@ -53,90 +53,90 @@ Rescaler *buildRescaler(const string &imuLogFilePath, const RescalingType &typeO
 
 // TODO: This program makes use of some classes that use assert.
 // TODO: Replace the remaining assert statements with exceptions.
-int main(int argc, const char* const* argv) {
+int main(int argc, const char *const *argv) {
 
     try {
 
         CmdLine cmd("Rescale a directory of image frames.", ' ', VERSION_NUMBER);
 
-        UnlabeledValueArg<string> inputFramesArg("input-frame-dir",
-                 "Directory containing frames to rescale.",
-                 true,
-                 "",
-                 "input-dir",
-                 cmd);
+        UnlabeledValueArg <string> inputFramesArg("input-frame-dir",
+                                                  "Directory containing frames to rescale.",
+                                                  true,
+                                                  "",
+                                                  "input-dir",
+                                                  cmd);
 
-        UnlabeledValueArg<string> outputFramesArg("output-frame-dir",
-                 "Directory to which rescaled frames should be written.",
-                 true,
-                 "",
-                 "output-dir",
-                 cmd);
+        UnlabeledValueArg <string> outputFramesArg("output-frame-dir",
+                                                   "Directory to which rescaled frames should be written.",
+                                                   true,
+                                                   "",
+                                                   "output-dir",
+                                                   cmd);
 
-        ValueArg<string> horizonRescaleArg("i",
-                "imu-logfile",
-                "Perform rescaling based on the position of the horizon.",
-                false,
-                "NULL",
-                "location of IMU log file",
-                cmd);
+        ValueArg <string> horizonRescaleArg("i",
+                                            "imu-logfile",
+                                            "Perform rescaling based on the position of the horizon.",
+                                            false,
+                                            "NULL",
+                                            "location of IMU log file",
+                                            cmd);
 
         SwitchArg paintHorizonArg("p",
-               "paint-horizon",
-               "Paint the horizon on each frame. Must be specified with an IMU log file.",
-               cmd,
-               false);
+                                  "paint-horizon",
+                                  "Paint the horizon on each frame. Must be specified with an IMU log file.",
+                                  cmd,
+                                  false);
 
         SwitchArg numberFramesArg("n",
-                "number-frames",
-                "Label each frame with its number (helps with debugging).",
-                cmd,
-                false);
+                                  "number-frames",
+                                  "Label each frame with its number (helps with debugging).",
+                                  cmd,
+                                  false);
 
         SwitchArg invertRollArg("",
-               "invert-roll",
-               "Invert the roll axis in parsing horizon info.",
-               cmd,
-               false);
+                                "invert-roll",
+                                "Invert the roll axis in parsing horizon info.",
+                                cmd,
+                                false);
 
         SwitchArg invertPitchArg("",
-               "invert-pitch",
-               "Invert the pitch axis in parsing horizon info.",
-               cmd,
-               false);
+                                 "invert-pitch",
+                                 "Invert the pitch axis in parsing horizon info.",
+                                 cmd,
+                                 false);
 
         ValueArg<int> smoothingArg("w",
-                "smoothing-window",
-                "Whether rescaling should be smoothed across multiple frames.",
-                false,
-                1,
-                "smoothing",
-                cmd);
+                                   "smoothing-window",
+                                   "Whether rescaling should be smoothed across multiple frames.",
+                                   false,
+                                   1,
+                                   "smoothing",
+                                   cmd);
 
         SwitchArg displayArg("d",
-                "display",
-                "Whether to display the frames as video as rescaling is being performed.",
-                cmd,
-                false);
+                             "display",
+                             "Whether to display the frames as video as rescaling is being performed.",
+                             cmd,
+                             false);
 
         vector<int> typesOfRescaling;
         typesOfRescaling.push_back(1);
         typesOfRescaling.push_back(2);
         typesOfRescaling.push_back(3);
-        ValuesConstraint<int> typeConstraint( typesOfRescaling );
+        ValuesConstraint<int> typeConstraint(typesOfRescaling);
 
         ValueArg<int> typeArg("t",
-                 "rescaling-type",
-                 "Type of rescaling to perform (default is `simple'): "
-                 "\t1: simple"
-                 "\t2: modal"
-                 "\t3: median" ,
-                 false,
-                 1,
-                 &typeConstraint,
-                 cmd);
+                              "rescaling-type",
+                              "Type of rescaling to perform (default is `simple'): "
+                                  "\t1: simple"
+                                  "\t2: modal"
+                                  "\t3: median",
+                              false,
+                              1,
+                              &typeConstraint,
+                              cmd);
 
-        cmd.parse( argc, argv );
+        cmd.parse(argc, argv);
 
         string inputFrameDir = inputFramesArg.getValue();
         string outputFrameDir = outputFramesArg.getValue();
@@ -158,11 +158,18 @@ int main(int argc, const char* const* argv) {
 
 }
 
-void rescale(const string &inputFrameDir, const string &outputFrameDir, const string &imuLogFilePath,
-             RescalingType typeOfRescaling, int smoothingWindow, bool paintHorizon, bool numberFrames, bool invertRoll, bool invertPitch,
+void rescale(const string &inputFrameDir,
+             const string &outputFrameDir,
+             const string &imuLogFilePath,
+             RescalingType typeOfRescaling,
+             int smoothingWindow,
+             bool paintHorizon,
+             bool numberFrames,
+             bool invertRoll,
+             bool invertPitch,
              bool display) {
 
-    vector<string> frameList = Paths::generateListOfFiles(inputFrameDir, "*.png");
+    vector <string> frameList = Paths::generateListOfFiles(inputFrameDir, "*.png");
 
     Rescaler *rescaler = buildRescaler(imuLogFilePath, typeOfRescaling, smoothingWindow, invertRoll, invertPitch);
 
@@ -170,7 +177,7 @@ void rescale(const string &inputFrameDir, const string &outputFrameDir, const st
     HorizonFactory horizonFactory(LeptonCameraSpecifications);
     SimpleRescaler exampleRescaler;
 
-    for (int i=0; i < frameList.size(); i++) {
+    for (int i = 0; i < frameList.size(); i++) {
         string frameFile = frameList[i];
 #ifdef DEBUG
         cout << frameFile << endl;
@@ -180,7 +187,7 @@ void rescale(const string &inputFrameDir, const string &outputFrameDir, const st
         Image16bit rawFrame = ImageReader::read16bitImage(frameFilePath);
         Image8bit rescaledFrame(rawFrame.rows, rawFrame.cols);
 
-        try{
+        try {
             rescaler->scale16bitTo8bit(rawFrame, rescaledFrame);
         }
         catch (NoSuchElementException e) {
@@ -196,20 +203,18 @@ void rescale(const string &inputFrameDir, const string &outputFrameDir, const st
         if (numberFrames) {
             ostringstream text;
             text << i;
-            putText(outputFrame, text.str().c_str(), cv::Point(4,14), cv::FONT_HERSHEY_PLAIN, 0.8, Scalar(0,255,0));
+            putText(outputFrame, text.str().c_str(), cv::Point(4, 14), cv::FONT_HERSHEY_PLAIN, 0.8, Scalar(0, 255, 0));
         }
 
         if (paintHorizon) {
-            try{
+            try {
                 Horizon h = horizonFactory.makeHorizon(orientationStream2.next());
-                line(outputFrame, h.getStartPoint(), h.getEndPoint(), Scalar(0,0,255), 1);
-            }
-            catch (NoSuchElementException e) {
+                line(outputFrame, h.getStartPoint(), h.getEndPoint(), Scalar(0, 0, 255), 1);
+            } catch (NoSuchElementException e) {
                 cout << "WARNING: Ran out of IMU coordinates in imu logfile at frame " << i << endl;
                 exit(0);
             }
-        }
-        else {
+        } else {
             outputFrame = rescaledFrame;
         }
 
@@ -223,23 +228,24 @@ void rescale(const string &inputFrameDir, const string &outputFrameDir, const st
             exampleRescaler.scale16bitTo8bit(rawFrame, simpleRescaled);
             resize(simpleRescaled, simpleRescaled, Size(0, 0), 6, 6, INTER_NEAREST);
             imshow("original", simpleRescaled);
+
             int k = waitKey(33 * 3) & 255;
-            if (k == 32 ) {
+
+            if (k == 32) {
                 waitKey(0);
-            }
-            else if (k == 27) {
+            } else if (k == 27) {
                 break;
             }
         }
 
-        vector<uchar> buff = imgToBuff(rescaledFrame);
+        vector <uchar> buff = imgToBuff(rescaledFrame);
         string encoded = base64_encode(buff.data(), buff.size());
         cout << encoded << endl;
         //cout << "size" << buff.size();
-        vector<uchar> decoded = base64_decode(encoded, buff.size());
+        vector <uchar> decoded = base64_decode(encoded, buff.size());
 
 
-        Mat pngimage = imdecode(decoded,CV_LOAD_IMAGE_COLOR);
+        Mat pngimage = imdecode(decoded, CV_LOAD_IMAGE_COLOR);
         //cout << pngimage << endl;
         imwrite(outputFilePath, pngimage);
     }
@@ -252,15 +258,14 @@ Rescaler *buildRescaler(const string &imuLogFilePath, const RescalingType &typeO
 
     bool horizon = imuLogFilePath != "NULL";
 
-    HistogramGenerator* histoGenerator;
-    ObjectStream<Orientation>* orientationStream;
-    CentralTendencyGetter* ctg;
+    HistogramGenerator *histoGenerator;
+    ObjectStream <Orientation> *orientationStream;
+    CentralTendencyGetter *ctg;
 
     if (horizon) {
         orientationStream = new OrientationFileReader(imuLogFilePath, invertRoll, invertPitch);
         histoGenerator = new HorizonHistogramGenerator(orientationStream);
-    }
-    else {
+    } else {
         histoGenerator = new SimpleHistogramGenerator();
     }
 
@@ -284,6 +289,9 @@ Rescaler *buildRescaler(const string &imuLogFilePath, const RescalingType &typeO
             }
             rescaler = new ClippingRescaler(histoGenerator, ctg);
             break;
+        default:
+            break;
     }
+
     return rescaler;
 }

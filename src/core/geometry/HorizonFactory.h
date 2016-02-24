@@ -12,7 +12,7 @@
 
 class HorizonFactory {
 
-public:
+  public:
 
     HorizonFactory(ICameraSpecifications specs);
 
@@ -30,7 +30,7 @@ public:
      */
     Horizon makeNeutralHorizon() const;
 
-private:
+  private:
     ICameraSpecifications _cameraSpecs;
 
     /*

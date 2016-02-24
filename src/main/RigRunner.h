@@ -22,15 +22,14 @@
 #include <display/DisplayUtils.h>
 
 
-
 using namespace std;
 using namespace cv;
 
 static void hangup_handler(int signum);
 void setup_sighandler();
 
-void record(char* output_dir, bool verbose=true );
+void record(char *output_dir, bool verbose = true);
 
-void printUsage(int argc, char** argv);
+void printUsage(int argc, char **argv);
 
 #endif //OBSTACLE_AVOIDANCE_RIGRUNNER_H

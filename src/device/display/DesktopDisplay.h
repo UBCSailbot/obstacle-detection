@@ -18,7 +18,7 @@
  *  monitor.
  */
 class DesktopDisplay: public Display {
-public:
+  public:
     DesktopDisplay();
     DesktopDisplay(std::string windowName);
     virtual ~DesktopDisplay();
@@ -28,7 +28,7 @@ public:
     static const size_t MIN_WIDTH;
     static const size_t MIN_HEIGHT;
 
-private:
+  private:
     std::string _windowName;
 
 };

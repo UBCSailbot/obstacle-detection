@@ -7,9 +7,9 @@
 
 #include "Rescaler.h"
 
-class SimpleRescaler : public Rescaler {
+class SimpleRescaler: public Rescaler {
 
-public:
+  public:
     SimpleRescaler();
     virtual ~SimpleRescaler();
     void scale16bitTo8bit(const Image16bit &src, Image8bit &dst);

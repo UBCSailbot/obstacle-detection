@@ -10,16 +10,17 @@
 
 class CentralTendencyGetter {
 
-public:
-    CentralTendencyGetter(CentralTendencyGetter* decoratedGetter) : _decoratedGetter(decoratedGetter) {}
+  public:
+    CentralTendencyGetter(CentralTendencyGetter *decoratedGetter) : _decoratedGetter(decoratedGetter) { }
+
     virtual ~CentralTendencyGetter() {
         delete _decoratedGetter;
     }
 
     virtual int getCentralTendency(ImageHistogram histogram) = 0;
 
-protected:
-    CentralTendencyGetter* _decoratedGetter;
+  protected:
+    CentralTendencyGetter *_decoratedGetter;
 
 };
 
