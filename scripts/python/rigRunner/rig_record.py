@@ -30,7 +30,7 @@ def stop(process):
 def convert_to_video( frame_dir, imu_file ):
     parent_dir = os.path.dirname( frame_dir )
     tmp_dir = os.path.join(parent_dir, 'tmp')
-    rescale( frame_dir, tmp_dir, horizon_file=imu_file )
+    rescale( frame_dir, tmp_dir, orientation_file=imu_file )
     video_file = os.path.join(parent_dir, 'out.avi')
     vid.convert_to_video(tmp_dir, video_file)
     shutil.rmtree(tmp_dir)

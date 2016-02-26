@@ -22,6 +22,9 @@ GPIO.setup(LED_pin, GPIO.OUT)
 
 
 def record_data_to(data_dir):
+
+    print "RigRunner started."
+
     recording = False
     current_proc = 0
     current_dir = ""
@@ -67,5 +70,5 @@ def main():
     data_dir = sys.argv[1]
     record_data_to(data_dir)
 
-if __name__ is "__main__":
+if __name__ == "__main__":
     main()
