@@ -1,7 +1,7 @@
 #ifndef _ZMQCONTEXTSINGLETON_H
 #define _ZMQCONTEXTSINGLETON_H
 
-#include <zmq.hpp>
+#include "zmq.hpp"
 
 class ZmqContextSingleton {
 public:
