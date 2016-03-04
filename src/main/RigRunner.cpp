@@ -44,7 +44,7 @@ void record(char *output_dir, bool verbose) {
 
     // timing
     std::chrono::time_point <std::chrono::system_clock> start, end;
-    float leptonPeriodSeconds = 1 / LEPTON_FPS;
+    float leptonPeriodSeconds = 1 / Lepton::FPS;
 
     sprintf(imu_file_name, "%s/imuLog.txt", output_dir);
     imuLog.open(imu_file_name);

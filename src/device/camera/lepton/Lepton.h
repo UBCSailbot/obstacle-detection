@@ -22,18 +22,14 @@
 
 #include "types/Image16bit.h"
 
-#define PACKET_SIZE 164
-#define PACKET_SIZE_UINT16 (PACKET_SIZE/2)
-#define PACKETS_PER_FRAME 60
-#define FRAME_SIZE_UINT16 (PACKET_SIZE_UINT16*PACKETS_PER_FRAME)
-
-#define LEPTON_FPS 27
-#define LEPTON_IDENTICAL_FRAMES 3
-#define FFC_FREQ_SEC 30
 
 class Lepton {
 
   public:
+
+    static const int FPS = 27;
+    static const int REPEATING_FRAMES = 3;
+
     /**
      * Defaults to initializing a Lepton on i2c-1 and spi0.
      */
@@ -67,6 +63,11 @@ class Lepton {
   private:
     LeptonSPIConnection _spiConnection;
     LeptonI2CConnection _i2cConnection;
+
+    static const int PACKET_SIZE = 164;
+    static const int PACKET_SIZE_UINT16 = PACKET_SIZE/2;
+    static const int PACKETS_PER_FRAME = 60;
+    static const int FRAME_SIZE_UINT16 = PACKET_SIZE_UINT16 * PACKETS_PER_FRAME;
 
     char _device[15];
     uint8_t _result[PACKET_SIZE * PACKETS_PER_FRAME];
