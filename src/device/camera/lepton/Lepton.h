@@ -6,7 +6,7 @@
 #define OBSTACLE_AVOIDANCE_LEPTON_H
 
 
-#include "LeptonSPI.h"
+#include "LeptonSPIConnection.h"
 #include "LeptonCameraSpecifications.h"
 #include <opencv2/core/core.hpp>
 
@@ -35,20 +35,19 @@
 #define LEPTON_IDENTICAL_FRAMES 3
 #define FFC_FREQ_SEC 30
 
-static const char *device = "/dev/spidev0.0";
-static uint8_t mode;
-static uint8_t bits = 8;
-static uint32_t speed = 16000000;
-
 class Lepton {
+
   public:
+    /**
+     * Defaults to initializing a Lepton on i2c-1 and spi0.
+     */
     Lepton();
 
     /**
-     *
+     * @throws: LeptonSPIOpenException if the connection to the SPI device
+     *  fails to be opened.
      */
     Lepton(int spiChipSelect);
-    virtual ~Lepton();
 
     /**
      * Returns the frame most recently recorded by the Lepton.
@@ -62,12 +61,12 @@ class Lepton {
     void performFFC();
 
   private:
+    LeptonSPIConnection _spiConnection;
+
     char _device[15];
     uint8_t _result[PACKET_SIZE * PACKETS_PER_FRAME];
 
     uint16_t *_frameBuffer;
-    int _spiFileDescriptor;
-    int _spiID;
 };
 
 static void pabort(const char *s) {
