@@ -17,3 +17,6 @@
 [submodule "lib/dlib"]
 	path = lib/dlib
 	url = https://github.com/davisking/dlib.git
+[submodule "lib/cppzmq"]
+	path = lib/cppzmq
+	url = https://github.com/zeromq/cppzmq.git
