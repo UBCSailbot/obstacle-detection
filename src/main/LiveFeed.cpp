@@ -41,7 +41,7 @@ void LiveFeed::onImageRead(Image16bit image) {
     frame_counter++;
     char image_name[128];
 
-    Image8bit frameRescaled(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX);
+    Image8bit frameRescaled(LeptonCameraSpecifications.pixelHeight, LeptonCameraSpecifications.pixelWidth);
     rescaler.scale16bitTo8bit(image, frameRescaled);
 
     sprintf(image_name, "%s/img_%06d.png", output_dir, frame_counter);

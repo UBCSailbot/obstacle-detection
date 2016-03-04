@@ -7,13 +7,9 @@
 
 #include <camera/ICameraSpecifications.h>
 
-#define VIEWPORT_HEIGHT_PIX 60
-#define VIEWPORT_WIDTH_PIX 80
-#define VIEWPORT_FOV_DEGREES_VERTICAL 37
-#define VIEWPORT_FOV_DEGREES_HORIZONTAL 51
 
 /**
- *
+ * A global variable representing the camera constants for the Lepton.
  */
 static const ICameraSpecifications LeptonCameraSpecifications = {
     60,  // pixelHeight

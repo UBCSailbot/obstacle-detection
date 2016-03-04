@@ -15,7 +15,7 @@ void run_single(int lepton_cs) {
     Lepton lepton0(lepton_cs, 1);
     SimpleRescaler rescaler;
 
-    Image16bit frame0(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX);
+    Image16bit frame0(LeptonCameraSpecifications.pixelHeight, LeptonCameraSpecifications.pixelWidth);
     Image8bit displayed0(60, 80);
     int frame_counter = 1;
 

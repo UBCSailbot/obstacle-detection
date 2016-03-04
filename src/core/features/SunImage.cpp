@@ -58,7 +58,7 @@ Rect2f SunImage::getSunPosition() const {
 void SunImage::findGlintColumn() {
     float offset = _horizon.getStartPoint().y;
     float y = _horizon.getEndPoint().y - _horizon.getStartPoint().y;
-    float x = VIEWPORT_WIDTH_PIX - 1;
+    float x = LeptonCameraSpecifications.pixelWidth - 1;
 
     float magnitude = pow((pow(x, 2) + pow(y, 2)), 0.5);
     x = x / magnitude;
@@ -101,20 +101,20 @@ void SunImage::findGlintColumn() {
             _leftMargin = new Line(cv::Point2f((leftPoint.y + leftPoint.x * (x / y)) / (x / y),
                                                0.0),
                                    cv::Point2f(
-                                       (leftPoint.y + leftPoint.x * (x / y) - (VIEWPORT_HEIGHT_PIX - 1)) / (x / y),
-                                       static_cast<float>(VIEWPORT_HEIGHT_PIX - 1)));
+                                       (leftPoint.y + leftPoint.x * (x / y) - (LeptonCameraSpecifications.pixelHeight - 1)) / (x / y),
+                                       static_cast<float>(LeptonCameraSpecifications.pixelHeight - 1)));
 
             _rightMargin = new Line(cv::Point2f((rightPoint.y + rightPoint.x * (x / y)) / (x / y),
                                                 0.0),
                                     cv::Point2f(
-                                        (rightPoint.y + rightPoint.x * (x / y) - (VIEWPORT_HEIGHT_PIX - 1)) / (x / y),
-                                        static_cast<float>(VIEWPORT_HEIGHT_PIX - 1)));
+                                        (rightPoint.y + rightPoint.x * (x / y) - (LeptonCameraSpecifications.pixelHeight - 1)) / (x / y),
+                                        static_cast<float>(LeptonCameraSpecifications.pixelHeight - 1)));
         } else {
             _leftMargin = new Line(cv::Point2f(leftPoint.x, 0.0),
-                                   cv::Point2f(leftPoint.x, VIEWPORT_HEIGHT_PIX - 1));
+                                   cv::Point2f(leftPoint.x, LeptonCameraSpecifications.pixelHeight - 1));
 
             _rightMargin = new Line(cv::Point2f(rightPoint.x, 0.0),
-                                    cv::Point2f(rightPoint.x, VIEWPORT_HEIGHT_PIX - 1));
+                                    cv::Point2f(rightPoint.x, LeptonCameraSpecifications.pixelHeight - 1));
         }
     }
 }
@@ -135,9 +135,9 @@ bool SunImage::containsGlint() const {
 void SunImage::findMeanVariance() {
     float offset = _horizon.getStartPoint().y;
     float y = _horizon.getEndPoint().y - _horizon.getStartPoint().y;
-    float x = VIEWPORT_WIDTH_PIX - 1;
+    float x = LeptonCameraSpecifications.pixelWidth - 1;
 
-    float magnitude = pow((pow(VIEWPORT_WIDTH_PIX - 1, 2) + pow(y, 2)), 0.5);
+    float magnitude = pow((pow(LeptonCameraSpecifications.pixelWidth - 1, 2) + pow(y, 2)), 0.5);
     x = x / magnitude;
     y = y / magnitude;
 
