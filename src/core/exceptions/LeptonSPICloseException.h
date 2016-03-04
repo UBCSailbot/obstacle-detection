@@ -15,7 +15,7 @@ class LeptonSPICloseException: public std::exception {
     LeptonSPICloseException(const char *errMessage) :
         closeErrMessage_(errMessage) { };
 
-    const char *what();
+    const char *what() const noexcept override;
 };
 
 #endif //OBSTACLE_AVOIDANCE_LEPTONSPICLOSEEXCEPTION_H

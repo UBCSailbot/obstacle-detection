@@ -15,7 +15,7 @@ class LeptonSPIOpenException: public std::exception {
     LeptonSPIOpenException(const char *errMessage) :
         errMessage_(errMessage) { };
 
-    const char *what();
+    const char *what() const noexcept override;
 };
 
 #endif //OBSTACLE_AVOIDANCE_LEPTONSPIOPENEXCEPTION_H

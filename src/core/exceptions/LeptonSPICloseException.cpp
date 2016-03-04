@@ -6,7 +6,6 @@
 
 const char *closeErrMessage_;
 
-const char *LeptonSPICloseException::what() {
+const char *LeptonSPICloseException::what() const noexcept {
     return closeErrMessage_;
 }
-

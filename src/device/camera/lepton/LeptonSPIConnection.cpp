@@ -40,11 +40,12 @@ void LeptonSPIConnection::init() {
         return;
     }
 
-    std::string spiAddress = "/dev/spidev0." + _spiDeviceID;
+    std::string spiAddress = "/dev/spidev0." + std::to_string(_spiDeviceID);
     _spi_cs_fd = ::open(spiAddress.c_str(), O_RDWR);
 
     if (_spi_cs_fd < 0) {
-        throw LeptonSPIOpenException("Error - Could not open SPI device");
+        std::string errMessage = "Error - Could not open SPI device " + spiAddress;
+        throw LeptonSPIOpenException(errMessage.c_str());
     }
 
     int status_value;
@@ -80,5 +81,3 @@ void LeptonSPIConnection::init() {
 
     _connected = true;
 }
-
-
