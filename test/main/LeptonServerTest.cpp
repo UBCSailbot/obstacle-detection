@@ -26,7 +26,6 @@ int main(int argc, char** argv) {
         exit(0);
     }
     std::string address(argv[1]), port(argv[2]);
-    int leptonID = atoi(argv[3]);
 
     TCPImageStream client(address, port);
 #endif

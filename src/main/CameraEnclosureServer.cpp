@@ -7,6 +7,17 @@
 
 #define APPNAME "cameraServer"
 
+/**
+ * Spins up an instance of a server that listens for client requests for
+ *  16bit grayscale images, and replies by sending images drawn from a
+ *  stream. In DEBUG mode, sends test images saved in a local directory;
+ *  otherwise, attempts to connect to the specified Lepton and streams
+ *  ouptut from that device.
+ *
+ * For help on understanding this program, please see the usage notes printed
+ *  in main().
+ */
+
 int run(std::string endpointAddress, std::string portNumber, int leptonID) {
 
     ImageStream *stream;
@@ -20,9 +31,7 @@ int run(std::string endpointAddress, std::string portNumber, int leptonID) {
 
     TCPImageServer server(*stream, endpointAddress, portNumber);
 
-    while (true) {
-        // block indefinitely, keeping the server thread alive
-    }
+    pause();
 
     return 0;
 }
@@ -30,7 +39,14 @@ int run(std::string endpointAddress, std::string portNumber, int leptonID) {
 int main(int argc, char **argv) {
 
     if (argc < 3) {
+        std::cout << std::endl;
         std::cout << "Usage: " << APPNAME << " [IPv4_address] [port#] [leptonID]" << std::endl;
+        std::cout << std::endl;
+        std::cout << "e.g. ./" << APPNAME << " " << "'*' 5555 0" << std::endl;
+        std::cout << std::endl;
+        std:: cout << "This binds an instance of cameraServer to any available interface "
+            "on this device, on port 5555, connecting to a Lepton object "
+            "initialized to be controlled by SPI_CS_0." << std::endl;
         exit(0);
     }
 
