@@ -12,7 +12,7 @@ using namespace std;
 
 void run_single(int lepton_cs) {
 
-    Lepton lepton0(lepton_cs);
+    Lepton lepton0(lepton_cs, 1);
     SimpleRescaler rescaler;
 
     Image16bit frame0(VIEWPORT_HEIGHT_PIX, VIEWPORT_WIDTH_PIX);
@@ -48,8 +48,8 @@ void run_single(int lepton_cs) {
 
 void run_double() {
 
-    Lepton lepton0(0);
-    Lepton lepton1(1);
+    Lepton lepton0(0, 1);
+    Lepton lepton1(1, 1);
     SimpleRescaler rescaler;
 
     Image16bit frame0;

@@ -1,10 +1,12 @@
 #include "Lepton.h"
 
-Lepton::Lepton() : Lepton(0) {
+Lepton::Lepton() : Lepton(0, 1) {
 
 }
 
-Lepton::Lepton(int spiChipSelect) : _spiConnection(spiChipSelect) {
+Lepton::Lepton(int spiChipSelect, int i2cBusID) : _spiConnection(spiChipSelect),
+                                                  _i2cConnection(i2cBusID)
+{
 
 }
 
@@ -66,5 +68,15 @@ Image16bit Lepton::captureFrame() {
 }
 
 void Lepton::performFFC() {
-    lepton_perform_ffc();
+    _i2cConnection.performFFC();
 }
+
+void Lepton::openShutter() {
+    _i2cConnection.openShutter();
+}
+
+void Lepton::closeShutter() {
+    _i2cConnection.closeShutter();
+}
+
+

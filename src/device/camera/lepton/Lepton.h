@@ -1,7 +1,3 @@
-//
-// Created by paul on 10/05/15.
-//
-
 #ifndef OBSTACLE_AVOIDANCE_LEPTON_H
 #define OBSTACLE_AVOIDANCE_LEPTON_H
 
@@ -22,7 +18,7 @@
 #include <stdint.h>
 #include <io/ImageStream.h>
 
-#include "LeptonI2C.h"
+#include "LeptonI2CConnection.h"
 
 #include "types/Image16bit.h"
 
@@ -44,10 +40,14 @@ class Lepton {
     Lepton();
 
     /**
+     * @param: spiChipSelect - the number of the SPI chip select pin that
+     *  enables or disables this Lepton
+     * @param: i2cBusID - the ID of the i2c bus used to control this Lepton
+     *
      * @throws: LeptonSPIOpenException if the connection to the SPI device
      *  fails to be opened.
      */
-    Lepton(int spiChipSelect);
+    Lepton(int spiChipSelect, int i2cBusID);
 
     /**
      * Returns the frame most recently recorded by the Lepton.
@@ -60,18 +60,18 @@ class Lepton {
      */
     void performFFC();
 
+    void openShutter();
+
+    void closeShutter();
+
   private:
     LeptonSPIConnection _spiConnection;
+    LeptonI2CConnection _i2cConnection;
 
     char _device[15];
     uint8_t _result[PACKET_SIZE * PACKETS_PER_FRAME];
 
     uint16_t *_frameBuffer;
 };
-
-static void pabort(const char *s) {
-    perror(s);
-    abort();
-}
 
 #endif //OBSTACLE_AVOIDANCE_LEPTON_H

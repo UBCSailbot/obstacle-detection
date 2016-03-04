@@ -2,20 +2,21 @@
 // Created by Aditi Chakravarthi on 15-06-20.
 //
 
-#include "camera/lepton/LeptonI2C.h"
+#include "camera/lepton/LeptonI2CConnection.h"
 #include <unistd.h>
-
 
 
 int main() {
 
-    lepton_connect();
+    LeptonI2CConnection i2cLepton;
 
-    lepton_closeShutter();
+    i2cLepton.openShutter();
+
+    i2cLepton.closeShutter();
 
     sleep(5);
 
-    lepton_openShutter();
+    i2cLepton.openShutter();
 
 }
 

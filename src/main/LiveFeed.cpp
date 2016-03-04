@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
         }
     } else if (string(argv[1]) == "lepton") {
         while (1) {
-            LiveFeed liveFeed(new ThermalCameraStream(Lepton(0)), dLibProcessor, argv[3], false);
+            LiveFeed liveFeed(new ThermalCameraStream(Lepton(0, 1)), dLibProcessor, argv[3], false);
 
             try {
                 liveFeed.record();

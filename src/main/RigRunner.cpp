@@ -28,7 +28,7 @@ void setup_sighandler() {
 
 void record(char *output_dir, bool verbose) {
 
-    Lepton lepton(0);
+    Lepton lepton(0, 1);
     ThermalCameraStream leptonStream(lepton);
     ParallelIMU imu;
     SimpleRescaler rescaler;
