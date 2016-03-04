@@ -2,7 +2,7 @@
 #define _IMAGEFEEDZMQ
 
 #include "ZmqContextSingleton.h"
-#include "zmq.hpp"
+#include <zmq.hpp>
 #include <cstdint>
 
 class ImageFeedZmq {
