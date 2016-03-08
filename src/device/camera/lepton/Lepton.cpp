@@ -12,18 +12,18 @@ Lepton::Lepton(int spiChipSelect, int i2cBusID) : _spiConnection(spiChipSelect),
 
 Image16bit Lepton::captureFrame() {
 
-    // Read data packets from lepton over SPI
+    // Read data packets from Lepton over SPI
     int resets = 0;
     for (int j = 0; j < PACKETS_PER_FRAME; j++) {
-        // If it's a drop packet, reset j to 0, set to -1 so he'll be at 0 again loop
         ssize_t result = read(_spiConnection.getFileDescriptor(),
                               _result + sizeof(uint8_t) * PACKET_SIZE * j,
                               sizeof(uint8_t) * PACKET_SIZE);
 
         // TODO: check that read was successful
         int packetNumber = _result[j * PACKET_SIZE + 1];
-        if (packetNumber != j) {
-            j = -1;
+
+        if (packetNumber != j) { // This suggests that a packet was dropped
+            j = -1; // setting j to -1 means that it will be 0 again at the next iteration of the loop
             resets += 1;
             usleep(1000);
             if (resets == 750) {
@@ -78,5 +78,3 @@ void Lepton::openShutter() {
 void Lepton::closeShutter() {
     _i2cConnection.closeShutter();
 }
-
-
