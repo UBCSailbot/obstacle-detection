@@ -1,6 +1,6 @@
 #include "ThermalCameraStream.h"
 
-ThermalCameraStream::ThermalCameraStream(Lepton camera) : _lepton(camera) {
+ThermalCameraStream::ThermalCameraStream(Lepton& camera) : _lepton(camera) {
     _lastCaptureTime = std::chrono::system_clock::now();
     _frameBuffer = (uint16_t *) malloc(LeptonCameraSpecifications.pixelWidth * LeptonCameraSpecifications.pixelHeight * sizeof(uint16_t));
     _periodSeconds = Lepton::REPEATING_FRAMES / Lepton::FPS;

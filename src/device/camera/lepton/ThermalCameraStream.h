@@ -9,7 +9,7 @@ class ThermalCameraStream: public ImageStream {
 
   public:
 
-    ThermalCameraStream(Lepton camera);
+    ThermalCameraStream(Lepton& camera);
 
     virtual ~ThermalCameraStream();
 
