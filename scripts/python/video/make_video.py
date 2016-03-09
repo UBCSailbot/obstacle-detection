@@ -3,12 +3,12 @@ from shutil import rmtree
 import __init__
 from shared import mkdir_graceful
 
-def convert_to_video(frame_dir, video_file, frame_rate=27, rotate=False):
+def convert_to_video(frame_dir, video_file, frame_rate=9, rotate=False):
   rotate_str = ""
   if rotate:
     rotate_str = "-vf \"transpose=2\""
 
-  cmd_str = "ffmpeg -r {fps} -i \"{input}\" {transform} {output}"\
+  cmd_str = "avconv -r {fps} -i \"{input}\" {transform} {output}"\
     .format(input=os.path.join(frame_dir, "img_%06d.png"), \
             fps=frame_rate,\
             transform=rotate_str,
