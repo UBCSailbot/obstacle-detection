@@ -1,9 +1,5 @@
 #include "Lepton.h"
 
-Lepton::Lepton() : Lepton(0, 1) {
-
-}
-
 Lepton::Lepton(int spiChipSelect, int i2cBusID) : _spiConnection(spiChipSelect),
                                                   _i2cConnection(i2cBusID)
 {

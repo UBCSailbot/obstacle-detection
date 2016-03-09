@@ -27,23 +27,10 @@ class Lepton {
 
   public:
 
+    friend class LeptonRegistry;
+
     static const int FPS = 27;
     static const int REPEATING_FRAMES = 3;
-
-    /**
-     * Defaults to initializing a Lepton on i2c-1 and spi0.
-     */
-    Lepton();
-
-    /**
-     * @param: spiChipSelect - the number of the SPI chip select pin that
-     *  enables or disables this Lepton
-     * @param: i2cBusID - the ID of the i2c bus used to control this Lepton
-     *
-     * @throws: LeptonSPIOpenException if the connection to the SPI device
-     *  fails to be opened.
-     */
-    Lepton(int spiChipSelect, int i2cBusID);
 
     /**
      * Returns the frame most recently recorded by the Lepton.
@@ -61,6 +48,17 @@ class Lepton {
     void closeShutter();
 
   private:
+
+    /**
+     * @param: spiChipSelect - the number of the SPI chip select pin that
+     *  enables or disables this Lepton
+     * @param: i2cBusID - the ID of the i2c bus used to control this Lepton
+     *
+     * @throws: LeptonSPIOpenException if the connection to the SPI device
+     *  fails to be opened.
+     */
+    Lepton(int spiChipSelect, int i2cBusID);
+
     LeptonSPIConnection _spiConnection;
     LeptonI2CConnection _i2cConnection;
 

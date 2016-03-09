@@ -2,6 +2,7 @@
 #include "display/Display.h"
 #include <display/DisplayUtils.h>
 #include <camera/lepton/Lepton.h>
+#include <camera/lepton/LeptonRegistry.h>
 #include "types/Image8bit.h"
 #include "types/Image16bit.h"
 #include "imageProc/rescale/SimpleRescaler.h"
@@ -12,7 +13,7 @@ using namespace std;
 
 void run_single(int lepton_cs) {
 
-    Lepton lepton0(lepton_cs, 1);
+    Lepton lepton0 = LeptonRegistry::instance().getLepton0();
     SimpleRescaler rescaler;
 
     Image16bit frame0(LeptonCameraSpecifications.pixelHeight, LeptonCameraSpecifications.pixelWidth);
@@ -48,8 +49,8 @@ void run_single(int lepton_cs) {
 
 void run_double() {
 
-    Lepton lepton0(0, 1);
-    Lepton lepton1(1, 1);
+    Lepton lepton0 = LeptonRegistry::instance().getLepton0();
+    Lepton lepton1 =  LeptonRegistry::instance().getLepton1();
     SimpleRescaler rescaler;
 
     Image16bit frame0;

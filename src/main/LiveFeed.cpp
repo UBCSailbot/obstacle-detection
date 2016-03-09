@@ -2,6 +2,7 @@
 // Created by paul on 2015/05/09
 
 #include <camera/lepton/ThermalCameraStream.h>
+#include <camera/lepton/LeptonRegistry.h>
 #include "LiveFeed.h"
 
 #define APP_NAME "live_feed"
@@ -94,7 +95,8 @@ int main(int argc, char **argv) {
         }
     } else if (string(argv[1]) == "lepton") {
         while (1) {
-            LiveFeed liveFeed(new ThermalCameraStream(Lepton(0, 1)), dLibProcessor, argv[3], false);
+            LiveFeed liveFeed(new ThermalCameraStream(LeptonRegistry::instance().getLepton0()),
+                              dLibProcessor, argv[3], false);
 
             try {
                 liveFeed.record();

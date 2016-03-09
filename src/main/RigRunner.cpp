@@ -4,6 +4,7 @@
 
 #include <geometry/HorizonFactory.h>
 #include <camera/lepton/ThermalCameraStream.h>
+#include <camera/lepton/LeptonRegistry.h>
 #include "RigRunner.h"
 
 #define APP_NAME "rig_record"
@@ -28,7 +29,7 @@ void setup_sighandler() {
 
 void record(char *output_dir, bool verbose) {
 
-    Lepton lepton(0, 1);
+    Lepton lepton = LeptonRegistry::instance().getLepton0();
     ThermalCameraStream leptonStream(lepton);
     ParallelIMU imu;
     SimpleRescaler rescaler;
