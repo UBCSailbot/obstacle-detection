@@ -13,7 +13,6 @@ using namespace std;
 
 void run_single(int lepton_cs) {
 
-    Lepton lepton0 = LeptonRegistry::instance().getLepton0();
     SimpleRescaler rescaler;
 
     Image16bit frame0(LeptonCameraSpecifications.pixelHeight, LeptonCameraSpecifications.pixelWidth);
@@ -30,7 +29,7 @@ void run_single(int lepton_cs) {
 
         // read only every 3rd frame
         if ((frame_counter % 3) == 0) {
-            frame0 = lepton0.captureFrame();
+            frame0 = LeptonRegistry::getLepton0().captureFrame();
             cout << "lepton " << lepton_cs << " got frame " << frame_counter << endl; 
 
             // convert to 8 bit and display
@@ -49,8 +48,6 @@ void run_single(int lepton_cs) {
 
 void run_double() {
 
-    Lepton lepton0 = LeptonRegistry::instance().getLepton0();
-    Lepton lepton1 =  LeptonRegistry::instance().getLepton1();
     SimpleRescaler rescaler;
 
     Image16bit frame0;
@@ -70,10 +67,10 @@ void run_double() {
 
         // read only every 3rd frame
         if ((frame_counter % 3) == 0) {
-            frame0 = lepton0.captureFrame();
+            frame0 = LeptonRegistry::getLepton0().captureFrame();
             //cout << "lepton0 got frame " << frame_counter << endl; 
 
-            frame1 = lepton1.captureFrame();
+            frame1 = LeptonRegistry::getLepton1().captureFrame();
             //cout << "lepton1 got frame " << frame_counter << endl; 
 
             // convert to 8 bit and display

@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
         }
     } else if (string(argv[1]) == "lepton") {
         while (1) {
-            LiveFeed liveFeed(new ThermalCameraStream(LeptonRegistry::instance().getLepton0()),
+            LiveFeed liveFeed(new ThermalCameraStream(LeptonRegistry::getLepton0()),
                               dLibProcessor, argv[3], false);
 
             try {

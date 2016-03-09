@@ -29,8 +29,7 @@ void setup_sighandler() {
 
 void record(char *output_dir, bool verbose) {
 
-    Lepton lepton = LeptonRegistry::instance().getLepton0();
-    ThermalCameraStream leptonStream(lepton);
+    ThermalCameraStream leptonStream(LeptonRegistry::getLepton0());
     ParallelIMU imu;
     SimpleRescaler rescaler;
     HorizonFactory horizonFactory(LeptonCameraSpecifications);
@@ -45,7 +44,6 @@ void record(char *output_dir, bool verbose) {
 
     // timing
     std::chrono::time_point <std::chrono::system_clock> start, end;
-    float leptonPeriodSeconds = 1 / Lepton::FPS;
 
     sprintf(imu_file_name, "%s/imuLog.txt", output_dir);
     imuLog.open(imu_file_name);

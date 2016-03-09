@@ -38,7 +38,7 @@ class ThermalCameraStream: public ImageStream {
     int getImageHeight() const override;
 
   private:
-    Lepton _lepton;
+    Lepton& _lepton;
     std::chrono::time_point <std::chrono::system_clock> _lastCaptureTime;
     double _periodSeconds;
 

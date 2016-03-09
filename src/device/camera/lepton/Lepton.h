@@ -27,9 +27,19 @@ class Lepton {
 
   public:
 
+    /**
+     * This allows the LeptonRegistry class to call the Lepton's private constructor.
+     */
     friend class LeptonRegistry;
 
+    /**
+     * Number of frames per second recorded by the Lepton.
+     */
     static const int FPS = 27;
+
+    /**
+     * Number of frames in a row that are identical to each other.
+     */
     static const int REPEATING_FRAMES = 3;
 
     /**
@@ -47,9 +57,25 @@ class Lepton {
 
     void closeShutter();
 
+    /**
+     * Delete the copy constructor to make sure it doesn't inadvertently get used.
+     */
+    Lepton(Lepton const&) = delete;
+
+    /**
+     * Delete the assignment operator to make sure it doesn't inadvertently get used.
+     */
+    void operator=(Lepton const&) = delete;
+
   private:
 
     /**
+     * This constructor is private so that it can only be called by LeptonRegistry,
+     *  which is a friend class of Lepton. This is to avoid inadvertently
+     *  creating multiple instances of the same Lepton connection, as each
+     *  Lepton object must have sole ownership of the resources it acquires
+     *  in terms of SPI and I2C connections.
+     *
      * @param: spiChipSelect - the number of the SPI chip select pin that
      *  enables or disables this Lepton
      * @param: i2cBusID - the ID of the i2c bus used to control this Lepton

@@ -27,7 +27,7 @@ int run(std::string endpointAddress, std::string portNumber, int leptonID) {
     std::string inputFrameDir = Paths::join(Resources::RESOURCE_DIR, "img/16bit");
     stream = new FileSystemImageStream(inputFrameDir, "*.png");
 #else
-    stream = new ThermalCameraStream(LeptonRegistry::instance().getLepton0());
+    stream = new ThermalCameraStream(LeptonRegistry::getLepton0());
 #endif
 
     TCPImageServer server(*stream, endpointAddress, portNumber);
