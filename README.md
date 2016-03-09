@@ -2,17 +2,19 @@
 
 # dependencies
 
+Note that these are automatically installed for you by [debiansetup.sh](debiansetup.sh).
+
 - opencv 2.4
-- QT 4.8
+- QT 5
 - libusb-1.0-0-dev
-- ZeroMQ 2.2.0
+- ZeroMQ 3.2
 
 # How to build the system
 
 ## Cloning the repository
 
 ```
-  git clone https://github.com/UBCSailbot/obstacle-avoidance.git
+  git clone ssh://git@bitbucket.ubcsailbot.org:7999/fw/obstacle-avoidance.git
 ```
 
 ## If building on Ubuntu or other Debian flavor of Linux
