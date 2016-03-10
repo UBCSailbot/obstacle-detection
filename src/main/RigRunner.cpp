@@ -71,6 +71,7 @@ void record(char *output_dir, bool verbose) {
         sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
         imwrite(img_name, frame);
         imuLog << imu.getOrientation().toDataString();
+        imuLog.flush();
 
         frame_counter++;
 

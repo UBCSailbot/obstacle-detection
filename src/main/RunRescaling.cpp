@@ -36,18 +36,6 @@ void rescale(const string &inputFrameDir, const string &outputFrameDir, const st
              bool invertRoll, bool invertPitch, bool display);
 
 
-vector <uchar> imgToBuff(Image8bit img) {
-    vector <uchar> buff;//buffer for coding
-    vector<int> param = vector<int>(2);
-
-    param[0] = CV_IMWRITE_PNG_COMPRESSION;
-
-    param[1] = 3;//default(3)  0-9.
-    imencode(".png", img, buff, param);
-    cout << "coded file size(png)" << buff.size() << endl;
-    return buff;
-}
-
 Rescaler *buildRescaler(const string &imuLogFilePath, const RescalingType &typeOfRescaling, int smoothingWindow,
                         bool invertRoll, bool invertPitch);
 
@@ -238,16 +226,6 @@ void rescale(const string &inputFrameDir,
             }
         }
 
-        vector <uchar> buff = imgToBuff(rescaledFrame);
-        string encoded = base64_encode(buff.data(), buff.size());
-        cout << encoded << endl;
-        //cout << "size" << buff.size();
-        vector <uchar> decoded = base64_decode(encoded, buff.size());
-
-
-        Mat pngimage = imdecode(decoded, CV_LOAD_IMAGE_COLOR);
-        //cout << pngimage << endl;
-        imwrite(outputFilePath, pngimage);
     }
 
 }
