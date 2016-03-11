@@ -17,7 +17,7 @@ include(lib/device_libs.cmake)
 include(lib/test_libs.cmake)
 
 # include source files. This defines two intermediary targets, both of which are versions
-# of the UBC Sailbot obstacle detecton library: `obstdetect_core` and `obstdetect_full`.
+# of the UBC Sailbot obstacle detection library: `obstdetect_core` and `obstdetect_full`.
 include(src/src.cmake)
 
 # include test files. This defines two intermediary targets: `test_core` and `test_device`.
@@ -27,6 +27,16 @@ include(test/test.cmake)
 include(resources/res.cmake)
 
 
+
+#########
+# FLAGS #
+#########
+
+# Define the command-line flags that should be accessible to programs
+option(DEBUG "Whether to build the project with the DEBUG variable defined at the preprocessor level" OFF)
+if(DEBUG)
+  add_definitions(-DDEBUG)
+endif()
 
 ############
 # PROGRAMS #

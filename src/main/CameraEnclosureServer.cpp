@@ -32,7 +32,9 @@ int run(std::string endpointAddress, std::string portNumber, int leptonID) {
 
     TCPImageServer server(*stream, endpointAddress, portNumber);
 
-    pause();
+    for (;;) {
+        pause(); 
+    }
 
     return 0;
 }
