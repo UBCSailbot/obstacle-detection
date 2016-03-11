@@ -18,14 +18,18 @@
  *  monitor.
  */
 class DesktopDisplay: public Display {
-public:
+  public:
     DesktopDisplay();
+    DesktopDisplay(std::string windowName);
     virtual ~DesktopDisplay();
     void display8bitGray(const Image8bit &image);
     void displayColored(const cv::Mat &image);
 
     static const size_t MIN_WIDTH;
     static const size_t MIN_HEIGHT;
+
+  private:
+    std::string _windowName;
 
 };
 

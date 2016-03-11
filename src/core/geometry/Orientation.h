@@ -11,7 +11,7 @@
 struct Orientation {
     Orientation(double rollRad, double pitchRad, double yawRad);
 
-public:
+  public:
     const double rollRadians;
     const double pitchRadians;
     const double yawRadians;
@@ -35,7 +35,7 @@ public:
      */
     bool operator==(const Orientation &other) const;
 
-private:
+  private:
     static const double RAD_TO_DEG;
 
     static const double _EPSILON;

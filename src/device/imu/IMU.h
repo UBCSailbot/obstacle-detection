@@ -11,7 +11,7 @@
 
 class IMU {
 
-public:
+  public:
     virtual Orientation getOrientation() = 0;
 
 };

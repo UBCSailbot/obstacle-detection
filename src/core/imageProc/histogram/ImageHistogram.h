@@ -14,7 +14,7 @@
  */
 class ImageHistogram {
 
-public:
+  public:
 
     ImageHistogram(const cv::Mat &image);
 
@@ -92,7 +92,7 @@ public:
  */
 
 
-protected:
+  protected:
 
     ImageHistogram();
 
@@ -101,7 +101,7 @@ protected:
     int _maxPixelValue;
     int _numPixels = 0;
 
-private:
+  private:
     int _tallestBinIndex = -1;
     int _medianBinIndex = -1;
 

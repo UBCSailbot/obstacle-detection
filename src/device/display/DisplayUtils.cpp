@@ -4,8 +4,8 @@
 
 #include "display/DisplayUtils.h"
 
-Display* DisplayUtils::connectToDisplay() {
-    Display* display = new RoboPeakUSBDisplay();
+Display *DisplayUtils::connectToDisplay() {
+    Display *display = new RoboPeakUSBDisplay();
     if (!display->connected()) {
         delete display;
         display = new DesktopDisplay();
@@ -16,11 +16,11 @@ Display* DisplayUtils::connectToDisplay() {
 void DisplayUtils::displayFrameWithHorizonLine(const Image8bit &frame, const Horizon &h, Display &d) {
     cv::Mat displayed(frame.rows, frame.cols, CV_16U);
     cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
-    cv::line(displayed, h.getStartPoint(), h.getEndPoint(), cv::Scalar(255,0,0), 1);
+    cv::line(displayed, h.getStartPoint(), h.getEndPoint(), cv::Scalar(255, 0, 0), 1);
     d.displayColored(displayed);
 }
 
-void DisplayUtils::rescaleAndDisplay(Image16bit img, Rescaler* r, Display &d) {
+void DisplayUtils::rescaleAndDisplay(Image16bit img, Rescaler *r, Display &d) {
     Image8bit img8bit(img.rows, img.cols);
 
     r->scale16bitTo8bit(img, img8bit);
@@ -34,8 +34,7 @@ void DisplayUtils::rescaleAndDisplay(Image16bit img, Rescaler* r, Display &d) {
  *  of the dimensions of a display, while preserving the aspect ratio of the original image.
  */
 size_t DisplayUtils::calculateScaleFactor(const cv::Mat &image, const size_t &displayWidth,
-                                          const size_t &displayHeight)
-{
+                                          const size_t &displayHeight) {
     size_t xScaleFactor = 1;
     size_t yScaleFactor = 1;
 

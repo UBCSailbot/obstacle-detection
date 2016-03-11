@@ -1,12 +1,8 @@
-//
-// Created by paul on 10/05/15.
-//
-
 #ifndef OBSTACLE_AVOIDANCE_LEPTON_H
 #define OBSTACLE_AVOIDANCE_LEPTON_H
 
 
-#include "LeptonSPI.h"
+#include "LeptonSPIConnection.h"
 #include "LeptonCameraSpecifications.h"
 #include <opencv2/core/core.hpp>
 
@@ -22,35 +18,34 @@
 #include <stdint.h>
 #include <io/ImageStream.h>
 
-#include "LeptonI2C.h"
+#include "LeptonI2CConnection.h"
 
 #include "types/Image16bit.h"
 
-#define PACKET_SIZE 164
-#define PACKET_SIZE_UINT16 (PACKET_SIZE/2)
-#define PACKETS_PER_FRAME 60
-#define FRAME_SIZE_UINT16 (PACKET_SIZE_UINT16*PACKETS_PER_FRAME)
 
-#define LEPTON_FPS 27
-#define LEPTON_IDENTICAL_FRAMES 3
-#define FFC_FREQ_SEC 30
+class Lepton {
 
-static const char *device = "/dev/spidev0.0";
-static uint8_t mode;
-static uint8_t bits = 8;
-static uint32_t speed = 16000000;
-
-class Lepton : public ImageStream{
-public:
-    Lepton();
-    virtual ~Lepton();
+  public:
 
     /**
-     * Delegates memory allocated by this class to a new Image16bit object,
-     *  and sends it off via unique_ptr to communicate to the receiver
-     *  that they should take care of memory from there on out.
+     * This allows the LeptonRegistry class to call the Lepton's private constructor.
      */
-    void getFrame(Image16bit &frame);
+    friend class LeptonRegistry;
+
+    /**
+     * Number of frames per second recorded by the Lepton.
+     */
+    static const int FPS = 27;
+
+    /**
+     * Number of frames in a row that are identical to each other.
+     */
+    static const int REPEATING_FRAMES = 3;
+
+    /**
+     * Returns the frame most recently recorded by the Lepton.
+     */
+    Image16bit captureFrame();
 
     /**
      * Perform Flat Field Correction, recalibrating the Lepton's sensor array
@@ -58,40 +53,50 @@ public:
      */
     void performFFC();
 
-private:
+    void openShutter();
 
-    std::thread _leptonThread;
+    void closeShutter();
 
-    uint8_t _result[PACKET_SIZE*PACKETS_PER_FRAME];
+    /**
+     * Delete the copy constructor to make sure it doesn't inadvertently get used.
+     */
+    Lepton(Lepton const&) = delete;
+
+    /**
+     * Delete the assignment operator to make sure it doesn't inadvertently get used.
+     */
+    void operator=(Lepton const&) = delete;
+
+  private:
+
+    /**
+     * This constructor is private so that it can only be called by LeptonRegistry,
+     *  which is a friend class of Lepton. This is to avoid inadvertently
+     *  creating multiple instances of the same Lepton connection, as each
+     *  Lepton object must have sole ownership of the resources it acquires
+     *  in terms of SPI and I2C connections.
+     *
+     * @param: spiChipSelect - the number of the SPI chip select pin that
+     *  enables or disables this Lepton
+     * @param: i2cBusID - the ID of the i2c bus used to control this Lepton
+     *
+     * @throws: LeptonSPIOpenException if the connection to the SPI device
+     *  fails to be opened.
+     */
+    Lepton(int spiChipSelect, int i2cBusID);
+
+    LeptonSPIConnection _spiConnection;
+    LeptonI2CConnection _i2cConnection;
+
+    static const int PACKET_SIZE = 164;
+    static const int PACKET_SIZE_UINT16 = PACKET_SIZE/2;
+    static const int PACKETS_PER_FRAME = 60;
+    static const int FRAME_SIZE_UINT16 = PACKET_SIZE_UINT16 * PACKETS_PER_FRAME;
+
+    char _device[15];
+    uint8_t _result[PACKET_SIZE * PACKETS_PER_FRAME];
+
     uint16_t *_frameBuffer;
-
-    uint16_t* _latestFrame;
-
-    volatile bool _canOverwriteLatestFrame;
-    volatile bool _newFrameAvailable;
-
-    /* Provides a lock to make sure that only one thread at a time can check and
-     *  modify the _canOverwriteLatestFrame variable. */
-    std::mutex _mtx;
-    std::condition_variable _cv;
-
-    void startCapture();
-    void captureFrame();
-
-public:
-    virtual Image16bit nextImage() override;
-
-    virtual bool hasNext() const override;
-
-    virtual int getImageWidth() const override;
-
-    virtual int getImageHeight() const override;
 };
-
-static void pabort(const char *s)
-{
-    perror(s);
-    abort();
-}
 
 #endif //OBSTACLE_AVOIDANCE_LEPTON_H

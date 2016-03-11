@@ -12,8 +12,7 @@
 
 class HistogramGenerator {
 
-public:
-
+  public:
     virtual ImageHistogram generateHistogram(const cv::Mat &img) const = 0;
 
 };

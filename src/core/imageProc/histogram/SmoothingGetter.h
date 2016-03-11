@@ -8,11 +8,11 @@
 #ifndef OBSTACLE_AVOIDANCE_SMOOTHINGGETTER_H
 #define OBSTACLE_AVOIDANCE_SMOOTHINGGETTER_H
 
-class SmoothingGetter : public CentralTendencyGetter {
+class SmoothingGetter: public CentralTendencyGetter {
 
-public:
+  public:
     SmoothingGetter(CentralTendencyGetter *decoratedGetter, BufferedSmoother *bufferedSmoother)
-            : CentralTendencyGetter(decoratedGetter), _bufferedSmoother(bufferedSmoother) {}
+        : CentralTendencyGetter(decoratedGetter), _bufferedSmoother(bufferedSmoother) { }
 
     virtual ~SmoothingGetter() {
         delete _bufferedSmoother;
@@ -24,14 +24,13 @@ public:
 
         if (smoothedCentralValue == 0) {
             return centralValue;
-        }
-        else {
+        } else {
             return smoothedCentralValue;
         }
     }
 
-private:
-    BufferedSmoother* _bufferedSmoother;
+  private:
+    BufferedSmoother *_bufferedSmoother;
 };
 
 #endif //OBSTACLE_AVOIDANCE_SMOOTHINGGETTER_H

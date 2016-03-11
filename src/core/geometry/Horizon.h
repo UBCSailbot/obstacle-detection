@@ -16,9 +16,9 @@
 #include "camera/lepton/LeptonCameraSpecifications.h"
 #include "Line.h"
 
-class Horizon : public Line {
+class Horizon: public Line {
 
-public:
+  public:
     Horizon(cv::Point2f startPoint, cv::Point2f endPoint);
 
     /*
@@ -38,7 +38,7 @@ public:
     */
     bool isPolyIntersect(cv::Rect rectangle) const;
 
-private:
+  private:
     // Store the height of the intersection of the horizon with the edges of the viewport
     int heightLeft, heightRight;
 

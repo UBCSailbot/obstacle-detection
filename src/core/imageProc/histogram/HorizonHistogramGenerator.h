@@ -9,13 +9,12 @@
 #include <imageProc/histogram/HorizonImageHistogram.h>
 #include "HistogramGenerator.h"
 
-class HorizonHistogramGenerator : public HistogramGenerator {
+class HorizonHistogramGenerator: public HistogramGenerator {
 
-public:
-    HorizonHistogramGenerator(ObjectStream<Orientation>* orientationStream) :
-            _orientationStream(orientationStream),
-            _horizonFactory(HorizonFactory(LeptonCameraSpecifications))
-    {
+  public:
+    HorizonHistogramGenerator(ObjectStream <Orientation> *orientationStream) :
+        _orientationStream(orientationStream),
+        _horizonFactory(HorizonFactory(LeptonCameraSpecifications)) {
 
     }
 
@@ -29,8 +28,8 @@ public:
     }
 
 
-private:
-    ObjectStream<Orientation>*_orientationStream;
+  private:
+    ObjectStream <Orientation> *_orientationStream;
     HorizonFactory _horizonFactory;
 
 };

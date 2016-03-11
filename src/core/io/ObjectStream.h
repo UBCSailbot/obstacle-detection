@@ -5,10 +5,10 @@
 #ifndef OBSTACLE_AVOIDANCE_OBJECTSTREAM_H
 #define OBSTACLE_AVOIDANCE_OBJECTSTREAM_H
 
-template <class T>
+template<class T>
 class ObjectStream {
 
-public:
+  public:
 
     virtual void push(const T &updatedObject) = 0;
 

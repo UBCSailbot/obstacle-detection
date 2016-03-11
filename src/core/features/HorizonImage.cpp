@@ -5,8 +5,7 @@
 #include "HorizonImage.h"
 
 HorizonImage::HorizonImage(cv::Mat image, const Horizon &h) :
-        _image(image), _horizon(h)
-{}
+    _image(image), _horizon(h) { }
 
 Horizon HorizonImage::getHorizon() const {
     return _horizon;
@@ -23,6 +22,6 @@ Line HorizonImage::calculateCenterLine() const {
 
     cv::Point2f centerOfFrame(_image.cols / 2, _image.rows / 2);
     Line centerline(centerOfFrame, cv::Point2d(centerOfFrame.x + normalToHorizon.x,
-                                           centerOfFrame.y + normalToHorizon.y) );
+                                               centerOfFrame.y + normalToHorizon.y));
     return centerline;
 }

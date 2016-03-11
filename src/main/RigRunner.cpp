@@ -3,6 +3,8 @@
 //
 
 #include <geometry/HorizonFactory.h>
+#include <camera/lepton/ThermalCameraStream.h>
+#include <camera/lepton/LeptonRegistry.h>
 #include "RigRunner.h"
 
 #define APP_NAME "rig_record"
@@ -10,8 +12,9 @@
 bool stop_record = false;
 
 static void hangup_handler(int signum) {
-    if (signum == SIGHUP)
+    if (signum == SIGHUP) {
         stop_record = true;
+    }
 }
 
 void setup_sighandler() {
@@ -24,9 +27,9 @@ void setup_sighandler() {
         cerr << "Failed to initialize signal handler for " << APP_NAME << endl;
 }
 
-void record(char* output_dir, bool verbose) {
+void record(char *output_dir, bool verbose) {
 
-    Lepton lepton;
+    ThermalCameraStream leptonStream(LeptonRegistry::getLepton0());
     ParallelIMU imu;
     SimpleRescaler rescaler;
     HorizonFactory horizonFactory(LeptonCameraSpecifications);
@@ -40,15 +43,14 @@ void record(char* output_dir, bool verbose) {
     std::ofstream imuLog;
 
     // timing
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    float leptonPeriodSeconds = 1 / LEPTON_FPS;
+    std::chrono::time_point <std::chrono::system_clock> start, end;
 
     sprintf(imu_file_name, "%s/imuLog.txt", output_dir);
-    imuLog.open (imu_file_name);
+    imuLog.open(imu_file_name);
 
     cout << "Connecting to screen" << endl;
 
-    Display* display = DisplayUtils::connectToDisplay();
+    Display *display = DisplayUtils::connectToDisplay();
 
 
     cout << "Starting Capture" << endl;
@@ -62,64 +64,45 @@ void record(char* output_dir, bool verbose) {
             usleep(600 * 1000);
         }
 */
-        start = std::chrono::system_clock::now();
 
-        // read only every 3rd frame
-        if ((frame_counter % 3) == 0) {
-            lepton.getFrame(frame);
+        frame = leptonStream.nextImage();
 
-            // save the current frame as a .png file
-            sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter/3);
-            imwrite(img_name, frame);
-            imuLog << imu.getOrientation().toDataString();
+        // save the current frame as a .png file
+        sprintf(img_name, "%s/raw/img_%06d.png", output_dir, frame_counter);
+        imwrite(img_name, frame);
+        imuLog << imu.getOrientation().toDataString();
+        imuLog.flush();
 
-//            Image8bit displayed(frame, false);
-//            cv::cvtColor(frame, displayed, cv::COLOR_GRAY2BGR);
-//            line(displayed, Point(0,30), Point(80, 40), Scalar(255,0,0), 1);
-//
-//            d.displayColored(displayed);
+        frame_counter++;
 
-            // convert to 8 bit and display
-            rescaler.scale16bitTo8bit(frame, displayed);
-            Horizon horizon = horizonFactory.makeHorizon(imu.getOrientation());
-            DisplayUtils::displayFrameWithHorizonLine(displayed, horizon, *display);
-        }
-
-        frame_counter ++;
-
-        end = std::chrono::system_clock::now();
-        std::chrono::duration<float> elapsed_seconds = end-start;
-
-        if (elapsed_seconds.count() < leptonPeriodSeconds) {
-            unsigned int sleepTimeMicros = (unsigned int) (leptonPeriodSeconds - elapsed_seconds.count()) * 1000000;
-            usleep(sleepTimeMicros);
-        }
-
+        // convert to 8 bit and display
+        rescaler.scale16bitTo8bit(frame, displayed);
+        Horizon horizon = horizonFactory.makeHorizon(imu.getOrientation());
+        DisplayUtils::displayFrameWithHorizonLine(displayed, horizon, *display);
     }
 
     imuLog.flush();
     imuLog.close();
-    cout << "Recording received stopping signal " <<
-    "and terminated gracefully." << endl;
+    cout << "Recording received stopping signal " << "and terminated gracefully." << endl;
 
 }
 
-void printUsage(int argc, char** argv) {
+void printUsage(int argc, char **argv) {
     cout << "Usage: rig_record <output_dir>" << endl;
     cout << "You entered: " << endl;
-    for (int i=0; i<argc; i++)
+    for (int i = 0; i < argc; i++)
         cout << argv[i];
     cout << endl;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
-    if(argc < 2) {
+    if (argc < 2) {
         printUsage(argc, argv);
         return 1;
     }
 
-    char* output_dir = argv[1];
+    char *output_dir = argv[1];
     setup_sighandler();
 
     if (argc == 2) {
@@ -127,7 +110,7 @@ int main(int argc, char** argv) {
     }
 
     else if (argc == 3) {
-        char* arg2 = argv[2];
+        char *arg2 = argv[2];
         if (!strcmp(arg2, "--silent"))
             record(output_dir, false);
     }

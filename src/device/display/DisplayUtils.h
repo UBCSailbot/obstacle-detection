@@ -15,13 +15,13 @@
 
 class DisplayUtils {
 
-public:
+  public:
 
-    static Display* connectToDisplay();
+    static Display *connectToDisplay();
 
     static void displayFrameWithHorizonLine(const Image8bit &frame, const Horizon &h, Display &d);
 
-    static void rescaleAndDisplay(Image16bit img, Rescaler* r, Display &d);
+    static void rescaleAndDisplay(Image16bit img, Rescaler *r, Display &d);
 
     static size_t calculateScaleFactor(const cv::Mat &image, const size_t &displayWidth,
                                        const size_t &displayHeight);

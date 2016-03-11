@@ -10,12 +10,12 @@
 #include <geometry/Horizon.h>
 #include "ImageHistogram.h"
 
-class HorizonImageHistogram : public ImageHistogram {
+class HorizonImageHistogram: public ImageHistogram {
 
-public:
+  public:
     HorizonImageHistogram(const cv::Mat &image, const Horizon &horizon);
 
-private:
+  private:
     void populateHistogram(const cv::Mat &image, const Horizon &horizon);
 };
 

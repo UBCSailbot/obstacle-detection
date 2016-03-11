@@ -15,7 +15,7 @@
  */
 class Line {
 
-public:
+  public:
     Line(const cv::Point2f startPoint, const cv::Point2f endPoint);
 
     Vector2d getVector() const;
@@ -50,7 +50,7 @@ public:
 
     static Line fromEndpoints(cv::Point2f p1, cv::Point2f p2);
 
-protected:
+  protected:
     cv::Point2f _startPoint;
     cv::Point2f _endPoint;
 

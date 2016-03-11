@@ -12,16 +12,16 @@
 /**
  * A convenience class to distinguish 16-bit images from 8-bit images.
  */
-class Image16bit : public cv::Mat {
+class Image16bit: public cv::Mat {
 
-public:
+  public:
 
     Image16bit() : cv::Mat() {
         forceConversion(*this);
     }
 
     Image16bit(int rows, int cols) : Mat(rows, cols, CV_16UC1) { }
-    Image16bit(int rows, int cols, void* data) : Mat(rows, cols, CV_16UC1, data) {}
+    Image16bit(int rows, int cols, void *data) : Mat(rows, cols, CV_16UC1, data) { }
 
     /**
      * PARAM m: Mat used to seed this Image16bit. Must be of type CV_16UC1,
@@ -30,8 +30,8 @@ public:
      *      If False, share the data between the two objects, such that a change in one
      *      results in a change in the other.
      */
-    Image16bit(const cv::Mat &m, bool copyData) : Mat( copyData ? m.clone() : m ) {
-        if(m.type() != CV_16UC1){
+    Image16bit(const cv::Mat &m, bool copyData) : Mat(copyData ? m.clone() : m) {
+        if (m.type() != CV_16UC1) {
             throw IncorrectImageTypeException("parameter m is of wrong type");
         }
     }
@@ -39,14 +39,14 @@ public:
     /**
      * Overloads square brackets to work as a getter.
      */
-    uint16_t pixelAt(int row, int col)  const{
+    uint16_t pixelAt(int row, int col) const {
         return this->at<uint16_t>(row, col);
     }
 
     /**
      * Overloads square brackets to work as a setter.
      */
-    uint16_t & pixelAt(int row, int col)  {
+    uint16_t &pixelAt(int row, int col) {
         return this->at<uint16_t>(row, col);
     }
 

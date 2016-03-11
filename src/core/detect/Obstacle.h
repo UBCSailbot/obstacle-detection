@@ -16,7 +16,7 @@
  */
 class Obstacle {
 
-public:
+  public:
 
     /**
      * Constructs an obstacle from the given set of points. A typical way to
@@ -30,13 +30,13 @@ public:
      *
      * TODO: How to break ties on getPortmost and getStarboardmost vertices?
      */
-    Obstacle(std::vector<cv::Point2f> vertices, const Horizon& horizon);
+    Obstacle(std::vector <cv::Point2f> vertices, const Horizon &horizon);
 
     /**
      * Returns the vector of points that was passed in to construct this
      *  object.
      */
-    const std::vector<cv::Point2f> getVertices() const;
+    const std::vector <cv::Point2f> getVertices() const;
 
     /**
      * Returns the vertex of the obstacle that is the furthest to the port
@@ -55,8 +55,8 @@ public:
      */
     size_t numVertices() const;
 
-private:
-    std::vector<cv::Point2f> _vertices;
+  private:
+    std::vector <cv::Point2f> _vertices;
     Horizon _horizon;
 
     /**
@@ -65,10 +65,10 @@ private:
      *  heading.
      */
     struct ObstaclePointComparator {
-        ObstaclePointComparator(const Horizon &h) : _horizon(h) {}
-        bool operator() (cv::Point2f p1, cv::Point2f p2);
-        const Horizon& _horizon;
-    } ;
+        ObstaclePointComparator(const Horizon &h) : _horizon(h) { }
+        bool operator()(cv::Point2f p1, cv::Point2f p2);
+        const Horizon &_horizon;
+    };
 
 };
 

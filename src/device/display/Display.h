@@ -13,8 +13,8 @@
  */
 class Display {
 
-public:
-    virtual ~Display() {}
+  public:
+    virtual ~Display() { }
     virtual void display8bitGray(const Image8bit &image) = 0;
     virtual void displayColored(const cv::Mat &image) = 0;
 
@@ -22,10 +22,9 @@ public:
         return _connected;
     }
 
-protected:
+  protected:
     bool _connected;
 };
-
 
 
 #endif //OBSTACLE_AVOIDANCE_DISPLAY_H

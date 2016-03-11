@@ -4,8 +4,8 @@
 #include "zmq.hpp"
 
 class ZmqContextSingleton {
-public:
-    static zmq::context_t& getContext();
+  public:
+    static zmq::context_t &getContext();
 };
 
 #endif /* _ZMQCONTEXTSINGLETON_H */

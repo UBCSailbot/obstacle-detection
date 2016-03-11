@@ -11,9 +11,9 @@
 
 #include <thread>
 
-class ParallelIMU : public IMU {
+class ParallelIMU: public IMU {
 
-public:
+  public:
     ParallelIMU();
 
     Orientation getOrientation();
@@ -23,7 +23,7 @@ public:
     static constexpr double ROLL_ADJUST = 0.09;
     static constexpr double PITCH_ADJUST = 0.15;
 
-private:
+  private:
     RTIMU *imu;
     RTIMU_DATA imuData;
 

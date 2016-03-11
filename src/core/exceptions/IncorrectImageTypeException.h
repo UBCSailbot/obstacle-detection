@@ -7,11 +7,11 @@
 
 #include <stdexcept>
 
-class IncorrectImageTypeException : public std::logic_error {
+class IncorrectImageTypeException: public std::logic_error {
 
-public:
+  public:
     IncorrectImageTypeException(const char *message) :
-            std::logic_error::logic_error(message) { }
+        std::logic_error::logic_error(message) { }
 
 };
 

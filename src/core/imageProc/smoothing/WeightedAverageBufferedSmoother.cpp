@@ -30,8 +30,7 @@ int AveragedBufferedSmoother::calculateSmoothedValue(int currentValue, float wei
 
     if (_weightsRunningSum == 0) {
         return 0;
-    }
-    else {
+    } else {
         return (int) (_bufferRunningSum / _weightsRunningSum);
     }
 

@@ -5,7 +5,7 @@
 #include "Horizon.h"
 
 Horizon::Horizon(cv::Point2f startPoint, cv::Point2f endPoint) :
-        Line(startPoint, endPoint) {}
+    Line(startPoint, endPoint) { }
 
 /*
 Check if given point is above horizon.
@@ -25,7 +25,7 @@ bool Horizon::isPointAbove(const float &x, const float &y) const {
         return true;
 
     return (_endPoint.x - _startPoint.x) * (y - _startPoint.y) <
-            (_endPoint.y - _startPoint.y) * (x - _startPoint.x);
+        (_endPoint.y - _startPoint.y) * (x - _startPoint.x);
 
 }
 

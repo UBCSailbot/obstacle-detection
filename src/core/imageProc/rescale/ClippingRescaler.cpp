@@ -5,10 +5,9 @@
 #include "ClippingRescaler.h"
 
 ClippingRescaler::ClippingRescaler(HistogramGenerator *histogramGenerator,
-                                             CentralTendencyGetter *centralTendencyGetter) :
-        _histogramGenerator(histogramGenerator),
-        _centralTendencyGetter(centralTendencyGetter)
-{
+                                   CentralTendencyGetter *centralTendencyGetter) :
+    _histogramGenerator(histogramGenerator),
+    _centralTendencyGetter(centralTendencyGetter) {
 
 }
 

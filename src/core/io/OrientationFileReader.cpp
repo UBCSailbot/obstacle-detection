@@ -6,14 +6,12 @@
 
 OrientationFileReader::OrientationFileReader(const std::string &imuLogFile,
                                              bool invertRoll, bool invertPitch) :
-    _invertRoll(invertRoll), _invertPitch(invertPitch)
-{
+    _invertRoll(invertRoll), _invertPitch(invertPitch) {
     std::ifstream infile(imuLogFile);
 
     float roll, pitch, yaw;
 
-    while (infile >> roll >> pitch >> yaw)
-    {
+    while (infile >> roll >> pitch >> yaw) {
         roll = _invertRoll ? -roll : roll;
         pitch = _invertPitch ? -pitch : pitch;
         Orientation o(roll, pitch, yaw);
@@ -32,8 +30,7 @@ Orientation OrientationFileReader::next() {
         Orientation o = _orientations.front();
         _orientations.pop();
         return o;
-    }
-    else {
+    } else {
         throw NoSuchElementException("Tried to access from empty queue.");
     }
 }

@@ -6,12 +6,12 @@
 #include <cstdint>
 
 class ImageFeedZmq {
-private:
+  private:
     zmq::context_t &m_ctx;
     zmq::socket_t *m_socket;
 
-public:
-    ImageFeedZmq(zmq::context_t& ctx);
+  public:
+    ImageFeedZmq(zmq::context_t &ctx);
     ~ImageFeedZmq();
     bool init();
     bool sendFrame(const uint8_t *buf, size_t size);

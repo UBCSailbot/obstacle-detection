@@ -17,7 +17,7 @@ include(lib/device_libs.cmake)
 include(lib/test_libs.cmake)
 
 # include source files. This defines two intermediary targets, both of which are versions
-# of the UBC Sailbot obstacle detecton library: `obstdetect_core` and `obstdetect_full`.
+# of the UBC Sailbot obstacle detection library: `obstdetect_core` and `obstdetect_full`.
 include(src/src.cmake)
 
 # include test files. This defines two intermediary targets: `test_core` and `test_device`.
@@ -27,6 +27,16 @@ include(test/test.cmake)
 include(resources/res.cmake)
 
 
+
+#########
+# FLAGS #
+#########
+
+# Define the command-line flags that should be accessible to programs
+option(DEBUG "Whether to build the project with the DEBUG variable defined at the preprocessor level" OFF)
+if(DEBUG)
+  add_definitions(-DDEBUG)
+endif()
 
 ############
 # PROGRAMS #
@@ -55,7 +65,8 @@ target_link_libraries(objectDetectionTrainer dlib)
 add_executable(objectDetectionModelGenerator src/main/ObjectDetectionModelGenerator.cpp)
 target_link_libraries(objectDetectionModelGenerator dlib)
 
-
+add_executable(cameraServer src/main/CameraEnclosureServer.cpp)
+target_link_libraries(cameraServer obstdetect_full test_core)
 
 
 #########
@@ -85,6 +96,18 @@ target_link_libraries(displayInitTest obstdetect_full test_device)
 add_executable(leptonShutterTest test/main/LeptonShutterTest.cpp)
 target_link_libraries(leptonShutterTest obstdetect_full test_device)
 
+# Testing getting video from two leptons simultaneously over SPI
+add_executable(twoLeptonsTest test/main/TwoLeptonsTest.cpp)
+target_link_libraries(twoLeptonsTest obstdetect_full test_device)
+
 # FileSystemImageStreamTest - streaming images from file system
 add_executable(fsStreamTest test/main/FileSystemImageStreamTest.cpp)
 target_link_libraries(fsStreamTest obstdetect_core test_core)
+
+# ImageServerTest - streaming images from file system
+add_executable(imageServerTest test/main/ImageServerTest.cpp)
+target_link_libraries(imageServerTest obstdetect_core test_core)
+
+# LeptonServerTest - streaming images from Lepton on another device
+add_executable(leptonServerTest test/main/LeptonServerTest.cpp)
+target_link_libraries(leptonServerTest obstdetect_core)

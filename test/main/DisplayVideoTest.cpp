@@ -46,8 +46,8 @@ void loopOverDir(string frameDir) {
     bool previousReadSuccessful = true;
     chrono::time_point<chrono::system_clock> start, end, startRead, endRead, startDisp, endDisp;
     int numFramesAtATime = 3;
-    int frameIncrement = numFramesAtATime * LEPTON_IDENTICAL_FRAMES;
-    float leptonPeriodSeconds = (float) frameIncrement / LEPTON_FPS;
+    int frameIncrement = numFramesAtATime * Lepton::REPEATING_FRAMES;
+    float leptonPeriodSeconds = (float) frameIncrement / Lepton::FPS;
 
 
     cout << "Successfully instantiated RoboPeakUSBDisplay" << endl;

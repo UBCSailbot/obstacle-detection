@@ -4,9 +4,6 @@
 
 #include "LeptonSPIOpenException.h"
 
-const char* errMessage_;
-
-const char* LeptonSPIOpenException::what(){
-       return errMessage_;
- }
-
+const char *LeptonSPIOpenException::what() const noexcept {
+    return errMessage_;
+}

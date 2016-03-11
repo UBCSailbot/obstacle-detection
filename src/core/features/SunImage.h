@@ -30,9 +30,8 @@
  *        are found perpendicular to the horizon that delimit a column in
  *        which higher-intensity pixels are likely to be sun glint.
  */
-class SunImage : public HorizonImage
-{
-public:
+class SunImage: public HorizonImage {
+  public:
     SunImage(const Horizon &horizon,
              const cv::Mat &frame,
              unsigned int minSunPixelValue = DEFAULT_MIN_SUN_PIXEL_VALUE,
@@ -60,13 +59,13 @@ public:
      * RETURN: The left margin of the column containing sun glint in
      *  the frame.
      */
-    Line* getLeftGlintMargin() const;
+    Line *getLeftGlintMargin() const;
 
     /**
      * RETURN: The right margin of the column containing sun glint in
      *  the frame.
      */
-    Line* getRightGlintMargin() const;
+    Line *getRightGlintMargin() const;
 
     /**
      * RETURN: Whether this frame contains sun glint reflecting from the
@@ -97,7 +96,7 @@ public:
     static const unsigned int DEFAULT_MIN_GLINT_PIXEL_VALUE = 8800;
     static constexpr float DEFAULT_MARGIN = 1.5;
 
-private:
+  private:
     const Horizon _horizon;
     cv::Mat _frame;
     const unsigned int _minSunPixelValue;
@@ -109,8 +108,8 @@ private:
     float _mean = 0.0;
     float _variance = 0.0;
 
-    Line* _leftMargin = new Line(cv::Point2f(-1.0f, -1.0f), cv::Point2f(-1.0f, -1.0f));
-    Line* _rightMargin = new Line(cv::Point2f(-1.0f, -1.0f), cv::Point2f(-1.0f, -1.0f));
+    Line *_leftMargin = new Line(cv::Point2f(-1.0f, -1.0f), cv::Point2f(-1.0f, -1.0f));
+    Line *_rightMargin = new Line(cv::Point2f(-1.0f, -1.0f), cv::Point2f(-1.0f, -1.0f));
 
 };
 

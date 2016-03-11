@@ -24,9 +24,9 @@ using namespace rp::util;
 using namespace rp::deps::libusbx_wrap;
 using namespace rp::drivers::display;
 
-class RoboPeakUSBDisplay : public Display {
+class RoboPeakUSBDisplay: public Display {
 
-public:
+  public:
     RoboPeakUSBDisplay();
     ~RoboPeakUSBDisplay();
     void display8bitGray(const Image8bit &image);
@@ -35,12 +35,12 @@ public:
     const static int DISPLAY_HEIGHT = 240;
     const static int DISPLAY_WIDTH = 320;
 
-private:
+  private:
     void putMatIntoFrameBuffer(const cv::Mat &displayed);
 
-    uint16_t* _frameBuffer;
+    uint16_t *_frameBuffer;
 
-    std::shared_ptr<RoboPeakUsbDisplayDevice> _display;
+    std::shared_ptr <RoboPeakUsbDisplayDevice> _display;
 
     int _frameCounter;
 

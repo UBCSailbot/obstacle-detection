@@ -8,9 +8,9 @@
 
 #include "CentralTendencyGetter.h"
 
-class ModeGetter : public CentralTendencyGetter {
+class ModeGetter: public CentralTendencyGetter {
 
-public:
+  public:
     ModeGetter() : CentralTendencyGetter(nullptr) { }
 
     int getCentralTendency(ImageHistogram histogram) {

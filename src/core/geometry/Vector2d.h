@@ -18,7 +18,7 @@
  */
 class Vector2d {
 
-public:
+  public:
     Vector2d(double xComponent, double yComponent);
 
     /**
@@ -89,7 +89,7 @@ public:
 
     double x, y;
 
-protected:
+  protected:
     double calculateSquareMagnitude() const;
 
 };

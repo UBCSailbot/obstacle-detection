@@ -35,8 +35,8 @@ sudo apt-get install cmake -y
 git submodule update --init --recursive
 
 # Set up build directory
-mkdir bin
-cd bin
+mkdir build
+cd build
 cmake ..
 
 # Build & run tests. This can take a while on the first build,

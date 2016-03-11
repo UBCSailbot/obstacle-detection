@@ -14,7 +14,7 @@
  */
 class Compare {
 
-public:
+  public:
 
     /**
      * Returns a boolean indicating whether two angles are equal,
@@ -38,7 +38,7 @@ public:
      */
     static bool areMagnitudesEqual(double mag1, double mag2);
 
-private:
+  private:
 
     /**
      * Defines the smallest difference between two angles that we care about in

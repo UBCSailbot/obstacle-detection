@@ -11,7 +11,7 @@
  */
 class BufferedSmoother {
 
-public:
+  public:
 
     /**
      * PRE: This function has previously been called 0 or more times,
@@ -19,7 +19,7 @@ public:
      * POST: The current value is smoothed with respect to the previous
      *  values encountered by this object.
      */
-    virtual int calculateSmoothedValue(int currentValue, float weight=1) = 0;
+    virtual int calculateSmoothedValue(int currentValue, float weight = 1) = 0;
 
 };
 

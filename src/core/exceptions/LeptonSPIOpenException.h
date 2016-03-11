@@ -7,15 +7,15 @@
 #include <iostream>
 #include <exception>
 
-class LeptonSPIOpenException : public std::exception {
-private:
-           const char* errMessage_;
-public:
-	LeptonSPIOpenException(const char* errMessage) :
-		errMessage_(errMessage)
-	{};
+class LeptonSPIOpenException: public std::exception {
+  private:
+    const char *errMessage_;
 
-	const char* what();
+  public:
+    LeptonSPIOpenException(const char *errMessage) :
+        errMessage_(errMessage) { };
+
+    const char *what() const noexcept override;
 };
 
 #endif //OBSTACLE_AVOIDANCE_LEPTONSPIOPENEXCEPTION_H

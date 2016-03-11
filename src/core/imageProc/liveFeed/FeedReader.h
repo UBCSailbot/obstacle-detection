@@ -11,18 +11,18 @@
  * and beforeCapture need to be implemented before using this class.
  */
 class FeedReader {
-public:
+  public:
     FeedReader(ImageStream *stream) : stream(stream) { }
 
     virtual void record();
 
 
-protected:
+  protected:
     virtual void startRecording();
     virtual void stopRecording();
     virtual void beforeCapture();
     virtual void onImageRead(Image16bit image);
-private:
+  private:
     ImageStream *stream;
 
     bool shouldRecord = true;
