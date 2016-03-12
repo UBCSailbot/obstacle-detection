@@ -19,4 +19,12 @@ static const CameraSpecifications LeptonCameraSpecifications = {
     51   // FOVDegreesHorizontal
 };
 
+static const CameraSpecifications FailedLeptonCameraSpecifications = {
+        0,  // pixelHeight
+        0,  // pixelWidth
+        0,   // bytesPerPixel
+        0,  // FOVDegreesVertical
+        0   // FOVDegreesHorizontal
+};
+
 #endif //OBSTACLE_AVOIDANCE_LEPTONCAMERADIMENSIONS_H

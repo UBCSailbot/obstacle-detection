@@ -104,6 +104,14 @@ target_link_libraries(displayInitTest obstdetect_full test_device)
 add_executable(leptonShutterTest test/main/LeptonShutterTest.cpp)
 target_link_libraries(leptonShutterTest obstdetect_full test_device)
 
+# Test closing shutter on two Leptons
+add_executable(doubleLeptonShutterTest test/main/DoubleLeptonShutterTest.cpp)
+target_link_libraries(doubleLeptonShutterTest obstdetect_full test_device)
+
+# Test the throwing an exception when capturing frames over SPI Connection
+add_executable(SPIExceptionTest test/main/SPIExceptionTest.cpp)
+target_link_libraries(SPIExceptionTest obstdetect_full test_device)
+
 # Testing getting video from two leptons simultaneously over SPI
 add_executable(twoLeptonsTest test/main/TwoLeptonsTest.cpp)
 target_link_libraries(twoLeptonsTest obstdetect_full test_device)

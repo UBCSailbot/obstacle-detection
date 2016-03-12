@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
 
             try {
                 liveFeed.record();
-            } catch (LeptonSPIOpenException &e) {
+            } catch (LeptonException &e) {
                 std::cout << e.what() << std::endl;
                 // wait 5 seconds and try to record
                 sleep(5);

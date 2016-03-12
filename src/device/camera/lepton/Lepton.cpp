@@ -1,12 +1,35 @@
 #include "Lepton.h"
 
-Lepton::Lepton(int spiChipSelect, int i2cBusID) : _spiConnection(spiChipSelect),
-                                                  _i2cConnection(i2cBusID)
-{
+Lepton::Lepton(int spiChipSelect, int i2cBusID, int CAPTURE_FRAME_TIMEOUT) : _spiConnection(spiChipSelect),
+                                                                             _i2cConnection(i2cBusID),
+                                                                             _CAPTURE_FRAME_TIMEOUT(
+                                                                                     CAPTURE_FRAME_TIMEOUT) {
+    if (spiChipSelect == 0) {
+        std::cout << "Lepton 0 Using gpio pin 20\n";
+        _gpio = new GPIO("20");
+    } else {
+        std::cout << "Lepton 1 Using gpio pin 19\n";
+        _gpio = new GPIO("19");
+    }
+
+    _gpio->exportGPIO();
+    _gpio->setDirGPIO("out");
+    _gpio->setValGPIO("1");
 
 }
 
+Lepton::~Lepton() {
+    std::cout << "shutting off gpio\n";
+    _gpio->setValGPIO("0");
+    _gpio->unexportGPIO();
+    delete _gpio;
+}
+
 Image16bit Lepton::captureFrame() {
+
+    // keep track of start time, and current time. captureFrame will timeout after CAPTURE_FRAME_TIMEOUT seconds
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
 
     // Read data packets from Lepton over SPI
     int resets = 0;
@@ -25,6 +48,19 @@ Image16bit Lepton::captureFrame() {
             if (resets == 750) {
                 _spiConnection.reset(750000);
             }
+        }
+
+        // check to see if we timed out.
+        end = std::chrono::system_clock::now();
+        std::chrono::duration<float> elapsed_seconds = end - start;
+
+        if (elapsed_seconds.count() > _CAPTURE_FRAME_TIMEOUT) {
+            // create an error message which includes the time:
+            std::stringstream errorStream;
+            errorStream << "captureFrame timed out after " << _CAPTURE_FRAME_TIMEOUT << " seconds.";
+            std::string errorMsg = errorStream.str();
+            throw LeptonException(errorMsg.c_str());
+
         }
     }
 
@@ -73,4 +109,8 @@ void Lepton::openShutter() {
 
 void Lepton::closeShutter() {
     _i2cConnection.closeShutter();
+}
+
+void Lepton::resetVideoStream(unsigned int timeDelay) {
+    _spiConnection.reset(timeDelay, _gpio);
 }

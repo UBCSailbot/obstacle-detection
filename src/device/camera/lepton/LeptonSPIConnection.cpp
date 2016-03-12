@@ -1,29 +1,36 @@
-//
-// Created by paul on 10/05/15.
-//
-
 #include "LeptonSPIConnection.h"
 
 
 LeptonSPIConnection::LeptonSPIConnection(int spiDeviceID) :
-        _spiDeviceID(spiDeviceID)
-{
+        _spiDeviceID(spiDeviceID) {
     init();
 }
 
 LeptonSPIConnection::~LeptonSPIConnection() {
     // TODO: Closing a file handle in a destructor like this, and not checking
     //  the return status, is not kosher, but it's the best we can do for now.
-    this->close();
+    close();
 }
 
 int LeptonSPIConnection::getFileDescriptor() const {
     return _spi_cs_fd;
 }
 
+void LeptonSPIConnection::reset(unsigned int timeDelay, GPIO *gpio) {
+    close();
+    // The gpio is toggled only while the SPI connection is off.
+    // We should give the Lepton time to power on before initializing the
+    // SPI connection
+    usleep(timeDelay / 4);
+    gpio->setValGPIO("0");
+    usleep(timeDelay / 2);
+    gpio->setValGPIO("1");
+    usleep(timeDelay / 4);
+    init();
+}
+
 void LeptonSPIConnection::reset(unsigned int timeDelay) {
-    // TODO: Verify that this is the best method of resetting.
-    this->close();
+    close();
     usleep(timeDelay);
     init();
 }
@@ -45,38 +52,38 @@ void LeptonSPIConnection::init() {
 
     if (_spi_cs_fd < 0) {
         std::string errMessage = "Error - Could not open SPI device " + spiAddress;
-        throw LeptonSPIOpenException(errMessage.c_str());
+        throw LeptonException(errMessage.c_str());
     }
 
     int status_value;
 
     status_value = ioctl(_spi_cs_fd, SPI_IOC_WR_MODE, &_spi_mode);
     if (status_value < 0) {
-        throw LeptonSPIOpenException("Could not set SPIMode (WR)...ioctl fail");
+        throw LeptonException("Could not set SPIMode (WR)...ioctl fail");
     }
 
     status_value = ioctl(_spi_cs_fd, SPI_IOC_RD_MODE, &_spi_mode);
     if (status_value < 0) {
-        throw LeptonSPIOpenException("Could not set SPIMode (RD)...ioctl fail");
+        throw LeptonException("Could not set SPIMode (RD)...ioctl fail");
     }
     status_value = ioctl(_spi_cs_fd, SPI_IOC_WR_BITS_PER_WORD, &_spi_bitsPerWord);
     if (status_value < 0) {
-        throw LeptonSPIOpenException("Could not set SPI bitsPerWord (WR)...ioctl fail");
+        throw LeptonException("Could not set SPI bitsPerWord (WR)...ioctl fail");
     }
 
     status_value = ioctl(_spi_cs_fd, SPI_IOC_RD_BITS_PER_WORD, &_spi_bitsPerWord);
     if (status_value < 0) {
-        throw LeptonSPIOpenException("Could not set SPI bitsPerWord(RD)...ioctl fail");
+        throw LeptonException("Could not set SPI bitsPerWord(RD)...ioctl fail");
     }
 
     status_value = ioctl(_spi_cs_fd, SPI_IOC_WR_MAX_SPEED_HZ, &_spi_speed);
     if (status_value < 0) {
-        throw LeptonSPIOpenException("Could not set SPI speed (WR)...ioctl fail");
+        throw LeptonException("Could not set SPI speed (WR)...ioctl fail");
     }
 
     status_value = ioctl(_spi_cs_fd, SPI_IOC_RD_MAX_SPEED_HZ, &_spi_speed);
     if (status_value < 0) {
-        throw LeptonSPIOpenException("Could not set SPI speed (RD)...ioctl fail");
+        throw LeptonException("Could not set SPI speed (RD)...ioctl fail");
     }
 
     _connected = true;

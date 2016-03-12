@@ -1,7 +1,3 @@
-//
-// Created by paul on 10/05/15.
-//
-
 #ifndef OBSTACLE_AVOIDANCE_LEPTONSPI_H
 #define OBSTACLE_AVOIDANCE_LEPTONSPI_H
 
@@ -17,17 +13,17 @@
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 
-#include "exceptions/LeptonSPIOpenException.h"
-#include "exceptions/LeptonSPICloseException.h"
+#include "exceptions/LeptonException.h"
+#include "gpio/GPIO.h"
 
 class LeptonSPIConnection {
 
 public:
 
     /**
-     * @param: the ID of the SPI chip select pin that controls this connection
+     * @param: spiDeviceID - the ID of the SPI chip select pin that controls this connection
      *
-     * @throws: LeptonSPIOpenException if any part of opening the SPI connection
+     * @throws: LeptonException if any part of opening the SPI connection
      *  to this Lepton failed for any reason.
      */
     LeptonSPIConnection(int spiDeviceID);
@@ -40,7 +36,13 @@ public:
     int getFileDescriptor() const;
 
     /**
-     * Closes the SPI connection, sleeps for 750 milliseconds, then re-opens
+     * Closes the SPI connection, toggles the GPIO pin, sleeps for timeDelay milliseconds, then re-opens
+     *  the connection.
+     */
+    void reset(unsigned int timeDelay, GPIO *gpio);
+
+    /**
+     * Closes the SPI connection, sleeps for timeDelay milliseconds, then re-opens
      *  the connection.
      */
     void reset(unsigned int timeDelay);
@@ -51,10 +53,10 @@ private:
     int _spiDeviceID;
     int _spi_cs_fd;
 
-    //SPI_MODE_0 (0,0)  CPOL=0 (Clock Idle low level), CPHA=0 (SDO transmit/change edge active to idle)
-    //SPI_MODE_1 (0,1)  CPOL=0 (Clock Idle low level), CPHA=1 (SDO transmit/change edge idle to active)
-    //SPI_MODE_2 (1,0)  CPOL=1 (Clock Idle high level), CPHA=0 (SDO transmit/change edge active to idle)
-    //SPI_MODE_3 (1,1)  CPOL=1 (Clock Idle high level), CPHA=1 (SDO transmit/change edge idle to active)
+    // SPI_MODE_0 (0,0)  CPOL=0 (Clock Idle low level), CPHA=0 (SDO transmit/change edge active to idle)
+    // SPI_MODE_1 (0,1)  CPOL=0 (Clock Idle low level), CPHA=1 (SDO transmit/change edge idle to active)
+    // SPI_MODE_2 (1,0)  CPOL=1 (Clock Idle high level), CPHA=0 (SDO transmit/change edge active to idle)
+    // SPI_MODE_3 (1,1)  CPOL=1 (Clock Idle high level), CPHA=1 (SDO transmit/change edge idle to active)
     unsigned char _spi_mode = SPI_MODE_3;
 
     unsigned char _spi_bitsPerWord = 8;
@@ -62,6 +64,7 @@ private:
     unsigned int _spi_speed = 8000000;
 
     void init();
+
     void close();
 
 };

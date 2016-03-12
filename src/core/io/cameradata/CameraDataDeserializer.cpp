@@ -22,11 +22,15 @@ std::vector<CameraData> CameraDataDeserializer::deserializeFromZmq(zmq::message_
 
         CameraSpecifications imageSpecs = *((CameraSpecifications *) currentPos);
         currentPos += sizeof(CameraSpecifications);
-        if (currentPos >= endPoint) break;
 
         int imageHeight = imageSpecs.pixelHeight;
         int imageWidth = imageSpecs.pixelWidth;
         size_t imageSize = (size_t) imageHeight * imageWidth * imageSpecs.bytesPerPixel;
+
+        if (currentPos + imageSize > endPoint) {
+            // we risk reading from parts of memory that we shouldn't, so bail!
+            break;
+        }
 
         /*
          * Makes a copy of the image data sitting in the zmq message because

@@ -48,10 +48,7 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::stri
         try {
             int nsockets = zmq::poll((zmq_pollitem_t *) &items, 2, POLLTIMEOUT_MS);
 
-            if (nsockets < 0) {
-                throw zmq::error_t();
-            }
-            else if (nsockets == 0) {
+            if (nsockets == 0) {
                 // TODO: Signal zmq poll timeout in logger.
                 std::cout << "Zmq poll timed out after " <<
                         POLLTIMEOUT_MS << " ms. Retrying." << std::endl;
@@ -75,7 +72,7 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::stri
 
         } catch (zmq::error_t &e) {
             // TODO: Log zmq error, handle error
-            std::cout << "Zmq threw an exception!" << std::endl;
+            std::cout << "Zmq threw an exception from TCPCameraCommsSub!" << std::endl;
             std::cout << e.what() << std::endl;
         }
 

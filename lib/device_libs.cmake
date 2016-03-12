@@ -10,7 +10,6 @@ include_directories(RTIMULib2 STATIC
 add_subdirectory(lib/RTIMULib2/RTIMULib)
 list(APPEND DEVICE_LIBS RTIMULib)
 
-
 # Lepton SDK is compiled with the project
 include_directories(${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
 set(LEPTONSDK_DIR ${CMAKE_SOURCE_DIR}/lib/LeptonModule/software/raspberrypi_libs/leptonSDKEmb32PUB)
