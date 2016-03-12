@@ -65,8 +65,8 @@ target_link_libraries(objectDetectionTrainer dlib)
 add_executable(objectDetectionModelGenerator src/main/ObjectDetectionModelGenerator.cpp)
 target_link_libraries(objectDetectionModelGenerator dlib)
 
-add_executable(ObjectDetectionBenchmark src/main/ObjectDetectionBenchmark.cpp)
-target_link_libraries(ObjectDetectionBenchmark dlib)
+add_executable(objectDetectionBenchmark src/main/ObjectDetectionBenchmark.cpp)
+target_link_libraries(objectDetectionBenchmark dlib)
 
 add_executable(cameraServer src/main/CameraEnclosureServer.cpp)
 target_link_libraries(cameraServer obstdetect_full test_core)

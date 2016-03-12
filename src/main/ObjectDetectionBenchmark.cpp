@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
         if (argc != 3) {
             cout << "Give the path to the testing directory and your model as the argument to this" << endl;
             cout << "You can do this this program by running: " << endl;
-            cout << "   ./ObjectDetectionRunner path/to/images model.svm " << endl;
+            cout << "   ./objectDetectionRunner path/to/images model.svm " << endl;
             cout << endl;
             return 0;
         }
@@ -35,15 +35,30 @@ int main(int argc, char **argv) {
         object_detector<image_scanner_type> detector;
         deserialize(argv[2]) >> detector;
 
-        cout << images_test.size() << endl;
+        unsigned long num_images = images_test.size();
+        cout << num_images << endl;
 
-        for (int i = 0; i < images_test.size(); ++i) {
+        long durations[num_images];
+
+        for (int i = 0; i < num_images; ++i) {
             high_resolution_clock::time_point t1 = high_resolution_clock::now();
             std::vector<rectangle> dets = detector(images_test[i]);
             high_resolution_clock::time_point t2 = high_resolution_clock::now();
-            auto duration = duration_cast<milliseconds>(t2 - t1).count();
+            long duration = duration_cast<milliseconds>(t2 - t1).count();
             cout << duration << endl;
+            durations[i] = duration;
         }
+
+        long sum;
+
+        for(int i=0; i < num_images; i++)
+        {
+            sum+=durations[i];
+        }
+        
+        long average = sum / num_images;
+        cout << "average is: " << average << endl;
+
 
     }
     catch (exception &e) {
