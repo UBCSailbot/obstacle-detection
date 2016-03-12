@@ -8,6 +8,7 @@
 
 #define APPNAME "cameraServer"
 
+
 /**
  * Spins up an instance of a server that listens for client requests for
  *  16bit grayscale images, and replies by sending images drawn from a
