@@ -24,7 +24,7 @@
 sudo apt-get update
 
 # Program dependencies
-sudo apt-get install libopencv-dev libqt4-dev libusb-1.0-0-dev libzmq3-dev -y
+sudo apt-get install gfortran libopencv-dev libqt4-dev libusb-1.0-0-dev libzmq3-dev -y
 # Optional optimized libraries for image processing, use by dlib
 sudo apt-get install libopenblas-dev liblapack-dev -y
 

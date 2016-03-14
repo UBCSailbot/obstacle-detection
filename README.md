@@ -19,7 +19,7 @@ Note that these are automatically installed for you by [debiansetup.sh](debianse
 
 ## If building on Ubuntu or other Debian flavor of Linux
 
-Try running our setup script for debian systems, [debiansetup.sh](debiansetup.sh).
+Try running our setup script for debian systems, [debiansetup.sh](debiansetup.sh). NOTE: DO NOT run this script with `sudo`. That will cause pain and suffering.
 
 ```
   chmod +x debiansetup.sh
