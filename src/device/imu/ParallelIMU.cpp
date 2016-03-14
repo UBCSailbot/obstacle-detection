@@ -1,8 +1,3 @@
-//
-// Created by paul on 10/05/15.
-//
-
-#include <RTIMULibDefs.h>
 #include "ParallelIMU.h"
 
 ParallelIMU::ParallelIMU() {
@@ -11,7 +6,7 @@ ParallelIMU::ParallelIMU() {
     //  Or, you can create the .ini in some other directory by using:
     //      RTIMUSettings *settings = new RTIMUSettings("<directory path>", "RTIMULib");
     //  where <directory path> is the path to where the .ini file is to be loaded/saved
-    RTIMUSettings *settings = new RTIMUSettings("config", "RTIMULib");
+    RTIMUSettings *settings = new RTIMUSettings(Resources::getConfigDir().c_str(), "RTIMULib");
 
     imu = RTIMU::createIMU(settings);
 

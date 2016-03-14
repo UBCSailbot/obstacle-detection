@@ -1,6 +1,7 @@
 #include "Resources.h"
 
 std::string Resources::RESOURCE_DIR = "resources";
+std::string Resources::CONFIG = "config";
 
 std::string Resources::getResourcePath(const std::string &pathWithinResourceDir) {
     QString qPath = QString::fromStdString(pathWithinResourceDir);
@@ -14,6 +15,9 @@ std::string Resources::getImagePath(const std::string &pathWithinImageDir) {
 
 std::string Resources::getConfigFilePath(const std::string &configFileName) {
     QString qPath = QString::fromStdString(configFileName);
-    return getResourcePath( QDir( "config" ).filePath(qPath).toStdString() );
+    return getResourcePath( QDir(CONFIG.c_str()).filePath(qPath).toStdString() );
+}
 
+std::string Resources::getConfigDir() {
+  return getResourcePath( QDir(CONFIG.c_str()).path().toStdString() );
 }

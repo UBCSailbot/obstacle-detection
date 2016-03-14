@@ -27,6 +27,11 @@ public:
     static std::string RESOURCE_DIR;
 
     /**
+     * The name of the directory containing config files.
+     */
+    static std::string CONFIG;
+
+    /**
      * @param pathWithinResourceDir - the path to a particular resource,
      *  relative to this project's resources directory
      *
@@ -53,8 +58,14 @@ public:
      */
     static std::string getConfigFilePath(const std::string &configFileName);
 
+    /**
+     * @return the path to the directory containing configuration files, relative
+     *  to the top directory of this project.
+     */
+    static std::string getConfigDir();
+
 private:
-    
+
 };
 
 
