@@ -1,9 +1,4 @@
-//
-// Created by paul on 15/06/15.
-//
-
 #include "Paths.h"
-
 
 std::string Paths::join(const std::string &path1, const std::string path2) {
     QString qPath1 = QString::fromStdString(path1);

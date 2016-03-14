@@ -16,6 +16,7 @@ file(GLOB_RECURSE DEVICE_SOURCE_FILES src/device/*.cpp src/device/*.h)
 
 # src_core is the set of object files that are used by all variations of the obstacle detection library
 add_library(src_core OBJECT ${CORE_SOURCE_FILES})
+add_dependencies(src_core migrateResources)
 
 # obstdetect_core is the version of the obstacle detection library stripped of any device-specific code
 add_library(obstdetect_core STATIC $<TARGET_OBJECTS:src_core>)

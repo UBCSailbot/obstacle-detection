@@ -1,7 +1,3 @@
-//
-// Created by paul on 2015/05/12
-//
-
 #ifndef OBSTACLE_AVOIDANCE_LIVEFEED_H
 #define OBSTACLE_AVOIDANCE_LIVEFEED_H
 

@@ -53,6 +53,7 @@ class Paths {
      */
     static std::vector <std::string> generateListOfFiles(const std::string &inputDir,
                                                          const std::string &fileNameFilter);
+
   private:
     /**
     * PARAM: A std string that describes a directory in the file system.

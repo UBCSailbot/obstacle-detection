@@ -1,13 +1,4 @@
-//
-// Created by Derek Lun on 5/23/2015.
-//
-
-#include <iostream>
-#include <gtest/gtest.h>
-#include <Resources.h>
-#include "geometry/Horizon.h"
-#include "features/SunImage.h"
-#include "camera/lepton/LeptonCameraSpecifications.h"
+#include "SunImageTest.h"
 
 TEST(SunImageTest, FindSunPositive) {
     cv::Mat frame = cv::imread(

@@ -1,5 +1,5 @@
-#include <Resources.h>
-#include <io/Paths.h>
+#include <paths/Resources.h>
+#include <paths/Paths.h>
 #include <io/FileSystemImageStream.h>
 #include <types/Image8bit.h>
 #include <imageProc/rescale/SimpleRescaler.h>
