@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
         unsigned long num_images = images_test.size();
         cout << "Number of images to process: " << num_images << endl;
 
-        long durations[num_images];
+        high_resolution_clock::time_point start = high_resolution_clock::now();
 
         for (int i = 0; i < num_images; ++i) {
             high_resolution_clock::time_point t1 = high_resolution_clock::now();
@@ -46,19 +46,16 @@ int main(int argc, char **argv) {
             high_resolution_clock::time_point t2 = high_resolution_clock::now();
             long duration = duration_cast<milliseconds>(t2 - t1).count();
             cout << "image " << i << " took " << duration << " ms" << endl;
-            durations[i] = duration;
-        }
-
-        long sum;
-
-        for(int i=0; i < num_images; i++)
-        {
-            sum+=durations[i];
         }
         
-        long average = sum / num_images;
-        cout << "Number of images processed: " << num_images << endl;
-        cout << "Average detection time per image is: " << average << "ms" << endl;
+        high_resolution_clock::time_point finish = high_resolution_clock::now();
+        long total_duration = duration_cast<milliseconds>(finish - start).count();
+
+        double average = (double) total_duration / num_images;
+        cout << "============" << endl;
+        cout << "Took " << total_duration << " ms to process " << num_images << " images." << endl;
+        cout << "Average detection time per image: " << average << " ms" << endl;
+        cout << "============" << endl;
 
 
     }
