@@ -1,7 +1,7 @@
 #include <string>
 #include <comm/TCPImageServer.h>
-#include <io/Paths.h>
-#include <Resources.h>
+#include <paths/Paths.h>
+#include <paths/Resources.h>
 #include <io/FileSystemImageStream.h>
 #include <camera/lepton/ThermalCameraStream.h>
 #include <camera/lepton/LeptonRegistry.h>
@@ -23,7 +23,7 @@ int run(std::string endpointAddress, std::string portNumber, int leptonID) {
 
     ImageStream *stream;
 
-#ifdef DEBUG
+#ifdef SAILBOT_DEBUG
     std::string inputFrameDir = Paths::join(Resources::RESOURCE_DIR, "img/16bit");
     stream = new FileSystemImageStream(inputFrameDir, "*.png");
 #else
@@ -33,7 +33,7 @@ int run(std::string endpointAddress, std::string portNumber, int leptonID) {
     TCPImageServer server(*stream, endpointAddress, portNumber);
 
     for (;;) {
-        pause(); 
+        pause();
     }
 
     return 0;

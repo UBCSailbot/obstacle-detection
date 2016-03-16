@@ -23,7 +23,7 @@
 #include "imageProc/liveFeed/base64EncDec.h"
 
 #include "io/ImageReader.h"
-#include "io/Paths.h"
+#include "paths/Paths.h"
 
 using namespace std;
 using namespace cv;
@@ -167,7 +167,7 @@ void rescale(const string &inputFrameDir,
 
     for (int i = 0; i < frameList.size(); i++) {
         string frameFile = frameList[i];
-#ifdef DEBUG
+#ifdef SAILBOT_DEBUG
         cout << frameFile << endl;
 #endif
         string frameFilePath = Paths::join(inputFrameDir, frameFile);

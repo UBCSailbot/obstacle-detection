@@ -3,7 +3,7 @@
 //
 
 #include "display/DisplayUtils.h"
-#include <Resources.h>
+#include <paths/Resources.h>
 
 int main() {
 

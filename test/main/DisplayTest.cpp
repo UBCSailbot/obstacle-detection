@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include <Resources.h>
+#include <paths/Resources.h>
 #include <types/Image16bit.h>
 #include <imageProc/rescale/Rescaler.h>
 #include <imageProc/rescale/SimpleRescaler.h>

@@ -18,7 +18,7 @@
  */
 int main(int argc, char** argv) {
 
-#ifdef DEBUG
+#ifdef SAILBOT_DEBUG
     TCPImageStream client("localhost", "5555");
 #else
     if (argc < 2) {

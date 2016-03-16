@@ -3,7 +3,7 @@
 //
 
 #include <io/FileSystemImageStream.h>
-#include <Resources.h>
+#include <paths/Resources.h>
 #include <imageProc/rescale/SimpleRescaler.h>
 
 /**

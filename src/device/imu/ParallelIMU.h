@@ -1,15 +1,14 @@
-//
-// Created by paul on 10/05/15.
-//
-
 #ifndef OBSTACLE_AVOIDANCE_PARALLELIMU_H
 #define OBSTACLE_AVOIDANCE_PARALLELIMU_H
 
-#include "RTIMULib.h"
-#include "IMU.h"
-#include <RTIMULibDefs.h>
 
 #include <thread>
+
+#include <RTIMULibDefs.h>
+#include "RTIMULib.h"
+
+#include "IMU.h"
+#include "paths/Resources.h"
 
 class ParallelIMU: public IMU {
 

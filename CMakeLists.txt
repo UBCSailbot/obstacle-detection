@@ -27,16 +27,16 @@ include(test/test.cmake)
 include(resources/res.cmake)
 
 
-
 #########
 # FLAGS #
 #########
 
 # Define the command-line flags that should be accessible to programs
-option(DEBUG "Whether to build the project with the DEBUG variable defined at the preprocessor level" OFF)
-if(DEBUG)
-  add_definitions(-DDEBUG)
+option(SAILBOT_DEBUG "Whether to build the project with the SAILBOT_DEBUG variable defined at the preprocessor level" OFF)
+if(SAILBOT_DEBUG)
+  add_definitions(-DSAILBOT_DEBUG)
 endif()
+
 
 ############
 # PROGRAMS #

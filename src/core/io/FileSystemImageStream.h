@@ -10,8 +10,8 @@
 
 #include <opencv2/highgui/highgui.hpp>
 
-#include <exceptions/EndOfStreamException.h>
-#include "Paths.h"
+#include "exceptions/EndOfStreamException.h"
+#include "paths/Paths.h"
 #include "ImageStream.h"
 
 /**
