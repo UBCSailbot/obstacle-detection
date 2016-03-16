@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
         deserialize(argv[2]) >> detector;
 
         unsigned long num_images = images_test.size();
-        cout << num_images << endl;
+        cout << "Number of images to process: " << num_images << endl;
 
         long durations[num_images];
 
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
             std::vector<rectangle> dets = detector(images_test[i]);
             high_resolution_clock::time_point t2 = high_resolution_clock::now();
             long duration = duration_cast<milliseconds>(t2 - t1).count();
-            cout << duration << endl;
+            cout << "image " << i << " took " << duration << " ms" << endl;
             durations[i] = duration;
         }
 
@@ -57,7 +57,8 @@ int main(int argc, char **argv) {
         }
         
         long average = sum / num_images;
-        cout << "average is: " << average << endl;
+        cout << "Number of images processed: " << num_images << endl;
+        cout << "Average detection time per image is: " << average << "ms" << endl;
 
 
     }
