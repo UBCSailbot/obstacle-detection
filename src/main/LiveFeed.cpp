@@ -3,13 +3,14 @@
 
 #include <camera/lepton/ThermalCameraStream.h>
 #include <camera/lepton/LeptonRegistry.h>
+#include <io/TCPImageStream.h>
 #include "LiveFeed.h"
 
 #define APP_NAME "live_feed"
 
 
-vector <uchar> imgToBuff(Image8bit img) {
-    vector <uchar> buff;//buffer for coding
+vector<uchar> imgToBuff(Image8bit img) {
+    vector<uchar> buff;//buffer for coding
     vector<int> param = vector<int>(2);
 
     param[0] = CV_IMWRITE_PNG_COMPRESSION;
@@ -52,17 +53,18 @@ void LiveFeed::onImageRead(Image16bit image) {
         imuLog << imu->getOrientation().toDataString();
     }
 
-    vector <uchar> buff = imgToBuff(frameRescaled);
+    vector<uchar> buff = imgToBuff(frameRescaled);
     string encoded = base64_encode(buff.data(), buff.size());
-    std::vector <dlib::rectangle> dets = dLibProcessor.getObjectDetectionBoxes(frameRescaled);
+    std::vector<dlib::rectangle> dets = dLibProcessor.getObjectDetectionBoxes(frameRescaled);
     string *JSON = new string(makeJSON(encoded, dets));
     zmqfeed.sendFrame((const uint8_t *) JSON->c_str(), JSON->size());
 }
 
 void LiveFeed::printUsage(int argc, char **argv) {
     std::cout << "Usage:\n"
-        "liveFeeder file <input dir> <output dir> dlib_model.svm ...\n"
-        "liveFeeder lepton imu_enabled/imu_disabled <output dir> dlib_model.svm ..." << endl;
+            "liveFeeder file <input dir> <output dir> dlib_model.svm ...\n"
+            "liveFeeder lepton imu_enabled/imu_disabled <output dir> dlib_model.svm ...\n"
+            "liveFeeder network ip_address port <output dir> dlib_model.svm" << endl;
     std::cout << "You entered: " << endl;
     for (int i = 0; i < argc; i++)
         std::cout << argv[i];
@@ -75,25 +77,28 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    dlib::object_detector <DLibProcessor::image_scanner_type> detector;
-    std::vector <dlib::object_detector<DLibProcessor::image_scanner_type>> detectors;
-
-    for (int i = 4; i < argc; i++) {
-        dlib::deserialize(argv[i]) >> detector;
-        detectors.push_back(detector);
-    }
-
-    DLibProcessor dLibProcessor(detectors);
+    dlib::object_detector<DLibProcessor::image_scanner_type> detector;
+    std::vector<dlib::object_detector<DLibProcessor::image_scanner_type>> detectors;
 
     if (string(argv[1]) == "file") {
-        LiveFeed liveFeed(new FileSystemImageStream(argv[2], "*.png"), dLibProcessor, argv[3], false);
+        for (int i = 4; i < argc; i++) {
+            dlib::deserialize(argv[i]) >> detector;
+            detectors.push_back(detector);
+        }
+        DLibProcessor dLibProcessor(detectors);
 
+        LiveFeed liveFeed(new FileSystemImageStream(argv[2], "*.png"), dLibProcessor, argv[3], false);
         try {
             liveFeed.record();
         } catch (Exception &e) {
             std::cout << e.description() << endl;
         }
     } else if (string(argv[1]) == "lepton") {
+        for (int i = 4; i < argc; i++) {
+            dlib::deserialize(argv[i]) >> detector;
+            detectors.push_back(detector);
+        }
+        DLibProcessor dLibProcessor(detectors);
         while (1) {
             LiveFeed liveFeed(new ThermalCameraStream(LeptonRegistry::getLepton0()),
                               dLibProcessor, argv[3], false);
@@ -106,9 +111,21 @@ int main(int argc, char **argv) {
                 sleep(5);
             }
         }
+    } else if (string(argv[1]) == "network") {
+        for (int i = 5; i < argc; i++) {
+            dlib::deserialize(argv[i]) >> detector;
+            detectors.push_back(detector);
+        }
+        DLibProcessor dLibProcessor(detectors);
+        LiveFeed liveFeed(new TCPImageStream(argv[2], argv[3]), dLibProcessor, argv[4], false);
+        try {
+            liveFeed.record();
+        } catch (Exception &e) {
+            std::cout << e.description() << endl;
+        }
+
     } else {
-        LiveFeed::printUsage(argc, argv
-        );
+        LiveFeed::printUsage(argc, argv);
     }
 
     return 0;
