@@ -4,7 +4,8 @@
 #include "ZmqContextSingleton.h"
 #include <zmq.hpp>
 #include <cstdint>
-
+#include <iostream>
+#include <string>
 class ImageFeedZmq {
   private:
     zmq::context_t &m_ctx;
@@ -13,7 +14,7 @@ class ImageFeedZmq {
   public:
     ImageFeedZmq(zmq::context_t &ctx);
     ~ImageFeedZmq();
-    bool init();
+    bool init(int port);
     bool sendFrame(const uint8_t *buf, size_t size);
     static void zmqFree(void *data, void *hint);
 };

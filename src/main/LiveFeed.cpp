@@ -30,7 +30,7 @@ LiveFeed::LiveFeed(ImageStream *stream, const DLibProcessor &dLibProcessor, char
 void LiveFeed::beforeCapture() {
 
     std::cout << "Starting Capture" << endl;
-    zmqfeed.init();
+    zmqfeed.init(5555);
     if (runImu) {
         imu = new ParallelIMU;
         char imuFileName[128];
@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
         DLibProcessor dLibProcessor(detectors);
         while (1) {
             LiveFeed liveFeed(new ThermalCameraStream(LeptonRegistry::getLepton0()),
-                              dLibProcessor, argv[3], false);
+                              dLibProcessor, argv[3], string(argv[2]) == "imu_enabled");
 
             try {
                 liveFeed.record();
