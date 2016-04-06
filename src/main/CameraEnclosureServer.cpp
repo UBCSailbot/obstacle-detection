@@ -1,5 +1,6 @@
 #include <string>
 #include <comm/TCPImageServer.h>
+#include <comm/TCPCameraCommsSub.h>
 #include <paths/Paths.h>
 #include <paths/Resources.h>
 #include <io/FileSystemImageStream.h>

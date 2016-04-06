@@ -28,7 +28,7 @@ void TCPImageServer::catchSignals(void) {
 }
 
 void TCPImageServer::startListener() {
-    zmq::context_t context(1);
+    zmq::context_t context(1); //to chantelle: do not do this
     zmq::socket_t socket(context, ZMQ_REP);
     socket.bind(_fullAddress.c_str());
 
