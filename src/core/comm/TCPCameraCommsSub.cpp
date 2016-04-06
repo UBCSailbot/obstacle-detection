@@ -68,6 +68,7 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t context, const std::strin
 
             // Deserialize.
             // TODO: imageMessage should hold size of image
+            // TODO: replyMessage should hold only the image
 //          cv::Mat container(_imageHeight, _imageWidth, CV_16UC1, reply.data());
 //          cv::Mat newImage(_imageHeight, _imageWidth, CV_16UC1);
 //          container.copyTo(newImage);
