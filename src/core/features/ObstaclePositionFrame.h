@@ -23,7 +23,7 @@ class ObstaclePositionFrame: public HorizonImage {
 
   public:
     ObstaclePositionFrame(const cv::Mat &frame, const Horizon &horizon,
-                          const ICameraSpecifications &cameraSpec,
+                          const CameraSpecifications &cameraSpec,
                           const std::vector <Obstacle> &obstacles) :
         HorizonImage(frame, horizon),
         _obstacles(obstacles),
@@ -56,7 +56,7 @@ class ObstaclePositionFrame: public HorizonImage {
   private:
     //with reference to the horizon
     std::vector <Obstacle> _obstacles;
-    ICameraSpecifications _cameraSpec;
+    CameraSpecifications _cameraSpec;
 
 };
 

@@ -5,10 +5,9 @@
 #ifndef OBSTACLE_DETECTION_CAMERADATA_H
 #define OBSTACLE_DETECTION_CAMERADATA_H
 
-#include <camera/ICameraSpecifications.h>
+#include "CameraSpecifications.h"
+#include "Image16bit.h"
 
-/*replace bool cameraStatus with enum cameraStatus,
- * refer to notes & stackoverflow/cplusplus.com*/
 
 enum CameraStatus {
     OK,
@@ -19,7 +18,7 @@ enum CameraStatus {
 
 struct CameraData {
     CameraStatus status;
-    ICameraSpecifications imageSpecs;
+    CameraSpecifications imageSpecs;
     Image16bit frame;
 
 };

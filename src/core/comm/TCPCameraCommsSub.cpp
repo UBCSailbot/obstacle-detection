@@ -26,7 +26,7 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t context, const std::strin
             // TODO: handle different statuses (Check CameraData.h)
 
             //create poll item which will check for sub and inproc sockets being triggered
-            // ZMQ_POLLIN allows at least one message to be recieved from any socket without blocking
+            // ZMQ_POLLIN allows at least one message to be received from any socket without blocking
             zmq_pollitem_t items[2];
             items[0].socket = (void *) imgSubSocket;
             items[0].events = ZMQ_POLLIN;
@@ -39,7 +39,7 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t context, const std::strin
             zmq::message_t imageMessage;
             zmq::message_t requestMessage;
             zmq::message_t replyMessage;
-            std::size_t size;
+            size_t sizeCameraData;
 
             //flag for imageMessage recieved
             bool imageRecieved = false;
@@ -66,20 +66,18 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t context, const std::strin
                 }
             }
 
-            // Deserialize.
+            // Deserialize. Begin Paul's stuff
             // TODO: imageMessage should hold size of image
             // TODO: replyMessage should hold only the image
 //          cv::Mat container(_imageHeight, _imageWidth, CV_16UC1, reply.data());
 //          cv::Mat newImage(_imageHeight, _imageWidth, CV_16UC1);
 //          container.copyTo(newImage);
-            CameraData* data = (CameraData*) imageMessage.data();
-            size = sizeof(data);
 
             //  Send reply back to client
-            memcpy((void *) replyMessage.data(), imageMessage.data(), size);
+            memcpy((void *) replyMessage.data(), imageMessage.data(), sizeCameraData);
 
             imgSubSocket.send(replyMessage);
-
+            //end Paul's stuff
         } catch (zmq::error_t &e) {
             // TODO: Log that the server has received an interrupt signal.
             std::cout << "zmq error encountered " << std::endl;

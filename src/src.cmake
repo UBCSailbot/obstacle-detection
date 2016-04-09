@@ -6,7 +6,7 @@
 include_directories( src/core )
 include_directories( src/device )
 
-file(GLOB_RECURSE CORE_SOURCE_FILES src/core/*.cpp src/core/*.h src/core/comm/zmq.hpp)
+file(GLOB_RECURSE CORE_SOURCE_FILES src/core/*.cpp src/core/*.h)
 file(GLOB_RECURSE DEVICE_SOURCE_FILES src/device/*.cpp src/device/*.h)
 
 
