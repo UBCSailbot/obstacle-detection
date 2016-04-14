@@ -1,12 +1,11 @@
-#include <io/CameraDataDeserializer.h>
 #include "TCPCameraCommsSub.h"
 
 //sub loop interrupt flag
 int TCPCameraCommsSub::interrupt = false;
 
 
-void TCPCameraCommsSub::startSubscriber(zmq::context_t context, const std::string &endpointAddress,
-                                        const std::string &portNumber){
+void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::string &endpointAddress,
+                                        const std::string &portNumber) {
 
     //initialize sub socket and inproc obstacle detection socket
     zmq::socket_t imgSubSocket(context, ZMQ_SUB);
@@ -36,26 +35,28 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t context, const std::strin
     bool newRequestReceived = false;
 
     //actual sub loop for recieving messages
-    //TODO: implement something that actually watches for an interrupt, look at TCPImageServer.cpp
-    while (!interrupt){
+    //TODO: implement something that actually watches for an interrupt
+    while (!interrupt) {
         try {
             int nsockets = zmq::poll((zmq_pollitem_t *) &items, 2, POLLTIMEOUT_MS);
 
-            if (nsockets < 0){
+            if (nsockets < 0) {
                 throw zmq::error_t();
-            }else if (nsockets == 0){
+            }
+            else if (nsockets == 0) {
                 std::cout << "zmq poll timed out after " << POLLTIMEOUT_MS << " ms. Retrying." << std::endl;
                 continue;
             }
-            if(items[0].revents & ZMQ_POLLIN) {
+
+            if (items[0].revents & ZMQ_POLLIN) {
                 imgSubSocket.recv(&latestImageMessage);
                 newImageAvailable = true;
             }
-            if(items[1].revents & ZMQ_POLLIN) {
+            if (items[1].revents & ZMQ_POLLIN) {
                 ipcObDecSocket.recv(&requestMessage);
                 newRequestReceived = true;
             }
-            if(newImageAvailable && newRequestReceived){
+            if (newImageAvailable && newRequestReceived) {
                 latestImageMessage.copy(&replyMessage);
                 ipcObDecSocket.send(replyMessage);
                 newImageAvailable = false;
@@ -74,5 +75,11 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t context, const std::strin
             break;
         }
     }
-    //closing the sockets is unnecessary because the c++ destructors do this for us
+    // closing the sockets is unnecessary because the c++ destructors do this for us
+}
+
+TCPCameraCommsSub::TCPCameraCommsSub(const zmq::context_t &context, const std::string &endpointAddress,
+                                     const std::string &portNumber) {
+    std::thread _pollingThread(TCPCameraCommsSub::startSubscriber, std::ref(context), endpointAddress, portNumber);
+    _pollingThread.detach();
 }

@@ -12,18 +12,40 @@
 #include "types/CameraData.h"
 #include <exceptions/ZmqException.h>
 
-/* Defines class TCPCameraCommsSub (a subscriber) which recieves object of type CameraData over TCP from a publisher*/
+/* Defines class TCPCameraCommsSub (a subscriber) which recieves object of type CameraData
+ * over TCP from a publisher and sends the CameraData over inproc to a client
+ */
 
 class TCPCameraCommsSub {
-    public:
-        TCPCameraCommsSub(const std::string &endpointAddress, const std::string &portNumber);
+public:
 
-        void startSubscriber(zmq::context_t context, const std::string &endpointAddress,
-                                    const std::string &portNumber);
-        static const std::string ENDPOINT_NAME = "CameraSubObstacleDetectionPair";
-    private:
-        static bool interrupt;
-        const static int POLLTIMEOUT_MS = 200;
+    /**
+     * Initializes this subscriber by opening a connection to the endpoint at
+     *  the specified address. The endpoint on the other end of this connection
+     *  should be a publisher of vectors of CameraData.
+     *
+     * Calling this constructor spins up a separate thread that runs until
+     *  interrupted. That thread polls both a publisher of CameraData and
+     *  a thread that requests CameraData thus received. The latter
+     *  thread runs in the same process as this one.
+     *
+     * @param endpointAddress - the IPv4 address of the endpoint to which
+     *  to connect, e.g. "10.42.0.1"
+     * @param portNumber - the number of the port to which this server
+     *      should bind, e.g. "5555"
+     */
+    TCPCameraCommsSub(const zmq::context_t &context, const std::string &endpointAddress,
+                      const std::string &portNumber);
+
+    static const std::string ENDPOINT_NAME = "CameraSubObstacleDetectionPair";
+
+private:
+    static void startSubscriber(zmq::context_t &context, const std::string &endpointAddress,
+                                const std::string &portNumber);
+
+    static bool interrupt;
+    const static int POLLTIMEOUT_MS = 200;
+    std::thread _pollingThread;
 };
 
 #endif //OBSTACLE_DETECTION_TCPCAMERACOMMSSUB_H
