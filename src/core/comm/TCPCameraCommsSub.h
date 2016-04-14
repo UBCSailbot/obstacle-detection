@@ -34,10 +34,10 @@ public:
      * @param portNumber - the number of the port to which this server
      *      should bind, e.g. "5555"
      */
-    TCPCameraCommsSub(const zmq::context_t &context, const std::string &endpointAddress,
+    TCPCameraCommsSub(zmq::context_t &context, const std::string &endpointAddress,
                       const std::string &portNumber);
 
-    static const std::string ENDPOINT_NAME = "CameraSubObstacleDetectionPair";
+    static const std::string ENDPOINT_NAME;
 
 private:
     static void startSubscriber(zmq::context_t &context, const std::string &endpointAddress,

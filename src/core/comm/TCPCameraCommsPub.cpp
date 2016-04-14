@@ -1,7 +1,9 @@
 #include "TCPCameraCommsPub.h"
 
-void TCPCameraCommsPub::startPublisher(zmq::context_t context, const std::string &endpointAddress,
-                                       const std::string &portNumber, ICameraMultiplexer &cameraMux) {
+const std::string TCPCameraCommsPub::ENDPOINT_NAME = "CameraPubCommandListenerPair";
+
+void TCPCameraCommsPub::startPublisher(zmq::context_t &context, const std::string &endpointAddress,
+                                      const std::string &portNumber, ICameraMultiplexer &cameraMux) {
     zmq::socket_t imgPubSocket(context, ZMQ_PUB);
     imgPubSocket.bind(("tcp://" + endpointAddress + ":" + portNumber).c_str());
 
@@ -16,8 +18,10 @@ void TCPCameraCommsPub::startPublisher(zmq::context_t context, const std::string
         }
     }
 }
-TCPCameraCommsPub::TCPCameraCommsPub(zmq::context_t context, const std::string &endpointAddress,
+
+TCPCameraCommsPub::TCPCameraCommsPub(zmq::context_t &context, const std::string &endpointAddress,
                                      const std::string &portNumber, ICameraMultiplexer &cameraMux) {
-    std::thread _pubThread(TCPCameraCommsPub::startPublisher, std::ref(context), endpointAddress, portNumber, cameraMux);
+    std::thread _pubThread(&TCPCameraCommsPub::startPublisher, std::ref(context), std::ref(endpointAddress),
+                           std::ref(portNumber), std::ref(cameraMux));
     _pubThread.detach();
 }

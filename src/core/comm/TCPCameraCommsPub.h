@@ -17,14 +17,15 @@
 
 class TCPCameraCommsPub {
 public:
-    TCPCameraCommsPub(zmq::context_t context, const std::string &endpointAddress,
+    TCPCameraCommsPub(zmq::context_t &context, const std::string &endpointAddress,
                       const std::string &portNumber, ICameraMultiplexer &cameraMux);
-    static const std::string ENDPOINT_NAME = "CameraSubObstacleDetectionPair";
+
+    static const std::string ENDPOINT_NAME;
 
 private:
     static bool interrupted;
-    void startPublisher(zmq::context_t context, const std::string &endpointAddress,
-                        const std::string &portNumber, ICameraMultiplexer &cameraMux);
+    static void startPublisher(zmq::context_t &context, const std::string &endpointAddress,
+                                  const std::string &portNumber, ICameraMultiplexer &cameraMux);
 };
 
 

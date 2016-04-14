@@ -1,8 +1,8 @@
 #include "TCPCameraCommsSub.h"
 
 //sub loop interrupt flag
-int TCPCameraCommsSub::interrupt = false;
-
+bool TCPCameraCommsSub::interrupt = false;
+const std::string TCPCameraCommsSub::ENDPOINT_NAME = "CameraSubObstacleDetectionPair";
 
 void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::string &endpointAddress,
                                         const std::string &portNumber) {
@@ -78,8 +78,9 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::stri
     // closing the sockets is unnecessary because the c++ destructors do this for us
 }
 
-TCPCameraCommsSub::TCPCameraCommsSub(const zmq::context_t &context, const std::string &endpointAddress,
+TCPCameraCommsSub::TCPCameraCommsSub(zmq::context_t &context, const std::string &endpointAddress,
                                      const std::string &portNumber) {
-    std::thread _pollingThread(TCPCameraCommsSub::startSubscriber, std::ref(context), endpointAddress, portNumber);
+    std::thread _pollingThread(&TCPCameraCommsSub::startSubscriber, std::ref(context), std::ref(endpointAddress),
+                               std::ref(portNumber));
     _pollingThread.detach();
 }
