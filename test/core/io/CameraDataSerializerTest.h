@@ -9,7 +9,7 @@
 #include <io/CameraDataDeserializer.h>
 
 class CameraDataSerializerTest : public ImageLoaderForTests {
-
+    //tests both CameraDataSerializer and CameraDataDeserializer
 };
 
 

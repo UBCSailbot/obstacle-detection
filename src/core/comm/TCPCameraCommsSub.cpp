@@ -1,5 +1,5 @@
+#include <io/CameraDataDeserializer.h>
 #include "TCPCameraCommsSub.h"
-#include "types/CameraData.h"
 
 //sub loop interrupt flag
 int TCPCameraCommsSub::interrupt = false;
@@ -15,84 +15,64 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t context, const std::strin
     //sets message filter on sub socket to accept all messages
     imgSubSocket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
 
-    //connects and binds sub and inproc sockets, respectively
+    //connects sub socket and binds inproc socket
     imgSubSocket.connect(("tcp://" + endpointAddress + ":" + portNumber).c_str());
-    ipcObDecSocket.bind("inproc://CameraSubObstacleDetectionPair");
+    std::string inprocAddress = "inproc://" + ENDPOINT_NAME;
+    ipcObDecSocket.bind(inprocAddress.c_str());
+
+    // create poll item which will check for sub and inproc sockets being triggered
+    // ZMQ_POLLIN allows at least one message to be received from any socket without blocking
+    zmq_pollitem_t items[2];
+    items[0].socket = (void *) imgSubSocket;
+    items[0].events = ZMQ_POLLIN;
+    items[1].socket = (void *) ipcObDecSocket;
+    items[1].events = ZMQ_POLLIN;
+
+    //creates messages to be sent/recieved
+    zmq::message_t requestMessage;
+    zmq::message_t replyMessage;
+    zmq::message_t latestImageMessage;
+    bool newImageAvailable = false;
+    bool newRequestReceived = false;
 
     //actual sub loop for recieving messages
     //TODO: implement something that actually watches for an interrupt, look at TCPImageServer.cpp
     while (!interrupt){
         try {
-            // TODO: handle different statuses (Check CameraData.h)
+            int nsockets = zmq::poll((zmq_pollitem_t *) &items, 2, POLLTIMEOUT_MS);
 
-            //create poll item which will check for sub and inproc sockets being triggered
-            // ZMQ_POLLIN allows at least one message to be received from any socket without blocking
-            zmq_pollitem_t items[2];
-            items[0].socket = (void *) imgSubSocket;
-            items[0].events = ZMQ_POLLIN;
-            items[0].revents = 0;
-            items[1].socket = (void *) ipcObDecSocket;
-            items[1].events = ZMQ_POLLIN;
-            items[1].revents = 0;
-
-            //creates messages to be sent/recieved
-            zmq::message_t imageMessage;
-            zmq::message_t requestMessage;
-            zmq::message_t replyMessage;
-            size_t sizeCameraData;
-
-            //flag for imageMessage recieved
-            bool imageRecieved = false;
-
-            //loop checks for both sub socket and inproc socket being 'triggered'
-            while(1) {
-                int nsockets = zmq::poll((zmq_pollitem_t *) &items, 2, -1);
-                //ask alan about this first if statement with nsockets
-                if(nsockets < 1) {
-                    std::cout << "bad" << std::endl;
-                    break;
-                }
-                if(items[0].revents & ZMQ_POLLIN) {
-                    imageRecieved = true; //update flag
-                    imgSubSocket.recv(&imageMessage);
-                    std::string str((char *) imageMessage.data(), imageMessage.size());
-                    std::cout << str << std::endl;
-                }
-                if(items[1].revents & ZMQ_POLLIN & imageRecieved) {
-                    replyMessage.copy(&imageMessage);
-                    ipcObDecSocket.recv(&requestMessage);
-                    ipcObDecSocket.send(replyMessage);
-                    imageRecieved = false; //update flag
-                }
+            if (nsockets < 0){
+                throw zmq::error_t();
+            }else if (nsockets == 0){
+                std::cout << "zmq poll timed out after " << POLLTIMEOUT_MS << " ms. Retrying." << std::endl;
+                continue;
+            }
+            if(items[0].revents & ZMQ_POLLIN) {
+                imgSubSocket.recv(&latestImageMessage);
+                newImageAvailable = true;
+            }
+            if(items[1].revents & ZMQ_POLLIN) {
+                ipcObDecSocket.recv(&requestMessage);
+                newRequestReceived = true;
+            }
+            if(newImageAvailable && newRequestReceived){
+                latestImageMessage.copy(&replyMessage);
+                ipcObDecSocket.send(replyMessage);
+                newImageAvailable = false;
+                newRequestReceived = false;
             }
 
-            // Deserialize. Begin Paul's stuff
-            // TODO: imageMessage should hold size of image
-            // TODO: replyMessage should hold only the image
-//          cv::Mat container(_imageHeight, _imageWidth, CV_16UC1, reply.data());
-//          cv::Mat newImage(_imageHeight, _imageWidth, CV_16UC1);
-//          container.copyTo(newImage);
-
-            //  Send reply back to client
-            memcpy((void *) replyMessage.data(), imageMessage.data(), sizeCameraData);
-
-            imgSubSocket.send(replyMessage);
-            //end Paul's stuff
         } catch (zmq::error_t &e) {
-            // TODO: Log that the server has received an interrupt signal.
+            // TODO: Log zmq error, handle error
             std::cout << "zmq error encountered " << std::endl;
-        }//trycatch
+            std::cout << e.what() << std::endl;
+        }
 
         if (interrupt) {
             // TODO: Log that the server is shutting down.
             std::cout << "server shutting down due to interrupt" << std::endl;
             break;
         }
-    }//while
-
-    if (imgSubSocket.connected()) {
-        imgSubSocket.close();
     }
-
-    context.close();
+    //closing the sockets is unnecessary because the c++ destructors do this for us
 }
