@@ -6,9 +6,12 @@
 #include <io/FileSystemImageStream.h>
 #include <camera/lepton/ThermalCameraStream.h>
 #include <camera/lepton/LeptonRegistry.h>
+#include <camera/ICameraMultiplexer.h>
+#include <camera/LeptonMultiplexer.h>
+#include <camera/MockCameraMultiplexer.h>
+#include <comm/TCPCameraCommsPub.h>
 
 #define APPNAME "cameraServer"
-
 
 /**
  * Spins up an instance of a server that listens for client requests for
@@ -21,18 +24,18 @@
  *  in main().
  */
 
-int run(std::string endpointAddress, std::string portNumber, int leptonID) {
+int run(std::string endpointAddress, std::string portNumber) {
 
-    ImageStream *stream;
+    ICameraMultiplexer *mux;
 
 #ifdef SAILBOT_DEBUG
-    std::string inputFrameDir = Paths::join(Resources::RESOURCE_DIR, "img/16bit");
-    stream = new FileSystemImageStream(inputFrameDir, "*.png");
+    mux = new MockCameraMultiplexer();
 #else
-    stream = new ThermalCameraStream(LeptonRegistry::getLepton0());
+    // TODO: set more fine-grained controls on which leptons are used
+    mux = new LeptonMultiplexer(true, true);
 #endif
-
-    TCPImageServer server(*stream, endpointAddress, portNumber);
+    zmq::context_t context;
+    TCPCameraCommsPub publisher(context, endpointAddress, portNumber, *mux);
 
     for (;;) {
         pause();
@@ -43,22 +46,21 @@ int run(std::string endpointAddress, std::string portNumber, int leptonID) {
 
 int main(int argc, char **argv) {
 
-    if (argc < 3) {
+    if (argc < 2) {
         std::cout << std::endl;
         std::cout << "Usage: " << APPNAME << " [IPv4_address] [port#] [leptonID]" << std::endl;
         std::cout << std::endl;
-        std::cout << "e.g. ./" << APPNAME << " " << "'*' 5555 0" << std::endl;
+        std::cout << "e.g. ./" << APPNAME << " " << "'*' 5555" << std::endl;
         std::cout << std::endl;
         std:: cout << "This binds an instance of cameraServer to any available interface "
-            "on this device, on port 5555, connecting to a Lepton object "
-            "initialized to be controlled by SPI_CS_0." << std::endl;
+            "on this device, on port 5555, connecting to two Leptons: one on "
+            "SPI_CS_0, the other on SPI_CS_1." << std::endl;
         exit(0);
     }
 
     std::string address(argv[1]), port(argv[2]);
-    int leptonID = atoi(argv[3]);
 
-    run(address, port, leptonID);
+    run(address, port);
 
     return 0;
 }

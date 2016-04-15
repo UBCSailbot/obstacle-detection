@@ -19,7 +19,7 @@
 int main(int argc, char** argv) {
 
 #ifdef SAILBOT_DEBUG
-    TCPImageStream client("localhost", "5555");
+    MockCameraMultiplexer mux;
 #else
     if (argc < 2) {
         std::cout << "Usage: " << APPNAME << " [IPv4_address] [port#]" << std::endl;

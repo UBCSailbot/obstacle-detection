@@ -80,7 +80,7 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::stri
 
 TCPCameraCommsSub::TCPCameraCommsSub(zmq::context_t &context, const std::string &endpointAddress,
                                      const std::string &portNumber) {
-    std::thread _pollingThread(&TCPCameraCommsSub::startSubscriber, std::ref(context), std::ref(endpointAddress),
-                               std::ref(portNumber));
+    std::thread _pollingThread(&TCPCameraCommsSub::startSubscriber, std::ref(context), endpointAddress,
+                               portNumber);
     _pollingThread.detach();
 }

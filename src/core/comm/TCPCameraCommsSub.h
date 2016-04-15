@@ -44,7 +44,7 @@ private:
                                 const std::string &portNumber);
 
     static bool interrupt;
-    const static int POLLTIMEOUT_MS = 200;
+    const static int POLLTIMEOUT_MS = 2000;
     std::thread _pollingThread;
 };
 

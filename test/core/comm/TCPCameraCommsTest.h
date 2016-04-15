@@ -1,0 +1,11 @@
+#ifndef OBSTACLE_DETECTION_TCPCAMERACOMMSPUBTEST_H
+#define OBSTACLE_DETECTION_TCPCAMERACOMMSPUBTEST_H
+
+#include <gtest/gtest.h>
+
+class TCPCameraCommsPubTest : public ::testing::Test{
+
+};
+
+
+#endif //OBSTACLE_DETECTION_TCPCAMERACOMMSPUBTEST_H

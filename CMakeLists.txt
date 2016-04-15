@@ -114,3 +114,7 @@ target_link_libraries(imageServerTest obstdetect_core test_core)
 # LeptonServerTest - streaming images from Lepton on another device
 add_executable(leptonServerTest test/main/LeptonServerTest.cpp)
 target_link_libraries(leptonServerTest obstdetect_core)
+
+# TCPCameraCameraCommsTest - recieves reply from server, displays image
+add_executable(TCPCameraCommsTest test/main/TCPCameraCommsTest.cpp)
+target_link_libraries(TCPCameraCommsTest obstdetect_full)
