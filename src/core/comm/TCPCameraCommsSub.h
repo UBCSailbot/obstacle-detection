@@ -40,12 +40,11 @@ public:
     static const std::string ENDPOINT_NAME;
 
 private:
-    static void startSubscriber(zmq::context_t &context, const std::string &endpointAddress,
-                                const std::string &portNumber);
+    static void startSubscriber(zmq::context_t &context, const std::string &pubEndpointAddress,
+                                const std::string &pubPortNumber);
 
     static bool interrupt;
     const static int POLLTIMEOUT_MS = 2000;
-    std::thread _pollingThread;
 };
 
 #endif //OBSTACLE_DETECTION_TCPCAMERACOMMSSUB_H

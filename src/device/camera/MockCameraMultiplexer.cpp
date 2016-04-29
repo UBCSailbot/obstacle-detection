@@ -4,42 +4,36 @@ std::vector<CameraData> MockCameraMultiplexer::getLatestCameraData() {
     std::vector<CameraData> camDataVector;
 
     if (runNumber == 1) {
-        std::vector<CameraData> inputVector;
-
         CameraStatus camStatus1 = OK;
         Image16bit image1(_freighterSunImg, false);
         CameraData camData1 = {camStatus1, LeptonCameraSpecifications, image1};
-        inputVector.push_back(camData1);
+        camDataVector.push_back(camData1);
 
         CameraStatus camStatus2 = SHUTTER_CLOSED;
         Image16bit image2(_garbledImg, false);
         CameraData camData2 = {camStatus2, LeptonCameraSpecifications, image2};
-        inputVector.push_back(camData2);
+        camDataVector.push_back(camData2);
     } else if (runNumber == 2){
-        std::vector<CameraData> inputVector;
-
         CameraStatus camStatus2 = SHUTTER_CLOSED;
         Image16bit image2(_garbledImg, false);
         CameraData camData2 = {camStatus2, LeptonCameraSpecifications, image2};
-        inputVector.push_back(camData2);
+        camDataVector.push_back(camData2);
 
         CameraStatus camStatus3 = OFF;
         Image16bit image3(_fishingBoatImg, false);
         CameraData camData3 = {camStatus3, LeptonCameraSpecifications, image3};
-        inputVector.push_back(camData3);
+        camDataVector.push_back(camData3);
 
     } else if (runNumber == 3){
-        std::vector<CameraData> inputVector;
-
         CameraStatus camStatus1 = FAILED;
         Image16bit image1(_freighterSunImg, false);
         CameraData camData1 = {camStatus1, LeptonCameraSpecifications, image1};
-        inputVector.push_back(camData1);
+        camDataVector.push_back(camData1);
 
         CameraStatus camStatus3 = OK;
         Image16bit image3(_fishingBoatImg, false);
         CameraData camData3 = {camStatus3, LeptonCameraSpecifications, image3};
-        inputVector.push_back(camData3);
+        camDataVector.push_back(camData3);
     }
 
     runNumber++;

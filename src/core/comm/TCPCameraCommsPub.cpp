@@ -7,7 +7,8 @@ bool TCPCameraCommsPub::interrupted = false;
 void TCPCameraCommsPub::startPublisher(zmq::context_t &context, const std::string &endpointAddress,
                                       const std::string &portNumber, ICameraMultiplexer &cameraMux) {
     zmq::socket_t imgPubSocket(context, ZMQ_PUB);
-    imgPubSocket.bind(("tcp://" + endpointAddress + ":" + portNumber).c_str());
+    std::string fullAddress = "tcp://" + endpointAddress + ":" + portNumber;
+    imgPubSocket.bind(fullAddress.c_str());
 
     // TODO: implement interrupts
     while (!interrupted) {

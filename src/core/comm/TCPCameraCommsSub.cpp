@@ -4,37 +4,39 @@
 bool TCPCameraCommsSub::interrupt = false;
 const std::string TCPCameraCommsSub::ENDPOINT_NAME = "CameraSubObstacleDetectionPair";
 
-void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::string &endpointAddress,
-                                        const std::string &portNumber) {
+void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::string &pubEndpointAddress,
+                                        const std::string &pubPortNumber) {
 
-    //initialize sub socket and inproc obstacle detection socket
+    // Initialize subscriber socket. This receives vectors of CameraData
+    //  from a publisher.
     zmq::socket_t imgSubSocket(context, ZMQ_SUB);
-    zmq::socket_t ipcObDecSocket(context, ZMQ_REP);
-
-    //sets message filter on sub socket to accept all messages
+    // set message filter on sub socket to accept all messages
     imgSubSocket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+    std::string publisherAddress = "tcp://" + pubEndpointAddress + ":" + pubPortNumber;
+    imgSubSocket.connect(publisherAddress.c_str());
 
-    //connects sub socket and binds inproc socket
-    imgSubSocket.connect(("tcp://" + endpointAddress + ":" + portNumber).c_str());
+    // Initialize PAIR socket to talk to obstacle detection thread, running
+    //  in the same process.
+    zmq::socket_t pairSocket(context, ZMQ_PAIR);
     std::string inprocAddress = "inproc://" + ENDPOINT_NAME;
-    ipcObDecSocket.bind(inprocAddress.c_str());
+    pairSocket.connect(inprocAddress.c_str());
 
-    // create poll item which will check for sub and inproc sockets being triggered
-    // ZMQ_POLLIN allows at least one message to be received from any socket without blocking
+    // Create a zmq polling object which will listen to
+    //  both the sub and pair sockets for incoming zmq messages.
     zmq_pollitem_t items[2];
     items[0].socket = (void *) imgSubSocket;
     items[0].events = ZMQ_POLLIN;
-    items[1].socket = (void *) ipcObDecSocket;
+    items[1].socket = (void *) pairSocket;
     items[1].events = ZMQ_POLLIN;
 
-    //creates messages to be sent/recieved
-    zmq::message_t requestMessage;
-    zmq::message_t replyMessage;
-    zmq::message_t latestImageMessage;
-    bool newImageAvailable = false;
-    bool newRequestReceived = false;
+    // Initialize message objects
+    zmq::message_t pairRequest;
+    zmq::message_t pairReply;
+    zmq::message_t latestImages;
+    bool newImagesAvailable = false;
+    bool newPairRequestReceived = false;
 
-    //actual sub loop for recieving messages
+    //actual sub loop for receiving messages
     //TODO: implement something that actually watches for an interrupt
     while (!interrupt) {
         try {
@@ -49,18 +51,18 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::stri
             }
 
             if (items[0].revents & ZMQ_POLLIN) {
-                imgSubSocket.recv(&latestImageMessage);
-                newImageAvailable = true;
+                imgSubSocket.recv(&latestImages);
+                newImagesAvailable = true;
             }
             if (items[1].revents & ZMQ_POLLIN) {
-                ipcObDecSocket.recv(&requestMessage);
-                newRequestReceived = true;
+                pairSocket.recv(&pairRequest);
+                newPairRequestReceived = true;
             }
-            if (newImageAvailable && newRequestReceived) {
-                latestImageMessage.copy(&replyMessage);
-                ipcObDecSocket.send(replyMessage);
-                newImageAvailable = false;
-                newRequestReceived = false;
+            if (newImagesAvailable && newPairRequestReceived) {
+                pairReply.copy(&latestImages);
+                pairSocket.send(pairReply);
+                newImagesAvailable = false;
+                newPairRequestReceived = false;
             }
 
         } catch (zmq::error_t &e) {

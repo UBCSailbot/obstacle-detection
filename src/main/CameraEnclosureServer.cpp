@@ -12,6 +12,7 @@
 #include <comm/TCPCameraCommsPub.h>
 
 #define APPNAME "cameraServer"
+#define SAILBOT_DEBUG
 
 /**
  * Spins up an instance of a server that listens for client requests for
