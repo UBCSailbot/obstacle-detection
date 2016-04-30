@@ -12,29 +12,30 @@
 #include <comm/TCPCameraCommsPub.h>
 
 #define APPNAME "cameraServer"
-#define SAILBOT_DEBUG
+
+using namespace std;
 
 /**
- * Spins up an instance of a server that listens for client requests for
- *  16bit grayscale images, and replies by sending images drawn from a
- *  stream. In DEBUG mode, sends test images saved in a local directory;
- *  otherwise, attempts to connect to the specified Lepton and streams
- *  ouptut from that device.
+ * Spins up an instance of a server that publishes zmq messages carrying
+ *  one or more 16bit grayscale images obtained from a CameraMultiplexer.
+ * In debug mode, sends test images saved in a local directory;
+ *  otherwise, attempts to connect to one or more Leptons and streams
+ *  ouptut from them.
  *
- * For help on understanding this program, please see the usage notes printed
- *  in main().
+ * For usage notes, see those that are printed out in main().
  */
-
-int run(std::string endpointAddress, std::string portNumber) {
+void run(string endpointAddress, string portNumber, bool debug) {
 
     ICameraMultiplexer *mux;
 
-#ifdef SAILBOT_DEBUG
-    mux = new MockCameraMultiplexer();
-#else
-    // TODO: set more fine-grained controls on which leptons are used
-    mux = new LeptonMultiplexer(true, true);
-#endif
+    if(debug) {
+        mux = new MockCameraMultiplexer();
+    }
+    else {
+        // TODO: set more fine-grained controls on which leptons are used
+        mux = new LeptonMultiplexer(true, true);
+    }
+
     zmq::context_t context;
     TCPCameraCommsPub publisher(context, endpointAddress, portNumber, *mux);
 
@@ -42,14 +43,13 @@ int run(std::string endpointAddress, std::string portNumber) {
         pause();
     }
 
-    return 0;
 }
 
 int main(int argc, char **argv) {
 
-    if (argc < 2) {
+    if (argc < 3) {
         std::cout << std::endl;
-        std::cout << "Usage: " << APPNAME << " [IPv4_address] [port#] [leptonID]" << std::endl;
+        std::cout << "Usage: " << APPNAME << " [IPv4_address] [port#]" << std::endl;
         std::cout << std::endl;
         std::cout << "e.g. ./" << APPNAME << " " << "'*' 5555" << std::endl;
         std::cout << std::endl;
@@ -61,7 +61,11 @@ int main(int argc, char **argv) {
 
     std::string address(argv[1]), port(argv[2]);
 
-    run(address, port);
+    bool debug = false;
+    if (argc == 4) {
+        debug = true;
+    }
+    run(address, port, debug);
 
     return 0;
 }
