@@ -28,12 +28,9 @@ void TCPImageServer::catchSignals(void) {
 }
 
 void TCPImageServer::startListener() {
-    zmq::context_t context(1); //to chantelle: do not do this
+    zmq::context_t context(1);
     zmq::socket_t socket(context, ZMQ_REP);
     socket.bind(_fullAddress.c_str());
-
-    // TODO: This signal handler doesn't work on the command line. The program freezes.
-//    catchSignals();
 
     // The server only stays active as long as its image stream has more images.
     while (!_interrupted) {
@@ -42,8 +39,6 @@ void TCPImageServer::startListener() {
         try {
             //  Wait for next request from client
             socket.recv(&request);
-
-            // TODO: Parse and interpret different possible requests.
 
             if (_stream.hasNext()) {
                 // Get next image.
@@ -58,16 +53,16 @@ void TCPImageServer::startListener() {
 
                 socket.send(reply);
             } else {
-                // TODO: Handle case when stream is out of images.
-                // TODO: Log that a request was received but could not be satisfied.
+                // deprecatedTODO: Handle case when stream is out of images.
+                // deprecatedTODO: Log that a request was received but could not be satisfied.
             }
         } catch (zmq::error_t &e) {
-            // TODO: Log that the server has received an interrupt signal.
+            // deprecatedTODO: Log that the server has received an interrupt signal.
             std::cout << "zmq error encountered " << std::endl;
         }
 
         if (_interrupted) {
-            // TODO: Log that the server is shutting down.
+            // deprecatedTODO: Log that the server is shutting down.
             std::cout << "server shutting down due to interrupt" << std::endl;
             break;
         }

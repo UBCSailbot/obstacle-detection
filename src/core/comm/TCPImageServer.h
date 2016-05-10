@@ -11,6 +11,8 @@
 #include <io/ImageStream.h>
 
 /**
+ * @deprecated (2016-05-10) - instead use TCPCameraCommsPub.
+
  * Defines a server that listens for requests over TCP and replies with
  *  images obtained from a given ImageStream.
  */

@@ -9,6 +9,8 @@
 
 
 /**
+ * @deprecated (2016-05-10) - instead use TCPCameraCommsSub
+ *
  * An image stream that relays images that it receives over a
  *  TCP connection.
  */
