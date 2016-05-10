@@ -20,10 +20,12 @@ public:
     TCPCameraCommsPub(zmq::context_t &context, const std::string &endpointAddress,
                       const std::string &portNumber, ICameraMultiplexer &cameraMux);
 
+    void stop();
+
     static const std::string ENDPOINT_NAME;
 
 private:
-    static bool interrupted;
+    static volatile bool _terminate;
     static void startPublisher(zmq::context_t &context, const std::string &endpointAddress,
                                   const std::string &portNumber, ICameraMultiplexer &cameraMux);
 };

@@ -2,7 +2,7 @@
 
 const std::string TCPCameraCommsPub::ENDPOINT_NAME = "CameraPubCommandListenerPair";
 
-bool TCPCameraCommsPub::interrupted = false;
+volatile bool TCPCameraCommsPub::_terminate = false;
 
 void TCPCameraCommsPub::startPublisher(zmq::context_t &context, const std::string &endpointAddress,
                                       const std::string &portNumber, ICameraMultiplexer &cameraMux) {
@@ -10,14 +10,14 @@ void TCPCameraCommsPub::startPublisher(zmq::context_t &context, const std::strin
     std::string fullAddress = "tcp://" + endpointAddress + ":" + portNumber;
     imgPubSocket.bind(fullAddress.c_str());
 
-    // TODO: implement interrupts
-    while (!interrupted) {
+    while (!_terminate) {
         std::vector<CameraData> camDataVector = cameraMux.getLatestCameraData();
         zmq::message_t pubMessage = CameraDataSerializer::serializeToZmq(camDataVector);
         imgPubSocket.send(pubMessage);
 
-        if(interrupted){
-            std::cout << "Publisher shutting down due to interrupt" << std::endl;
+        // TODO: Redirect to logger
+        if(_terminate){
+            std::cout << "Publisher shutting down due to termination request " << std::endl;
             break;
         }
     }
@@ -28,4 +28,8 @@ TCPCameraCommsPub::TCPCameraCommsPub(zmq::context_t &context, const std::string 
     std::thread _pubThread(&TCPCameraCommsPub::startPublisher, std::ref(context), std::ref(endpointAddress),
                            std::ref(portNumber), std::ref(cameraMux));
     _pubThread.detach();
+}
+
+void TCPCameraCommsPub::stop() {
+    _terminate = true;
 }
