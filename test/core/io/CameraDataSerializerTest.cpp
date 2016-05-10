@@ -1,3 +1,4 @@
+#include <exceptions/CameraDataDeserializationException.h>
 #include "CameraDataSerializerTest.h"
 
 
@@ -34,5 +35,17 @@ TEST_F (CameraDataSerializerTest, serializeDeserialize)
 
         EXPECT_EQ(pre.frame, post.frame);
     }
+}
 
+TEST_F(CameraDataSerializerTest, throwOnEmptyMessage) {
+    zmq::message_t message(0);
+    EXPECT_THROW(CameraDataDeserializer::deserializeFromZmq(message),
+                 CameraDataDeserializationException);
+}
+
+TEST_F(CameraDataSerializerTest, throwOnJunkMessage) {
+    zmq::message_t message("1234567890", 10);
+
+    EXPECT_THROW(CameraDataDeserializer::deserializeFromZmq(message),
+                 CameraDataDeserializationException);
 }

@@ -11,6 +11,13 @@
 class CameraDataDeserializer {
 public:
     static std::vector<CameraData> deserializeFromZmq(zmq::message_t &message);
+
+private:
+    static void checkNonEmptyMessage(zmq::message_t &message);
+
+    static void checkNumberOfCameraDatas(size_t expected, size_t actual);
+
+    static void checkForOverflow(char *currentPos, char *endPoint);
 };
 
 
