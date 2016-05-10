@@ -8,13 +8,13 @@
 
 #include "Horizon.h"
 #include "Orientation.h"
-#include "camera/ICameraSpecifications.h"
+#include "types/CameraSpecifications.h"
 
 class HorizonFactory {
 
   public:
 
-    HorizonFactory(ICameraSpecifications specs);
+    HorizonFactory(CameraSpecifications specs);
 
     /*
     Convert pitch and roll angles to intersection points.
@@ -31,7 +31,7 @@ class HorizonFactory {
     Horizon makeNeutralHorizon() const;
 
   private:
-    ICameraSpecifications _cameraSpecs;
+    CameraSpecifications _cameraSpecs;
 
     /*
     Determine the number of pixels by which the image of the horizon is shifted.
@@ -43,7 +43,7 @@ class HorizonFactory {
     pixel_shift: 0 when horizon centred, +height/2 when horizon at top, -height/2 at bottom.
     May exceed magnitude height/2 for large angles.
     */
-    double pitchHorizonPixelShift(double angle, ICameraSpecifications spec) const;
+    double pitchHorizonPixelShift(double angle, CameraSpecifications spec) const;
 
     /*
     Determine the number of pixels by which the image of the horizon is differentially shifted.
@@ -56,7 +56,7 @@ class HorizonFactory {
     pixel_shift: 0 when horizon centred, +height/2 when horizon from top left to bottom right.
     May exceed magnitude height/2 for large angles.
     */
-    double rollHorizonPixelShift(double angle, ICameraSpecifications spec) const;
+    double rollHorizonPixelShift(double angle, CameraSpecifications spec) const;
 };
 
 

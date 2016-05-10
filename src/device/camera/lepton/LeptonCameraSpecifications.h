@@ -5,15 +5,16 @@
 #ifndef OBSTACLE_AVOIDANCE_LEPTONCAMERADIMENSIONS_H
 #define OBSTACLE_AVOIDANCE_LEPTONCAMERADIMENSIONS_H
 
-#include <camera/ICameraSpecifications.h>
+#include "types/CameraSpecifications.h"
 
 
 /**
  * A global variable representing the camera constants for the Lepton.
  */
-static const ICameraSpecifications LeptonCameraSpecifications = {
+static const CameraSpecifications LeptonCameraSpecifications = {
     60,  // pixelHeight
     80,  // pixelWidth
+    2,   // bytesPerPixel
     37,  // FOVDegreesVertical
     51   // FOVDegreesHorizontal
 };

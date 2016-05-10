@@ -5,7 +5,7 @@
 #include "SimpleDangerZoneEncoder.h"
 
 
-SimpleDangerZoneEncoder::SimpleDangerZoneEncoder(ICameraSpecifications specs) :
+SimpleDangerZoneEncoder::SimpleDangerZoneEncoder(CameraSpecifications specs) :
     _cameraSpecs(specs), _pixToDegMultiplier(_cameraSpecs.FOVDegreesHorizontal / _cameraSpecs.pixelWidth) {
 
 }

@@ -7,6 +7,8 @@
 #include <io/TCPImageStream.h>
 
 /**
+ * @deprecated (2016-05-10) - instead see TCPCammeraCommsTest
+ *
  * This test pairs a TCPImageServer with a TCPImageStream to test their interaction
  *  over a network.
  * The TCPImageServer is fed a FileSystemImageStream that goes through
@@ -28,7 +30,6 @@ int main() {
     SimpleRescaler rescaler;
     Image8bit displayed(fsStream.getImageHeight(), fsStream.getImageWidth());
 
-    // TODO: Enhance client/server messaging so that we can use while(client.hasNext())
 //    while(client.hasNext()) {
     for (int i = 0; i < 3; i++) {
         rescaler.scale16bitTo8bit(client.nextImage(), displayed);

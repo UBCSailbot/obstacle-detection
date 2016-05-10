@@ -18,52 +18,74 @@ class Image8bit: public cv::Mat {
     
   public:
 
-    Image8bit() : cv::Mat() {
-        forceConversion(*this);
-    }
+    Image8bit();
 
-    Image8bit(int rows, int cols) : cv::Mat(rows, cols, CV_8UC1) { }
-    Image8bit(int rows, int cols, void *data) : Mat(rows, cols, CV_8UC1, data) { }
+    Image8bit(int rows, int cols);
 
     /**
-     * PARAM m: Mat used to seed this Image8bit. Must be of type CV_8UC1,
-     *      i.e. an 8-bit grayscale image.
-     * PARAM copyData: if True, copy the pixel data stored in m into this object.
-     *      If False, share the data between the two objects, such that a change in one
-     *      results in a change in the other.
+     * Create an Image8bit whose pixel data is copied from the
+     *  area of memory pointed to by the given pointer.
+     * 
+     * IMPORTANT - since this constructor copies rows * cols bytes
+     *  from the part of memory pointed to by data, it assumes that
+     *  some other part of the program will make sure that memory is
+     *  readable, and that that memory will be properly deallocated
+     *  elsewhere in the code at some future point in time.
+     * 
+     * @param rows - number of rows in the image
+     * @param cols - number of columns in the image
+     * @param data - pointer to bytes that encode an image.
      */
-    Image8bit(const cv::Mat &m, bool copyData) : cv::Mat(copyData ? m.clone() : m) {
-        if (m.type() != CV_8UC1) {
-            throw IncorrectImageTypeException("parameter m is of wrong type");
-        }
-
-    }
+    Image8bit(int rows, int cols, void *data);
 
     /**
-     * Overloads square brackets to work as a getter.
+     * Make an Image8bit that is a copy of the given Mat.
+     *
+     * @param m - Mat that will be copied into this Image8bit.
+     *  Must be of type CV_8UC1, i.e. an 8bit grayscale image.
+     * @param copyData - if True, copy the pixel data stored in m into
+     *  the new Image8bit being created. If False, share the data
+     *  between the two objects, such that a change in one results
+     *  in a change in the other.
      */
-    uint8_t pixelAt(int row, int col) const {
-        return this->at<uint8_t>(row, col);
-    }
+    Image8bit(const cv::Mat &m, bool copyData);
 
     /**
-     * Overloads square brackets to work as a setter.
+     * Gets the specified pixel value from this image.
+     *
+     * @param row - the row of the image containing the desired pixel
+     * @param col - the column of the image containing the desired pixel
+     *
+     * @return the value of the desired pixel.
      */
-    uint8_t &pixelAt(int row, int col) {
-        return this->at<uint8_t>(row, col);
-    }
+    uint8_t pixelAt(int row, int col) const;
 
     /**
-    * Force the given cv::Mat to become of type CV_16UC1.
-    *
-    * CAUTION: always sets the flag to CV_16UC1 even if mat is malformed.
-    */
-    static void forceConversion(cv::Mat &mat) {
-        mat.flags = mat.flags & (1 << 12);
-        mat.flags += CV_8UC1;
-    }
+     * Returns an r-value that can be used to easily set the value
+     *  of a particular pixel in the image.
+     *
+     * E.g. mat.pixelAt(row, col) = 128
+     *    // sets the value of the pixel at (row, col) to 128
+     *
+     * @param row - the row of the image containing the desired pixel
+     * @param col - the column of the image containing the desired pixel
+     *
+     * @return the value of the desired pixel.
+     */
+    uint8_t &pixelAt(int row, int col);
+
+    /**
+      * Force the given cv::Mat to become of type CV_8UC1.
+      *
+      * WARNING: Does not check whether or not it makes sense to interpret
+      *  the given Mat as an 8-bit image. If you use this function without
+      *  knowing what you're doing, you may get undefined behavior.
+      */
+    static void forceConversion(cv::Mat &mat);
 
 };
+
+bool operator==(const Image8bit &lhs, const Image8bit &rhs);
 
 
 #endif //OBSTACLE_AVOIDANCE_IMAGE8BIT_H
