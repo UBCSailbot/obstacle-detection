@@ -10,13 +10,14 @@
 #include <zmq.hpp>
 #include <io/ImageStream.h>
 #include "types/CameraData.h"
+#include "AStoppableWorker.h"
 #include <exceptions/ZmqException.h>
 
 /* Defines class TCPCameraCommsSub (a subscriber) which recieves object of type CameraData
  * over TCP from a publisher and sends the CameraData over inproc to a client
  */
 
-class TCPCameraCommsSub {
+class TCPCameraCommsSub : public AStoppableWorker {
 public:
 
     /**
@@ -40,10 +41,9 @@ public:
     static const std::string ENDPOINT_NAME;
 
 private:
-    static void startSubscriber(zmq::context_t &context, const std::string &pubEndpointAddress,
+    void startSubscriber(zmq::context_t &context, const std::string &pubEndpointAddress,
                                 const std::string &pubPortNumber);
 
-    static bool interrupt;
     const static int POLLTIMEOUT_MS = 2000;
 };
 

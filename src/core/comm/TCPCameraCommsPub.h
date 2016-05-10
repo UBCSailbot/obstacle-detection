@@ -9,24 +9,23 @@
 #include <zmq.hpp>
 #include <io/ImageStream.h>
 #include "types/CameraData.h"
+#include "AStoppableWorker.h"
 #include <exceptions/ZmqException.h>
 #include <camera/ICameraMultiplexer.h>
 #include <io/CameraDataSerializer.h>
 
 /* Defines class TCPCameraCommsPub (a publisher) which sends object of type CameraData over TCP to a subscriber*/
 
-class TCPCameraCommsPub {
+class TCPCameraCommsPub : public AStoppableWorker {
 public:
     TCPCameraCommsPub(zmq::context_t &context, const std::string &endpointAddress,
                       const std::string &portNumber, ICameraMultiplexer &cameraMux);
 
-    void stop();
-
     static const std::string ENDPOINT_NAME;
 
 private:
-    static volatile bool _terminate;
-    static void startPublisher(zmq::context_t &context, const std::string &endpointAddress,
+
+    void startPublisher(zmq::context_t &context, const std::string &endpointAddress,
                                   const std::string &portNumber, ICameraMultiplexer &cameraMux);
 };
 

@@ -1,8 +1,14 @@
 #include "TCPCameraCommsSub.h"
 
-//sub loop interrupt flag
-bool TCPCameraCommsSub::interrupt = false;
 const std::string TCPCameraCommsSub::ENDPOINT_NAME = "CameraSubObstacleDetectionPair";
+
+TCPCameraCommsSub::TCPCameraCommsSub(zmq::context_t &context, const std::string &endpointAddress,
+                                     const std::string &portNumber) {
+    std::thread _pollingThread(&TCPCameraCommsSub::startSubscriber, this,
+                               std::ref(context), endpointAddress,
+                               portNumber);
+    _pollingThread.detach();
+}
 
 void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::string &pubEndpointAddress,
                                         const std::string &pubPortNumber) {
@@ -37,8 +43,7 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::stri
     bool newPairRequestReceived = false;
 
     //actual sub loop for receiving messages
-    //TODO: implement something that actually watches for an interrupt
-    while (!interrupt) {
+    while (!_terminate) {
         try {
             int nsockets = zmq::poll((zmq_pollitem_t *) &items, 2, POLLTIMEOUT_MS);
 
@@ -46,7 +51,9 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::stri
                 throw zmq::error_t();
             }
             else if (nsockets == 0) {
-                std::cout << "zmq poll timed out after " << POLLTIMEOUT_MS << " ms. Retrying." << std::endl;
+                // TODO: Signal zmq poll timeout in logger.
+                std::cout << "Zmq poll timed out after " <<
+                        POLLTIMEOUT_MS << " ms. Retrying." << std::endl;
                 continue;
             }
 
@@ -67,22 +74,16 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::stri
 
         } catch (zmq::error_t &e) {
             // TODO: Log zmq error, handle error
-            std::cout << "zmq error encountered " << std::endl;
+            std::cout << "Zmq threw an exception!" << std::endl;
             std::cout << e.what() << std::endl;
         }
 
-        if (interrupt) {
+        if (_terminate) {
             // TODO: Log that the server is shutting down.
-            std::cout << "server shutting down due to interrupt" << std::endl;
+            std::cout << "TCP camera subscriber server shutting down "
+                                 "due to stop signal." << std::endl;
             break;
         }
     }
     // closing the sockets is unnecessary because the c++ destructors do this for us
-}
-
-TCPCameraCommsSub::TCPCameraCommsSub(zmq::context_t &context, const std::string &endpointAddress,
-                                     const std::string &portNumber) {
-    std::thread _pollingThread(&TCPCameraCommsSub::startSubscriber, std::ref(context), endpointAddress,
-                               portNumber);
-    _pollingThread.detach();
 }
