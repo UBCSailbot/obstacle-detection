@@ -20,7 +20,7 @@ include(lib/test_libs.cmake)
 # of the UBC Sailbot obstacle detection library: `obstdetect_core` and `obstdetect_full`.
 include(src/src.cmake)
 
-# include test files. This defines two intermediary targets: `test_core` and `test_device`.
+# include test files. This defines two intermediary targets: `unit_tests` and `test_device`.
 include(test/test.cmake)
 
 # defines the target `migrateResources`, used in tests
@@ -78,8 +78,8 @@ target_link_libraries(cameraServer obstdetect_full test_support)
 
 # This is the target for running the entire suite of automated unit tests.
 # (CORE_TEST_FILES must be added directly to this compilation unit for gtest to work properly.)
-add_executable(runCoreTests test/main/CoreTestRunner.cpp)
-target_link_libraries(runCoreTests obstdetect_core test_core test_support ${TEST_FRAMEWORK_LIBS})
+add_executable(runCoreTests test/main/CoreTestRunner.cpp $<TARGET_OBJECTS:unit_tests>)
+target_link_libraries(runCoreTests obstdetect_core test_support ${TEST_FRAMEWORK_LIBS})
 
 # IMU testing
 add_executable(imuTest test/main/IMUTest.cpp)

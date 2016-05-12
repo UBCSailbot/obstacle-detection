@@ -55,7 +55,7 @@ add_library(src_core STATIC
 add_dependencies(src_core migrateResources)
 
 # obstdetect_core is the version of the obstacle detection library stripped of any device-specific code
-add_library(obstdetect_core STATIC)
+add_library(obstdetect_core STATIC "")
 target_link_libraries(obstdetect_core src_core ${CORE_LIBS})
 
 # obstdetect_full is the complete version of the obstacle detection library

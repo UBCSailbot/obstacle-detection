@@ -10,7 +10,7 @@ include_directories( test/support )
 # supporting files (coded by us) used across tests, both automated and manual
 add_library(test_support STATIC test/support/ImageLoaderForTests.cpp)
 
-add_library(test_core STATIC 
+add_library(unit_tests OBJECT 
 	test/core/comm/AStoppableWorkerTest.cpp
 	test/core/comm/TCPCameraCommsPubTest.cpp
 	test/core/comm/TCPCameraCommsSubTest.cpp
@@ -32,7 +32,6 @@ add_library(test_core STATIC
 	test/core/io/JSONSerializerTest.cpp
 	test/core/io/OrientationFileReaderTest.cpp
 	test/core/paths/ResourcesTest.cpp)
-target_link_libraries(test_core test_support)
 
 # tests of code that interfaces with devices; generally can't be run automatically
 add_library(test_device STATIC test/device/imu/MockIMU.cpp
