@@ -7,15 +7,33 @@ include_directories( test/core )
 include_directories( test/device )
 include_directories( test/support )
 
-file(GLOB_RECURSE CORE_TEST_FILES test/core/*.cpp test/core/*.h)
-file(GLOB_RECURSE DEVICE_TEST_FILES test/device/*.cpp test/device/*.h)
-file(GLOB_RECURSE SUPPORT_TEST_FILES test/support/*.cpp test/support/*.h)
-
 # supporting files (coded by us) used across tests, both automated and manual
-add_library(test_support OBJECT ${SUPPORT_TEST_FILES})
+add_library(test_support STATIC test/support/ImageLoaderForTests.cpp)
 
-# dummy target representing tests of the core logic of obstacle detection
-add_library(test_core STATIC $<TARGET_OBJECTS:test_support>)
+add_library(test_core STATIC 
+	test/core/comm/AStoppableWorkerTest.cpp
+	test/core/comm/TCPCameraCommsPubTest.cpp
+	test/core/comm/TCPCameraCommsSubTest.cpp
+	test/core/detect/ObstacleTest.cpp
+	test/core/detect/SimpleDangerZoneEncoderTest.cpp
+	test/core/features/HorizonImageTest.cpp
+	test/core/features/SunImageTest.cpp
+	test/core/geometry/CompareTest.cpp
+	test/core/geometry/HorizonTest.cpp
+	test/core/geometry/LineTest.cpp
+	test/core/geometry/OrientationTest.cpp
+	test/core/geometry/Vector2dTest.cpp
+	test/core/imageProc/histogram/ImageHistogramTest.cpp
+	test/core/imageProc/rescale/RescalingTest.cpp
+	test/core/imageProc/smoothing/AveragedBufferedSmootherTest.cpp
+	test/core/imageTypes/Image16bitTest.cpp
+	test/core/imageTypes/Image8bitTest.cpp
+	test/core/io/CameraDataSerializerTest.cpp
+	test/core/io/JSONSerializerTest.cpp
+	test/core/io/OrientationFileReaderTest.cpp
+	test/core/paths/ResourcesTest.cpp)
+target_link_libraries(test_core test_support)
 
 # tests of code that interfaces with devices; generally can't be run automatically
-add_library(test_device STATIC $<TARGET_OBJECTS:test_support> ${DEVICE_TEST_FILES})
+add_library(test_device STATIC test/device/imu/MockIMU.cpp
+	test/device/lepton/MockLepton.cpp)

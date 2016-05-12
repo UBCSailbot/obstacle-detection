@@ -69,7 +69,7 @@ add_executable(objectDetectionBenchmark src/main/ObjectDetectionBenchmark.cpp)
 target_link_libraries(objectDetectionBenchmark dlib)
 
 add_executable(cameraServer src/main/CameraEnclosureServer.cpp)
-target_link_libraries(cameraServer obstdetect_full test_core)
+target_link_libraries(cameraServer obstdetect_full test_support)
 
 
 #########
@@ -78,8 +78,8 @@ target_link_libraries(cameraServer obstdetect_full test_core)
 
 # This is the target for running the entire suite of automated unit tests.
 # (CORE_TEST_FILES must be added directly to this compilation unit for gtest to work properly.)
-add_executable(runCoreTests test/main/CoreTestRunner.cpp ${CORE_TEST_FILES})
-target_link_libraries(runCoreTests obstdetect_core test_core ${TEST_FRAMEWORK_LIBS})
+add_executable(runCoreTests test/main/CoreTestRunner.cpp)
+target_link_libraries(runCoreTests obstdetect_core test_core test_support ${TEST_FRAMEWORK_LIBS})
 
 # IMU testing
 add_executable(imuTest test/main/IMUTest.cpp)
@@ -105,11 +105,11 @@ target_link_libraries(twoLeptonsTest obstdetect_full test_device)
 
 # FileSystemImageStreamTest - streaming images from file system
 add_executable(fsStreamTest test/main/FileSystemImageStreamTest.cpp)
-target_link_libraries(fsStreamTest obstdetect_core test_core)
+target_link_libraries(fsStreamTest obstdetect_core test_support)
 
 # ImageServerTest - streaming images from file system
 add_executable(imageServerTest test/main/ImageServerTest.cpp)
-target_link_libraries(imageServerTest obstdetect_core test_core)
+target_link_libraries(imageServerTest obstdetect_core test_support)
 
 # LeptonServerTest - streaming images from Lepton on another device
 add_executable(leptonServerTest test/main/LeptonServerTest.cpp)
@@ -118,3 +118,4 @@ target_link_libraries(leptonServerTest obstdetect_core)
 # TCPCameraCameraCommsTest - recieves reply from server, displays image
 add_executable(TCPCameraCommsTest test/main/TCPCameraCommsTest.cpp)
 target_link_libraries(TCPCameraCommsTest obstdetect_full)
+

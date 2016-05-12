@@ -6,24 +6,72 @@
 include_directories( src/core )
 include_directories( src/device )
 
-file(GLOB_RECURSE CORE_SOURCE_FILES src/core/*.cpp src/core/*.h)
-file(GLOB_RECURSE DEVICE_SOURCE_FILES src/device/*.cpp src/device/*.h)
-
 
 #
 # Add targets for separately compiling source files #
 #
 
 # src_core is the set of object files that are used by all variations of the obstacle detection library
-add_library(src_core OBJECT ${CORE_SOURCE_FILES})
+add_library(src_core STATIC 
+	src/core/comm/AStoppableWorker.cpp
+    src/core/comm/ImageFeedZmq.cpp
+    src/core/comm/TCPCameraCommsPub.cpp
+    src/core/comm/TCPCameraCommsSub.cpp
+    src/core/comm/TCPImageServer.cpp
+    src/core/comm/ZmqContextSingleton.cpp
+    src/core/detect/Obstacle.cpp
+    src/core/detect/SimpleDangerZoneEncoder.cpp
+    src/core/exceptions/ErrorMessageException.cpp
+    src/core/exceptions/LeptonSPICloseException.cpp
+    src/core/exceptions/LeptonSPIOpenException.cpp
+    src/core/features/HorizonImage.cpp
+    src/core/features/SunImage.cpp
+    src/core/geometry/Compare.cpp
+    src/core/geometry/Horizon.cpp
+    src/core/geometry/HorizonFactory.cpp
+    src/core/geometry/Line.cpp
+    src/core/geometry/Orientation.cpp
+    src/core/geometry/Vector2d.cpp
+    src/core/imageProc/dlib/DLibProcessor.cpp
+    src/core/imageProc/histogram/HorizonImageHistogram.cpp
+    src/core/imageProc/histogram/ImageHistogram.cpp
+    src/core/imageProc/liveFeed/base64EncDec.cpp
+    src/core/imageProc/liveFeed/FeedReader.cpp
+    src/core/imageProc/rescale/ClippingRescaler.cpp
+    src/core/imageProc/rescale/Rescaling.cpp
+    src/core/imageProc/rescale/SimpleRescaler.cpp
+    src/core/imageProc/smoothing/WeightedAverageBufferedSmoother.cpp
+    src/core/io/CameraDataDeserializer.cpp
+    src/core/io/CameraDataSerializer.cpp
+    src/core/io/FileSystemImageStream.cpp
+    src/core/io/JSONSerializer.cpp
+    src/core/io/OrientationFileReader.cpp
+    src/core/io/TCPImageStream.cpp
+    src/core/paths/Paths.cpp
+    src/core/paths/Resources.cpp
+    src/core/types/CameraSpecifications.cpp
+    src/core/types/Image16bit.cpp
+    src/core/types/Image8bit.cpp)
 add_dependencies(src_core migrateResources)
 
 # obstdetect_core is the version of the obstacle detection library stripped of any device-specific code
-add_library(obstdetect_core STATIC $<TARGET_OBJECTS:src_core>)
-target_link_libraries(obstdetect_core ${CORE_LIBS})
+add_library(obstdetect_core STATIC)
+target_link_libraries(obstdetect_core src_core ${CORE_LIBS})
 
 # obstdetect_full is the complete version of the obstacle detection library
-add_library(obstdetect_full STATIC $<TARGET_OBJECTS:src_core> ${DEVICE_SOURCE_FILES})
-target_link_libraries(obstdetect_full ${CORE_LIBS} ${DEVICE_LIBS})
+add_library(obstdetect_full STATIC 
+	src/device/camera/lepton/Lepton.cpp
+	src/device/camera/lepton/LeptonI2CConnection.cpp
+	src/device/camera/lepton/LeptonRegistry.cpp
+	src/device/camera/lepton/LeptonSPIConnection.cpp
+	src/device/camera/lepton/ThermalCameraStream.cpp
+	src/device/camera/LeptonMultiplexer.cpp
+	src/device/camera/MockCameraMultiplexer.cpp
+	src/device/display/DesktopDisplay.cpp
+	src/device/display/DisplayUtils.cpp
+	src/device/display/RoboPeakUSBDisplay.cpp
+	src/device/imu/ParallelIMU.cpp
+)
+target_link_libraries(obstdetect_full src_core ${CORE_LIBS} ${DEVICE_LIBS})
 add_dependencies(obstdetect_full leptonSDK rpusbdisp)
 # we don't add RTIMULib to the list of dependencies for obstdetect_full because it gets compiled automatically.
