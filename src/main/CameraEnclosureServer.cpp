@@ -24,7 +24,8 @@ using namespace std;
  *
  * For usage notes, see those that are printed out in main().
  */
-void run(string endpointAddress, string portNumber, bool debug) {
+void run(string endpointAddress, string portNumber, bool debug,
+         bool useLepton0, bool useLepton1) {
 
     ICameraMultiplexer *mux;
 
@@ -32,8 +33,7 @@ void run(string endpointAddress, string portNumber, bool debug) {
         mux = new MockCameraMultiplexer();
     }
     else {
-        // TODO: set more fine-grained controls on which leptons are used
-        mux = new LeptonMultiplexer(true, true);
+        mux = new LeptonMultiplexer(useLepton0, useLepton1);
     }
 
     zmq::context_t context;
@@ -47,11 +47,11 @@ void run(string endpointAddress, string portNumber, bool debug) {
 
 int main(int argc, char **argv) {
 
-    if (argc < 3) {
+    if (argc < 4) {
         std::cout << std::endl;
-        std::cout << "Usage: " << APPNAME << " [IPv4_address] [port#]" << std::endl;
+        std::cout << "Usage: " << APPNAME << " [IPv4_address] [port#] [debug/lepton]" << std::endl;
         std::cout << std::endl;
-        std::cout << "e.g. ./" << APPNAME << " " << "'*' 5555" << std::endl;
+        std::cout << "e.g. ./" << APPNAME << " " << "'*' 5555 lepton 1 1" << std::endl;
         std::cout << std::endl;
         std:: cout << "This binds an instance of cameraServer to any available interface "
             "on this device, on port 5555, connecting to two Leptons: one on "
@@ -61,11 +61,25 @@ int main(int argc, char **argv) {
 
     std::string address(argv[1]), port(argv[2]);
 
-    bool debug = false;
-    if (argc == 4) {
-        debug = true;
+    char* mode = argv[3];
+
+    if (!strcmp(mode, "lepton")) {
+        if (argc < 6) {
+            std::cout << "If lepton is specified, must include two more arguments"
+                                 " both binary (i.e. 0 or 1): [useLepton0] and "
+                                 "[useLepton1]." << std::endl;
+            exit(0);
+        }
+        bool useLepton0 = atoi(argv[4]) != 0;
+        bool useLepton1 = atoi(argv[5]) != 0;
+        run(address, port, false, useLepton0, useLepton1);
     }
-    run(address, port, debug);
+    else if (!strcmp(mode, "debug")) {
+        run(address, port, true, 0, 0);
+    }
+    else {
+        std::cout << "Error: Fourth argument must be one of 'debug' or 'lepton'." << std::endl;
+    }
 
     return 0;
 }
