@@ -2,6 +2,7 @@
 #define OBSTACLE_DETECTION_ICAMERASPECIFICATIONS_H
 
 #include <stddef.h>
+#include <cstdint>
 
 /**
  * A data type for storing the parameters of cameras.
@@ -16,9 +17,9 @@
  */
 struct CameraSpecifications {
 public:
-    const unsigned int pixelHeight;
-    const unsigned int pixelWidth;
-    const size_t bytesPerPixel;
+    const uint32_t pixelHeight;
+    const uint32_t pixelWidth;
+    const uint8_t bytesPerPixel;
 
     const double FOVDegreesVertical;
     const double FOVDegreesHorizontal;

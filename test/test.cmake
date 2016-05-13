@@ -12,8 +12,6 @@ add_library(test_support STATIC test/support/ImageLoaderForTests.cpp)
 
 add_library(unit_tests OBJECT 
 	test/core/comm/AStoppableWorkerTest.cpp
-	test/core/comm/TCPCameraCommsPubTest.cpp
-	test/core/comm/TCPCameraCommsSubTest.cpp
 	test/core/detect/ObstacleTest.cpp
 	test/core/detect/SimpleDangerZoneEncoderTest.cpp
 	test/core/features/HorizonImageTest.cpp

@@ -1,5 +1,3 @@
-#include <exceptions/ErrorMessageException.h>
-#include <exceptions/CameraDataDeserializationException.h>
 #include "CameraDataDeserializer.h"
 
 std::vector<CameraData> CameraDataDeserializer::deserializeFromZmq(zmq::message_t &message) {
@@ -9,9 +7,13 @@ std::vector<CameraData> CameraDataDeserializer::deserializeFromZmq(zmq::message_
     char* currentPos = (char*) message.data();
     char* endPoint = currentPos + message.size();
 
-    size_t actualNumCameraData = 0;
-    size_t expectedNumCameraData = *((size_t *) currentPos);
-    currentPos += sizeof(size_t);
+    msg_validation_code code = *(msg_validation_code *) currentPos;
+    checkMessageCode(code);
+    currentPos += sizeof(msg_validation_code);
+
+    uint8_t actualNumCameraData = 0;
+    uint8_t expectedNumCameraData = *((uint8_t *) currentPos);
+    currentPos += sizeof(uint8_t);
 
     while (currentPos < endPoint) {
         CameraStatus status = *((CameraStatus *) currentPos);
@@ -45,10 +47,18 @@ std::vector<CameraData> CameraDataDeserializer::deserializeFromZmq(zmq::message_
     return dataVector;
 }
 
-void CameraDataDeserializer::checkNonEmptyMessage(zmq::message_t &message) {
+void CameraDataDeserializer::checkNonEmptyMessage(const zmq::message_t &message) {
     if (message.size() <= 0) {
         throw CameraDataDeserializationException("Cannot deserialize message"
                                                          "of size 0.");
+    }
+}
+
+void CameraDataDeserializer::checkMessageCode(msg_validation_code code) {
+    if (!code == CAMERA_DATA_VECTOR_MSG_CODE) {
+        throw CameraDataDeserializationException(
+                "Received a message that does not appear to contain a vector"
+                        " of CameraData.");
     }
 }
 
@@ -68,6 +78,8 @@ void CameraDataDeserializer::checkForOverflow(char *currentPos, char *endPoint) 
                                                          "message size.");
     }
 }
+
+
 
 
 

@@ -51,7 +51,8 @@ add_library(src_core STATIC
     src/core/paths/Resources.cpp
     src/core/types/CameraSpecifications.cpp
     src/core/types/Image16bit.cpp
-    src/core/types/Image8bit.cpp)
+    src/core/types/Image8bit.cpp
+	src/core/types/message_types.h)
 add_dependencies(src_core migrateResources)
 
 # obstdetect_core is the version of the obstacle detection library stripped of any device-specific code

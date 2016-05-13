@@ -1,7 +1,3 @@
-//
-// Created by chantelle on 24/03/16.
-//
-
 #ifndef OBSTACLE_DETECTION_CAMERADATA_H
 #define OBSTACLE_DETECTION_CAMERADATA_H
 

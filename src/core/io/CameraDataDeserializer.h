@@ -7,13 +7,19 @@
 #include <zmq.hpp>
 #include <string.h>
 #include <types/Image16bit.h>
+#include <types/message_types.h>
+#include <exceptions/ErrorMessageException.h>
+#include <exceptions/CameraDataDeserializationException.h>
+
 
 class CameraDataDeserializer {
 public:
     static std::vector<CameraData> deserializeFromZmq(zmq::message_t &message);
 
 private:
-    static void checkNonEmptyMessage(zmq::message_t &message);
+    static void checkNonEmptyMessage(const zmq::message_t &message);
+
+    static void checkMessageCode(msg_validation_code code);
 
     static void checkNumberOfCameraDatas(size_t expected, size_t actual);
 
