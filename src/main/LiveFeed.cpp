@@ -9,7 +9,7 @@
 #define APP_NAME "live_feed"
 
 
-vector<uchar> imgToBuff(Image8bit img) {
+vector<uchar> imgToBuff(cv::Mat img) {
     vector<uchar> buff;//buffer for coding
     vector<int> param = vector<int>(2);
 
@@ -53,7 +53,7 @@ void LiveFeed::onImageRead(Image16bit image) {
         imuLog << imu->getOrientation().toDataString();
     }
 
-    vector<uchar> buff = imgToBuff(frameRescaled);
+    vector<uchar> buff = imgToBuff(image);
     string encoded = base64_encode(buff.data(), buff.size());
     std::vector<dlib::rectangle> dets = dLibProcessor.getObjectDetectionBoxes(frameRescaled);
     string *JSON = new string(makeJSON(encoded, dets));
@@ -90,8 +90,10 @@ int main(int argc, char **argv) {
         LiveFeed liveFeed(new FileSystemImageStream(argv[2], "*.png"), dLibProcessor, argv[3], false);
         try {
             liveFeed.record();
-        } catch (Exception &e) {
-            std::cout << e.description() << endl;
+        } catch (exception &e) {
+            std::cout << e.what() << endl;
+            //This is to give time for zeromq to finish sending when reading from file system
+            sleep(5);
         }
     } else if (string(argv[1]) == "lepton") {
         for (int i = 4; i < argc; i++) {
@@ -120,8 +122,8 @@ int main(int argc, char **argv) {
         LiveFeed liveFeed(new TCPImageStream(argv[2], argv[3]), dLibProcessor, argv[4], false);
         try {
             liveFeed.record();
-        } catch (Exception &e) {
-            std::cout << e.description() << endl;
+        } catch (exception &e) {
+            std::cout << e.what() << endl;
         }
 
     } else {
