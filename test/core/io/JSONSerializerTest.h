@@ -2,6 +2,7 @@
 #define OBSTACLE_AVOIDANCE_JSONSERIALIZERTEST_H
 
 #include <gtest/gtest.h>
+#include <json/json.h>
 
 #include <vector>
 #include <dlib/data_io.h>

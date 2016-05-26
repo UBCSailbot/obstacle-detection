@@ -19,3 +19,9 @@ TEST_F(JSONSerializerTest, JSONTest) {
 JSONSerializerTest::JSONSerializerTest() {
 
 }
+
+TEST_F(JSONSerializerTest, JSONcppLibIntegration) {
+    // This line will compile and run only if jsoncpp
+    //  has been correctly integrated into the project.
+    Json::Value root;
+}

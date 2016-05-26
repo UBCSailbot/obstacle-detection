@@ -29,3 +29,19 @@ include_directories(lib/cppzmq)
 # dlib is compiled with the project
 include(${CMAKE_SOURCE_DIR}/lib/dlib/dlib/cmake)
 list(APPEND CORE_LIBS dlib)
+
+# For jsoncpp, first a "source code amalgamation" script is run if need be.
+#  Then, a static library is built from that file.
+include_directories(${CMAKE_SOURCE_DIR}/lib/jsoncpp/include)
+set(JSONCPP_DIR ${CMAKE_SOURCE_DIR}/lib/jsoncpp)
+set(JSONCPP_AMALG_SRC ${JSONCPP_DIR}/dist/jsoncpp.cpp)
+add_custom_command(
+        OUTPUT ${JSONCPP_AMALG_SRC}
+        COMMAND python ${JSONCPP_DIR}/amalgamate.py
+        WORKING_DIRECTORY ${JSONCPP_DIR}
+        COMMENT "Amalgamating jsoncpp source code."
+)
+add_custom_target(jsoncpp_amalg DEPENDS ${JSONCPP_AMALG_SRC})
+add_library(jsoncpp STATIC ${JSONCPP_AMALG_SRC})
+add_dependencies(jsoncpp jsoncpp_amalg)
+list(APPEND CORE_LIBS jsoncpp)
