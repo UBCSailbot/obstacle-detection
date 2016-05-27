@@ -1,20 +1,23 @@
-  #include "JSONSerializer.h"
+#include "JSONSerializer.h"
 
-std::string makeJSON(std::string img, std::vector <dlib::rectangle> boxes) {
-    std::string temp = std::string("{") + "\"image\":" + "\"" + img + "\",\"boxes\":[";
+std::string makeJSON(std::string img, std::vector<dlib::rectangle> rectangles) {
 
-    for (std::vector<int>::size_type i = 0; i != boxes.size(); i++) {
-        dlib::rectangle a = boxes[i];
+    Json::Value jsonObject;
+    jsonObject["image"] = Json::Value(img);
 
-        temp = temp + "{" + "\"x\":" + std::to_string(a.left()) + "," + "\"y\":" +
-            std::to_string(a.top()) + "," + "\"w\":" + std::to_string(a.width()) + "," + "\"h\":" +
-            std::to_string(a.height()) + "}";
-
-        if (i != boxes.size() - 1) {
-            temp = temp + ",";
-        }
+    Json::Value boxesArray = jsonObject["boxes"];
+    for (std::vector<int>::size_type i = 0; i != rectangles.size(); i++) {
+        dlib::rectangle rectangle = rectangles[i];
+        Json::Value box;
+        box["x"] = Json::Value((int) rectangle.left());
+        box["y"] = Json::Value((int) rectangle.top());
+        box["h"] = Json::Value((int) rectangle.height());
+        box["w"] = Json::Value((int) rectangle.width());
+        boxesArray[(int) i] = box;
     }
+    jsonObject["boxes"] = boxesArray;
 
-    temp = temp + "]}";
-    return temp;
+    std::ostringstream stream;
+    stream << jsonObject;
+    return stream.str();
 }
