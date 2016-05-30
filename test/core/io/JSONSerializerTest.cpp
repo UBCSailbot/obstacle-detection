@@ -4,11 +4,11 @@
 
 TEST_F(JSONSerializerTest, JSONTest) {
 
-    std::vector<dlib::rectangle> dets;
+    std::vector<dlib::rectangle> rectangles;
     dlib::rectangle rect1(2, 2, 5, 5);
     dlib::rectangle rect2(1, 2, 5, 4);
-    dets.push_back(rect1);
-    dets.push_back(rect2);
+    rectangles.push_back(rect1);
+    rectangles.push_back(rect2);
     std::string img = "asdf";
 
     std::string expected = "{\n"
@@ -27,10 +27,11 @@ TEST_F(JSONSerializerTest, JSONTest) {
             "\t\t\t\"y\" : 2\n"
             "\t\t}\n"
             "\t],\n"
-            "\t\"image\" : \"asdf\"\n"
+            "\t\"image\" : \"asdf\",\n"
+            "\t\"imageType\" : \"8Bit\"\n"
             "}";
 
-    EXPECT_EQ(expected, makeJSON(img, dets));
+    EXPECT_EQ(expected, makeJSON(img, rectangles, IMAGE8BIT));
 }
 
 JSONSerializerTest::JSONSerializerTest() {
