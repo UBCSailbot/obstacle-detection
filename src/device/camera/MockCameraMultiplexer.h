@@ -6,8 +6,8 @@
 
 #include <types/CameraData.h>
 #include <camera/lepton/LeptonCameraSpecifications.h>
-#include <io/CameraDataSerializer.h>
-#include <io/CameraDataDeserializer.h>
+#include <io/cameradata/CameraDataSerializer.h>
+#include <io/cameradata/CameraDataDeserializer.h>
 #include <camera/ICameraMultiplexer.h>
 #include <opencv2/highgui/highgui_c.h>
 #include <paths/Resources.h>

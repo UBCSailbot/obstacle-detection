@@ -5,8 +5,8 @@
 #include <ImageLoaderForTests.h>
 #include <types/CameraData.h>
 #include <camera/lepton/LeptonCameraSpecifications.h>
-#include <io/CameraDataSerializer.h>
-#include <io/CameraDataDeserializer.h>
+#include <io/cameradata/CameraDataSerializer.h>
+#include <io/cameradata/CameraDataDeserializer.h>
 
 class CameraDataSerializerTest : public ImageLoaderForTests {
     //tests both CameraDataSerializer and CameraDataDeserializer

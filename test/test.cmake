@@ -26,7 +26,7 @@ add_library(unit_tests OBJECT
 	test/core/imageProc/smoothing/AveragedBufferedSmootherTest.cpp
 	test/core/imageTypes/Image16bitTest.cpp
 	test/core/imageTypes/Image8bitTest.cpp
-	test/core/io/CameraDataSerializerTest.cpp
+	test/core/io/cameradata/CameraDataSerializerTest.cpp
 	test/core/io/JSONSerializerTest.cpp
 	test/core/io/OrientationFileReaderTest.cpp
 	test/core/paths/ResourcesTest.cpp)
