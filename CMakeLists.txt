@@ -71,6 +71,8 @@ target_link_libraries(objectDetectionBenchmark dlib)
 add_executable(cameraServer src/main/CameraEnclosureServer.cpp)
 target_link_libraries(cameraServer obstdetect_full test_support)
 
+add_executable(singleImageCameraServer src/main/SingleImageCameraEnclosureServer.cpp)
+target_link_libraries(singleImageCameraServer obstdetect_full test_support)
 
 #########
 # TESTS #
