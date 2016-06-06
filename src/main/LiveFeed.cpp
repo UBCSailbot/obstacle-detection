@@ -43,9 +43,6 @@ void LiveFeed::onImageRead(Image16bit image) {
     frame_counter++;
     char image_name[128];
 
-    Image8bit frameRescaled(LeptonCameraSpecifications.pixelHeight, LeptonCameraSpecifications.pixelWidth);
-    rescaler.scale16bitTo8bit(image, frameRescaled);
-
     sprintf(image_name, "%s/img_%06d.png", output_dir, frame_counter);
     imwrite(image_name, image);
 
@@ -55,7 +52,7 @@ void LiveFeed::onImageRead(Image16bit image) {
 
     vector<uchar> buff = imgToBuff(image);
     string encoded = base64_encode(buff.data(), buff.size());
-    std::vector<dlib::rectangle> detectedRectangles = dLibProcessor.getObjectDetectionBoxes(frameRescaled);
+    std::vector<dlib::rectangle> detectedRectangles = dLibProcessor.getObjectDetectionBoxes(image);
     unique_ptr<string> JSON(new string(makeJSON(encoded, detectedRectangles, IMAGE16BIT)));
     zmqfeed.sendFrame((const uint8_t *) JSON->c_str(), JSON->size());
 }

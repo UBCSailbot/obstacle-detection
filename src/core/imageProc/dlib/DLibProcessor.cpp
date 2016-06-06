@@ -3,6 +3,7 @@
 //
 
 #include <dlib/opencv/cv_image.h>
+#include <types/Image16bit.h>
 #include "DLibProcessor.h"
 
 
@@ -11,12 +12,12 @@ DLibProcessor::DLibProcessor(std::vector <dlib::object_detector<image_scanner_ty
 
 }
 
-std::vector <dlib::rectangle> DLibProcessor::getObjectDetectionBoxes(Image8bit image) {
+std::vector <dlib::rectangle> DLibProcessor::getObjectDetectionBoxes(Image16bit image) {
 
-    dlib::cv_image<unsigned char> img(image);
+    dlib::cv_image<uint16_t> img(image);
 
-    std::vector <dlib::rectangle> dets = evaluate_detectors(detectors, img);
+    std::vector <dlib::rectangle> detectedRecangles = evaluate_detectors(detectors, img);
 
-    return std::vector<dlib::rectangle>();
+    return detectedRecangles;
 
 }

@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
         // holds the locations of the faces in the training images.  So for
         // example, the image images_train[0] has the faces given by the
         // rectangles in face_boxes_train[0].
-        dlib::array <array2d<unsigned char>> images_train;
+        dlib::array <array2d<uint16_t>> images_train;
         std::vector <std::vector<rectangle>> boxes_train;
 
         // Now we load the data.  These XML files list the images in each
