@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
         LiveFeed liveFeed(new FileSystemImageStream(argv[2], "*.png"), dLibProcessor, argv[3], false);
         try {
             liveFeed.record();
-        } catch (exception &e) {
+        } catch (std::exception &e) {
             std::cout << e.what() << endl;
             //This is to give time for zeromq to finish sending when reading from file system
             sleep(5);
