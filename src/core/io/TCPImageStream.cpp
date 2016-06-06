@@ -18,7 +18,7 @@ Image16bit TCPImageStream::nextImage() {
     zmq::message_t request(IMAGE_REQUEST_SIZE);
 
     if (!_serverHasNext) {
-        throw new EndOfStreamException();
+        throw EndOfStreamException();
     }
 
     // Request the next image from the server.

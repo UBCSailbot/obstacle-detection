@@ -20,7 +20,7 @@ FileSystemImageStream::FileSystemImageStream(std::string imageDirectory,
 
 Image16bit FileSystemImageStream::nextImage() {
     if (!hasNext()) {
-        throw new EndOfStreamException();
+        throw EndOfStreamException();
     }
 
     std::string nextImagePath = Paths::join(_imgDir, _frameList[_currIndex]);
