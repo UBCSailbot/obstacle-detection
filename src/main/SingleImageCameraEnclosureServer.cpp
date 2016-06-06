@@ -27,7 +27,11 @@ int run(std::string endpointAddress, std::string portNumber, int leptonID) {
     std::string inputFrameDir = Paths::join(Resources::RESOURCE_DIR, "img/16bit");
     stream = new FileSystemImageStream(inputFrameDir, "*.png");
 #else
-    stream = new ThermalCameraStream(LeptonRegistry::getLepton0());
+    if (leptonID) {
+        stream = new ThermalCameraStream(LeptonRegistry::getLepton1());
+    } else {
+        stream = new ThermalCameraStream(LeptonRegistry::getLepton0());
+    }
 #endif
 
     TCPImageServer server(*stream, endpointAddress, portNumber);
@@ -47,9 +51,9 @@ int main(int argc, char **argv) {
         std::cout << std::endl;
         std::cout << "e.g. ./" << APPNAME << " " << "'*' 5555 0" << std::endl;
         std::cout << std::endl;
-        std:: cout << "This binds an instance of cameraServer to any available interface "
-            "on this device, on port 5555, connecting to a Lepton object "
-            "initialized to be controlled by SPI_CS_0." << std::endl;
+        std::cout << "This binds an instance of cameraServer to any available interface "
+                "on this device, on port 5555, connecting to a Lepton object "
+                "initialized to be controlled by SPI_CS_0." << std::endl;
         exit(0);
     }
 
