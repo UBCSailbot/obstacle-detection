@@ -11,6 +11,7 @@
 #include <dlib/image_processing/object_detector.h>
 #include <dlib/image_transforms/image_pyramid.h>
 #include <dlib/image_processing/scan_fhog_pyramid.h>
+#include <types/Image16bit.h>
 
 class DLibProcessor {
   public:
@@ -23,7 +24,7 @@ class DLibProcessor {
    */
     DLibProcessor(std::vector <dlib::object_detector<image_scanner_type>> detectors);
 
-    virtual std::vector <dlib::rectangle> getObjectDetectionBoxes(Image8bit image);
+    virtual std::vector <dlib::rectangle> getObjectDetectionBoxes(Image16bit image);
 
   private:
     std::vector <dlib::object_detector<image_scanner_type>> detectors;
