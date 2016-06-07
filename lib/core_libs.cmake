@@ -26,6 +26,10 @@ link_directories(${ZMQ_LIBRARY_DIRS})
 # Add the zmq.hpp file to the include path
 include_directories(lib/cppzmq)
 
+#Disable unneeded options for dlib
+set(DLIB_USE_CUDA_STR OFF)
+set(DLIB_USE_LAPACK_STR OFF)
+set(DLIB_USE_BLAS_STR OFF)
 # dlib is compiled with the project
 include(${CMAKE_SOURCE_DIR}/lib/dlib/dlib/cmake)
 list(APPEND CORE_LIBS dlib)
