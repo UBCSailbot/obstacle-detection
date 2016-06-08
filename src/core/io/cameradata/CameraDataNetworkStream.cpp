@@ -9,7 +9,7 @@
 
 int _imageHeight;
 
-std::vector<CameraData> DualLeptonTCPImageStream::nextImage() {
+std::vector<CameraData> CameraDataNetworkStream::nextImage() {
     zmq::message_t request;
     zmq::message_t reply;
 
@@ -19,20 +19,14 @@ std::vector<CameraData> DualLeptonTCPImageStream::nextImage() {
     return CameraDataDeserializer::deserializeFromZmq(reply);
 }
 
-bool DualLeptonTCPImageStream::hasNext() const {
+bool CameraDataNetworkStream::hasNext() const {
     return true;
 }
 
-int DualLeptonTCPImageStream::getImageWidth() const {
-    return _imageWidth;
-}
 
-int DualLeptonTCPImageStream::getImageHeight() const {
-    return _imageHeight;
-}
 
-DualLeptonTCPImageStream::DualLeptonTCPImageStream(const std::string &pubIPaddress,
-                                                   const std::string &pubPortNumber) : _context(1),
+CameraDataNetworkStream::CameraDataNetworkStream(const std::string &pubIPaddress,
+                                                 const std::string &pubPortNumber) : _context(1),
                                                                                        pairSocket(_context, ZMQ_PAIR) {
 
     _imageHeight = 60;

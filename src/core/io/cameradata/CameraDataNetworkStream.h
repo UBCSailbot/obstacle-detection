@@ -7,25 +7,20 @@
 
 #include "CameraDataStream.h"
 
-class DualLeptonTCPImageStream : CameraDataStream {
+class CameraDataNetworkStream : CameraDataStream {
 
 
 public:
-    DualLeptonTCPImageStream(const std::string &pubIPaddress,
-                                 const std::string &pubPortNumber);
+    CameraDataNetworkStream(const std::string &pubIPaddress, const std::string &pubPortNumber);
 
 
     virtual std::vector<CameraData> nextImage() override;
 
     virtual bool hasNext() const override;
 
-    virtual int getImageWidth() const override;
-
-    virtual int getImageHeight() const override;
-
 private:
-     zmq::context_t _context;
-     zmq::socket_t pairSocket;
+    zmq::context_t _context;
+    zmq::socket_t pairSocket;
 
     int _imageWidth;
     int _imageHeight;

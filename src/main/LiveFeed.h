@@ -49,7 +49,6 @@ class LiveFeed: public FeedReader { ;
 
     void displayFrameWithHorizonLine(Image8bit image, double roll, double pitch, Display &d);
 
-
     DLibProcessor dLibProcessor;
 
     ImageFeedZmq zmqfeed;

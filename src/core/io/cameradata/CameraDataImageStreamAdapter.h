@@ -24,7 +24,7 @@ public:
     virtual int getImageHeight() const override;
 
 protected:
-    CameraDataStream *cameraDataStream;
+    CameraDataStream *_cameraDataStream;
 
 };
 

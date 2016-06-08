@@ -5,20 +5,20 @@
 #include "CameraDataImageStreamAdapter.h"
 
 CameraDataImageStreamAdapter::CameraDataImageStreamAdapter(CameraDataStream *cameraDataStream) :
-        cameraDataStream(cameraDataStream) { }
+        _cameraDataStream(cameraDataStream) { }
 
 Image16bit CameraDataImageStreamAdapter::nextImage() {
-    return cameraDataStream->nextImage()[0].frame;
+    return _cameraDataStream->nextImage()[0].frame;
 }
 
 bool CameraDataImageStreamAdapter::hasNext() const {
-    return cameraDataStream->hasNext();
+    return _cameraDataStream->hasNext();
 }
 
 int CameraDataImageStreamAdapter::getImageWidth() const {
-    return cameraDataStream->getImageWidth();
+    return _cameraDataStream->nextImage()[0].imageSpecs.pixelWidth;
 }
 
 int CameraDataImageStreamAdapter::getImageHeight() const {
-    return cameraDataStream->getImageHeight();
+    return _cameraDataStream->nextImage()[0].imageSpecs.pixelHeight;
 }

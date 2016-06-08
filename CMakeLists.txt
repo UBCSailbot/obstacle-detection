@@ -74,6 +74,9 @@ target_link_libraries(cameraServer obstdetect_full test_support)
 add_executable(singleImageCameraServer src/main/SingleImageCameraEnclosureServer.cpp)
 target_link_libraries(singleImageCameraServer obstdetect_full test_support)
 
+add_executable(adaVision src/main/AdaVision.cpp)
+target_link_libraries(adaVision obstdetect_full test_support)
+
 #########
 # TESTS #
 #########

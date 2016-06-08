@@ -54,7 +54,10 @@ add_library(src_core STATIC
         src/core/types/Image8bit.cpp
         src/core/types/message_types.h
         src/core/io/cameradata/CameraDataImageStreamAdapter.cpp
-        src/core/io/cameradata/CameraDataNetworkStream.cpp )
+        src/core/io/cameradata/CameraDataNetworkStream.cpp
+        src/core/io/cameradata/CameraDataProcessor.cpp
+        src/core/io/cameradata/ImageStreamCameraDataAdapter.cpp
+        src/core/imageProc/liveFeed/Compressor.cpp)
 add_dependencies(src_core migrateResources)
 
 # obstdetect_core is the version of the obstacle detection library stripped of any device-specific code
