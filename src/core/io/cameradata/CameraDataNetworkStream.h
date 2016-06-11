@@ -7,7 +7,7 @@
 
 #include "CameraDataStream.h"
 
-class CameraDataNetworkStream : CameraDataStream {
+class CameraDataNetworkStream : public CameraDataStream {
 
 
 public:

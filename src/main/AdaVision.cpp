@@ -14,6 +14,8 @@
 #include <io/FileSystemImageStream.h>
 #include <io/cameradata/ImageStreamCameraDataAdapter.h>
 #include <io/cameradata/CameraDataImageStreamAdapter.h>
+#include <io/cameradata/CameraDataNetworkStream.h>
+#include <iostream>
 
 
 class AdaVisionHandler : public CameraDataHandler {
@@ -28,7 +30,13 @@ public:
 
     void onMultiImageProcessed(std::vector<CameraData> cameraData,
                                std::vector<dlib::rectangle> detectedRectangles) {
-        //TODO add multi image handling
+        std::cout << "received image" << std::endl;
+
+        frame_counter++;
+        char image_name[128];
+
+        std::sprintf(image_name, "%s/img_%06d.png", output_dir, frame_counter);
+        cv::imwrite(image_name, cameraData[0].frame);
     }
 
     void onSingleImageProcessed(CameraData cameraData, std::vector<dlib::rectangle> detectedRectangles) {
@@ -98,7 +106,21 @@ int main(int argc, char **argv) {
         }
 
     } else if (string(argv[1]) == "network") {
-        //TODO add network implementation
+
+        for (int i = 5; i < argc; i++) {
+            dlib::deserialize(argv[i]) >> detector;
+            detectors.push_back(detector);
+        }
+        DLibProcessor dLibProcessor(detectors);
+
+        CameraDataProcessor cameraDataProcessor(new CameraDataNetworkStream(argv[2], argv[3]), NULL, &dLibProcessor,new AdaVisionHandler(argv[4], 5555));
+
+        try {
+            cameraDataProcessor.run();
+        } catch (exception &e) {
+            std::cout << e.what() << endl;
+        }
+
     } else {
         printUsage(argc, argv);
     }
