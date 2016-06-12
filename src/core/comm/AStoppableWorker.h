@@ -38,7 +38,7 @@ public:
     void stop();
 
 protected:
-     volatile bool _terminate = false;
+    volatile bool _terminate = false;
 
 };
 

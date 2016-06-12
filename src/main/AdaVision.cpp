@@ -69,7 +69,7 @@ private:
 
     int zmqPort;
 
-    bool _debug;
+    bool _debug = false;
 
 };
 
