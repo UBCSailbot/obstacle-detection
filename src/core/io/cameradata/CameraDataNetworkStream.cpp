@@ -26,9 +26,6 @@ CameraDataNetworkStream::CameraDataNetworkStream(const std::string &pubIPaddress
                                                  const std::string &pubPortNumber) : _context(),
                                                                                      pairSocket(_context, ZMQ_PAIR) {
 
-    _imageHeight = 60;
-    _imageWidth = 80;
-
     std::string inprocAddress = "inproc://" + TCPCameraCommsSub::ENDPOINT_NAME;
 
     // Spins up a separate subscriber thread that receives and stores
