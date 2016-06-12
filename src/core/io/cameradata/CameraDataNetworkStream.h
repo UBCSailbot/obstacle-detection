@@ -7,7 +7,7 @@
 
 #include "CameraDataStream.h"
 
-class CameraDataNetworkStream : CameraDataStream {
+class CameraDataNetworkStream : public CameraDataStream {
 
 
 public:
@@ -21,9 +21,7 @@ public:
 private:
     zmq::context_t _context;
     zmq::socket_t pairSocket;
-
-    int _imageWidth;
-    int _imageHeight;
+    
 };
 
 #endif //OBSTACLE_DETECTION_DUALLEPTONTCPIMAGESTREAM_H

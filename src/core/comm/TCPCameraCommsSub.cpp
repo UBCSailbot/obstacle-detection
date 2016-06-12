@@ -43,6 +43,7 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::stri
     bool newPairRequestReceived = false;
 
     //actual sub loop for receiving messages
+    _terminate = false;
     while (!_terminate) {
         try {
             int nsockets = zmq::poll((zmq_pollitem_t *) &items, 2, POLLTIMEOUT_MS);
