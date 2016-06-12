@@ -7,9 +7,7 @@
 
 
 #include <vector>
-
 #include <opencv2/highgui/highgui.hpp>
-
 #include "exceptions/EndOfStreamException.h"
 #include "paths/Paths.h"
 #include "ImageStream.h"

@@ -1,6 +1,6 @@
 #include <zmq.hpp>
 #include <types/CameraData.h>
-#include <io/CameraDataDeserializer.h>
+#include <io/cameradata/CameraDataDeserializer.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <comm/TCPCameraCommsSub.h>
@@ -68,11 +68,11 @@ void run(string pubIPaddress, string pubPortNumber, int requestRateMs, bool debu
                 rescaler.scale16bitTo8bit(img, display);
                 
                 imshow(windowNameTemplate + to_string(imageNumber), display);
-                imageNumber++;
             }
             else {
                 cout << "Image status was " << data.status << endl;
             }
+                imageNumber++;
         }
 
         cv::waitKey(requestRateMs);

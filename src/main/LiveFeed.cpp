@@ -4,22 +4,10 @@
 #include <camera/lepton/ThermalCameraStream.h>
 #include <camera/lepton/LeptonRegistry.h>
 #include <io/TCPImageStream.h>
+#include <imageProc/liveFeed/Compressor.h>
 #include "LiveFeed.h"
 
 #define APP_NAME "live_feed"
-
-
-vector<uchar> imgToBuff(cv::Mat img) {
-    vector<uchar> buff;//buffer for coding
-    vector<int> param = vector<int>(2);
-
-    param[0] = CV_IMWRITE_PNG_COMPRESSION;
-
-    param[1] = 3;//default(3)  0-9.
-    imencode(".png", img, buff, param);
-    std::cout << "coded file size(png)" << buff.size() << endl;
-    return buff;
-}
 
 LiveFeed::LiveFeed(ImageStream *stream, const DLibProcessor &dLibProcessor, char *output_dir,
                    bool runImu) : FeedReader(stream), dLibProcessor(dLibProcessor),
@@ -50,7 +38,7 @@ void LiveFeed::onImageRead(Image16bit image) {
         imuLog << imu->getOrientation().toDataString();
     }
 
-    vector<uchar> buff = imgToBuff(image);
+    vector<uchar> buff = Compressor::imgToBuff(image, 3);
     string encoded = base64_encode(buff.data(), buff.size());
     std::vector<dlib::rectangle> detectedRectangles = dLibProcessor.getObjectDetectionBoxes(image);
     unique_ptr<string> JSON(new string(makeJSON(encoded, detectedRectangles, IMAGE16BIT)));

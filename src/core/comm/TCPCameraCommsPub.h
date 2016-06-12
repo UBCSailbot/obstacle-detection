@@ -12,7 +12,7 @@
 #include "AStoppableWorker.h"
 #include <exceptions/ZmqException.h>
 #include <camera/ICameraMultiplexer.h>
-#include <io/CameraDataSerializer.h>
+#include <io/cameradata/CameraDataSerializer.h>
 
 /* Defines class TCPCameraCommsPub (a publisher) which sends object of type CameraData over TCP to a subscriber*/
 
