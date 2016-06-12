@@ -18,6 +18,7 @@ CameraDataProcessor::CameraDataProcessor(CameraDataStream *stream, ParallelIMU *
 
 void CameraDataProcessor::run() {
     while (getKeepRecording()) {
+
         std::vector<CameraData> dataVector = _stream->nextImage();
 
         int numberOK =0;

@@ -35,6 +35,7 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::stri
     items[1].socket = (void *) pairSocket;
     items[1].events = ZMQ_POLLIN;
 
+
     // Initialize message objects
     zmq::message_t pairRequest;
     zmq::message_t pairReply;
@@ -43,6 +44,7 @@ void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::stri
     bool newPairRequestReceived = false;
 
     //actual sub loop for receiving messages
+    _terminate = false;
     while (!_terminate) {
         try {
             int nsockets = zmq::poll((zmq_pollitem_t *) &items, 2, POLLTIMEOUT_MS);
