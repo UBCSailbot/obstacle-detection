@@ -69,7 +69,7 @@ private:
 
     int zmqPort;
 
-    bool _debug = false;
+    bool _debug;
 
 };
 
@@ -96,9 +96,7 @@ int main(int argc, char **argv) {
     bool debug = false;
 
     if (string(argv[1]) == "file") {
-        if (string(argv[4]) == "true") {
-            debug == true;
-        }
+        debug = (string(argv[4]) == "true");
 
         for (int i = 5; i < argc; i++) {
             dlib::deserialize(argv[i]) >> detector;
@@ -123,9 +121,7 @@ int main(int argc, char **argv) {
             detectors.push_back(detector);
         }
 
-        if (string(argv[5]) == "true") {
-            debug = true;
-        }
+        debug = (string(argv[5]) == "true");
 
         DLibProcessor dLibProcessor(detectors);
 
