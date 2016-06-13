@@ -30,7 +30,7 @@
 
     private:
 
-        DLibProcessor*_dLibProcessor;
+        DLibProcessor*_dlibProcessor;
 
         CameraDataHandler*_cameraDataHandler;
 

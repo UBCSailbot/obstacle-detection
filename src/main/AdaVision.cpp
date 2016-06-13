@@ -19,27 +19,43 @@ public:
     AdaVisionHandler(std::string outputDir, int zmqPort, bool debug)
             : CameraDataHandler(), _zmqfeed(ZmqContextSingleton::getContext()),
               _zmqPort(zmqPort), _outputDir(outputDir), _debug(debug) {
+
         _zmqfeed.init(zmqPort);
         if (!QDir(outputDir.c_str()).exists()) {
             QDir().mkdir(outputDir.c_str());
         }
     }
 
-    void onMultiImageProcessed(std::vector<CameraData> cameraData,
-                               std::vector<dlib::rectangle> detectedRectangles) {
+    void onImageProcessed(std::vector<CameraData> cameraData,
+                          std::vector<dlib::rectangle> detectedRectangles) {
+
+        //TODO add imu logging
+        if (cameraData.size() == 1) {
+            onSingleImageProcessed(cameraData[0], detectedRectangles);
+        } else {
+            onMultiImageProcessed(cameraData, detectedRectangles);
+        }
+
+    }
+
+    void onMultiImageProcessed(const vector<CameraData> &cameraData, std::vector<dlib::rectangle> detectedRectangles) {
         if (_debug) {
             std::cout << "received two images" << std::endl;
         }
 
         frame_counter++;
         std::ostringstream leftImageName;
-        std::ostringstream rightImageName;
-
         leftImageName << _outputDir << "/img_" << frame_counter << "_L" << ".png";
-        cv::imwrite(leftImageName.str(), cameraData[0].frame);
+        imwrite(leftImageName.str(), cameraData[0].frame);
 
+        std::ostringstream rightImageName;
         rightImageName << _outputDir << "/img_" << frame_counter << "_R" << ".png";
-        cv::imwrite(rightImageName.str(), cameraData[1].frame);
+        imwrite(rightImageName.str(), cameraData[1].frame);
+
+        //TODO something smarter than this...
+        int cameraToUse = (frame_counter + 1) % 2;
+        std::vector<uchar> buff = Compressor::imgToBuff(cameraData[cameraToUse].frame, 3);
+        sendProcessedImage(detectedRectangles, buff);
     }
 
     void onSingleImageProcessed(CameraData cameraData, std::vector<dlib::rectangle> detectedRectangles) {
@@ -52,13 +68,14 @@ public:
         stringStream << _outputDir << "/img_" << frame_counter << ".png";
         cv::imwrite(stringStream.str(), cameraData.frame);
 
-        //TODO add imu logging
+        std::vector<uchar> buff = Compressor::imgToBuff(cameraData.frame, 3);
+        sendProcessedImage(detectedRectangles, buff);
+    }
 
-        vector<uchar> buff = Compressor::imgToBuff(cameraData.frame, 3);
+    void sendProcessedImage(const vector<dlib::rectangle> &detectedRectangles, vector<uchar> &buff) {
         std::string encoded = base64_encode(buff.data(), buff.size());
-        unique_ptr<string> JSON(new string(makeJSON(encoded, detectedRectangles, IMAGE16BIT)));
+        unique_ptr<std::string> JSON(new std::string(makeJSON(encoded, detectedRectangles, IMAGE16BIT)));
         _zmqfeed.sendFrame((const uint8_t *) JSON->c_str(), JSON->size());
-
     }
 
 private:
@@ -106,7 +123,7 @@ int main(int argc, char **argv) {
         DLibProcessor dLibProcessor(detectors);
 
         CameraDataProcessor cameraDataProcessor(
-                new ImageStreamCameraDataAdapter(new FileSystemImageStream(argv[2], "*.png"), true), NULL,
+                new ImageStreamCameraDataAdapter(new FileSystemImageStream(argv[2], "*.png"), false), NULL,
                 &dLibProcessor, new AdaVisionHandler(argv[3], 5555, debug));
         try {
             cameraDataProcessor.run();
