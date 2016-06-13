@@ -8,7 +8,11 @@
 
 class Compressor {
 public:
-
+    /*
+     * Returns a png buffer from a cv:mat
+     * @param img the image
+     * @param compressionLevel on a scale from 1-9 the compression level
+     */
     static std::vector<uchar> imgToBuff(cv::Mat img, int compressionLevel);
 
 };

@@ -1,7 +1,3 @@
-//
-// Created by denis on 04/06/16.
-//
-
 #ifndef OBSTACLE_DETECTION_CAMERADATAIMAGESTREAMADAPTER_H
 #define OBSTACLE_DETECTION_CAMERADATAIMAGESTREAMADAPTER_H
 
@@ -9,11 +5,16 @@
 #include "io/ImageStream.h"
 #include "CameraDataStream.h"
 
+/*
+ * This is class is meant to provide and interface the old ImageStream and the new CameraDataStream interface
+ */
 class CameraDataImageStreamAdapter : ImageStream {
 
 public:
 
     CameraDataImageStreamAdapter(CameraDataStream *cameraDataStream);
+
+    virtual ~CameraDataImageStreamAdapter();
 
     virtual Image16bit nextImage() override;
 
@@ -25,6 +26,10 @@ public:
 
 protected:
     CameraDataStream *_cameraDataStream;
+
+    int _imageHeight;
+
+    int _imageWidth;
 
 };
 

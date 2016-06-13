@@ -23,8 +23,7 @@ bool CameraDataNetworkStream::hasNext() const {
 
 
 CameraDataNetworkStream::CameraDataNetworkStream(const std::string &pubIPaddress,
-                                                 const std::string &pubPortNumber) : _context(),
-                                                                                     pairSocket(_context, ZMQ_PAIR) {
+                                                 const std::string &pubPortNumber) : pairSocket(_context, ZMQ_PAIR) {
 
     std::string inprocAddress = "inproc://" + TCPCameraCommsSub::ENDPOINT_NAME;
 

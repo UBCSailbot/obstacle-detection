@@ -1,7 +1,3 @@
-//
-// Created by paul on 09/02/16.
-//
-
 #include "FileSystemImageStream.h"
 
 FileSystemImageStream::FileSystemImageStream(std::string imageDirectory,

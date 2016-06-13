@@ -22,7 +22,6 @@ void CameraDataProcessor::run() {
         std::vector<CameraData> dataVector = _stream->nextImage();
 
         int numberOK =0;
-        //This should filter out failed lepton data
         for (CameraData data : dataVector) {
             if (data.status == OK) {
                 numberOK ++;

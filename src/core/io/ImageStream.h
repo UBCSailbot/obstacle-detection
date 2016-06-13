@@ -8,6 +8,8 @@
 #include "types/Image16bit.h"
 
 /**
+ * DEPRECATED
+ *
  * Represents a stream of images of a constant size that can
  *  come from a file system, from a database, or live from a camera.
  */

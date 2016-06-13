@@ -12,8 +12,6 @@
 class CameraDataHandler {
 
 public:
-     CameraDataHandler() {};
-
     virtual void onMultiImageProcessed(std::vector<CameraData> cameraData,
                                        std::vector<dlib::rectangle> detectedRectangles) = 0;
 

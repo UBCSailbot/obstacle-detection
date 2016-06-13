@@ -9,6 +9,9 @@
 #include <io/ImageStream.h>
 #include "CameraDataStream.h"
 
+/*
+ * This is class is meant to provide and interface the new CameraDataStream and the old ImageStream interface
+ */
 class ImageStreamCameraDataAdapter : public CameraDataStream {
 public:
     virtual std::vector<CameraData> nextImage() override;
@@ -16,6 +19,8 @@ public:
     virtual bool hasNext() const override;
 
     ImageStreamCameraDataAdapter(ImageStream *imageStream, bool doubleUp);
+
+    virtual ~ImageStreamCameraDataAdapter();
 
 private:
     ImageStream *_imageStream;
