@@ -4,6 +4,7 @@
 
 #include <zmq.hpp>
 #include <comm/TCPCameraCommsSub.h>
+#include <comm/ZmqContextSingleton.h>
 #include "CameraDataNetworkStream.h"
 #include "CameraDataDeserializer.h"
 
@@ -21,10 +22,9 @@ bool CameraDataNetworkStream::hasNext() const {
     return true;
 }
 
-
 CameraDataNetworkStream::CameraDataNetworkStream(const std::string &pubIPaddress,
-                                                 const std::string &pubPortNumber) : pairSocket(_context, ZMQ_PAIR) {
-
+                                                 const std::string &pubPortNumber) : _context(
+        ZmqContextSingleton::getContext()), pairSocket(_context, ZMQ_PAIR) {
     std::string inprocAddress = "inproc://" + TCPCameraCommsSub::ENDPOINT_NAME;
 
     // Spins up a separate subscriber thread that receives and stores

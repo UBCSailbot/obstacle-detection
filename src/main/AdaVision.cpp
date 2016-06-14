@@ -10,13 +10,14 @@
 #include <io/FileSystemImageStream.h>
 #include <io/cameradata/ImageStreamCameraDataAdapter.h>
 #include <io/cameradata/CameraDataNetworkStream.h>
+#include <QtCore/QTS>
 
 
 class AdaVisionHandler : public CameraDataHandler {
 
 public:
 
-    AdaVisionHandler(std::string outputDir, int zmqPort, bool debug)
+    AdaVisionHandler(std::string outputDir, const int zmqPort, const bool debug)
             : CameraDataHandler(), _zmqfeed(ZmqContextSingleton::getContext()),
               _zmqPort(zmqPort), _outputDir(outputDir), _debug(debug) {
 
@@ -38,7 +39,8 @@ public:
 
     }
 
-    void onMultiImageProcessed(const vector<CameraData> &cameraData, std::vector<dlib::rectangle> detectedRectangles) {
+    void onMultiImageProcessed(const vector<CameraData> &cameraData,
+                               const std::vector<dlib::rectangle> detectedRectangles) {
         if (_debug) {
             std::cout << "received two images" << std::endl;
         }
@@ -53,7 +55,7 @@ public:
         imwrite(rightImageName.str(), cameraData[1].frame);
 
         //TODO something smarter than this...
-        int cameraToUse = (frame_counter + 1) % 2;
+        int cameraToUse = frame_counter % 2;
         std::vector<uchar> buff = Compressor::imgToBuff(cameraData[cameraToUse].frame, 3);
         sendProcessedImage(detectedRectangles, buff);
     }

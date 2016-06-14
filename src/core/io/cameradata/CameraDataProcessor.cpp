@@ -1,13 +1,4 @@
-//
-// Created by denis on 09/06/16.
-//
-
 #include "CameraDataProcessor.h"
-
-#include <QtCore/QTS>
-#include <highgui.h>
-#include "CameraDataHandler.h"
-
 
 CameraDataProcessor::CameraDataProcessor(CameraDataStream *stream, ParallelIMU *imu,
                                          DLibProcessor *dLibProcessor, CameraDataHandler *cameraDataHandler)
@@ -21,7 +12,7 @@ void CameraDataProcessor::run() {
 
         std::vector<CameraData> dataVector = _stream->nextImage();
 
-        std::vector<std::pair<CameraData, std::vector<dlib::rectangle>>> dataRectPairs;
+        std::vector<std::pair<CameraData*, std::vector<dlib::rectangle>>> dataRectPairs;
         for (CameraData data : dataVector) {
             if (data.status != OK) {
                 continue;
@@ -29,7 +20,7 @@ void CameraDataProcessor::run() {
             auto detectedRectangles = _dlibProcessor->getObjectDetectionBoxes(data.frame);
 
             dataRectPairs.push_back(
-                    std::pair<CameraData, std::vector<dlib::rectangle>>(*std::move(&data),detectedRectangles));
+                    std::pair<CameraData*, std::vector<dlib::rectangle>>(&data, detectedRectangles));
         }
 
         if (dataRectPairs.size() > 0) {

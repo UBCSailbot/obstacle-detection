@@ -10,7 +10,7 @@
 #include "CameraDataStream.h"
 
 /*
- * This is class is meant to provide and interface the new CameraDataStream and the old ImageStream interface
+ * This class is meant to provide and interface the new CameraDataStream and the old ImageStream interface
  */
 class ImageStreamCameraDataAdapter : public CameraDataStream {
 public:

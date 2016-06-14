@@ -13,13 +13,12 @@ class CameraDataNetworkStream : public CameraDataStream {
 public:
     CameraDataNetworkStream(const std::string &pubIPaddress, const std::string &pubPortNumber);
 
-
     virtual std::vector<CameraData> nextImage() override;
 
     virtual bool hasNext() const override;
 
 private:
-    zmq::context_t _context;
+    zmq::context_t &_context;
     zmq::socket_t pairSocket;
     
 };
