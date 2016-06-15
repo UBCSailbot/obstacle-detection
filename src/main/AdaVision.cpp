@@ -10,64 +10,84 @@
 #include <io/FileSystemImageStream.h>
 #include <io/cameradata/ImageStreamCameraDataAdapter.h>
 #include <io/cameradata/CameraDataNetworkStream.h>
+#include <QtCore/QTS>
 
 
 class AdaVisionHandler : public CameraDataHandler {
 
 public:
 
-    AdaVisionHandler(char *output_dir, int zmqPort, bool debug)
-            : CameraDataHandler(), zmqfeed(ZmqContextSingleton::getContext()), output_dir(output_dir),
-              zmqPort(zmqPort), _debug(debug) {
-        zmqfeed.init(zmqPort);
+    AdaVisionHandler(std::string outputDir, const int zmqPort, const bool debug)
+            : CameraDataHandler(), _zmqfeed(ZmqContextSingleton::getContext()),
+              _zmqPort(zmqPort), _outputDir(outputDir), _debug(debug) {
+
+        _zmqfeed.init(zmqPort);
+        if (!QDir(outputDir.c_str()).exists()) {
+            QDir().mkdir(outputDir.c_str());
+        }
     }
 
-    void onMultiImageProcessed(std::vector<CameraData> cameraData,
-                               std::vector<dlib::rectangle> detectedRectangles) {
-        if(_debug) {
+    void onImageProcessed(std::vector<CameraData> cameraData,
+                          std::vector<dlib::rectangle> detectedRectangles) {
+
+        //TODO add imu logging
+        if (cameraData.size() == 1) {
+            onSingleImageProcessed(cameraData[0], detectedRectangles);
+        } else {
+            onMultiImageProcessed(cameraData, detectedRectangles);
+        }
+
+    }
+
+    void onMultiImageProcessed(const vector<CameraData> &cameraData,
+                               const std::vector<dlib::rectangle> detectedRectangles) {
+        if (_debug) {
             std::cout << "received two images" << std::endl;
         }
 
         frame_counter++;
-        char left_image_name[128];
-        char right_image_name[128];
+        std::ostringstream leftImageName;
+        leftImageName << _outputDir << "/img_" << frame_counter << "_L" << ".png";
+        imwrite(leftImageName.str(), cameraData[0].frame);
 
-        std::sprintf(left_image_name, "%s/img_%06d-L.png", output_dir, frame_counter);
-        cv::imwrite(left_image_name, cameraData[0].frame);
+        std::ostringstream rightImageName;
+        rightImageName << _outputDir << "/img_" << frame_counter << "_R" << ".png";
+        imwrite(rightImageName.str(), cameraData[1].frame);
 
-        std::sprintf(right_image_name, "%s/img_%06d-R.png", output_dir, frame_counter);
-        cv::imwrite(right_image_name, cameraData[1].frame);
+        //TODO something smarter than this...
+        int cameraToUse = frame_counter % 2;
+        std::vector<uchar> buff = Compressor::imgToBuff(cameraData[cameraToUse].frame, 3);
+        sendProcessedImage(detectedRectangles, buff);
     }
 
     void onSingleImageProcessed(CameraData cameraData, std::vector<dlib::rectangle> detectedRectangles) {
-        if(_debug) {
+        if (_debug) {
             std::cout << "single received image" << std::endl;
         }
 
-
         frame_counter++;
-        char image_name[128];
+        std::ostringstream stringStream;
+        stringStream << _outputDir << "/img_" << frame_counter << ".png";
+        cv::imwrite(stringStream.str(), cameraData.frame);
 
-        std::sprintf(image_name, "%s/img_%06d.png", output_dir, frame_counter);
-        cv::imwrite(image_name, cameraData.frame);
+        std::vector<uchar> buff = Compressor::imgToBuff(cameraData.frame, 3);
+        sendProcessedImage(detectedRectangles, buff);
+    }
 
-        //TODO add imu logging
-
-        vector<uchar> buff = Compressor::imgToBuff(cameraData.frame, 3);
-        string encoded = base64_encode(buff.data(), buff.size());
-        unique_ptr<string> JSON(new string(makeJSON(encoded, detectedRectangles, IMAGE16BIT)));
-        zmqfeed.sendFrame((const uint8_t *) JSON->c_str(), JSON->size());
-
+    void sendProcessedImage(const vector<dlib::rectangle> &detectedRectangles, vector<uchar> &buff) {
+        std::string encoded = base64_encode(buff.data(), buff.size());
+        unique_ptr<std::string> JSON(new std::string(makeJSON(encoded, detectedRectangles, IMAGE16BIT)));
+        _zmqfeed.sendFrame((const uint8_t *) JSON->c_str(), JSON->size());
     }
 
 private:
     int frame_counter = 0;
 
-    char *output_dir;
+    std::string _outputDir;
 
-    ImageFeedZmq zmqfeed;
+    ImageFeedZmq _zmqfeed;
 
-    int zmqPort;
+    int _zmqPort;
 
     bool _debug;
 
@@ -115,7 +135,8 @@ int main(int argc, char **argv) {
             sleep(5);
         }
 
-    } else if (string(argv[1]) == "network") {
+    } else if (std::string(argv[1]) == "network") {
+
         for (int i = 6; i < argc; i++) {
             dlib::deserialize(argv[i]) >> detector;
             detectors.push_back(detector);
@@ -125,7 +146,8 @@ int main(int argc, char **argv) {
 
         DLibProcessor dLibProcessor(detectors);
 
-        CameraDataProcessor cameraDataProcessor(new CameraDataNetworkStream(argv[2], argv[3]), NULL, &dLibProcessor,new AdaVisionHandler(argv[4], 5555, debug));
+        CameraDataProcessor cameraDataProcessor(new CameraDataNetworkStream(argv[2], argv[3]), NULL, &dLibProcessor,
+                                                new AdaVisionHandler(argv[4], 5555, debug));
 
         try {
             cameraDataProcessor.run();
