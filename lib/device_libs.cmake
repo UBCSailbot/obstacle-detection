@@ -5,9 +5,9 @@
 set( DEVICE_LIBS )
 
 # RTIMULib is compiled with the project
-include_directories(RTIMULib STATIC
-        lib/RTIMULib/RTIMULib)
-add_subdirectory(lib/RTIMULib/RTIMULib RTIMULib)
+include_directories(RTIMULib2 STATIC
+        lib/RTIMULib2/RTIMULib)
+add_subdirectory(lib/RTIMULib2/RTIMULib)
 list(APPEND DEVICE_LIBS RTIMULib)
 
 
