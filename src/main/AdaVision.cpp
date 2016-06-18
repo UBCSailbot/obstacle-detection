@@ -11,6 +11,7 @@
 #include <io/cameradata/ImageStreamCameraDataAdapter.h>
 #include <io/cameradata/CameraDataNetworkStream.h>
 #include <QtCore/QTS>
+#include <dlib/config_reader.h>
 
 
 class AdaVisionHandler : public CameraDataHandler {
@@ -96,8 +97,7 @@ private:
 
 void printUsage(int argc, char **argv) {
     std::cout << "Usage:\n"
-            "adaVision file <input dir> <output dir> <debug> dlib_model.svm ...\n"
-            "adaVision network ip_address port <output dir> <debug> dlib_model.svm" << std::endl;
+            "adaVision config.txt" << std::endl;
     std::cout << "You entered: " << std::endl;
     for (int i = 0; i < argc; i++) {
         std::cout << argv[i];
@@ -106,27 +106,37 @@ void printUsage(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 3) {
+    if (argc < 2) {
         printUsage(argc, argv);
         return 1;
     }
+    dlib::config_reader cr(argv[1]);
 
     dlib::object_detector<DLibProcessor::image_scanner_type> detector;
     std::vector<dlib::object_detector<DLibProcessor::image_scanner_type>> detectors;
-    bool debug = false;
 
-    if (string(argv[1]) == "file") {
-        debug = (string(argv[4]) == "true");
+    const dlib::config_reader &models = cr.block("models");
+    std::vector<std::string> keys;
+    models.get_keys(keys);
 
-        for (int i = 5; i < argc; i++) {
-            dlib::deserialize(argv[i]) >> detector;
-            detectors.push_back(detector);
-        }
-        DLibProcessor dLibProcessor(detectors);
+    for (int i = 0; i < keys.size(); i++) {
+        dlib::deserialize(models[keys[i]]) >> detector;
+        detectors.push_back(detector);
+    }
+    DLibProcessor dLibProcessor(detectors);
+
+    bool debug = dlib::get_option(cr, "debug", false);
+
+    if (cr["mode"] == "file") {
 
         CameraDataProcessor cameraDataProcessor(
-                new ImageStreamCameraDataAdapter(new FileSystemImageStream(argv[2], "*.png"), false), NULL,
-                &dLibProcessor, new AdaVisionHandler(argv[3], 5555, debug));
+                new ImageStreamCameraDataAdapter(new FileSystemImageStream(cr["input_dir"], "*.png"),
+                                                 dlib::get_option(cr, "double_up", false)),
+                NULL,
+                &dLibProcessor,
+                new AdaVisionHandler(cr["output_dir"],
+                                     dlib::get_option(cr, "zmq_out", 5555),
+                                     dlib::get_option(cr, "debug", false)));
         try {
             cameraDataProcessor.run();
         } catch (std::exception &e) {
@@ -135,19 +145,14 @@ int main(int argc, char **argv) {
             sleep(5);
         }
 
-    } else if (std::string(argv[1]) == "network") {
-
-        for (int i = 6; i < argc; i++) {
-            dlib::deserialize(argv[i]) >> detector;
-            detectors.push_back(detector);
-        }
-
-        debug = (string(argv[5]) == "true");
-
-        DLibProcessor dLibProcessor(detectors);
-
-        CameraDataProcessor cameraDataProcessor(new CameraDataNetworkStream(argv[2], argv[3]), NULL, &dLibProcessor,
-                                                new AdaVisionHandler(argv[4], 5555, debug));
+    } else if (cr["mode"] == "network") {
+        CameraDataProcessor cameraDataProcessor(
+                new CameraDataNetworkStream(cr["ip_address"], cr["port"]),
+                NULL,
+                &dLibProcessor,
+                new AdaVisionHandler(cr["output_dir"],
+                                     dlib::get_option(cr, "zmq_out", 5555),
+                                     dlib::get_option(cr, "debug", false)));
 
         try {
             cameraDataProcessor.run();
