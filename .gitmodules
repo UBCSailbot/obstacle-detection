@@ -8,7 +8,7 @@
 	branch = master
 [submodule "lib/RTIMULib"]
 	path = lib/RTIMULib
-	url = https://github.com/richards-tech/RTIMULib.git
+	url = https://github.com/RTIMULib/RTIMULib.git
 	branch= master
 [submodule "lib/LeptonModule"]
 	path = lib/LeptonModule
