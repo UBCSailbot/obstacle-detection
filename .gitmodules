@@ -6,10 +6,6 @@
 	path = lib/tclap
 	url = https://github.com/eile/tclap.git
 	branch = master
-[submodule "lib/RTIMULib"]
-	path = lib/RTIMULib
-	url = https://github.com/RTIMULib/RTIMULib.git
-	branch= master
 [submodule "lib/LeptonModule"]
 	path = lib/LeptonModule
 	url = https://github.com/groupgets/LeptonModule.git
@@ -23,3 +19,6 @@
 [submodule "lib/jsoncpp"]
 	path = lib/jsoncpp
 	url = https://github.com/open-source-parsers/jsoncpp.git
+[submodule "lib/RTIMULib2"]
+	path = lib/RTIMULib2
+	url = https://github.com/RTIMULib/RTIMULib2.git
