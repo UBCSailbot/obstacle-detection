@@ -1,0 +1,15 @@
+mode = network
+debug = false
+output_dir = output
+zmq_out = 5555
+frame_skip = 45
+
+ip_address = 10.8.0.4
+port =  5553
+
+models {
+model = models/model.svm
+}
+
+
+
