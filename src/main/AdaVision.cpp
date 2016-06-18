@@ -18,9 +18,9 @@ class AdaVisionHandler : public CameraDataHandler {
 
 public:
 
-    AdaVisionHandler(std::string outputDir, const int zmqPort, const bool debug)
+    AdaVisionHandler(std::string outputDir, const int zmqPort, const bool debug, const int frameSkip)
             : CameraDataHandler(), _zmqfeed(ZmqContextSingleton::getContext()),
-              _zmqPort(zmqPort), _outputDir(outputDir), _debug(debug) {
+              _zmqPort(zmqPort), _outputDir(outputDir), _debug(debug), _frameSkip(frameSkip) {
 
         _zmqfeed.init(zmqPort);
         if (!QDir(outputDir.c_str()).exists()) {
@@ -30,14 +30,15 @@ public:
 
     void onImageProcessed(std::vector<CameraData> cameraData,
                           std::vector<dlib::rectangle> detectedRectangles) {
+        if (_frameSkip <= 0 || _frameCounter % _frameSkip == 0) {
 
-        //TODO add imu logging
-        if (cameraData.size() == 1) {
-            onSingleImageProcessed(cameraData[0], detectedRectangles);
-        } else {
-            onMultiImageProcessed(cameraData, detectedRectangles);
+            //TODO add imu logging
+            if (cameraData.size() == 1) {
+                onSingleImageProcessed(cameraData[0], detectedRectangles);
+            } else {
+                onMultiImageProcessed(cameraData, detectedRectangles);
+            }
         }
-
     }
 
     void onMultiImageProcessed(const vector<CameraData> &cameraData,
@@ -46,17 +47,17 @@ public:
             std::cout << "received two images" << std::endl;
         }
 
-        frame_counter++;
+        _frameCounter++;
         std::ostringstream leftImageName;
-        leftImageName << _outputDir << "/img_" << frame_counter << "_L" << ".png";
+        leftImageName << _outputDir << "/img_" << _frameCounter << "_L" << ".png";
         imwrite(leftImageName.str(), cameraData[0].frame);
 
         std::ostringstream rightImageName;
-        rightImageName << _outputDir << "/img_" << frame_counter << "_R" << ".png";
+        rightImageName << _outputDir << "/img_" << _frameCounter << "_R" << ".png";
         imwrite(rightImageName.str(), cameraData[1].frame);
 
         //TODO something smarter than this...
-        int cameraToUse = frame_counter % 2;
+        int cameraToUse = _frameCounter % 2;
         std::vector<uchar> buff = Compressor::imgToBuff(cameraData[cameraToUse].frame, 3);
         sendProcessedImage(detectedRectangles, buff);
     }
@@ -66,9 +67,9 @@ public:
             std::cout << "single received image" << std::endl;
         }
 
-        frame_counter++;
+        _frameCounter++;
         std::ostringstream stringStream;
-        stringStream << _outputDir << "/img_" << frame_counter << ".png";
+        stringStream << _outputDir << "/img_" << _frameCounter << ".png";
         cv::imwrite(stringStream.str(), cameraData.frame);
 
         std::vector<uchar> buff = Compressor::imgToBuff(cameraData.frame, 3);
@@ -82,7 +83,7 @@ public:
     }
 
 private:
-    int frame_counter = 0;
+    int _frameCounter = 0;
 
     std::string _outputDir;
 
@@ -91,6 +92,8 @@ private:
     int _zmqPort;
 
     bool _debug;
+
+    int _frameSkip;
 
 };
 
@@ -136,7 +139,8 @@ int main(int argc, char **argv) {
                 &dLibProcessor,
                 new AdaVisionHandler(cr["output_dir"],
                                      dlib::get_option(cr, "zmq_out", 5555),
-                                     dlib::get_option(cr, "debug", false)));
+                                     dlib::get_option(cr, "debug", false),
+                                     dlib::get_option(cr, "frame_skip", 1)));
         try {
             cameraDataProcessor.run();
         } catch (std::exception &e) {
@@ -152,7 +156,8 @@ int main(int argc, char **argv) {
                 &dLibProcessor,
                 new AdaVisionHandler(cr["output_dir"],
                                      dlib::get_option(cr, "zmq_out", 5555),
-                                     dlib::get_option(cr, "debug", false)));
+                                     dlib::get_option(cr, "debug", false),
+                                     dlib::get_option(cr, "frame_skip", 1)));
 
         try {
             cameraDataProcessor.run();
