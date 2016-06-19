@@ -1,15 +1,28 @@
-mode = network
-debug = false
-output_dir = output
-zmq_out = 5555
-frame_skip = 45
-
-ip_address = 10.8.0.4
-port =  5553
-
-models {
-model = models/model.svm
+global {
+    debug = false
 }
+
+image_source {
+    mode = network
+
+    network {
+        image_pub_ip = 10.8.0.4
+        image_pub_port =  5553
+    }
+}
+
+output {
+    data_dir = output
+    live_feed_port = 5555
+    frame_skip = 45
+}
+
+machine_learning {
+    models {
+        boat_detector = resources/models/tanker-sideview.svm
+    }
+}
+
 
 
 

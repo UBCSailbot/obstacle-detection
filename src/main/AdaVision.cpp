@@ -12,6 +12,7 @@
 #include <io/cameradata/CameraDataNetworkStream.h>
 #include <QtCore/QTS>
 #include <dlib/config_reader.h>
+#include <config/AdaVisionConfig.h>
 
 
 class AdaVisionHandler : public CameraDataHandler {
@@ -108,64 +109,71 @@ void printUsage(int argc, char **argv) {
     std::cout << std::endl;
 }
 
+void runAdaVisionFromFiles(const AdaVisionConfig &config) {
+    const auto &fileConfig = config.imageSource().file();
+    DLibProcessor dLibProcessor(config.machineLearning().models().all());
+    AdaVisionHandler adaVisionHandler(config.output().dataDir(),
+                                      std::stoi(config.output().liveFeedPort()),
+                                      config.global().debug(),
+                                      config.output().frameSkip());
+
+    CameraDataProcessor cameraDataProcessor(
+            new ImageStreamCameraDataAdapter(
+                    new FileSystemImageStream(fileConfig.inputDir(), "*.png"),
+                    fileConfig.doubleUp()),
+            NULL,
+            &dLibProcessor,
+            &adaVisionHandler);
+    try {
+        cameraDataProcessor.run();
+    } catch (std::exception &e) {
+        std::cout << e.what() << endl;
+        //This is to give time for zeromq to finish sending when reading from file system
+        sleep(5);
+    }
+}
+
+void runAdaVisionFromNetwork(const AdaVisionConfig &config) {
+    const auto &networkConfig = config.imageSource().network();
+    DLibProcessor dLibProcessor(config.machineLearning().models().all());
+    AdaVisionHandler adaVisionHandler(config.output().dataDir(),
+                                      std::stoi(config.output().liveFeedPort()),
+                                      config.global().debug(),
+                                      config.output().frameSkip());
+
+    CameraDataProcessor cameraDataProcessor(
+            new CameraDataNetworkStream(networkConfig.imagePubIP(),
+                                        networkConfig.imagePubPort()),
+            NULL,
+            &dLibProcessor,
+            &adaVisionHandler);
+
+    try {
+        cameraDataProcessor.run();
+    } catch (exception &e) {
+        std::cout << e.what() << endl;
+    }
+}
+
 int main(int argc, char **argv) {
     if (argc < 2) {
         printUsage(argc, argv);
         return 1;
     }
-    dlib::config_reader configReader(argv[1]);
 
-    dlib::object_detector<DLibProcessor::image_scanner_type> detector;
-    std::vector<dlib::object_detector<DLibProcessor::image_scanner_type>> detectors;
+    AdaVisionConfig config(argv[1]);
 
-    const dlib::config_reader &models = configReader.block("models");
-    std::vector<std::string> keys;
-    models.get_keys(keys);
-
-    for (int i = 0; i < keys.size(); i++) {
-        dlib::deserialize(models[keys[i]]) >> detector;
-        detectors.push_back(detector);
+    switch (config.imageSource().source()) {
+        case AdaVisionConfig::ImageSource::FILE:
+            runAdaVisionFromFiles(config);
+            break;
+        case AdaVisionConfig::ImageSource::NETWORK:
+            runAdaVisionFromNetwork(config);
+            break;
+        default:
+            printUsage(argc, argv);
+            break;
     }
-    DLibProcessor dLibProcessor(detectors);
 
-    bool debug = dlib::get_option(configReader, "debug", false);
-
-    AdaVisionHandler adaVisionHandler(configReader["output_dir"],
-                                      dlib::get_option(configReader, "zmq_out", 5555),
-                                      dlib::get_option(configReader, "debug", false),
-                                      dlib::get_option(configReader, "frame_skip", 1));
-
-    if (configReader["mode"] == "file") {
-
-        CameraDataProcessor cameraDataProcessor(
-                new ImageStreamCameraDataAdapter(new FileSystemImageStream(configReader["input_dir"], "*.png"),
-                                                 dlib::get_option(configReader, "double_up", false)),
-                NULL,
-                &dLibProcessor,
-                &adaVisionHandler);
-        try {
-            cameraDataProcessor.run();
-        } catch (std::exception &e) {
-            std::cout << e.what() << endl;
-            //This is to give time for zeromq to finish sending when reading from file system
-            sleep(5);
-        }
-
-    } else if (configReader["mode"] == "network") {
-        CameraDataProcessor cameraDataProcessor(
-                new CameraDataNetworkStream(configReader["ip_address"], configReader["port"]),
-                NULL,
-                &dLibProcessor,
-                &adaVisionHandler);
-
-        try {
-            cameraDataProcessor.run();
-        } catch (exception &e) {
-            std::cout << e.what() << endl;
-        }
-
-    } else {
-        printUsage(argc, argv);
-    }
 }
 
