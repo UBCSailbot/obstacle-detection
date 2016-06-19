@@ -11,12 +11,17 @@ DLibProcessor::DLibProcessor(std::vector <dlib::object_detector<image_scanner_ty
 
 }
 
-std::vector <dlib::rectangle> DLibProcessor::getObjectDetectionBoxes(Image16bit image) {
+std::vector<cv::Rect> DLibProcessor::getObjectDetectionBoxes(Image16bit image) {
 
-    dlib::cv_image<uint16_t> img(image);
+    std::vector <dlib::rectangle> detectedRecangles = evaluate_detectors(_detectors, image);
+    std::vector <cv::Rect> cvDetectedRecangles;
 
-    std::vector <dlib::rectangle> detectedRecangles = evaluate_detectors(_detectors, img);
+    std::transform(detectedRecangles.begin(), detectedRecangles.end(), std::back_inserter(cvDetectedRecangles), [](dlib::rectangle elem){ return dlibRectangleToOpenCV(elem); });
+    return cvDetectedRecangles;
+}
 
-    return detectedRecangles;
 
+static cv::Rect dlibRectangleToOpenCV(dlib::rectangle rectangle)
+{
+    return cv::Rect(cv::Point2i(rectangle.left(), rectangle.top()), cv::Point2i(rectangle.right() + 1, rectangle.bottom() + 1));
 }

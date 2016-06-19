@@ -40,9 +40,9 @@ void LiveFeed::onImageRead(Image16bit image) {
 
     vector<uchar> buff = Compressor::imgToBuff(image, 3);
     string encoded = base64_encode(buff.data(), buff.size());
-    std::vector<dlib::rectangle> detectedRectangles = dLibProcessor.getObjectDetectionBoxes(image);
-    unique_ptr<string> JSON(new string(makeJSON(encoded, detectedRectangles, IMAGE16BIT)));
-    zmqfeed.sendFrame((const uint8_t *) JSON->c_str(), JSON->size());
+    std::vector<cv::Rect> detectedRectangles = dLibProcessor.getObjectDetectionBoxes(image);
+    std::string JSON(JSONSerializer::makeJSON(encoded, detectedRectangles, IMAGE16BIT)));
+    zmqfeed.sendFrame((const uint8_t *) JSON.c_str(), JSON.size());
 }
 
 void LiveFeed::printUsage(int argc, char **argv) {

@@ -14,7 +14,7 @@ class CameraDataHandler {
 public:
 
     virtual void onImageProcessed(std::vector<CameraData> cameraData,
-                                  std::vector<dlib::rectangle> detectedRectangles) = 0;
+                                  std::vector<cv::Rect> detectedRectangles) = 0;
 
 
 };

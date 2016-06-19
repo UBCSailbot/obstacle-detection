@@ -11,6 +11,8 @@ enum ImageType {
     IMAGE8BIT = 0, IMAGE16BIT = 1
 };
 
+class JSONSerializer {
+public:
 /*
   Converts information to JSON.
   The format is:
@@ -18,6 +20,8 @@ enum ImageType {
   boxes:[{x,y,w,h}]
   }
 */
-std::string makeJSON(std::string img, std::vector<dlib::rectangle> rectangles, ImageType imageType);
+    static std::string makeJSON(std::string img, std::vector<cv::Rect> rectangles, ImageType imageType);
+
+};
 
 #endif //OBSTACLE_AVOIDANCE_JSONSERIALIZER_H

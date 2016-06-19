@@ -12,7 +12,7 @@ void CameraDataProcessor::run() {
 
         std::vector<CameraData> dataVector = _stream.nextImage();
 
-        std::vector<std::pair<CameraData*, std::vector<dlib::rectangle>>> dataRectPairs;
+        std::vector<std::pair<CameraData*, std::vector<cv::Rect>>> dataRectPairs;
         for (CameraData data : dataVector) {
             if (data.status != OK) {
                 continue;
@@ -20,7 +20,7 @@ void CameraDataProcessor::run() {
             auto detectedRectangles = _dlibProcessor.getObjectDetectionBoxes(data.frame);
 
             dataRectPairs.push_back(
-                    std::pair<CameraData*, std::vector<dlib::rectangle>>(&data, detectedRectangles));
+                    std::pair<CameraData*, std::vector<cv::Rect>>(&data, detectedRectangles));
         }
 
         if (dataRectPairs.size() > 0) {

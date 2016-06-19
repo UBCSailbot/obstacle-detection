@@ -2,8 +2,7 @@
 
 const char *types[] = {"8Bit", "16Bit"};
 
-std::string makeJSON(std::string img, std::vector<dlib::rectangle> rectangles, ImageType imageType) {
-
+std::string JSONSerializer::makeJSON(std::string img, std::vector<cv::Rect> rectangles, ImageType imageType) {
     Json::Value jsonObject;
     jsonObject["image"] = Json::Value(img);
 
@@ -11,12 +10,12 @@ std::string makeJSON(std::string img, std::vector<dlib::rectangle> rectangles, I
 
     Json::Value boxesArray = jsonObject["boxes"];
     for (std::vector<int>::size_type i = 0; i != rectangles.size(); i++) {
-        dlib::rectangle rectangle = rectangles[i];
+        cv::Rect rectangle = rectangles[i];
         Json::Value box;
-        box["x"] = Json::Value((int) rectangle.left());
-        box["y"] = Json::Value((int) rectangle.top());
-        box["h"] = Json::Value((int) rectangle.height());
-        box["w"] = Json::Value((int) rectangle.width());
+        box["x"] = Json::Value((int) rectangle.x);
+        box["y"] = Json::Value((int) rectangle.y);
+        box["h"] = Json::Value((int) rectangle.height);
+        box["w"] = Json::Value((int) rectangle.width);
         boxesArray[(int) i] = box;
     }
     jsonObject["boxes"] = boxesArray;
@@ -25,3 +24,5 @@ std::string makeJSON(std::string img, std::vector<dlib::rectangle> rectangles, I
     stream << jsonObject;
     return stream.str();
 }
+
+

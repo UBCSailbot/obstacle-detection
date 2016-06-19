@@ -30,7 +30,7 @@ public:
     }
 
     void onImageProcessed(std::vector<CameraData> cameraData,
-                          std::vector<dlib::rectangle> detectedRectangles) {
+                          std::vector<cv::Rect> detectedRectangles) {
         if (_frameSkip <= 0 || _frameCounter % _frameSkip == 0) {
 
             //TODO add imu logging
@@ -43,7 +43,7 @@ public:
     }
 
     void onMultiImageProcessed(const vector<CameraData> &cameraData,
-                               const std::vector<dlib::rectangle> detectedRectangles) {
+                               const std::vector<cv::Rect> detectedRectangles) {
         if (_debug) {
             std::cout << "received two images" << std::endl;
         }
@@ -63,7 +63,7 @@ public:
         sendProcessedImage(detectedRectangles, buff);
     }
 
-    void onSingleImageProcessed(CameraData cameraData, std::vector<dlib::rectangle> detectedRectangles) {
+    void onSingleImageProcessed(CameraData cameraData, std::vector<cv::Rect> detectedRectangles) {
         if (_debug) {
             std::cout << "single received image" << std::endl;
         }
@@ -77,10 +77,10 @@ public:
         sendProcessedImage(detectedRectangles, buff);
     }
 
-    void sendProcessedImage(const vector<dlib::rectangle> &detectedRectangles, vector<uchar> &buff) {
+    void sendProcessedImage(const vector<cv::Rect> &detectedRectangles, vector<uchar> &buff) {
         std::string encoded = base64_encode(buff.data(), buff.size());
-        unique_ptr<std::string> JSON(new std::string(makeJSON(encoded, detectedRectangles, IMAGE16BIT)));
-        _zmqfeed.sendFrame((const uint8_t *) JSON->c_str(), JSON->size());
+        std::string JSON(JSONSerializer::makeJSON(encoded, detectedRectangles, IMAGE16BIT));
+        _zmqfeed.sendFrame((const uint8_t *) JSON.c_str(), JSON.size());
     }
 
 private:
