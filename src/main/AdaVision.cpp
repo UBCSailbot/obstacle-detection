@@ -113,12 +113,12 @@ int main(int argc, char **argv) {
         printUsage(argc, argv);
         return 1;
     }
-    dlib::config_reader cr(argv[1]);
+    dlib::config_reader configReader(argv[1]);
 
     dlib::object_detector<DLibProcessor::image_scanner_type> detector;
     std::vector<dlib::object_detector<DLibProcessor::image_scanner_type>> detectors;
 
-    const dlib::config_reader &models = cr.block("models");
+    const dlib::config_reader &models = configReader.block("models");
     std::vector<std::string> keys;
     models.get_keys(keys);
 
@@ -128,19 +128,21 @@ int main(int argc, char **argv) {
     }
     DLibProcessor dLibProcessor(detectors);
 
-    bool debug = dlib::get_option(cr, "debug", false);
+    bool debug = dlib::get_option(configReader, "debug", false);
 
-    if (cr["mode"] == "file") {
+    AdaVisionHandler adaVisionHandler(configReader["output_dir"],
+                                      dlib::get_option(configReader, "zmq_out", 5555),
+                                      dlib::get_option(configReader, "debug", false),
+                                      dlib::get_option(configReader, "frame_skip", 1));
+
+    if (configReader["mode"] == "file") {
 
         CameraDataProcessor cameraDataProcessor(
-                new ImageStreamCameraDataAdapter(new FileSystemImageStream(cr["input_dir"], "*.png"),
-                                                 dlib::get_option(cr, "double_up", false)),
+                new ImageStreamCameraDataAdapter(new FileSystemImageStream(configReader["input_dir"], "*.png"),
+                                                 dlib::get_option(configReader, "double_up", false)),
                 NULL,
                 &dLibProcessor,
-                new AdaVisionHandler(cr["output_dir"],
-                                     dlib::get_option(cr, "zmq_out", 5555),
-                                     dlib::get_option(cr, "debug", false),
-                                     dlib::get_option(cr, "frame_skip", 1)));
+                &adaVisionHandler);
         try {
             cameraDataProcessor.run();
         } catch (std::exception &e) {
@@ -149,15 +151,12 @@ int main(int argc, char **argv) {
             sleep(5);
         }
 
-    } else if (cr["mode"] == "network") {
+    } else if (configReader["mode"] == "network") {
         CameraDataProcessor cameraDataProcessor(
-                new CameraDataNetworkStream(cr["ip_address"], cr["port"]),
+                new CameraDataNetworkStream(configReader["ip_address"], configReader["port"]),
                 NULL,
                 &dLibProcessor,
-                new AdaVisionHandler(cr["output_dir"],
-                                     dlib::get_option(cr, "zmq_out", 5555),
-                                     dlib::get_option(cr, "debug", false),
-                                     dlib::get_option(cr, "frame_skip", 1)));
+                &adaVisionHandler);
 
         try {
             cameraDataProcessor.run();
