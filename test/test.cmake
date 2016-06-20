@@ -30,7 +30,8 @@ add_library(unit_tests OBJECT
 	test/core/io/cameradata/CameraDataSerializerTest.cpp
 	test/core/io/JSONSerializerTest.cpp
 	test/core/io/OrientationFileReaderTest.cpp
-	test/core/paths/ResourcesTest.cpp)
+	test/core/paths/ResourcesTest.cpp
+	test/core/imageProc/filters/RectangleComparatorTest.cpp)
 
 # tests of code that interfaces with devices; generally can't be run automatically
 add_library(test_device STATIC test/device/imu/MockIMU.cpp

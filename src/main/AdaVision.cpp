@@ -79,8 +79,8 @@ public:
 
     void sendProcessedImage(const vector<cv::Rect> &detectedRectangles, vector<uchar> &buff) {
         std::string encoded = base64_encode(buff.data(), buff.size());
-        std::string JSON(JSONSerializer::makeJSON(encoded, detectedRectangles, IMAGE16BIT));
-        _zmqfeed.sendFrame((const uint8_t *) JSON.c_str(), JSON.size());
+        std::string json(JSONSerializer::makeJSON(encoded, detectedRectangles, IMAGE16BIT));
+        _zmqfeed.sendFrame((const uint8_t *) json.c_str(), json.size());
     }
 
 private:

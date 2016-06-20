@@ -4,9 +4,9 @@
 
 TEST_F(JSONSerializerTest, JSONTest) {
 
-    std::vector<dlib::rectangle> rectangles;
-    dlib::rectangle rect1(2, 2, 5, 5);
-    dlib::rectangle rect2(1, 2, 5, 4);
+    std::vector<cv::Rect> rectangles;
+    cv::Rect rect1(2, 2, 5, 5);
+    cv::Rect rect2(1, 2, 5, 4);
     rectangles.push_back(rect1);
     rectangles.push_back(rect2);
     std::string img = "asdf";
@@ -15,13 +15,13 @@ TEST_F(JSONSerializerTest, JSONTest) {
             "\t\"boxes\" : \n"
             "\t[\n"
             "\t\t{\n"
-            "\t\t\t\"h\" : 4,\n"
-            "\t\t\t\"w\" : 4,\n"
+            "\t\t\t\"h\" : 5,\n"
+            "\t\t\t\"w\" : 5,\n"
             "\t\t\t\"x\" : 2,\n"
             "\t\t\t\"y\" : 2\n"
             "\t\t},\n"
             "\t\t{\n"
-            "\t\t\t\"h\" : 3,\n"
+            "\t\t\t\"h\" : 4,\n"
             "\t\t\t\"w\" : 5,\n"
             "\t\t\t\"x\" : 1,\n"
             "\t\t\t\"y\" : 2\n"
@@ -31,7 +31,7 @@ TEST_F(JSONSerializerTest, JSONTest) {
             "\t\"imageType\" : \"8Bit\"\n"
             "}";
 
-    EXPECT_EQ(expected, makeJSON(img, rectangles, IMAGE8BIT));
+    EXPECT_EQ(expected, JSONSerializer::makeJSON(img, rectangles, IMAGE8BIT));
 }
 
 JSONSerializerTest::JSONSerializerTest() {

@@ -35,16 +35,22 @@ add_library(src_core STATIC
         src/core/geometry/Orientation.cpp
         src/core/geometry/Vector2d.cpp
         src/core/imageProc/dlib/DLibProcessor.cpp
+        src/core/imageProc/filters/RectangleComparator.cpp
         src/core/imageProc/histogram/HorizonImageHistogram.cpp
         src/core/imageProc/histogram/ImageHistogram.cpp
         src/core/imageProc/liveFeed/base64EncDec.cpp
+        src/core/imageProc/liveFeed/Compressor.cpp
         src/core/imageProc/liveFeed/FeedReader.cpp
         src/core/imageProc/rescale/ClippingRescaler.cpp
         src/core/imageProc/rescale/Rescaling.cpp
         src/core/imageProc/rescale/SimpleRescaler.cpp
         src/core/imageProc/smoothing/WeightedAverageBufferedSmoother.cpp
         src/core/io/cameradata/CameraDataDeserializer.cpp
+        src/core/io/cameradata/CameraDataImageStreamAdapter.cpp
+        src/core/io/cameradata/CameraDataNetworkStream.cpp
+        src/core/io/cameradata/CameraDataProcessor.cpp
         src/core/io/cameradata/CameraDataSerializer.cpp
+        src/core/io/cameradata/ImageStreamCameraDataAdapter.cpp
         src/core/io/FileSystemImageStream.cpp
         src/core/io/JSONSerializer.cpp
         src/core/io/OrientationFileReader.cpp
@@ -54,12 +60,7 @@ add_library(src_core STATIC
         src/core/types/CameraSpecifications.cpp
         src/core/types/Image16bit.cpp
         src/core/types/Image8bit.cpp
-        src/core/types/message_types.h
-        src/core/io/cameradata/CameraDataImageStreamAdapter.cpp
-        src/core/io/cameradata/CameraDataNetworkStream.cpp
-        src/core/io/cameradata/CameraDataProcessor.cpp
-        src/core/io/cameradata/ImageStreamCameraDataAdapter.cpp
-        src/core/imageProc/liveFeed/Compressor.cpp)
+        src/core/types/message_types.h)
 add_dependencies(src_core migrateResources)
 
 # obstdetect_core is the version of the obstacle detection library stripped of any device-specific code
