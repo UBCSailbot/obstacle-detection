@@ -116,14 +116,11 @@ void runAdaVisionFromFiles(const AdaVisionConfig &config) {
                                       std::stoi(config.output().liveFeedPort()),
                                       config.global().debug(),
                                       config.output().frameSkip());
-
-    CameraDataProcessor cameraDataProcessor(
-            new ImageStreamCameraDataAdapter(
-                    new FileSystemImageStream(fileConfig.inputDir(), "*.png"),
-                    fileConfig.doubleUp()),
-            NULL,
-            &dLibProcessor,
-            &adaVisionHandler);
+    FileSystemImageStream fileStream(fileConfig.inputDir(), "*.png");
+    ImageStreamCameraDataAdapter imageStreamCameraDataAdapter(fileStream, fileConfig.doubleUp());
+    CameraDataStream &cameraDataStream = imageStreamCameraDataAdapter;
+    
+    CameraDataProcessor cameraDataProcessor(cameraDataStream, dLibProcessor, adaVisionHandler);
     try {
         cameraDataProcessor.run();
     } catch (std::exception &e) {
@@ -140,13 +137,9 @@ void runAdaVisionFromNetwork(const AdaVisionConfig &config) {
                                       std::stoi(config.output().liveFeedPort()),
                                       config.global().debug(),
                                       config.output().frameSkip());
+    CameraDataNetworkStream cameraDataNetworkStream(networkConfig.imagePubIP(), networkConfig.imagePubPort());
 
-    CameraDataProcessor cameraDataProcessor(
-            new CameraDataNetworkStream(networkConfig.imagePubIP(),
-                                        networkConfig.imagePubPort()),
-            NULL,
-            &dLibProcessor,
-            &adaVisionHandler);
+    CameraDataProcessor cameraDataProcessor(cameraDataNetworkStream, dLibProcessor, adaVisionHandler);
 
     try {
         cameraDataProcessor.run();

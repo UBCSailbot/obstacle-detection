@@ -7,8 +7,7 @@
 #include "DLibProcessor.h"
 
 
-DLibProcessor::DLibProcessor(std::vector <dlib::object_detector<image_scanner_type>> detectors) {
-    this->detectors = detectors;
+DLibProcessor::DLibProcessor(std::vector <dlib::object_detector<image_scanner_type>> detectors) : _detectors(detectors) {
 
 }
 
@@ -16,7 +15,7 @@ std::vector <dlib::rectangle> DLibProcessor::getObjectDetectionBoxes(Image16bit 
 
     dlib::cv_image<uint16_t> img(image);
 
-    std::vector <dlib::rectangle> detectedRecangles = evaluate_detectors(detectors, img);
+    std::vector <dlib::rectangle> detectedRecangles = evaluate_detectors(_detectors, img);
 
     return detectedRecangles;
 
