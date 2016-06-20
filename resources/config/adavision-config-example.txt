@@ -1,0 +1,45 @@
+# DO NOT MODIFY THIS CONFIG FILE.
+# Some unit tests depend on it.
+
+#The main mode of execution options:
+global {
+    #Boolean, turns on logging
+    debug = true
+}
+
+image_source {
+    #file, network
+    source = file
+
+    #network stream options
+    network {
+        image_pub_ip = 10.8.0.4
+        image_pub_port =  5553
+    }
+
+    #file stream options
+    file {
+        #Input dir, used in file streams. Absolute path recommended
+        input_dir = resources/img/16bit
+        #Boolean, doubles up read images
+        double_up = true
+    }
+}
+
+output {
+    # zmq output port
+    live_feed_port = 5555
+    dangerzone_pub_port = 5566
+    #the number of frames to skip
+    frame_skip = 1
+
+    data_dir = data
+    log_dir = logs
+}
+
+#List of model paths to be used. The key here doesn't matter
+machine_learning {
+    models {
+        boat_detector = resources/models/tanker-sideview.svm
+    }
+}

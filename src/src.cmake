@@ -19,6 +19,8 @@ add_library(src_core STATIC
         src/core/comm/TCPCameraCommsSub.cpp
         src/core/comm/TCPImageServer.cpp
         src/core/comm/ZmqContextSingleton.cpp
+        src/core/config/AdaVisionConfig.cpp
+        src/core/config/BadConfigException.h
         src/core/detect/Obstacle.cpp
         src/core/detect/SimpleDangerZoneEncoder.cpp
         src/core/exceptions/ErrorMessageException.cpp
