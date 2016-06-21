@@ -1,7 +1,7 @@
 #include "CameraDataProcessor.h"
 
-CameraDataProcessor::CameraDataProcessor(CameraDataStream *stream, ParallelIMU *imu,
-                                         DLibProcessor *dLibProcessor, CameraDataHandler *cameraDataHandler)
+CameraDataProcessor::CameraDataProcessor(CameraDataStream& stream,
+                                         DLibProcessor& dLibProcessor, CameraDataHandler& cameraDataHandler)
         : _keepRecording(true), _dlibProcessor(dLibProcessor), _cameraDataHandler(cameraDataHandler), _stream(stream) {
 
 }
@@ -10,14 +10,14 @@ CameraDataProcessor::CameraDataProcessor(CameraDataStream *stream, ParallelIMU *
 void CameraDataProcessor::run() {
     while (getKeepRecording()) {
 
-        std::vector<CameraData> dataVector = _stream->nextImage();
+        std::vector<CameraData> dataVector = _stream.nextImage();
 
         std::vector<std::pair<CameraData*, std::vector<dlib::rectangle>>> dataRectPairs;
         for (CameraData data : dataVector) {
             if (data.status != OK) {
                 continue;
             }
-            auto detectedRectangles = _dlibProcessor->getObjectDetectionBoxes(data.frame);
+            auto detectedRectangles = _dlibProcessor.getObjectDetectionBoxes(data.frame);
 
             dataRectPairs.push_back(
                     std::pair<CameraData*, std::vector<dlib::rectangle>>(&data, detectedRectangles));
@@ -25,7 +25,7 @@ void CameraDataProcessor::run() {
 
         if (dataRectPairs.size() > 0) {
             //TODO implement real comparison
-            _cameraDataHandler->onImageProcessed(dataVector, dataRectPairs[0].second);
+            _cameraDataHandler.onImageProcessed(dataVector, dataRectPairs[0].second);
         }
     }
 }

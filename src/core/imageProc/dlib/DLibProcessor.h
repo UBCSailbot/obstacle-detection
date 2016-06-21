@@ -27,7 +27,7 @@ class DLibProcessor {
     virtual std::vector <dlib::rectangle> getObjectDetectionBoxes(Image16bit image);
 
   private:
-    std::vector <dlib::object_detector<image_scanner_type>> detectors;
+    std::vector <dlib::object_detector<image_scanner_type>> _detectors;
 
 };
 

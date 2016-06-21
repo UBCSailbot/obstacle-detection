@@ -19,8 +19,7 @@
  */
     class CameraDataProcessor {
     public:
-        CameraDataProcessor(CameraDataStream *stream, ParallelIMU *imu,
-                                      DLibProcessor *dLibProcessor, CameraDataHandler* cameraDataHandler);
+        CameraDataProcessor(CameraDataStream& _stream, DLibProcessor& dLibProcessor, CameraDataHandler& cameraDataHandler);
 
         volatile bool getKeepRecording() const;
 
@@ -30,11 +29,11 @@
 
     private:
 
-        DLibProcessor*_dlibProcessor;
+        DLibProcessor&_dlibProcessor;
 
-        CameraDataHandler*_cameraDataHandler;
+        CameraDataHandler&_cameraDataHandler;
 
-        CameraDataStream *_stream;
+        CameraDataStream& _stream;
 
         volatile bool _keepRecording;
 
