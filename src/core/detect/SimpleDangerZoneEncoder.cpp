@@ -5,8 +5,7 @@
 #include "SimpleDangerZoneEncoder.h"
 
 
-SimpleDangerZoneEncoder::SimpleDangerZoneEncoder(CameraSpecifications specs) :
-    _cameraSpecs(specs), _pixToDegMultiplier(_cameraSpecs.FOVDegreesHorizontal / _cameraSpecs.pixelWidth) {
+SimpleDangerZoneEncoder::SimpleDangerZoneEncoder() {
 
 }
 
@@ -17,21 +16,23 @@ double SimpleDangerZoneEncoder::calculateDistanceFromCenterLine(Line centerLine,
                                 p.y - centerLine.getStartPoint().y);
 
     double numerator = normalizedPoint.x * normalizedCenterLine.y -
-        normalizedPoint.y * normalizedCenterLine.x;
+                       normalizedPoint.y * normalizedCenterLine.x;
     double denominator = centerLine.calculateMagnitude();
 
     return numerator / denominator;
 }
 
-std::vector <DangerZone> SimpleDangerZoneEncoder::identifyDangerZones(
-    const ObstaclePositionFrame &obstacleFrame) const {
+std::vector<DangerZone> SimpleDangerZoneEncoder::identifyDangerZones(
+        const ObstaclePositionFrame &obstacleFrame) const {
+    auto cameraSpecs = obstacleFrame.getCameraSpec();
+    double pixToDegMultiplier = cameraSpecs.FOVDegreesHorizontal / cameraSpecs.pixelWidth;
     Line centerLine = obstacleFrame.calculateCenterLine();
-    std::vector <DangerZone> zones;
+    std::vector<DangerZone> zones;
 
-    for (Obstacle o : obstacleFrame.getObstacles()) {
-        double portDistance = calculateDistanceFromCenterLine(centerLine, o.getPortmostVertex());
-        double starboardDistance = calculateDistanceFromCenterLine(centerLine, o.getStarboardmostVertex());
-        DangerZone dz(portDistance * _pixToDegMultiplier, starboardDistance * _pixToDegMultiplier, 0);
+    for (const Obstacle &obstacle : obstacleFrame.getObstacles()) {
+        double portDistance = calculateDistanceFromCenterLine(centerLine, obstacle.getPortmostVertex());
+        double starboardDistance = calculateDistanceFromCenterLine(centerLine, obstacle.getStarboardmostVertex());
+        DangerZone dz(portDistance * pixToDegMultiplier, starboardDistance * pixToDegMultiplier, 0);
         zones.push_back(dz);
     }
 

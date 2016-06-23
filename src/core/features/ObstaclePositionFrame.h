@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <utility>
+#include <memory>
 #include <opencv2/core/core.hpp>
 #include <geometry/Horizon.h>
 #include <features/HorizonImage.h>
@@ -19,21 +20,23 @@
  *  triangular region within which the obstacle might be present in the real world,
  *  relative to the boat's current heading.
  */
-class ObstaclePositionFrame: public HorizonImage {
+class ObstaclePositionFrame : public HorizonImage {
 
-  public:
-    ObstaclePositionFrame(const cv::Mat &frame, const Horizon &horizon,
+
+public:
+    ObstaclePositionFrame(std::vector<std::shared_ptr<cv::Mat>> frames, const Horizon &horizon,
                           const CameraSpecifications &cameraSpec,
-                          const std::vector <Obstacle> &obstacles) :
-        HorizonImage(frame, horizon),
-        _obstacles(obstacles),
-        _cameraSpec(cameraSpec) { }
+                          const std::vector<Obstacle> &obstacles) :
+    //TODO Refactor the horizon code to take multiple images using shared pointers
+            HorizonImage(*frames[0].get(), horizon),
+            _obstacles(obstacles),
+            _cameraSpec(cameraSpec) { }
 
     const bool containsObstacle() {
         return !_obstacles.empty();
     }
 
-    const std::vector <Obstacle> getObstacles() const {
+    const std::vector<Obstacle> getObstacles() const {
         return _obstacles;
     }
 
@@ -53,9 +56,13 @@ class ObstaclePositionFrame: public HorizonImage {
         return _cameraSpec.FOVDegreesVertical;
     }
 
-  private:
+    const CameraSpecifications getCameraSpec() const {
+        return _cameraSpec;
+    };
+
+private:
     //with reference to the horizon
-    std::vector <Obstacle> _obstacles;
+    std::vector<Obstacle> _obstacles;
     CameraSpecifications _cameraSpec;
 
 };

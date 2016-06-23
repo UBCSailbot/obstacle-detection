@@ -11,19 +11,24 @@
 #include <io/cameradata/ImageStreamCameraDataAdapter.h>
 #include <io/cameradata/CameraDataNetworkStream.h>
 #include <QtCore/QTS>
-#include <dlib/config_reader.h>
 #include <config/AdaVisionConfig.h>
+#include <comm/DangerZoneSender.h>
+#include <imu/StubIMU.h>
 
-
+/*
+ * This class is the core handler of events while processing images on ada.
+ */
 class AdaVisionHandler : public CameraDataHandler {
 
 public:
 
-    AdaVisionHandler(std::string outputDir, const int zmqPort, const bool debug, const int frameSkip)
+    AdaVisionHandler(std::string outputDir, const int imageFeedZmqPort, const bool debug, const int frameSkip,
+                     int routemakingZmqPort)
             : CameraDataHandler(), _zmqfeed(ZmqContextSingleton::getContext()),
-              _zmqPort(zmqPort), _outputDir(outputDir), _debug(debug), _frameSkip(frameSkip) {
+              _zmqPort(imageFeedZmqPort), _outputDir(outputDir), _debug(debug), _frameSkip(frameSkip),
+              _dangerZoneSender(ZmqContextSingleton::getContext(), routemakingZmqPort) {
 
-        _zmqfeed.init(zmqPort);
+        _zmqfeed.init(imageFeedZmqPort);
         if (!QDir(outputDir.c_str()).exists()) {
             QDir().mkdir(outputDir.c_str());
         }
@@ -42,20 +47,25 @@ public:
         }
     }
 
-    void onMultiImageProcessed(const vector<CameraData> &cameraData,
+    void onMultiImageProcessed(const std::vector<CameraData> &cameraData,
                                const std::vector<cv::Rect> detectedRectangles) {
         if (_debug) {
             std::cout << "received two images" << std::endl;
+            std::cout << "rectangles:" << std::endl;
+            for (auto const &rectangle: detectedRectangles) {
+                std::cout << rectangle << std::endl;
+            }
         }
 
+        Image16bit img = cameraData[0].frame;
         _frameCounter++;
         std::ostringstream leftImageName;
         leftImageName << _outputDir << "/img_" << _frameCounter << "_L" << ".png";
-        imwrite(leftImageName.str(), cameraData[0].frame);
+        cv::imwrite(leftImageName.str(), img);
 
         std::ostringstream rightImageName;
         rightImageName << _outputDir << "/img_" << _frameCounter << "_R" << ".png";
-        imwrite(rightImageName.str(), cameraData[1].frame);
+        cv::imwrite(rightImageName.str(), cameraData[1].frame);
 
         //TODO something smarter than this...
         int cameraToUse = _frameCounter % 2;
@@ -66,6 +76,10 @@ public:
     void onSingleImageProcessed(CameraData cameraData, std::vector<cv::Rect> detectedRectangles) {
         if (_debug) {
             std::cout << "single received image" << std::endl;
+            std::cout << "rectangles:" << std::endl;
+            for (auto const &rectangle: detectedRectangles) {
+                std::cout << rectangle << std::endl;
+            }
         }
 
         _frameCounter++;
@@ -77,10 +91,21 @@ public:
         sendProcessedImage(detectedRectangles, buff);
     }
 
-    void sendProcessedImage(const vector<cv::Rect> &detectedRectangles, vector<uchar> &buff) {
+    void sendProcessedImage(const std::vector<cv::Rect> &detectedRectangles, std::vector<uchar> &buff) {
         std::string encoded = base64_encode(buff.data(), buff.size());
         std::string json(JSONSerializer::makeJSON(encoded, detectedRectangles, IMAGE16BIT));
         _zmqfeed.sendFrame((const uint8_t *) json.c_str(), json.size());
+    }
+
+    void onDangerZoneProcessed(std::vector<DangerZone> cameraData) {
+        if (_debug) {
+            for (auto const &dangerZone: cameraData) {
+                std::cout << "starboard angle:" << dangerZone.getStarboardAngleDeg() << std::endl;
+                std::cout << "port angle:" << dangerZone.getPortAngleDeg() << std::endl;
+                std::cout << "lateral offset:" << dangerZone.getLateralOffsetMeters() << std::endl;
+            }
+        }
+        //TODO, add sending for dangerzones
     }
 
 private:
@@ -89,6 +114,8 @@ private:
     std::string _outputDir;
 
     ImageFeedZmq _zmqfeed;
+
+    DangerZoneSender _dangerZoneSender;
 
     int _zmqPort;
 
@@ -117,12 +144,15 @@ void runAdaVisionFromFiles(const AdaVisionConfig &config) {
     AdaVisionHandler adaVisionHandler(config.output().dataDir(),
                                       std::stoi(config.output().liveFeedPort()),
                                       config.global().debug(),
-                                      config.output().frameSkip());
+                                      config.output().frameSkip(),
+                                      std::stoi(config.output().dangerZonePubPort()));
     FileSystemImageStream fileStream(fileConfig.inputDir(), "*.png");
     ImageStreamCameraDataAdapter imageStreamCameraDataAdapter(fileStream, fileConfig.doubleUp());
     CameraDataStream &cameraDataStream = imageStreamCameraDataAdapter;
-    
-    CameraDataProcessor cameraDataProcessor(cameraDataStream, dLibProcessor, adaVisionHandler);
+
+    //TODO add real IMU code
+    StubIMU stubIMU(0, 0, 0);
+    CameraDataProcessor cameraDataProcessor(cameraDataStream, dLibProcessor, adaVisionHandler, stubIMU);
     try {
         cameraDataProcessor.run();
     } catch (std::exception &e) {
@@ -138,14 +168,18 @@ void runAdaVisionFromNetwork(const AdaVisionConfig &config) {
     AdaVisionHandler adaVisionHandler(config.output().dataDir(),
                                       std::stoi(config.output().liveFeedPort()),
                                       config.global().debug(),
-                                      config.output().frameSkip());
+                                      config.output().frameSkip(),
+                                      std::stoi(config.output().dangerZonePubPort()));
     CameraDataNetworkStream cameraDataNetworkStream(networkConfig.imagePubIP(), networkConfig.imagePubPort());
 
-    CameraDataProcessor cameraDataProcessor(cameraDataNetworkStream, dLibProcessor, adaVisionHandler);
+    //TODO add real IMU code
+    StubIMU mockImu = StubIMU(0, 0, 0);
+
+    CameraDataProcessor cameraDataProcessor(cameraDataNetworkStream, dLibProcessor, adaVisionHandler, mockImu);
 
     try {
         cameraDataProcessor.run();
-    } catch (exception &e) {
+    } catch (std::exception &e) {
         std::cout << e.what() << endl;
     }
 }

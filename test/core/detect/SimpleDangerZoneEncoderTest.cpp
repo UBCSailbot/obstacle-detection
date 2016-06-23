@@ -14,7 +14,7 @@ TEST_F(SimpleDangerZoneEncoderTest, singleObstacle) {
     Obstacle o({p1, p2}, h);
     obstacles.push_back(o);
 
-    ObstaclePositionFrame positions (frame, h, LeptonCameraSpecifications, obstacles);
+    ObstaclePositionFrame positions (frames, h, LeptonCameraSpecifications, obstacles);
     std::vector<DangerZone> zones = encoder.identifyDangerZones(positions);
 
     EXPECT_FLOAT_EQ(-12.75, zones[0].getPortAngleDeg());
@@ -23,7 +23,7 @@ TEST_F(SimpleDangerZoneEncoderTest, singleObstacle) {
 
 TEST_F(SimpleDangerZoneEncoderTest, passOnNoObstacles) {
     std::vector<Obstacle> emptyObstacles;
-    ObstaclePositionFrame positions(frame, factory.makeNeutralHorizon(), LeptonCameraSpecifications,
+    ObstaclePositionFrame positions(frames, factory.makeNeutralHorizon(), LeptonCameraSpecifications,
         emptyObstacles);
     std::vector<DangerZone> zones = encoder.identifyDangerZones(positions);
     EXPECT_TRUE(zones.empty());
@@ -37,7 +37,7 @@ TEST_F(SimpleDangerZoneEncoderTest, multipleObstacles) {
     obstacles.push_back(Obstacle({cv::Point2f(78, 11), cv::Point2f(69,25)}, h));
     obstacles.push_back(Obstacle({cv::Point2f(37, 33), cv::Point2f(32,28), cv::Point2f(29,31)}, h));
 
-    ObstaclePositionFrame positionFrame(frame, h, LeptonCameraSpecifications, obstacles);
+    ObstaclePositionFrame positionFrame(frames, h, LeptonCameraSpecifications, obstacles);
     std::vector<DangerZone> zones = encoder.identifyDangerZones(positionFrame);
 
     EXPECT_EQ(obstacles.size(), zones.size());

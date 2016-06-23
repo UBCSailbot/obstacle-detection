@@ -31,10 +31,10 @@ bool Obstacle::ObstaclePointComparator::operator()(cv::Point2f p1, cv::Point2f p
 
 }
 
-const cv::Point2f Obstacle::getPortmostVertex() {
+cv::Point2f Obstacle::getPortmostVertex()const {
     return _vertices.front();
 }
 
-const cv::Point2f Obstacle::getStarboardmostVertex() {
+cv::Point2f Obstacle::getStarboardmostVertex()const {
     return _vertices.back();
 }

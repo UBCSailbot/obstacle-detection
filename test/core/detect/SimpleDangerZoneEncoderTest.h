@@ -9,6 +9,7 @@
 #include <opencv2/core/core.hpp>
 #include <geometry/Horizon.h>
 #include <geometry/HorizonFactory.h>
+#include <memory>
 
 #include "features/ObstaclePositionFrame.h"
 #include "detect/DangerZone.h"
@@ -18,10 +19,14 @@
 class SimpleDangerZoneEncoderTest : public testing::Test {
 
 public:
-    SimpleDangerZoneEncoder encoder = SimpleDangerZoneEncoder(LeptonCameraSpecifications);
-    Image8bit frame = Image8bit(LeptonCameraSpecifications.pixelHeight,
-                                LeptonCameraSpecifications.pixelWidth);
+    SimpleDangerZoneEncoderTest() {
+        frames.push_back(std::shared_ptr<cv::Mat>(new Image8bit(LeptonCameraSpecifications.pixelHeight,
+                                                       LeptonCameraSpecifications.pixelWidth)));
+    }
+
+    SimpleDangerZoneEncoder encoder = SimpleDangerZoneEncoder();
     HorizonFactory factory = HorizonFactory(LeptonCameraSpecifications);
+    std::vector<std::shared_ptr<cv::Mat>> frames;
 
 
 };

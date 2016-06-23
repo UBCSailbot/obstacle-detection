@@ -3,6 +3,7 @@
 
 #include <imageProc/dlib/DLibProcessor.h>
 #include "CameraDataStream.h"
+#include <detect/DangerZone.h>
 #include <memory>
 #include <vector>
 
@@ -15,6 +16,8 @@ public:
 
     virtual void onImageProcessed(std::vector<CameraData> cameraData,
                                   std::vector<cv::Rect> detectedRectangles) = 0;
+
+    virtual void onDangerZoneProcessed(std::vector<DangerZone> cameraData) = 0;
 
 
 };

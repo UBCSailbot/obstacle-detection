@@ -17,7 +17,7 @@ LiveFeed::LiveFeed(ImageStream *stream, const DLibProcessor &dLibProcessor, char
 
 void LiveFeed::beforeCapture() {
 
-    std::cout << "Starting Capture" << endl;
+    std::cout << "Starting Capture" << std::endl;
     zmqfeed.init(5555);
     if (runImu) {
         imu = new ParallelIMU;
@@ -38,8 +38,8 @@ void LiveFeed::onImageRead(Image16bit image) {
         imuLog << imu->getOrientation().toDataString();
     }
 
-    vector<uchar> buff = Compressor::imgToBuff(image, 3);
-    string encoded = base64_encode(buff.data(), buff.size());
+    std::vector<uchar> buff = Compressor::imgToBuff(image, 3);
+    std::string encoded = base64_encode(buff.data(), buff.size());
     std::vector<cv::Rect> detectedRectangles = dLibProcessor.getObjectDetectionBoxes(image);
     std::string JSON(JSONSerializer::makeJSON(encoded, detectedRectangles, IMAGE16BIT));
     zmqfeed.sendFrame((const uint8_t *) JSON.c_str(), JSON.size());
@@ -49,11 +49,11 @@ void LiveFeed::printUsage(int argc, char **argv) {
     std::cout << "Usage:\n"
             "liveFeeder file <input dir> <output dir> dlib_model.svm ...\n"
             "liveFeeder lepton imu_enabled/imu_disabled <output dir> dlib_model.svm ...\n"
-            "liveFeeder network ip_address port <output dir> dlib_model.svm" << endl;
-    std::cout << "You entered: " << endl;
+            "liveFeeder network ip_address port <output dir> dlib_model.svm" << std::endl;
+    std::cout << "You entered: " << std::endl;
     for (int i = 0; i < argc; i++)
         std::cout << argv[i];
-    std::cout << endl;
+    std::cout << std::endl;
 }
 
 int main(int argc, char **argv) {
@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
     dlib::object_detector<DLibProcessor::image_scanner_type> detector;
     std::vector<dlib::object_detector<DLibProcessor::image_scanner_type>> detectors;
 
-    if (string(argv[1]) == "file") {
+    if (std::string(argv[1]) == "file") {
         for (int i = 4; i < argc; i++) {
             dlib::deserialize(argv[i]) >> detector;
             detectors.push_back(detector);
@@ -76,11 +76,11 @@ int main(int argc, char **argv) {
         try {
             liveFeed.record();
         } catch (std::exception &e) {
-            std::cout << e.what() << endl;
+            std::cout << e.what() << std::endl;
             //This is to give time for zeromq to finish sending when reading from file system
             sleep(5);
         }
-    } else if (string(argv[1]) == "lepton") {
+    } else if (std::string(argv[1]) == "lepton") {
         for (int i = 4; i < argc; i++) {
             dlib::deserialize(argv[i]) >> detector;
             detectors.push_back(detector);
@@ -88,17 +88,17 @@ int main(int argc, char **argv) {
         DLibProcessor dLibProcessor(detectors);
         while (1) {
             LiveFeed liveFeed(new ThermalCameraStream(LeptonRegistry::getLepton0()),
-                              dLibProcessor, argv[3], string(argv[2]) == "imu_enabled");
+                              dLibProcessor, argv[3], std::string(argv[2]) == "imu_enabled");
 
             try {
                 liveFeed.record();
             } catch (LeptonSPIOpenException &e) {
-                std::cout << e.what() << endl;
+                std::cout << e.what() << std::endl;
                 // wait 5 seconds and try to record
                 sleep(5);
             }
         }
-    } else if (string(argv[1]) == "network") {
+    } else if (std::string(argv[1]) == "network") {
         for (int i = 5; i < argc; i++) {
             dlib::deserialize(argv[i]) >> detector;
             detectors.push_back(detector);
@@ -107,8 +107,8 @@ int main(int argc, char **argv) {
         LiveFeed liveFeed(new TCPImageStream(argv[2], argv[3]), dLibProcessor, argv[4], false);
         try {
             liveFeed.record();
-        } catch (exception &e) {
-            std::cout << e.what() << endl;
+        } catch (std::exception &e) {
+            std::cout << e.what() << std::endl;
         }
 
     } else {

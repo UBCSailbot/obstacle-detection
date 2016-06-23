@@ -11,32 +11,40 @@
 #include <memory>
 #include <vector>
 #include <imu/ParallelIMU.h>
-
+#include <detect/SimpleDangerZoneEncoder.h>
 
 /*
  * This class encapsulates the common functionality for receiving streams CameraData objects.
  * This handles all of the logic of processing images and the calls that recieved function when that is complete
  */
-    class CameraDataProcessor {
-    public:
-        CameraDataProcessor(CameraDataStream& _stream, DLibProcessor& dLibProcessor, CameraDataHandler& cameraDataHandler);
+class CameraDataProcessor {
+public:
+    CameraDataProcessor(CameraDataStream &_stream, DLibProcessor &dLibProcessor,
+                        CameraDataHandler &cameraDataHandler, IMU &imu);
 
-        volatile bool getKeepRecording() const;
+    volatile bool getKeepRecording() const;
 
-        void setKeepRecording(volatile bool keepRecording);
+    void setKeepRecording(volatile bool keepRecording);
 
-        void run();
+    void run();
 
-    private:
+private:
+    std::vector<DangerZone> getDangerZones(std::vector<std::shared_ptr<cv::Mat>> frames,
+                                           std::vector<cv::Rect> detectedRectangles, CameraSpecifications specs);
 
-        DLibProcessor&_dlibProcessor;
+    DLibProcessor &_dlibProcessor;
 
-        CameraDataHandler&_cameraDataHandler;
+    CameraDataHandler &_cameraDataHandler;
 
-        CameraDataStream& _stream;
+    CameraDataStream &_stream;
 
-        volatile bool _keepRecording;
+    volatile bool _keepRecording;
 
-    };
+    SimpleDangerZoneEncoder _simpleDangerZoneEncoder;
+
+    IMU &_imu;
+
+    Obstacle rectToObstacle(cv::Rect rect, Horizon horizon);
+};
 
 #endif //OBSTACLE_DETECTION_CAMERADATAPROCESESSOR_H

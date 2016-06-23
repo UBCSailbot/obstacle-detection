@@ -7,15 +7,15 @@
 #include <opencv2/highgui/highgui.hpp>
 
 
-static const string base64_chars =
+static const std::string base64_chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         "abcdefghijklmnopqrstuvwxyz"
         "0123456789+/";
 
 
-string base64_encode(unsigned char const *bytes_to_encode, unsigned int in_len) {
+std::string base64_encode(unsigned char const *bytes_to_encode, unsigned int in_len) {
 
-    string ret;
+    std::string ret;
 
     int i = 0;
     int j = 0;
@@ -62,8 +62,8 @@ static inline bool is_base64(unsigned char c) {
 }
 
 
-vector <uchar> base64_decode(std::string const &encoded_string, int size) {
-    vector <uchar> decoded(size);
+std::vector <uchar> base64_decode(std::string const &encoded_string, int size) {
+    std::vector <uchar> decoded(size);
     int iterDec = 0;
     size_t in_len = encoded_string.size();
     size_t i = 0;

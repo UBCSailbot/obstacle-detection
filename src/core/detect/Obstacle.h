@@ -42,13 +42,13 @@ class Obstacle {
      * Returns the vertex of the obstacle that is the furthest to the port
      *  side relative to the boat's current heading. (PORT == LEFT)
      */
-    const cv::Point2f getPortmostVertex();
+    cv::Point2f getPortmostVertex()const;
 
     /**
      * Returns the vertex of the obstacle that is the furthest to the starboard
      *  side relative to the boat's current heading. (STARBOARD == RIGHT)
      */
-    const cv::Point2f getStarboardmostVertex();
+    cv::Point2f getStarboardmostVertex()const;
 
     /**
      * Return the number of vertices used to represent this obstacle.
