@@ -55,8 +55,10 @@ add_library(src_core STATIC
         src/core/io/JSONSerializer.cpp
         src/core/io/OrientationFileReader.cpp
         src/core/io/TCPImageStream.cpp
+        src/core/logger/Logger.cpp
         src/core/paths/Paths.cpp
         src/core/paths/Resources.cpp
+        src/core/time/TimeUtils.cpp
         src/core/types/CameraSpecifications.cpp
         src/core/types/Image16bit.cpp
         src/core/types/Image8bit.cpp

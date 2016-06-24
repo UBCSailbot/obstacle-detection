@@ -124,3 +124,6 @@ target_link_libraries(leptonServerTest obstdetect_core)
 add_executable(TCPCameraCommsTest test/main/TCPCameraCommsTest.cpp)
 target_link_libraries(TCPCameraCommsTest obstdetect_full)
 
+# LoggerTest - just prints out a few sample log messages
+add_executable(loggerSample test/main/LoggerSample.cpp)
+target_link_libraries(loggerSample obstdetect_core)
