@@ -31,8 +31,8 @@ public:
 
     void onImageProcessed(std::vector<CameraData> cameraData,
                           std::vector<cv::Rect> detectedRectangles) {
-        if (_frameSkip <= 0 || _frameCounter % _frameSkip == 0) {
-
+        _skippedCounter++;
+        if (_frameSkip <= 0 || _skippedCounter % _frameSkip == 0) {
             //TODO add imu logging
             if (cameraData.size() == 1) {
                 onSingleImageProcessed(cameraData[0], detectedRectangles);
@@ -91,6 +91,8 @@ private:
     ImageFeedZmq _zmqfeed;
 
     int _zmqPort;
+
+    int _skippedCounter = 0;
 
     bool _debug;
 
