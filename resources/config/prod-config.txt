@@ -3,7 +3,7 @@ global {
 }
 
 image_source {
-    mode = network
+    source = network
 
     network {
         image_pub_ip = 10.8.0.4
