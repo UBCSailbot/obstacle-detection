@@ -20,6 +20,9 @@ output {
 machine_learning {
     models {
         boat_detector = resources/models/tanker-sideview.svm
+        chase_boat_medium = resources/models/chase-boat-medium.svm
+        chase_boat_large = resources/models/chase-boat-large.svm
+        sailboat = resources/models/sailboat.svm
     }
 }
 
