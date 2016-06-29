@@ -1,6 +1,7 @@
 #ifndef OBSTACLE_DETECTION_LEPTONMULTIPLEXER_H
 #define OBSTACLE_DETECTION_LEPTONMULTIPLEXER_H
 
+#include <config/Config.h>
 #include "ICameraMultiplexer.h"
 #include <comm/AStoppableWorker.h>
 #include <iostream>
@@ -11,32 +12,34 @@
 
 class LeptonMultiplexer : public ICameraMultiplexer, public AStoppableWorker {
 public:
+    static constexpr unsigned int DEFAULT_RESET_TIME_DELAY_MILLIS = 5000;
+    static constexpr double DEFAULT_SUN_DUTY_CYCLE = 0.50;
+
+    typedef od::Config::camera_enclosure_config::lepton_config LeptonConfig;
+    typedef od::Config::perception_config::sun_detection_config SunConfig;
+
+    LeptonMultiplexer(LeptonConfig leptonConfig, SunConfig sunConfig);
+
     std::vector<CameraData> getLatestCameraData();
 
-    /*
-     *  @param: useLepton0 - True if Lepton0 is to be used, false otherwise
-     *  @param: useLepton1 - True if Lepton1 is to be used, false otherwise
-     *  @param: _RESET_TIME_DELAY - If a Lepton is disconnected, how long (milliseconds) to
-     *                        reset the Lepton for (how long it is turned off).
-     */
-    LeptonMultiplexer(bool useLepton0, bool useLepton1, const int _resetTimeDelay = 5000, const int sunPixelThreshold = 10000, const double sunDutyCycle = 0.50);
-
 private:
+    // Configuration variables
+    const bool useLepton0_;
+    const bool useLepton1_;
+    const unsigned int resetTimeDelayMillis_;
+    const unsigned int statusCheckIntervalSeconds_;
+    const unsigned int sunDutyCyclePercent_;
+    const unsigned int sunPixelThreshold_;
+
+    // State variables
+    int frameCount_ = 0;
+    volatile bool lepton0Connected_ = true;
+    volatile bool lepton1Connected_ = true;
+    bool sunDetected_ = false;
+
     void checkLeptonStatus();
 
     bool imageHasSun(Image16bit image);
-
-    bool _useLepton0;
-    bool _useLepton1;
-    volatile bool _lepton0Connected = true;
-    volatile bool _lepton1Connected = true;
-    const int _resetTimeDelay;
-    static const int LEPTON_CHECK_WAIT_TIME_SECONDS = 5;
-
-    int _frameCount = 0;
-    bool _sunDetected = false;
-    const int _sunPixelThreshold;
-    const double _sunDutyCycle;
 };
 
 
