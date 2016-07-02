@@ -64,10 +64,6 @@ Image16bit Lepton::captureFrame() {
         }
     }
 
-    if (resets >= 30) {
-        std::cout << "Done reading, resets: " << resets << std::endl;
-    }
-
     _frameBuffer = (uint16_t *) _result;
 
     for (int i = 0; i < FRAME_SIZE_UINT16; i++) {
