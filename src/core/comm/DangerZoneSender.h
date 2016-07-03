@@ -5,14 +5,14 @@ class DangerZoneSender {
 
 public:
 
-    DangerZoneSender(zmq::context_t &context, const int &port);
+    DangerZoneSender(zmq::context_t &context);
 
     void sendDangerZone(std::vector<DangerZone> &dangerZone);
 
 private:
     zmq::socket_t _socket;
 
-    static const std::string tcpBaseAddress;
+    static const std::string routemakingIpcAddress;
 };
 
 

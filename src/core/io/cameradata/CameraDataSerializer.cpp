@@ -18,7 +18,7 @@ zmq::message_t CameraDataSerializer::serializeToZmq(std::vector<CameraData> data
     memcpy(messagePointer, numCamDataPtr, sizeof(uint8_t));
     messagePointer += sizeof(uint8_t);
 
-    for (CameraData data : dataVector){
+    for (CameraData &data : dataVector){
         CameraStatus* statusPointer = &data.status;
         memcpy(messagePointer, statusPointer, sizeof(CameraStatus));
         messagePointer += sizeof(CameraStatus);

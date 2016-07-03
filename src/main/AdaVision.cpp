@@ -14,6 +14,7 @@
 #include <config/AdaVisionConfig.h>
 #include <comm/DangerZoneSender.h>
 #include <imu/StubIMU.h>
+#include <io/DangerZoneSerializer.h>
 
 /*
  * This class is the core handler of events while processing images on ada.
@@ -22,11 +23,10 @@ class AdaVisionHandler : public CameraDataHandler {
 
 public:
 
-    AdaVisionHandler(std::string outputDir, const int imageFeedZmqPort, const bool debug, const int frameSkip,
-                     int routemakingZmqPort)
+    AdaVisionHandler(std::string outputDir, const int imageFeedZmqPort, const bool debug, const int frameSkip)
             : CameraDataHandler(), _zmqfeed(ZmqContextSingleton::getContext()),
               _zmqPort(imageFeedZmqPort), _outputDir(outputDir), _debug(debug), _frameSkip(frameSkip),
-              _dangerZoneSender(ZmqContextSingleton::getContext(), routemakingZmqPort) {
+              _dangerZoneSender(ZmqContextSingleton::getContext()) {
 
         _zmqfeed.init(imageFeedZmqPort);
         if (!QDir(outputDir.c_str()).exists()) {
@@ -51,9 +51,11 @@ public:
                                const std::vector<cv::Rect> detectedRectangles) {
         if (_debug) {
             std::cout << "received two images" << std::endl;
-            std::cout << "rectangles:" << std::endl;
-            for (auto const &rectangle: detectedRectangles) {
-                std::cout << rectangle << std::endl;
+            if (detectedRectangles.size() > 0) {
+                std::cout << "rectangles:" << std::endl;
+                for (auto const &rectangle: detectedRectangles) {
+                    std::cout << rectangle << std::endl;
+                }
             }
         }
 
@@ -97,15 +99,16 @@ public:
         _zmqfeed.sendFrame((const uint8_t *) json.c_str(), json.size());
     }
 
-    void onDangerZoneProcessed(std::vector<DangerZone> cameraData) {
+    void onDangerZoneProcessed(std::vector<DangerZone> dangerZones) {
         if (_debug) {
-            for (auto const &dangerZone: cameraData) {
+            for (auto const &dangerZone: dangerZones) {
+                std::cout << "dangerzone detected:" << std::endl;
                 std::cout << "starboard angle:" << dangerZone.getStarboardAngleDeg() << std::endl;
                 std::cout << "port angle:" << dangerZone.getPortAngleDeg() << std::endl;
-                std::cout << "lateral offset:" << dangerZone.getLateralOffsetMeters() << std::endl;
+                std::cout << "lateral offset:" << dangerZone.getLateralOffsetMeters() << "\n" << std::endl;
             }
         }
-        //TODO, add sending for dangerzones
+        _dangerZoneSender.sendDangerZone(dangerZones);
     }
 
 private:
@@ -138,29 +141,44 @@ void printUsage(int argc, char **argv) {
     std::cout << std::endl;
 }
 
+ std::shared_ptr<IMU> getImu(const AdaVisionConfig &config) {
+    switch (config.imu().mode()) {
+        case AdaVisionConfig::Imu::REAL: {
+            return std::shared_ptr<IMU>(new ParallelIMU());
+        }
+        case AdaVisionConfig::Imu::STUB: {
+            return std::shared_ptr<IMU>(new StubIMU(0, 0, 0));
+        }
+        case AdaVisionConfig::Imu::FILE:
+            //TODO add file reader for IMU
+            throw std::runtime_error("file reading isn't currently supported for IMU's");
+    }
+    // Done to placate the GCC gods i.e. stop compiler warnings. It should return or crash before reaching this piont
+    return NULL;
+}
+
+
 void runAdaVisionFromFiles(const AdaVisionConfig &config) {
     const auto &fileConfig = config.imageSource().file();
     DLibProcessor dLibProcessor(config.machineLearning().models().all());
     AdaVisionHandler adaVisionHandler(config.output().dataDir(),
                                       std::stoi(config.output().liveFeedPort()),
                                       config.global().debug(),
-                                      config.output().frameSkip(),
-                                      std::stoi(config.output().dangerZonePubPort()));
+                                      config.output().frameSkip());
     FileSystemImageStream fileStream(fileConfig.inputDir(), "*.png");
     ImageStreamCameraDataAdapter imageStreamCameraDataAdapter(fileStream, fileConfig.doubleUp());
     CameraDataStream &cameraDataStream = imageStreamCameraDataAdapter;
 
-    //TODO add real IMU code
-    StubIMU stubIMU(0, 0, 0);
-    CameraDataProcessor cameraDataProcessor(cameraDataStream, dLibProcessor, adaVisionHandler, stubIMU);
+    std::shared_ptr<IMU> pIMU = getImu(config);
+    CameraDataProcessor cameraDataProcessor(cameraDataStream, dLibProcessor, adaVisionHandler, *pIMU);
     try {
         cameraDataProcessor.run();
     } catch (std::exception &e) {
         std::cout << e.what() << endl;
-        //This is to give time for zeromq to finish sending when reading from file system
-        sleep(5);
     }
+//    delete pIMU;
 }
+
 
 void runAdaVisionFromNetwork(const AdaVisionConfig &config) {
     const auto &networkConfig = config.imageSource().network();
@@ -168,20 +186,19 @@ void runAdaVisionFromNetwork(const AdaVisionConfig &config) {
     AdaVisionHandler adaVisionHandler(config.output().dataDir(),
                                       std::stoi(config.output().liveFeedPort()),
                                       config.global().debug(),
-                                      config.output().frameSkip(),
-                                      std::stoi(config.output().dangerZonePubPort()));
+                                      config.output().frameSkip());
     CameraDataNetworkStream cameraDataNetworkStream(networkConfig.imagePubIP(), networkConfig.imagePubPort());
 
-    //TODO add real IMU code
-    StubIMU mockImu = StubIMU(0, 0, 0);
-
-    CameraDataProcessor cameraDataProcessor(cameraDataNetworkStream, dLibProcessor, adaVisionHandler, mockImu);
+    std::shared_ptr<IMU> pIMU = getImu(config);
+    CameraDataProcessor cameraDataProcessor(cameraDataNetworkStream, dLibProcessor, adaVisionHandler, *pIMU);
 
     try {
         cameraDataProcessor.run();
     } catch (std::exception &e) {
         std::cout << e.what() << endl;
     }
+    //delete pIMU;
+
 }
 
 int main(int argc, char **argv) {

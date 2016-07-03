@@ -30,19 +30,18 @@ void CameraDataProcessor::run() {
 
         if (dataRectPairs.size() == 1) {
             std::vector<cv::Rect> &rectangles = dataRectPairs[0].second;
+            _cameraDataHandler.onImageProcessed(dataVector, rectangles);
             if(rectangles.size() > 0 ) {
                 _cameraDataHandler.onDangerZoneProcessed(getDangerZones(frames, rectangles, dataVector[0].imageSpecs));
             }
-            _cameraDataHandler.onImageProcessed(dataVector, rectangles);
         } else if (dataRectPairs.size() == 2) {
             auto filteredRectangles = RectangleComparator::getCommonRectangles(dataRectPairs[0].second,
                                                                                dataRectPairs[1].second);
+            _cameraDataHandler.onImageProcessed(dataVector, filteredRectangles);
             if(filteredRectangles.size() > 0 ) {
-
                 _cameraDataHandler.onDangerZoneProcessed(
                         getDangerZones(frames, filteredRectangles, dataVector[0].imageSpecs));
             }
-            _cameraDataHandler.onImageProcessed(dataVector, filteredRectangles);
 
         } else if (dataRectPairs.size() > 2) {
             throw TooManyImagesException("More than 2 images received");

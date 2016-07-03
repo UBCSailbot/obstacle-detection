@@ -29,12 +29,27 @@ public:
 
     struct Global {
 
-        Global(const dlib::config_reader& config);
+        Global(const dlib::config_reader &config);
 
         bool debug() const;
 
     private:
-        const dlib::config_reader& globalConfig_;
+        const dlib::config_reader &globalConfig_;
+    };
+
+    struct Imu {
+        enum Mode {
+            FILE,
+            STUB,
+            REAL
+        };
+
+        Imu(const dlib::config_reader &config);
+
+        Mode mode() const;
+
+    private:
+        const dlib::config_reader &imuConfig_;
     };
 
     struct ImageSource {
@@ -50,70 +65,81 @@ public:
             File(const dlib::config_reader &config);
 
             std::string inputDir() const;
+
             bool doubleUp() const;
 
         private:
-            const dlib::config_reader& fileConfig_;
+            const dlib::config_reader &fileConfig_;
         };
 
         struct Network {
-            Network(const dlib::config_reader& config);
+            Network(const dlib::config_reader &config);
 
             std::string imagePubIP() const;
+
             std::string imagePubPort() const;
 
         private:
-            const dlib::config_reader& networkConfig_;;
+            const dlib::config_reader &networkConfig_;;
         };
 
         Source source() const;
 
         File file() const;
+
         Network network() const;
 
     private:
-        const dlib::config_reader& imageSourceConfig_;
+        const dlib::config_reader &imageSourceConfig_;
     };
 
     struct Output {
-        Output(const dlib::config_reader& config);
+        Output(const dlib::config_reader &config);
 
         std::string dangerZonePubPort() const;
+
         std::string liveFeedPort() const;
+
         int frameSkip() const;
 
         std::string dataDir() const;
+
         std::string logDir() const;
 
     private:
-        const dlib::config_reader& outputConfig_;
+        const dlib::config_reader &outputConfig_;
     };
 
     struct MachineLearning {
         typedef dlib::object_detector<DLibProcessor::image_scanner_type> ObjectDetectorType;
 
-        MachineLearning(const dlib::config_reader& config);
+        MachineLearning(const dlib::config_reader &config);
 
         struct Models {
-            Models(const dlib::config_reader& config);
+            Models(const dlib::config_reader &config);
 
             std::vector<ObjectDetectorType> all() const;
 
             ObjectDetectorType boatDetector() const;
 
         private:
-            const dlib::config_reader& modelsConfig_;
+            const dlib::config_reader &modelsConfig_;
         };
 
         Models models() const;
 
     private:
-        const dlib::config_reader& mlConfig_;
+        const dlib::config_reader &mlConfig_;
     };
 
     Global global() const;
+
+    Imu imu() const;
+
     ImageSource imageSource() const;
+
     Output output() const;
+
     MachineLearning machineLearning() const;
 
 private:

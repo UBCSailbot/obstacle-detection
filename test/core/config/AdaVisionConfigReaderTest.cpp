@@ -36,6 +36,7 @@ TEST_F(AdaVisionConfigReaderTest, loadAllValues) {
     config.output().logDir();
     config.machineLearning().models().all();
     config.machineLearning().models().boatDetector();
+    config.imu().mode();
     EXPECT_TRUE(config.global().debug());
 
 }

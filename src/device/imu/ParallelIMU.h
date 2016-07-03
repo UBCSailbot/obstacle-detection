@@ -15,7 +15,7 @@ class ParallelIMU: public IMU {
   public:
     ParallelIMU();
 
-    Orientation getOrientation();
+    Orientation getOrientation() override;
 
     // TODO: These are not currently being used anywhere.
     // Move them to a configuration section.
