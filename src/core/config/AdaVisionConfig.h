@@ -22,7 +22,8 @@
  *  is called to retrieve a field, all the work done in that function is
  *  repeated.
  */
-class AdaVisionConfig {
+class
+AdaVisionConfig {
 
 public:
     AdaVisionConfig(const std::string &configFilePath);

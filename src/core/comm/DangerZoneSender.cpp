@@ -11,7 +11,7 @@ DangerZoneSender::DangerZoneSender(zmq::context_t &context) :
 }
 
 
-void DangerZoneSender::sendDangerZone(std::vector<DangerZone> &dangerZone) {
+void DangerZoneSender::sendDangerZone(const std::vector<DangerZone> &dangerZone) {
 
     _socket.send(DangerZoneSerializer::serializeToZmq(dangerZone));
 }

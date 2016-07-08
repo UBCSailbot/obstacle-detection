@@ -14,10 +14,10 @@ class CameraDataHandler {
 
 public:
 
-    virtual void onImageProcessed(std::vector<CameraData> cameraData,
-                                  std::vector<cv::Rect> detectedRectangles) = 0;
+    virtual void onImageProcessed(const std::vector<CameraData> &cameraData,
+                                  const std::vector<cv::Rect> &detectedRectangles) = 0;
 
-    virtual void onDangerZoneProcessed(std::vector<DangerZone> cameraData) = 0;
+    virtual void onDangerZoneProcessed(const std::vector<DangerZone> &cameraData) = 0;
 
 
 };

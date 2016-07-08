@@ -14,7 +14,7 @@
 #include <config/AdaVisionConfig.h>
 #include <comm/DangerZoneSender.h>
 #include <imu/StubIMU.h>
-#include <io/DangerZoneSerializer.h>
+#include <config/BadConfigException.h>
 
 /*
  * This class is the core handler of events while processing images on ada.
@@ -34,8 +34,8 @@ public:
         }
     }
 
-    void onImageProcessed(std::vector<CameraData> cameraData,
-                          std::vector<cv::Rect> detectedRectangles) {
+    void onImageProcessed(const std::vector<CameraData> &cameraData,
+                          const std::vector<cv::Rect> &detectedRectangles) {
         _skippedCounter++;
         if (_frameSkip <= 0 || _skippedCounter % _frameSkip == 0) {
             //TODO add imu logging
@@ -75,12 +75,14 @@ public:
         sendProcessedImage(detectedRectangles, buff);
     }
 
-    void onSingleImageProcessed(CameraData cameraData, std::vector<cv::Rect> detectedRectangles) {
+    void onSingleImageProcessed(const CameraData &cameraData, std::vector<cv::Rect> detectedRectangles) {
         if (_debug) {
             std::cout << "single received image" << std::endl;
-            std::cout << "rectangles:" << std::endl;
-            for (auto const &rectangle: detectedRectangles) {
-                std::cout << rectangle << std::endl;
+            if (detectedRectangles.size() > 0) {
+                std::cout << "rectangles:" << std::endl;
+                for (auto const &rectangle: detectedRectangles) {
+                    std::cout << rectangle << std::endl;
+                }
             }
         }
 
@@ -99,7 +101,7 @@ public:
         _zmqfeed.sendFrame((const uint8_t *) json.c_str(), json.size());
     }
 
-    void onDangerZoneProcessed(std::vector<DangerZone> dangerZones) {
+    void onDangerZoneProcessed(const std::vector<DangerZone> &dangerZones) {
         if (_debug) {
             for (auto const &dangerZone: dangerZones) {
                 std::cout << "dangerzone detected:" << std::endl;
@@ -151,10 +153,11 @@ void printUsage(int argc, char **argv) {
         }
         case AdaVisionConfig::Imu::FILE:
             //TODO add file reader for IMU
-            throw std::runtime_error("file reading isn't currently supported for IMU's");
+            throw BadConfigException("file reading isn't currently supported for IMU's");
+        default:
+            throw BadConfigException("This config is unsupported");
+
     }
-    // Done to placate the GCC gods i.e. stop compiler warnings. It should return or crash before reaching this piont
-    return NULL;
 }
 
 

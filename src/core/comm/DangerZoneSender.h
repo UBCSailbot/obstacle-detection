@@ -7,7 +7,7 @@ public:
 
     DangerZoneSender(zmq::context_t &context);
 
-    void sendDangerZone(std::vector<DangerZone> &dangerZone);
+    void sendDangerZone(const std::vector<DangerZone> &dangerZone);
 
 private:
     zmq::socket_t _socket;

@@ -1,7 +1,7 @@
 #include <dangerzone.pb.h>
 #include "DangerZoneSerializer.h"
 
-zmq::message_t DangerZoneSerializer::serializeToZmq(std::vector<DangerZone> dangerZones) {
+zmq::message_t DangerZoneSerializer::serializeToZmq(const std::vector<DangerZone> &dangerZones) {
     sailbot::DangerZones dangerZonesSerialized;
     for (const DangerZone &dangerZone : dangerZones) {
         //Gets a pointer to a new DangerZone element as per protobuf documentation

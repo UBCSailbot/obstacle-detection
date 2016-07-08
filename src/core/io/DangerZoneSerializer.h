@@ -7,7 +7,7 @@
 class DangerZoneSerializer {
 public:
 
-    static zmq::message_t serializeToZmq(std::vector<DangerZone> dangerZones);
+    static zmq::message_t serializeToZmq(const std::vector<DangerZone> &dangerZones);
 };
 
 
