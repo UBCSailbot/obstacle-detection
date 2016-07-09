@@ -3,8 +3,7 @@
 #include "BadConfigException.h"
 
 AdaVisionConfig::AdaVisionConfig(const std::string &configFilePath) :
-        config_(configFilePath)
-{ }
+        config_(configFilePath) { }
 
 AdaVisionConfig::Global AdaVisionConfig::global() const {
     return AdaVisionConfig::Global(config_.block("global"));
@@ -24,13 +23,11 @@ bool AdaVisionConfig::Global::debug() const {
 
 
 AdaVisionConfig::Global::Global(const dlib::config_reader &config) :
-        globalConfig_(config)
-{ }
+        globalConfig_(config) { }
 
 
 AdaVisionConfig::ImageSource::ImageSource(const dlib::config_reader &config) :
-        imageSourceConfig_(config)
-{ }
+        imageSourceConfig_(config) { }
 
 AdaVisionConfig::ImageSource::Source AdaVisionConfig::ImageSource::source() const {
     const auto modeString = imageSourceConfig_["source"];
@@ -56,8 +53,7 @@ AdaVisionConfig::ImageSource::Network AdaVisionConfig::ImageSource::network() co
 }
 
 AdaVisionConfig::ImageSource::File::File(const dlib::config_reader &config) :
-        fileConfig_(config)
-{ }
+        fileConfig_(config) { }
 
 
 std::string AdaVisionConfig::ImageSource::File::inputDir() const {
@@ -69,8 +65,7 @@ bool AdaVisionConfig::ImageSource::File::doubleUp() const {
 }
 
 AdaVisionConfig::ImageSource::Network::Network(const dlib::config_reader &config) :
-        networkConfig_(config)
-{ }
+        networkConfig_(config) { }
 
 std::string AdaVisionConfig::ImageSource::Network::imagePubIP() const {
     return networkConfig_["image_pub_ip"];
@@ -85,8 +80,7 @@ AdaVisionConfig::MachineLearning AdaVisionConfig::machineLearning() const {
 }
 
 AdaVisionConfig::MachineLearning::MachineLearning(const dlib::config_reader &config) :
-        mlConfig_(config)
-{ }
+        mlConfig_(config) { }
 
 AdaVisionConfig::MachineLearning::Models AdaVisionConfig::MachineLearning::models() const {
     return MachineLearning::Models(mlConfig_.block("models"));
@@ -117,13 +111,11 @@ AdaVisionConfig::MachineLearning::Models::boatDetector() const {
 }
 
 AdaVisionConfig::MachineLearning::Models::Models(const dlib::config_reader &config) :
-        modelsConfig_(config)
-{ }
+        modelsConfig_(config) { }
 
 
 AdaVisionConfig::Output::Output(const dlib::config_reader &config) :
-        outputConfig_(config)
-{ }
+        outputConfig_(config) { }
 
 std::string AdaVisionConfig::Output::liveFeedPort() const {
     return outputConfig_["live_feed_port"];
@@ -143,4 +135,29 @@ std::string AdaVisionConfig::Output::dataDir() const {
 
 std::string AdaVisionConfig::Output::logDir() const {
     return outputConfig_["log_dir"];
+}
+
+AdaVisionConfig::Imu::Imu(const dlib::config_reader &config) :
+        imuConfig_(config) { }
+
+AdaVisionConfig::Imu AdaVisionConfig::imu() const {
+    return AdaVisionConfig::Imu(config_.block("imu"));
+}
+
+AdaVisionConfig::Imu::Mode AdaVisionConfig::Imu::mode() const {
+    const auto modeString = imuConfig_["mode"];
+
+    if (modeString == "file") {
+        return FILE;
+    }
+    else if (modeString == "stub") {
+        return STUB;
+    }
+    else if (modeString == "real") {
+        return REAL;
+    }
+    else {
+        throw BadConfigException("Invalid value for imu::mode: "
+                                 + modeString);
+    }
 }

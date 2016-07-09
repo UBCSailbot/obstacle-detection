@@ -20,6 +20,11 @@
 #   https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 #
 
+if [ "$(id -u)" == "0" ]; then
+   echo "This script cannot be run as root" 1>&2
+   exit 1
+fi
+
 # Update package manager indices to latest available.
 sudo apt-get update
 
@@ -33,6 +38,7 @@ sudo apt-get install cmake -y
 
 # Clone git submodules
 git submodule update --init --recursive
+./lib/protofiles/debian_setup.sh
 
 # Set up build directory
 mkdir build

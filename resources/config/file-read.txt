@@ -1,5 +1,4 @@
-# DO NOT MODIFY THIS CONFIG FILE.
-# Some unit tests depend on it.
+# Reusable config to read from files.
 
 #The main mode of execution options:
 global {
@@ -15,16 +14,10 @@ image_source {
     #file, network
     source = file
 
-    #network stream options
-    network {
-        image_pub_ip = 10.8.0.4
-        image_pub_port =  5553
-    }
-
     #file stream options
     file {
         #Input dir, used in file streams. Absolute path recommended
-        input_dir = resources/img/16bit
+        input_dir = ~/Dropbox/oa/data/04_kits/30103609_hecticTankers/raw
         #Boolean, doubles up read images
         double_up = true
     }
@@ -45,5 +38,8 @@ output {
 machine_learning {
     models {
         boat_detector = resources/models/tanker-sideview.svm
+        chase_boat_medium = resources/models/chase-boat-medium.svm
+        chase_boat_large = resources/models/chase-boat-large.svm
+        sailboat = resources/models/sailboat.svm
     }
 }

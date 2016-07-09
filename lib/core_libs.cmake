@@ -34,6 +34,13 @@ set(DLIB_USE_BLAS_STR OFF)
 include(${CMAKE_SOURCE_DIR}/lib/dlib/dlib/cmake)
 list(APPEND CORE_LIBS dlib)
 
+#Generates source for shares models for protobuf
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/protofiles)
+include_directories(${ProtobufIncludePath})
+
+list(APPEND CORE_LIBS protofiles)
+
+
 # For jsoncpp, first a "source code amalgamation" script is run if need be.
 #  Then, a static library is built from that file.
 include_directories(${CMAKE_SOURCE_DIR}/lib/jsoncpp/include)

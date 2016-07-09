@@ -2,6 +2,11 @@ global {
     debug = false
 }
 
+imu {
+    # stub, file, real
+    mode = real
+}
+
 image_source {
     source = network
 
@@ -14,6 +19,8 @@ image_source {
 output {
     data_dir = output
     live_feed_port = 5555
+    dangerzone_pub_port = 5566
+
     frame_skip = 45
 }
 

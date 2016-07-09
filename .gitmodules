@@ -22,3 +22,6 @@
 [submodule "lib/RTIMULib2"]
 	path = lib/RTIMULib2
 	url = https://github.com/RTIMULib/RTIMULib2.git
+[submodule "lib/protofiles"]
+	path = lib/protofiles
+	url = ssh://git@bitbucket.ubcsailbot.org:7999/fw/protofiles.git
