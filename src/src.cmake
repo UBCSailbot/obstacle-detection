@@ -65,8 +65,13 @@ add_library(src_core STATIC
         src/core/types/message_types.h
         src/core/comm/DangerZoneSender.cpp
         src/core/io/DangerZoneSerializer.cpp
-        src/device/imu/StubIMU.cpp)
+        src/device/imu/StubIMU.cpp
+        src/core/comm/CurrentDataConnection.cpp
+        src/core/io/CurrentDataDeserializer.cpp
+        src/core/io/BearingConverter.cpp
+        src/core/io/MockBoatDataStream.cpp )
 
+add_dependencies(src_core ${CORE_LIBS})
 add_dependencies(src_core migrateResources)
 
 # obstdetect_core is the version of the obstacle detection library stripped of any device-specific code

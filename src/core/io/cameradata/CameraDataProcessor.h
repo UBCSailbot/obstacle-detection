@@ -12,6 +12,7 @@
 #include <vector>
 #include <imu/ParallelIMU.h>
 #include <detect/SimpleDangerZoneEncoder.h>
+#include <io/BoatDataStream.h>
 
 /*
  * This class encapsulates the common functionality for receiving streams CameraData objects.
@@ -20,7 +21,8 @@
 class CameraDataProcessor {
 public:
     CameraDataProcessor(CameraDataStream &_stream, DLibProcessor &dLibProcessor,
-                        CameraDataHandler &cameraDataHandler, IMU &imu);
+                        CameraDataHandler &cameraDataHandler, IMU &imu,
+                        BoatDataStream &boatDataStream);
 
     volatile bool getKeepRecording() const;
 
@@ -30,7 +32,8 @@ public:
 
 private:
     std::vector<DangerZone> getDangerZones(std::vector<std::shared_ptr<cv::Mat>> frames,
-                                           std::vector<cv::Rect> detectedRectangles, CameraSpecifications specs);
+                                           std::vector<cv::Rect> detectedRectangles, CameraSpecifications specs,
+                                           double bearing);
 
     DLibProcessor &_dlibProcessor;
 
@@ -43,6 +46,8 @@ private:
     SimpleDangerZoneEncoder _simpleDangerZoneEncoder;
 
     IMU &_imu;
+
+    BoatDataStream &_boatDataStream;
 
     Obstacle rectToObstacle(cv::Rect rect, Horizon horizon);
 };

@@ -2,7 +2,7 @@
 
 TCPImageStream::TCPImageStream(const std::string &endpointAddress,
                                const std::string &portNumber) :
-    _context(1), _socketToServer(_context, ZMQ_REQ) {
+        _context(1), _socketToServer(_context, ZMQ_REQ) {
     _socketToServer.connect(("tcp://" + endpointAddress + ":" + portNumber).c_str());
     // deprecatedTODO: Properly initialize _serverHasNext and the size of the images provided.
     _serverHasNext = true;

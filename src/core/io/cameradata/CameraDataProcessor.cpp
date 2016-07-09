@@ -1,12 +1,14 @@
 #include <imageProc/filters/RectangleComparator.h>
 #include <geometry/HorizonFactory.h>
+#include <io/BearingConverter.h>
 #include "CameraDataProcessor.h"
 #include "exceptions/TooManyImagesException.h"
 
 CameraDataProcessor::CameraDataProcessor(CameraDataStream &stream, DLibProcessor &dLibProcessor,
-                                         CameraDataHandler &cameraDataHandler, IMU &imu)
+                                         CameraDataHandler &cameraDataHandler, IMU &imu,
+                                         BoatDataStream &boatDataStream)
         : _keepRecording(true), _dlibProcessor(dLibProcessor), _cameraDataHandler(cameraDataHandler), _stream(stream),
-          _simpleDangerZoneEncoder(), _imu(imu) {
+          _simpleDangerZoneEncoder(), _imu(imu), _boatDataStream(boatDataStream) {
 
 }
 
@@ -15,10 +17,11 @@ void CameraDataProcessor::run() {
     while (getKeepRecording()) {
 
         std::vector<CameraData> dataVector = _stream.nextImage();
+        CurrentData latestData = _boatDataStream.getBoatData();
 
         std::vector<std::shared_ptr<cv::Mat>> frames;
         std::vector<std::pair<std::shared_ptr<CameraData>, std::vector<cv::Rect>>> dataRectPairs;
-        for (const CameraData& data : dataVector) {
+        for (const CameraData &data : dataVector) {
             if (data.status != OK) {
                 continue;
             }
@@ -31,16 +34,17 @@ void CameraDataProcessor::run() {
         if (dataRectPairs.size() == 1) {
             std::vector<cv::Rect> &rectangles = dataRectPairs[0].second;
             _cameraDataHandler.onImageProcessed(dataVector, rectangles);
-            if(rectangles.size() > 0 ) {
-                _cameraDataHandler.onDangerZoneProcessed(getDangerZones(frames, rectangles, dataVector[0].imageSpecs));
+            if (rectangles.size() > 0) {
+                _cameraDataHandler.onDangerZoneProcessed(
+                        getDangerZones(frames, rectangles, dataVector[0].imageSpecs, latestData.bearing()));
             }
         } else if (dataRectPairs.size() == 2) {
             auto filteredRectangles = RectangleComparator::getCommonRectangles(dataRectPairs[0].second,
                                                                                dataRectPairs[1].second);
             _cameraDataHandler.onImageProcessed(dataVector, filteredRectangles);
-            if(filteredRectangles.size() > 0 ) {
+            if (filteredRectangles.size() > 0) {
                 _cameraDataHandler.onDangerZoneProcessed(
-                        getDangerZones(frames, filteredRectangles, dataVector[0].imageSpecs));
+                        getDangerZones(frames, filteredRectangles, dataVector[0].imageSpecs, latestData.bearing()));
             }
 
         } else if (dataRectPairs.size() > 2) {
@@ -70,7 +74,7 @@ Obstacle CameraDataProcessor::rectToObstacle(cv::Rect rect, Horizon horizon) {
 
 std::vector<DangerZone> CameraDataProcessor::getDangerZones(std::vector<std::shared_ptr<cv::Mat>> frames,
                                                             std::vector<cv::Rect> detectedRectangles,
-                                                            CameraSpecifications specs) {
+                                                            CameraSpecifications specs, double bearing) {
     HorizonFactory horizonFactory(specs);
     Horizon horizon = horizonFactory.makeHorizon(_imu.getOrientation());
     std::vector<Obstacle> obstacles;
@@ -78,9 +82,15 @@ std::vector<DangerZone> CameraDataProcessor::getDangerZones(std::vector<std::sha
                    [&](cv::Rect elem) { return rectToObstacle(elem, horizon); });
 
     ObstaclePositionFrame obstaclePositionFrame(frames, horizon, specs, obstacles);
-    _simpleDangerZoneEncoder.identifyDangerZones(obstaclePositionFrame);
 
-    return _simpleDangerZoneEncoder.identifyDangerZones(obstaclePositionFrame);
+    std::vector<DangerZone> dangerZones(_simpleDangerZoneEncoder.identifyDangerZones(obstaclePositionFrame));
+
+    std::transform(std::begin(dangerZones), std::end(dangerZones), std::begin(dangerZones),
+                   [&](DangerZone dangerZone) {
+                       return BearingConverter::convertToAbsoluteBearing(dangerZone, bearing);
+                   });
+
+    return dangerZones;
 
 }
 

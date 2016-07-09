@@ -6,7 +6,7 @@
 
 OrientationFileReader::OrientationFileReader(const std::string &imuLogFile,
                                              bool invertRoll, bool invertPitch) :
-    _invertRoll(invertRoll), _invertPitch(invertPitch) {
+        _invertRoll(invertRoll), _invertPitch(invertPitch) {
     std::ifstream infile(imuLogFile);
 
     float roll, pitch, yaw;

@@ -111,6 +111,25 @@ public:
         const dlib::config_reader &outputConfig_;
     };
 
+    struct CurrentData {
+
+        enum Mode {
+            STUB,
+            REAL
+        };
+
+        CurrentData(const dlib::config_reader &config);
+
+        Mode mode() const;
+
+        std::string zmqAddress() const;
+
+        int mockHeading() const;
+
+    private:
+        const dlib::config_reader &_currentDataConfig;
+    };
+
     struct MachineLearning {
         typedef dlib::object_detector<DLibProcessor::image_scanner_type> ObjectDetectorType;
 
@@ -136,6 +155,8 @@ public:
     Global global() const;
 
     Imu imu() const;
+
+    CurrentData currentData() const;
 
     ImageSource imageSource() const;
 

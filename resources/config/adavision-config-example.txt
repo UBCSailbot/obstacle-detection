@@ -11,6 +11,13 @@ imu {
     mode = stub
 }
 
+current_data {
+    # stub, real
+    mode = stub
+    zmq_address = ipc:///tmp/sailbot-currentdata-from-pi-controller
+    mock_heading = 90.0
+}
+
 image_source {
     #file, network
     source = file

@@ -7,6 +7,14 @@ imu {
     mode = real
 }
 
+
+current_data {
+    # stub, real
+    mode = real
+    zmq_address = ipc:///tmp/sailbot-currentdata-from-pi-controller
+}
+
+
 image_source {
     source = network
 

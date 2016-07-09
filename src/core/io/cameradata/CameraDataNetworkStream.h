@@ -20,7 +20,7 @@ public:
 private:
     zmq::context_t &_context;
     zmq::socket_t pairSocket;
-    
+
 };
 
 #endif //OBSTACLE_DETECTION_DUALLEPTONTCPIMAGESTREAM_H

@@ -15,9 +15,11 @@
 #include <comm/DangerZoneSender.h>
 #include <imu/StubIMU.h>
 #include <config/BadConfigException.h>
+#include <comm/CurrentDataConnection.h>
+#include <io/MockBoatDataStream.h>
 
 /*
- * This class is the core handler of events while processing images on ada.
+ * This class is the core handler of events while processing images on Ada.
  */
 class AdaVisionHandler : public CameraDataHandler {
 
@@ -143,8 +145,8 @@ void printUsage(int argc, char **argv) {
     std::cout << std::endl;
 }
 
- std::shared_ptr<IMU> getImu(const AdaVisionConfig &config) {
-    switch (config.imu().mode()) {
+std::shared_ptr<IMU> getImu(const AdaVisionConfig::Imu &imuConfig) {
+    switch (imuConfig.mode()) {
         case AdaVisionConfig::Imu::REAL: {
             return std::shared_ptr<IMU>(new ParallelIMU());
         }
@@ -154,6 +156,22 @@ void printUsage(int argc, char **argv) {
         case AdaVisionConfig::Imu::FILE:
             //TODO add file reader for IMU
             throw BadConfigException("file reading isn't currently supported for IMU's");
+        default:
+            throw BadConfigException("This imuConfig is unsupported");
+
+    }
+}
+
+std::shared_ptr<BoatDataStream> getBoatDataStream(const AdaVisionConfig::CurrentData &currentDataConfig) {
+    switch (currentDataConfig.mode()) {
+        case AdaVisionConfig::CurrentData::REAL: {
+            return std::shared_ptr<BoatDataStream>(
+                    new CurrentDataConnection(ZmqContextSingleton::getContext(), currentDataConfig.zmqAddress()));
+        }
+        case AdaVisionConfig::CurrentData::STUB: {
+            return std::shared_ptr<BoatDataStream>(
+                    new MockBoatDataStream(currentDataConfig.mockHeading()));
+        }
         default:
             throw BadConfigException("This config is unsupported");
 
@@ -172,14 +190,15 @@ void runAdaVisionFromFiles(const AdaVisionConfig &config) {
     ImageStreamCameraDataAdapter imageStreamCameraDataAdapter(fileStream, fileConfig.doubleUp());
     CameraDataStream &cameraDataStream = imageStreamCameraDataAdapter;
 
-    std::shared_ptr<IMU> pIMU = getImu(config);
-    CameraDataProcessor cameraDataProcessor(cameraDataStream, dLibProcessor, adaVisionHandler, *pIMU);
+    std::shared_ptr<IMU> pIMU = getImu(config.imu());
+    std::shared_ptr<BoatDataStream> boatDataStream = getBoatDataStream(config.currentData());
+
+    CameraDataProcessor cameraDataProcessor(cameraDataStream, dLibProcessor, adaVisionHandler, *pIMU, *boatDataStream);
     try {
         cameraDataProcessor.run();
     } catch (std::exception &e) {
         std::cout << e.what() << endl;
     }
-//    delete pIMU;
 }
 
 
@@ -191,17 +210,17 @@ void runAdaVisionFromNetwork(const AdaVisionConfig &config) {
                                       config.global().debug(),
                                       config.output().frameSkip());
     CameraDataNetworkStream cameraDataNetworkStream(networkConfig.imagePubIP(), networkConfig.imagePubPort());
+    std::shared_ptr<IMU> pIMU = getImu(config.imu());
+    std::shared_ptr<BoatDataStream> boatDataStream = getBoatDataStream(config.currentData());
 
-    std::shared_ptr<IMU> pIMU = getImu(config);
-    CameraDataProcessor cameraDataProcessor(cameraDataNetworkStream, dLibProcessor, adaVisionHandler, *pIMU);
+    CameraDataProcessor cameraDataProcessor(cameraDataNetworkStream, dLibProcessor, adaVisionHandler, *pIMU,
+                                            *boatDataStream);
 
     try {
         cameraDataProcessor.run();
     } catch (std::exception &e) {
         std::cout << e.what() << endl;
     }
-    //delete pIMU;
-
 }
 
 int main(int argc, char **argv) {

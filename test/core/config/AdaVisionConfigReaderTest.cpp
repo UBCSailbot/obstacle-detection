@@ -37,6 +37,11 @@ TEST_F(AdaVisionConfigReaderTest, loadAllValues) {
     config.machineLearning().models().all();
     config.machineLearning().models().boatDetector();
     config.imu().mode();
+    config.currentData().mode();
+    config.currentData().zmqAddress();
+    config.currentData().mockHeading();
+
+
     EXPECT_TRUE(config.global().debug());
 
 }

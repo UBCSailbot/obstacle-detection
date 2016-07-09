@@ -3,9 +3,9 @@
 std::vector<CameraData> CameraDataDeserializer::deserializeFromZmq(zmq::message_t &message) {
     checkNonEmptyMessage(message);
     std::vector<CameraData> dataVector;
-    
-    char* currentPos = (char*) message.data();
-    char* endPoint = currentPos + message.size();
+
+    char *currentPos = static_cast<char *>( message.data());
+    char *endPoint = currentPos + message.size();
 
     msg_validation_code code = *(msg_validation_code *) currentPos;
     checkMessageCode(code);

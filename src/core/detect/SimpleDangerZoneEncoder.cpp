@@ -23,7 +23,7 @@ double SimpleDangerZoneEncoder::calculateDistanceFromCenterLine(Line centerLine,
 }
 
 std::vector<DangerZone> SimpleDangerZoneEncoder::identifyDangerZones(
-        const ObstaclePositionFrame &obstacleFrame) const {
+        const ObstaclePositionFrame &obstacleFrame)  {
     auto cameraSpecs = obstacleFrame.getCameraSpec();
     double pixToDegMultiplier = cameraSpecs.FOVDegreesHorizontal / cameraSpecs.pixelWidth;
     Line centerLine = obstacleFrame.calculateCenterLine();

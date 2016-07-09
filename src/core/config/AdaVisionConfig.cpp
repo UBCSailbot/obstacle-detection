@@ -144,6 +144,11 @@ AdaVisionConfig::Imu AdaVisionConfig::imu() const {
     return AdaVisionConfig::Imu(config_.block("imu"));
 }
 
+AdaVisionConfig::CurrentData AdaVisionConfig::currentData() const{
+    return AdaVisionConfig::CurrentData(config_.block("current_data"));
+}
+
+
 AdaVisionConfig::Imu::Mode AdaVisionConfig::Imu::mode() const {
     const auto modeString = imuConfig_["mode"];
 
@@ -161,3 +166,34 @@ AdaVisionConfig::Imu::Mode AdaVisionConfig::Imu::mode() const {
                                  + modeString);
     }
 }
+
+AdaVisionConfig::CurrentData::CurrentData(const dlib::config_reader &config) : _currentDataConfig(config){
+}
+
+AdaVisionConfig::CurrentData::Mode AdaVisionConfig::CurrentData::mode() const {
+    const auto modeString = _currentDataConfig["mode"];
+    if (modeString == "stub") {
+        return STUB;
+    }
+    else if (modeString == "real") {
+        return REAL;
+    }
+    else {
+        throw BadConfigException("Invalid value for current_data::mode: ");
+    }
+}
+
+std::string AdaVisionConfig::CurrentData::zmqAddress() const {
+    return _currentDataConfig["zmq_address"];
+}
+
+int AdaVisionConfig::CurrentData::mockHeading() const {
+    return dlib::get_option(_currentDataConfig, "mock_heading", 1.0);
+}
+
+
+
+
+
+
+

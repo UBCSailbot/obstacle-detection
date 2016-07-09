@@ -1,5 +1,6 @@
 .idea
 build
+data
 extra
 bin
 *.pyc
