@@ -11,7 +11,7 @@
 
 class CameraDataSerializer {
 public:
-    static zmq::message_t serializeToZmq (std::vector<CameraData> dataVector);
+    static zmq::message_t serializeToZmq(std::vector<CameraData> dataVector);
 
 private:
     static size_t calculateMessageSize(const std::vector<CameraData> &dataVector, uint8_t numCameraData);

@@ -34,7 +34,7 @@ class SimpleDangerZoneEncoder: public DangerZoneEncoder {
 
     SimpleDangerZoneEncoder();
 
-    std::vector <DangerZone> identifyDangerZones(const ObstaclePositionFrame &obstacleFrame) const;
+    std::vector <DangerZone> identifyDangerZones(const ObstaclePositionFrame &obstacleFrame);
 
   private:
 

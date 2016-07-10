@@ -127,3 +127,7 @@ target_link_libraries(TCPCameraCommsTest obstdetect_full)
 # LoggerTest - just prints out a few sample log messages
 add_executable(loggerSample test/main/LoggerSample.cpp)
 target_link_libraries(loggerSample obstdetect_core)
+
+# CurrentDataConnectionTest - just prints out currentData
+add_executable(currentDataConnectionTest test/main/CurrentDataConnectionTest.cpp)
+target_link_libraries(currentDataConnectionTest obstdetect_core)

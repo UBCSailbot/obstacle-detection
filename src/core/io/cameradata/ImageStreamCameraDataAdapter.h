@@ -19,9 +19,9 @@ public:
     virtual bool hasNext() const override;
 
     ImageStreamCameraDataAdapter(ImageStream &imageStream, bool doubleUp);
-    
+
 private:
-    ImageStream& _imageStream;
+    ImageStream &_imageStream;
 
     bool _doubleUp;
 

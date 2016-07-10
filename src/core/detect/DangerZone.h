@@ -14,11 +14,11 @@
  */
 class DangerZone {
 
-  public:
+public:
 
     DangerZone(double portAngleDeg, double starboardAngleDeg, double lateralOffsetMeters) :
-        _portAngleDeg(portAngleDeg), _starboardAngleDeg(starboardAngleDeg),
-        _lateralOffsetMeters(lateralOffsetMeters) { }
+            _portAngleDeg(portAngleDeg), _starboardAngleDeg(starboardAngleDeg),
+            _lateralOffsetMeters(lateralOffsetMeters) { }
 
     /**
      * Returns the distance, in degrees, of the left-most edge of the
@@ -52,10 +52,9 @@ class DangerZone {
         return _starboardAngleDeg - _portAngleDeg;
     }
 
-  private:
-    const double _portAngleDeg;
-    const double _starboardAngleDeg;
-    const double _lateralOffsetMeters;
+private:
+    double _portAngleDeg;double _starboardAngleDeg;
+    double _lateralOffsetMeters;
 
 };
 

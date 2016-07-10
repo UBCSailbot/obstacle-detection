@@ -13,7 +13,7 @@
 
 class ImageReader {
 
-  public:
+public:
 
     static Image16bit read16bitImage(const std::string &filePath) {
         cv::Mat img = cv::imread(filePath, CV_LOAD_IMAGE_UNCHANGED);

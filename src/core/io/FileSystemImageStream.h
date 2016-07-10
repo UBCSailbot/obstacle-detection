@@ -16,9 +16,9 @@
  * "Streams" pre-recorded images directly from the file system
  *  to simulate a camera stream offline.
  */
-class FileSystemImageStream: public ImageStream {
+class FileSystemImageStream : public ImageStream {
 
-  public:
+public:
 
     /**
      * PARAM: imageDirectory - a string describing the full path to a directory
@@ -38,13 +38,13 @@ class FileSystemImageStream: public ImageStream {
     int getImageHeight() const;
 
 
-  private:
+private:
     int _imgHeight, _imgWidth;
 
     std::string _imgDir;
     std::string _imgFileFilter;
 
-    std::vector <std::string> _frameList;
+    std::vector<std::string> _frameList;
     int _currIndex;
 };
 

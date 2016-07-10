@@ -2,8 +2,7 @@
 #include "CameraDataSerializerTest.h"
 
 
-TEST_F (CameraDataSerializerTest, serializeDeserialize)
-{
+TEST_F (CameraDataSerializerTest, serializeDeserialize) {
     CameraStatus camStatus1 = OK;
     Image16bit image1(_freighterSunImg, false);
     CameraData camData1 = {camStatus1, LeptonCameraSpecifications, image1};

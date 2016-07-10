@@ -27,8 +27,7 @@ class DangerZoneEncoder {
      *  of headings: one that designates its port-most edge, the other its starboard-
      *  most edge.
      */
-    virtual std::vector <DangerZone> identifyDangerZones(const ObstaclePositionFrame &positions)
-        const = 0;
+    virtual std::vector <DangerZone> identifyDangerZones(const ObstaclePositionFrame &positions) = 0;
 
 };
 

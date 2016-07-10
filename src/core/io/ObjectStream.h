@@ -8,7 +8,7 @@
 template<class T>
 class ObjectStream {
 
-  public:
+public:
 
     virtual void push(const T &updatedObject) = 0;
 

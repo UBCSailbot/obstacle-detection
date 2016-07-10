@@ -10,6 +10,12 @@ imu {
     mode = stub
 }
 
+current_data {
+    # stub, real
+    mode = stub
+    mock_heading = 90
+}
+
 image_source {
     #file, network
     source = file

@@ -6,7 +6,7 @@ std::string JSONSerializer::makeJSON(std::string img, std::vector<cv::Rect> rect
     Json::Value jsonObject;
     jsonObject["image"] = Json::Value(img);
 
-    jsonObject["imageType"] = Json::Value (types[imageType]);
+    jsonObject["imageType"] = Json::Value(types[imageType]);
 
     Json::Value boxesArray = jsonObject["boxes"];
     for (std::vector<int>::size_type i = 0; i != rectangles.size(); i++) {
