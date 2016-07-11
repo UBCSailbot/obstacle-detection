@@ -124,7 +124,7 @@ public:
 
         std::string zmqAddress() const;
 
-        int mockHeading() const;
+        double mockHeading() const;
 
     private:
         const dlib::config_reader &_currentDataConfig;

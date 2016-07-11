@@ -33,7 +33,7 @@ TEST_F(LoggerTest, validateStdOut) {
 
     {
         StdoutRedirect redirect(buffer.rdbuf());
-        od::Logger::logDebug(logString);
+        od::Logger::logDebug(logString, true);
     }
 
     std::string msg(buffer.str());
@@ -55,7 +55,7 @@ TEST_F(LoggerTest, zmqSubscriber) {
         StdoutRedirect redirect(nullptr);
 
         while (numTriesRemaining--) {
-            od::Logger::logDebug(logString);
+            od::Logger::logDebug(logString, true);
             if (!logSubscriber.recv(&msg, ZMQ_NOBLOCK)) {
                 // sleep for 1 millisecond
                 usleep(1000);

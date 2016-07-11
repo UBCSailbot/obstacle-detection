@@ -18,6 +18,8 @@ void CameraDataProcessor::run() {
 
         std::vector<CameraData> dataVector = _stream.nextImage();
         CurrentData latestData = _boatDataStream.getBoatData();
+        Orientation orientation = _imu.getOrientation();
+        _cameraDataHandler.onOrientationReceived(orientation);
 
         std::vector<std::shared_ptr<cv::Mat>> frames;
         std::vector<std::pair<std::shared_ptr<CameraData>, std::vector<cv::Rect>>> dataRectPairs;
@@ -36,7 +38,7 @@ void CameraDataProcessor::run() {
             _cameraDataHandler.onImageProcessed(dataVector, rectangles);
             if (rectangles.size() > 0) {
                 _cameraDataHandler.onDangerZoneProcessed(
-                        getDangerZones(frames, rectangles, dataVector[0].imageSpecs, latestData.bearing()));
+                        getDangerZones(frames, rectangles, dataVector[0].imageSpecs, latestData.bearing(), orientation));
             }
         } else if (dataRectPairs.size() == 2) {
             auto filteredRectangles = RectangleComparator::getCommonRectangles(dataRectPairs[0].second,
@@ -44,7 +46,7 @@ void CameraDataProcessor::run() {
             _cameraDataHandler.onImageProcessed(dataVector, filteredRectangles);
             if (filteredRectangles.size() > 0) {
                 _cameraDataHandler.onDangerZoneProcessed(
-                        getDangerZones(frames, filteredRectangles, dataVector[0].imageSpecs, latestData.bearing()));
+                        getDangerZones(frames, filteredRectangles, dataVector[0].imageSpecs, latestData.bearing(), orientation));
             }
 
         } else if (dataRectPairs.size() > 2) {
@@ -74,9 +76,10 @@ Obstacle CameraDataProcessor::rectToObstacle(cv::Rect rect, Horizon horizon) {
 
 std::vector<DangerZone> CameraDataProcessor::getDangerZones(std::vector<std::shared_ptr<cv::Mat>> frames,
                                                             std::vector<cv::Rect> detectedRectangles,
-                                                            CameraSpecifications specs, double bearing) {
+                                                            CameraSpecifications specs, double bearing,
+                                                            Orientation orientation) {
     HorizonFactory horizonFactory(specs);
-    Horizon horizon = horizonFactory.makeHorizon(_imu.getOrientation());
+    Horizon horizon = horizonFactory.makeHorizon(orientation);
     std::vector<Obstacle> obstacles;
     std::transform(detectedRectangles.begin(), detectedRectangles.end(), std::back_inserter(obstacles),
                    [&](cv::Rect elem) { return rectToObstacle(elem, horizon); });
