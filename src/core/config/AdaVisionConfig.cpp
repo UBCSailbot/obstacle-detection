@@ -187,7 +187,7 @@ std::string AdaVisionConfig::CurrentData::zmqAddress() const {
     return _currentDataConfig["zmq_address"];
 }
 
-int AdaVisionConfig::CurrentData::mockHeading() const {
+double AdaVisionConfig::CurrentData::mockHeading() const {
     return dlib::get_option(_currentDataConfig, "mock_heading", 1.0);
 }
 

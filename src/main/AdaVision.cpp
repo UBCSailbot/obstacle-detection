@@ -17,6 +17,7 @@
 #include <config/BadConfigException.h>
 #include <comm/CurrentDataConnection.h>
 #include <io/MockBoatDataStream.h>
+#include <logger/Logger.h>
 
 /*
  * This class is the core handler of events while processing images on Ada.
@@ -25,22 +26,28 @@ class AdaVisionHandler : public CameraDataHandler {
 
 public:
 
-    AdaVisionHandler(std::string outputDir, const int imageFeedZmqPort, const bool debug, const int frameSkip)
+    AdaVisionHandler(std::string imageOutputDir, std::string logOutputDir, const int imageFeedZmqPort, const bool debug,
+                     const int frameSkip)
             : CameraDataHandler(), _zmqfeed(ZmqContextSingleton::getContext()),
-              _zmqPort(imageFeedZmqPort), _outputDir(outputDir), _debug(debug), _frameSkip(frameSkip),
+              _zmqPort(imageFeedZmqPort), _imageOutputDir(imageOutputDir), _debug(debug), _frameSkip(frameSkip),
               _dangerZoneSender(ZmqContextSingleton::getContext()) {
 
         _zmqfeed.init(imageFeedZmqPort);
-        if (!QDir(outputDir.c_str()).exists()) {
-            QDir().mkdir(outputDir.c_str());
+        if (!QDir(imageOutputDir.c_str()).exists()) {
+            QDir().mkdir(imageOutputDir.c_str());
         }
+        if (!QDir(logOutputDir.c_str()).exists()) {
+            QDir().mkdir(logOutputDir.c_str());
+        }
+
+        imuLog.open(logOutputDir + "/imulog.txt");
+
     }
 
     void onImageProcessed(const std::vector<CameraData> &cameraData,
                           const std::vector<cv::Rect> &detectedRectangles) {
         _skippedCounter++;
         if (_frameSkip <= 0 || _skippedCounter % _frameSkip == 0) {
-            //TODO add imu logging
             if (cameraData.size() == 1) {
                 onSingleImageProcessed(cameraData[0], detectedRectangles);
             } else {
@@ -64,11 +71,11 @@ public:
         Image16bit img = cameraData[0].frame;
         _frameCounter++;
         std::ostringstream leftImageName;
-        leftImageName << _outputDir << "/img_" << _frameCounter << "_L" << ".png";
+        leftImageName << _imageOutputDir << "/img_" << _frameCounter << "_L" << ".png";
         cv::imwrite(leftImageName.str(), img);
 
         std::ostringstream rightImageName;
-        rightImageName << _outputDir << "/img_" << _frameCounter << "_R" << ".png";
+        rightImageName << _imageOutputDir << "/img_" << _frameCounter << "_R" << ".png";
         cv::imwrite(rightImageName.str(), cameraData[1].frame);
 
         //TODO something smarter than this...
@@ -90,7 +97,7 @@ public:
 
         _frameCounter++;
         std::ostringstream stringStream;
-        stringStream << _outputDir << "/img_" << _frameCounter << ".png";
+        stringStream << _imageOutputDir << "/img_" << _frameCounter << ".png";
         cv::imwrite(stringStream.str(), cameraData.frame);
 
         std::vector<uchar> buff = Compressor::imgToBuff(cameraData.frame, 3);
@@ -104,21 +111,32 @@ public:
     }
 
     void onDangerZoneProcessed(const std::vector<DangerZone> &dangerZones) {
-        if (_debug) {
-            for (auto const &dangerZone: dangerZones) {
-                std::cout << "dangerzone detected:" << std::endl;
-                std::cout << "starboard angle:" << dangerZone.getStarboardAngleDeg() << std::endl;
-                std::cout << "port angle:" << dangerZone.getPortAngleDeg() << std::endl;
-                std::cout << "lateral offset:" << dangerZone.getLateralOffsetMeters() << "\n" << std::endl;
-            }
+        std::ostringstream stringStream;
+        for (auto const &dangerZone: dangerZones) {
+            stringStream << "dangerzone:" << std::endl;
+            stringStream << " sb :" << dangerZone.getStarboardAngleDeg();
+            stringStream << " p:" << dangerZone.getPortAngleDeg();
+            stringStream << " l:" << dangerZone.getLateralOffsetMeters() << std::endl;
         }
+        od::Logger::log(od::Logger::INFO, stringStream.str(), _debug);
+
         _dangerZoneSender.sendDangerZone(dangerZones);
     }
+
+    virtual void onOrientationReceived(const Orientation &orientation) override {
+        if (_frameSkip <= 0 || _skippedCounter % _frameSkip == 0) {
+
+            imuLog << "frame:" << _frameCounter << " " << orientation.toDataString();
+            imuLog.flush();
+
+        }
+    }
+
 
 private:
     int _frameCounter = 0;
 
-    std::string _outputDir;
+    std::string _imageOutputDir;
 
     ImageFeedZmq _zmqfeed;
 
@@ -131,6 +149,8 @@ private:
     bool _debug;
 
     int _frameSkip;
+
+    std::ofstream imuLog;
 
 };
 
@@ -183,6 +203,7 @@ void runAdaVisionFromFiles(const AdaVisionConfig &config) {
     const auto &fileConfig = config.imageSource().file();
     DLibProcessor dLibProcessor(config.machineLearning().models().all());
     AdaVisionHandler adaVisionHandler(config.output().dataDir(),
+                                      config.output().logDir(),
                                       std::stoi(config.output().liveFeedPort()),
                                       config.global().debug(),
                                       config.output().frameSkip());
@@ -206,6 +227,7 @@ void runAdaVisionFromNetwork(const AdaVisionConfig &config) {
     const auto &networkConfig = config.imageSource().network();
     DLibProcessor dLibProcessor(config.machineLearning().models().all());
     AdaVisionHandler adaVisionHandler(config.output().dataDir(),
+                                      config.output().logDir(),
                                       std::stoi(config.output().liveFeedPort()),
                                       config.global().debug(),
                                       config.output().frameSkip());

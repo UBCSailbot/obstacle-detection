@@ -22,7 +22,7 @@ std::string Orientation::toPrettyString() {
     return stringStream.str();
 }
 
-std::string Orientation::toDataString() {
+std::string Orientation::toDataString() const {
     std::ostringstream stringStream;
     stringStream << rollRadians << " "
         << pitchRadians << " "
@@ -36,3 +36,5 @@ bool Orientation::operator==(const Orientation &other) const {
         std::abs(pitchRadians - other.pitchRadians) < _EPSILON &&
         std::abs(yawRadians - other.yawRadians) < _EPSILON;
 }
+
+

@@ -22,21 +22,24 @@ namespace od {
 
         static const std::string IPC_ADDRESS;
 
-        static void logDebug(const std::string &message);
+        static void logDebug(const std::string &message, bool print = false);
 
-        static void logInfo(const std::string &message);
+        static void logInfo(const std::string &message, bool print = false);
 
-        static void logWarn(const std::string &message);
+        static void logWarn(const std::string &message, bool print = false);
 
-        static void logError(const std::string &message);
+        static void logError(const std::string &message, bool print = false);
 
-        static void log(Level level, const std::string &message);
+        static void log(Level level, const std::string &message, bool print);
 
         // Delete other constructors and assignment operators
-        Logger(const Logger& other) = delete;
-        Logger(Logger&& other) = delete;
-        Logger& operator=(const Logger& other) = delete;
-        Logger& operator=(Logger&& other) = delete;
+        Logger(const Logger &other) = delete;
+
+        Logger(Logger &&other) = delete;
+
+        Logger &operator=(const Logger &other) = delete;
+
+        Logger &operator=(Logger &&other) = delete;
 
     private:
         Logger();

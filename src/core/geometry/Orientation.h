@@ -28,7 +28,7 @@ struct Orientation {
     /**
      * Returns a space-efficient string with roll, pitch, and yaw in radians.
      */
-    std::string toDataString();
+    std::string toDataString() const;
 
     /**
      * Returns true if the roll, pitch, and yaw angles are the same.
