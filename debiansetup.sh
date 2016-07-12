@@ -38,7 +38,9 @@ sudo apt-get install cmake -y
 
 # Clone git submodules
 git submodule update --init --recursive
-./lib/protofiles/debian_setup.sh
+cd lib/protofiles
+./debian_setup.sh
+cd ../..
 
 # Set up build directory
 mkdir build
