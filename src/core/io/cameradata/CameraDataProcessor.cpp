@@ -21,7 +21,8 @@ void CameraDataProcessor::run() {
         CurrentData latestData = _boatDataStream.getBoatData();
         Orientation orientation = _imu.getOrientation();
         _cameraDataHandler.onOrientationReceived(orientation);
-        auto time = std::chrono::duration_cast<std::chrono::seconds>( std::chrono::system_clock::now().time_since_epoch());
+        auto time = std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::system_clock::now().time_since_epoch());
 
         std::vector<std::shared_ptr<cv::Mat>> frames;
         std::vector<std::pair<std::shared_ptr<CameraData>, std::vector<cv::Rect>>> dataRectPairs;
@@ -73,6 +74,8 @@ Obstacle CameraDataProcessor::rectToObstacle(cv::Rect rect, Horizon horizon) {
     std::vector<cv::Point2f> points;
     points.push_back(rect.tl());
     points.push_back(rect.br());
+    points.push_back(cv::Point2f(rect.x + rect.width, rect.y));
+    points.push_back(cv::Point2f(rect.x, rect.y + rect.height));
 
     return Obstacle(points, horizon);
 }
@@ -86,9 +89,12 @@ std::vector<DangerZone> CameraDataProcessor::getDangerZones(std::vector<std::sha
                                                             std::chrono::duration<uint64_t, std::ratio<1, 1>> imageReceiveTime) {
     HorizonFactory horizonFactory(specs);
     Horizon horizon = horizonFactory.makeHorizon(orientation);
+    std::remove_if(detectedRectangles.begin(), detectedRectangles.end(),
+                   [&horizon](const cv::Rect &elem) { return !horizon.isRectAbove(elem); });
+
     std::vector<Obstacle> obstacles;
     std::transform(detectedRectangles.begin(), detectedRectangles.end(), std::back_inserter(obstacles),
-                   [&](cv::Rect elem) { return rectToObstacle(elem, horizon); });
+                   [&](const cv::Rect &elem) { return rectToObstacle(elem, horizon); });
 
     ObstaclePositionFrame obstaclePositionFrame(frames, horizon, specs, obstacles);
 
