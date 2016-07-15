@@ -8,9 +8,9 @@ ParallelIMU::ParallelIMU() {
     //  where <directory path> is the path to where the .ini file is to be loaded/saved
     RTIMUSettings *settings = new RTIMUSettings(Resources::getConfigDir().c_str(), "RTIMULib");
 
-    imu = RTIMU::createIMU(settings);
+    imu_ = RTIMU::createIMU(settings);
 
-    if ((imu == NULL) || (imu->IMUType() == RTIMU_TYPE_NULL)) {
+    if ((imu_ == NULL) || (imu_->IMUType() == RTIMU_TYPE_NULL)) {
         printf("No IMU found\n");
         exit(1);
     }
@@ -18,16 +18,17 @@ ParallelIMU::ParallelIMU() {
     //  This is an opportunity to manually override any settings before the call IMUInit
 
     //  set up IMU
-    imu->IMUInit();
+    imu_->IMUInit();
 
     //  this is a convenient place to change fusion parameters
-    imu->setSlerpPower(0.02);
-    imu->setGyroEnable(true);
-    imu->setAccelEnable(true);
-    imu->setCompassEnable(true);
+    imu_->setSlerpPower(0.02);
+    imu_->setGyroEnable(true);
+    imu_->setAccelEnable(true);
+    imu_->setCompassEnable(true);
 
-    std::thread tempThread(&ParallelIMU::startCapture, this);
-    std::swap(tempThread, imuThread);
+    imuThread_ = std::thread(&ParallelIMU::startCapture, this);
+    imuThread_.detach();
+
 
 }
 
@@ -35,16 +36,23 @@ void ParallelIMU::startCapture() {
     //  now just process data
     while (1) {
         //  poll at the rate recommended by the IMU
-        usleep(imu->IMUGetPollInterval() * 1000);
+        usleep(imu_->IMUGetPollInterval() * 1000);
 
-        while (imu->IMURead()) {
-            imuData = imu->getIMUData();
+        while (imu_->IMURead()) {
+            lock_.lock();
+            imuData_ = imu_->getIMUData();
+            lock_.unlock();
         }
     }
 }
 
 Orientation ParallelIMU::getOrientation() {
-    return Orientation(imuData.fusionPose.x(),
-                       imuData.fusionPose.y(),
-                       imuData.fusionPose.z());
+    lock_.lock();
+
+    const Orientation &orientation = Orientation(imuData_.fusionPose.x(),
+                                                 imuData_.fusionPose.y(),
+                                                 imuData_.fusionPose.z());
+    lock_.unlock();
+
+    return orientation;
 }

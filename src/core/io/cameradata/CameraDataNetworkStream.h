@@ -6,6 +6,7 @@
 #define OBSTACLE_DETECTION_DUALLEPTONTCPIMAGESTREAM_H
 
 #include "CameraDataStream.h"
+#include <comm/TCPCameraCommsSub.h>
 
 class CameraDataNetworkStream : public CameraDataStream {
 
@@ -18,8 +19,9 @@ public:
     virtual bool hasNext() const override;
 
 private:
-    zmq::context_t &_context;
-    zmq::socket_t pairSocket;
+    zmq::context_t &context_;
+    zmq::socket_t pairSocket_;
+    TCPCameraCommsSub sub_;
 
 };
 

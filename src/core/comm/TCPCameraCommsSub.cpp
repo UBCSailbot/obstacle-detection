@@ -3,11 +3,11 @@
 const std::string TCPCameraCommsSub::ENDPOINT_NAME = "CameraSubObstacleDetectionPair";
 
 TCPCameraCommsSub::TCPCameraCommsSub(zmq::context_t &context, const std::string &endpointAddress,
-                                     const std::string &portNumber) {
-    std::thread _pollingThread(&TCPCameraCommsSub::startSubscriber, this,
+                                     const std::string &portNumber)  {
+     pollingThread_ = std::thread(&TCPCameraCommsSub::startSubscriber, this,
                                std::ref(context), endpointAddress,
                                portNumber);
-    _pollingThread.detach();
+    pollingThread_.detach();
 }
 
 void TCPCameraCommsSub::startSubscriber(zmq::context_t &context, const std::string &pubEndpointAddress,

@@ -41,7 +41,9 @@ public:
     static const std::string ENDPOINT_NAME;
 
 private:
-    void startSubscriber(zmq::context_t &context, const std::string &pubEndpointAddress,
+    std::thread pollingThread_;
+
+    void  startSubscriber(zmq::context_t &context, const std::string &pubEndpointAddress,
                                 const std::string &pubPortNumber);
 
     const static int POLLTIMEOUT_MS = 2000;

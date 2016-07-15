@@ -5,6 +5,7 @@
 #include <thread>
 
 #include <RTIMULibDefs.h>
+#include <mutex>
 #include "RTIMULib.h"
 
 #include "IMU.h"
@@ -23,10 +24,10 @@ class ParallelIMU: public IMU {
     static constexpr double PITCH_ADJUST = 0.15;
 
   private:
-    RTIMU *imu;
-    RTIMU_DATA imuData;
-
-    std::thread imuThread;
+    RTIMU *imu_;
+    RTIMU_DATA imuData_;
+    std::mutex lock_;
+    std::thread imuThread_;
 
     void startCapture();
 

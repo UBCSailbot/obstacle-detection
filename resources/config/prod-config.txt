@@ -25,7 +25,7 @@ image_source {
 
 output {
     data_dir = output
-    data_dir = logs
+    log_dir = logs
     live_feed_port = 5555
     dangerzone_pub_port = 5566
 
