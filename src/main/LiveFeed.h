@@ -13,8 +13,8 @@
 #include "imageProc/liveFeed/base64EncDec.h"
 #include "io/JSONSerializer.h"
 
-#include "exceptions/LeptonSPIOpenException.h"
 #include "comm/ZmqContextSingleton.h"
+#include "exceptions/LeptonException.h"
 #include "comm/ImageFeedZmq.h"
 
 #include <vector>

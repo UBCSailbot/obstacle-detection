@@ -24,8 +24,7 @@ add_library(src_core STATIC
         src/core/detect/Obstacle.cpp
         src/core/detect/SimpleDangerZoneEncoder.cpp
         src/core/exceptions/ErrorMessageException.cpp
-        src/core/exceptions/LeptonSPICloseException.cpp
-        src/core/exceptions/LeptonSPIOpenException.cpp
+        src/core/exceptions/LeptonException
         src/core/features/HorizonImage.cpp
         src/core/features/SunImage.cpp
         src/core/geometry/Compare.cpp
@@ -80,18 +79,19 @@ target_link_libraries(obstdetect_core src_core ${CORE_LIBS})
 
 # obstdetect_full is the complete version of the obstacle detection library
 add_library(obstdetect_full STATIC
-        src/device/camera/lepton/Lepton.cpp
-        src/device/camera/lepton/LeptonI2CConnection.cpp
-        src/device/camera/lepton/LeptonRegistry.cpp
-        src/device/camera/lepton/LeptonSPIConnection.cpp
-        src/device/camera/lepton/ThermalCameraStream.cpp
-        src/device/camera/LeptonMultiplexer.cpp
-        src/device/camera/MockCameraMultiplexer.cpp
-        src/device/display/DesktopDisplay.cpp
-        src/device/display/DisplayUtils.cpp
-        src/device/display/RoboPeakUSBDisplay.cpp
-        src/device/imu/ParallelIMU.cpp
-        )
+		src/device/camera/lepton/Lepton.cpp
+		src/device/camera/lepton/LeptonI2CConnection.cpp
+		src/device/camera/lepton/LeptonRegistry.cpp
+		src/device/camera/lepton/LeptonSPIConnection.cpp
+		src/device/camera/lepton/ThermalCameraStream.cpp
+		src/device/camera/LeptonMultiplexer.cpp
+		src/device/camera/MockCameraMultiplexer.cpp
+        src/device/gpio/GPIO.cpp
+		src/device/display/DesktopDisplay.cpp
+		src/device/display/DisplayUtils.cpp
+		src/device/display/RoboPeakUSBDisplay.cpp
+		src/device/imu/ParallelIMU.cpp
+		)
 target_link_libraries(obstdetect_full src_core ${CORE_LIBS} ${DEVICE_LIBS})
 add_dependencies(obstdetect_full leptonSDK rpusbdisp)
 # we don't add RTIMULib to the list of dependencies for obstdetect_full because it gets compiled automatically.

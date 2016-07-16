@@ -7,32 +7,32 @@
 
 class LeptonI2CConnection {
 
-public:
+    public:
 
-    /**
-     * Default constructor attaches to i2c-1.
-     */
-    LeptonI2CConnection();
+            /**
+             *      * Default constructor attaches to i2c-1.
+             *           */
+            LeptonI2CConnection();
 
-    LeptonI2CConnection(int i2cBusID);
+                LeptonI2CConnection(int i2cBusID);
 
-    virtual ~LeptonI2CConnection();
+                    virtual ~LeptonI2CConnection();
 
-    void performFFC();
-    void openShutter();
-    void closeShutter();
+                        void performFFC();
+                            void openShutter();
+                                void closeShutter();
 
-private:
-    int _i2cBusID;
+    private:
+                                    int _i2cBusID;
 
-    int _baudRateKHz = 400;
-    bool _connected = false;
+                                        int _baudRateKHz = 400;
+                                            bool _connected = false;
 
-    LEP_CAMERA_PORT_DESC_T _port;
-    LEP_SYS_SHUTTER_POSITION_E _lep_sys_shutter_position_e;
+                                                LEP_CAMERA_PORT_DESC_T _port;
+                                                    LEP_SYS_SHUTTER_POSITION_E _lep_sys_shutter_position_e;
 
-    void init();
-    void close();
+                                                        void init();
+                                                            void close();
 
 };
 
