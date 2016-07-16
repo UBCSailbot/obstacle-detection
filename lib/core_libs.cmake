@@ -13,6 +13,9 @@ FIND_PACKAGE(Qt4 REQUIRED)
 INCLUDE(${QT_USE_FILE})
 list(APPEND CORE_LIBS ${QT_LIBRARIES})
 
+find_package( Threads REQUIRED )
+list(APPEND CORE_LIBS ${CMAKE_THREAD_LIBS_INIT})
+
 # Include tclap - a header-only library for command-line parsing
 include_directories( lib/tclap/include )
 
