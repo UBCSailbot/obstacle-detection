@@ -95,3 +95,10 @@ the unit test suite:
  make runCoreTests
  ./runCoreTests
  ```
+# Installing imglab
+
+In order to tag images for making models install imglab by running the command
+
+```
+./scripts/build_scripts/install_imglab.sh
+```
