@@ -1,0 +1,156 @@
+diff --git a/tools/imglab/src/cluster.cpp b/tools/imglab/src/cluster.cpp
+index 3c7ad85..114ed8c 100644
+--- a/tools/imglab/src/cluster.cpp
++++ b/tools/imglab/src/cluster.cpp
+@@ -132,7 +132,7 @@ int cluster_dataset(
+ 
+     const double aspect_ratio = mean_aspect_ratio(data);
+ 
+-    dlib::array<array2d<rgb_pixel> > images;
++    dlib::array<array2d<uint16_t> > images;
+     std::vector<matrix<double,0,1> > feats;
+     console_progress_indicator pbar(data.images.size());
+     // extract all the object chips and HOG features.
+@@ -142,7 +142,7 @@ int cluster_dataset(
+         pbar.print_status(i);
+         if (data.images[i].boxes.size() == 0)
+             continue;
+-        array2d<rgb_pixel> img, chip;
++        array2d<uint16_t> img, chip;
+         load_image(img, data.images[i].filename);
+ 
+         for (unsigned long j = 0; j < data.images[i].boxes.size(); ++j)
+@@ -226,7 +226,7 @@ int cluster_dataset(
+     std::sort(assignments.begin(), assignments.end());
+     for (unsigned long c = 0; c < num_clusters; ++c)
+     {
+-        dlib::array<array2d<rgb_pixel> > temp;
++        dlib::array<array2d<uint16_t> > temp;
+         for (unsigned long i = 0; i < assignments.size(); ++i)
+         {
+             if (assignments[i].c == c)
+diff --git a/tools/imglab/src/main.cpp b/tools/imglab/src/main.cpp
+index bfcd886..db5ca1f 100644
+--- a/tools/imglab/src/main.cpp
++++ b/tools/imglab/src/main.cpp
+@@ -290,7 +290,7 @@ void flip_dataset(const command_line_parser& parser)
+         directory::get_separator() + "flipped_" + file(datasource).name();
+ 
+ 
+-    array2d<rgb_pixel> img, temp;
++    array2d<uint16_t> img, temp;
+     for (unsigned long i = 0; i < metadata.images.size(); ++i)
+     {
+         file f(metadata.images[i].filename);
+@@ -338,7 +338,7 @@ void rotate_dataset(const command_line_parser& parser)
+         directory::get_separator() + file_prefix + file(datasource).name();
+ 
+ 
+-    array2d<rgb_pixel> img, temp;
++    array2d<uint16_t> img, temp;
+     for (unsigned long i = 0; i < metadata.images.size(); ++i)
+     {
+         file f(metadata.images[i].filename);
+@@ -416,7 +416,7 @@ int extract_chips (const command_line_parser& parser)
+     cout << "Written like this: " << endl;
+     cout << "   ofstream fout(\"image_chips.dat\", ios::bianry); " << endl;
+     cout << "   bool is_not_background; " << endl;
+-    cout << "   array2d<rgb_pixel> the_image_chip; " << endl;
++    cout << "   array2d<uint16_t> the_image_chip; " << endl;
+     cout << "   while(more images) { " << endl;
+     cout << "       ... load chip ... " << endl;
+     cout << "       serialize(is_not_background,  fout);" << endl;
+@@ -437,7 +437,7 @@ int extract_chips (const command_line_parser& parser)
+             continue;
+ 
+         pbar.print_status(i);
+-        array2d<rgb_pixel> img, chip;
++        array2d<uint16_t> img, chip;
+         load_image(img, data.images[i].filename);
+ 
+         std::vector<chip_details> chips;
+@@ -475,7 +475,7 @@ int extract_chips (const command_line_parser& parser)
+         }
+ 
+         // now save these chips to disk.
+-        dlib::array<array2d<rgb_pixel>> image_chips;
++        dlib::array<array2d<uint16_t>> image_chips;
+         extract_image_chips(img, chips, image_chips);
+         bool is_not_background = true;
+         unsigned long j;
+@@ -526,7 +526,7 @@ int resample_dataset(const command_line_parser& parser)
+             continue;
+ 
+         pbar.print_status(i);
+-        array2d<rgb_pixel> img, chip;
++        array2d<uint16_t> img, chip;
+         load_image(img, data.images[i].filename);
+ 
+ 
+@@ -603,7 +603,7 @@ int tile_dataset(const command_line_parser& parser)
+     dlib::image_dataset_metadata::dataset data;
+     load_image_dataset_metadata(data, parser[0]);
+     locally_change_current_dir chdir(get_parent_directory(file(parser[0])));
+-    dlib::array<array2d<rgb_pixel> > images;
++    dlib::array<array2d<uint16_t> > images;
+     console_progress_indicator pbar(data.images.size());
+     for (unsigned long i = 0; i < data.images.size(); ++i)
+     {
+@@ -612,7 +612,7 @@ int tile_dataset(const command_line_parser& parser)
+             continue;
+ 
+         pbar.print_status(i);
+-        array2d<rgb_pixel> img;
++        array2d<uint16_t> img;
+         load_image(img, data.images[i].filename);
+ 
+         // figure out what chips we want to take from this image
+@@ -626,7 +626,7 @@ int tile_dataset(const command_line_parser& parser)
+             dets.push_back(chip_details(rect, chip_size));
+         }
+         // Now grab all those chips at once.
+-        dlib::array<array2d<rgb_pixel> > chips;
++        dlib::array<array2d<uint16_t> > chips;
+         extract_image_chips(img, dets, chips);
+         // and put the chips into the output.
+         for (unsigned long j = 0; j < chips.size(); ++j)
+@@ -898,7 +899,7 @@ int main(int argc, char** argv)
+                 locally_change_current_dir chdir(get_parent_directory(file(parser[0])));
+                 for (unsigned long i = 0; i < data.images.size(); ++i)
+                 {
+-                    array2d<unsigned char> img;
++                    array2d<uint16_t> img;
+                     load_image(img, data.images[i].filename);
+                     const rectangle area = get_rect(img);
+                     for (unsigned long j = 0; j < data.images[i].boxes.size(); ++j)
+diff --git a/tools/imglab/src/metadata_editor.cpp b/tools/imglab/src/metadata_editor.cpp
+index 7ecb39a..d22ef66 100644
+--- a/tools/imglab/src/metadata_editor.cpp
++++ b/tools/imglab/src/metadata_editor.cpp
+@@ -400,7 +400,7 @@ select_image(
+     else if (lb_images.size() == 0)
+     {
+         display.clear_overlay();
+-        array2d<unsigned char> empty_img;
++        array2d<uint16_t> empty_img;
+         display.set_image(empty_img);
+     }
+ }
+@@ -445,7 +445,7 @@ load_image(
+ 
+     image_pos = idx; 
+ 
+-    array2d<rgb_pixel> img;
++    array2d<uint16_t> img;
+     display.clear_overlay();
+     try
+     {
+@@ -473,7 +473,7 @@ load_image_and_set_size(
+ 
+     image_pos = idx; 
+ 
+-    array2d<rgb_pixel> img;
++    array2d<uint16_t> img;
+     display.clear_overlay();
+     try
+     {
