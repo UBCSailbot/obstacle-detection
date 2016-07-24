@@ -12,7 +12,9 @@ CurrentData CurrentDataDeserializer::deserialize(std::string inputCurrentData) {
     double speedOverGround = strtod(pEnd, NULL);
 
     currentData.setSpeedOverGround(speedOverGround);
-    currentData.setBearing(bearing);
+    currentData.setHeading(bearing);
+    currentData.setLatitude(latitude);
+    currentData.setLongitude(longitude);
 
     return currentData;
 }

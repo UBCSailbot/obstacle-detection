@@ -68,7 +68,9 @@ add_library(src_core STATIC
         src/core/comm/CurrentDataConnection.cpp
         src/core/io/CurrentDataDeserializer.cpp
         src/core/io/BearingConverter.cpp
-        src/core/io/MockBoatDataStream.cpp )
+        src/core/io/MockBoatDataStream.cpp
+		src/core/io/cameradata/CameraDataHandler.h
+		src/core/detect/DangerZone.h)
 
 add_dependencies(src_core ${CORE_LIBS})
 add_dependencies(src_core migrateResources)

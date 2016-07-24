@@ -1,9 +1,7 @@
-//
-// Created by paul on 08/08/15.
-//
-
 #ifndef OBSTACLE_AVOIDANCE_DANGERZONE_H
 #define OBSTACLE_AVOIDANCE_DANGERZONE_H
+
+#include <chrono>
 
 /**
  * Represents a triangular area on the idealized 2D surface of the
@@ -18,7 +16,7 @@ public:
 
     DangerZone(double portAngleDeg, double starboardAngleDeg, double lateralOffsetMeters) :
             _portAngleDeg(portAngleDeg), _starboardAngleDeg(starboardAngleDeg),
-            _lateralOffsetMeters(lateralOffsetMeters) { }
+            _lateralOffsetMeters(lateralOffsetMeters) {}
 
     /**
      * Returns the distance, in degrees, of the left-most edge of the
@@ -52,10 +50,38 @@ public:
         return _starboardAngleDeg - _portAngleDeg;
     }
 
+    double get_latitude() const {
+        return _latitude;
+    }
+
+    void set_latitude(double _latitude) {
+        DangerZone::_latitude = _latitude;
+    }
+
+    double get_longitude() const {
+        return _longitude;
+    }
+
+    void set_longitude(double _longitude) {
+        DangerZone::_longitude = _longitude;
+    }
+
+    const std::chrono::duration<uint64_t, std::ratio<1, 1>> &getTime() const {
+        return time;
+    }
+
+    void setTime(const std::chrono::duration<uint64_t, std::ratio<1, 1>> &time) {
+        DangerZone::time = time;
+    }
+
 private:
-    double _portAngleDeg;double _starboardAngleDeg;
+    double _portAngleDeg;
+    double _starboardAngleDeg;
     double _lateralOffsetMeters;
 
+    double _latitude, _longitude;
+
+    std::chrono::duration<uint64_t> time;
 };
 
 
