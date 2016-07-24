@@ -108,6 +108,10 @@ target_link_libraries(leptonShutterTest obstdetect_full test_device)
 add_executable(doubleLeptonShutterTest test/main/DoubleLeptonShutterTest.cpp)
 target_link_libraries(doubleLeptonShutterTest obstdetect_full test_device)
 
+# Sun detection test
+add_executable(sunDetectionTest test/main/SunDetectionTest.cpp)
+target_link_libraries(sunDetectionTest obstdetect_full test_device)
+
 # Test the throwing an exception when capturing frames over SPI Connection
 add_executable(SPIExceptionTest test/main/SPIExceptionTest.cpp)
 target_link_libraries(SPIExceptionTest obstdetect_full test_device)
