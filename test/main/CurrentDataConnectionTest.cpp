@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
         if (currentDataConnection.checkForCurrentData()) {
             currentData = currentDataConnection.getBoatData();
             std::cout << "CLIENT: New CurrentData received!" << std::endl;
-            std::cout << currentData.bearing() << ", " << currentData.speed_over_ground() << std::endl;
+            std::cout << currentData.heading() << ", " << currentData.speed_over_ground() << std::endl;
         }
         usleep(1000 * 1000);
     }

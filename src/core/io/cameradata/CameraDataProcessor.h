@@ -32,9 +32,11 @@ public:
 
 private:
     std::vector<DangerZone> getDangerZones(std::vector<std::shared_ptr<cv::Mat>> frames,
-                                               std::vector<cv::Rect> detectedRectangles,
-                                               CameraSpecifications specs, double bearing,
-                                               Orientation orientation);
+                                           std::vector<cv::Rect> detectedRectangles,
+                                           CameraSpecifications specs,
+                                           CurrentData latestData,
+                                           Orientation orientation,
+                                           std::chrono::duration<uint64_t, std::ratio<1, 1>> imageReceiveTime);
 
     DLibProcessor &_dlibProcessor;
 

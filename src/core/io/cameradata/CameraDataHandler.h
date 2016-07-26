@@ -1,11 +1,9 @@
 #ifndef OBSTACLE_DETECTION_CAMERADATAHANDLER_H
 #define OBSTACLE_DETECTION_CAMERADATAHANDLER_H
 
-#include <imageProc/dlib/DLibProcessor.h>
 #include <geometry/Orientation.h>
 #include "CameraDataStream.h"
 #include <detect/DangerZone.h>
-#include <memory>
 #include <vector>
 
 /*
@@ -18,11 +16,9 @@ public:
     virtual void onImageProcessed(const std::vector<CameraData> &cameraData,
                                   const std::vector<cv::Rect> &detectedRectangles) = 0;
 
-    virtual void onDangerZoneProcessed(const std::vector<DangerZone> &cameraData) = 0;
+    virtual void onDangerZoneProcessed(const std::vector<DangerZone> &dangerZones) = 0;
 
     virtual void onOrientationReceived(const Orientation &orientation) = 0;
-
-
 
 };
 
