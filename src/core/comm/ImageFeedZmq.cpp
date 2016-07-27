@@ -11,15 +11,14 @@ ImageFeedZmq::~ImageFeedZmq() {
     }
 }
 
-bool ImageFeedZmq::init(int port) {
+bool ImageFeedZmq::init(const std::string &portNum) {
     // Create the socket
     m_socket = new zmq::socket_t(m_ctx, ZMQ_PUB);
 
     std::string zmq_base = "tcp://127.0.0.1:";
-    std::string port_str = std::to_string(port);
 
     // Bind the socket
-    m_socket->bind( (zmq_base.append(port_str)).c_str() );
+    m_socket->bind( (zmq_base.append(portNum)).c_str() );
 
 
     // Apparently this always succeeds

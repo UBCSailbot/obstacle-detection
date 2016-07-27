@@ -1,7 +1,3 @@
-//
-// Created by denis on 09/07/16.
-//
-
 #ifndef OBSTACLE_DETECTION_MOCKBOATSTREAM_H
 #define OBSTACLE_DETECTION_MOCKBOATSTREAM_H
 
@@ -11,11 +7,15 @@
 class MockBoatDataStream : public BoatDataStream {
 
 public:
+    static constexpr double DEFAULT_MOCK_HEADING = 90.0;
+
+    MockBoatDataStream();
+
+    MockBoatDataStream(double heading);
+
     virtual CurrentData getBoatData() override;
 
-    MockBoatDataStream(double bearing);
-
-    double _bearing;
+    double heading_;
 
 };
 

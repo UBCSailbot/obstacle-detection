@@ -29,7 +29,7 @@ link_directories(${ZMQ_LIBRARY_DIRS})
 # Add the zmq.hpp file to the include path
 include_directories(lib/cppzmq)
 
-#Disable unneeded options for dlib
+# Disable unneeded options for dlib
 set(DLIB_USE_CUDA_STR OFF)
 set(DLIB_USE_LAPACK_STR OFF)
 set(DLIB_USE_BLAS_STR OFF)
@@ -37,12 +37,10 @@ set(DLIB_USE_BLAS_STR OFF)
 include(${CMAKE_SOURCE_DIR}/lib/dlib/dlib/cmake)
 list(APPEND CORE_LIBS dlib)
 
-#Generates source for shares models for protobuf
+# Generates source for shared message data types using protobuf
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/protofiles)
 include_directories(${ProtobufIncludePath})
-
 list(APPEND CORE_LIBS protofiles)
-
 
 # For jsoncpp, first a "source code amalgamation" script is run if need be.
 #  Then, a static library is built from that file.

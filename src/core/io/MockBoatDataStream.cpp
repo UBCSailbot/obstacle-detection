@@ -1,10 +1,12 @@
 #include "MockBoatDataStream.h"
 
-MockBoatDataStream::MockBoatDataStream(double bearing) : _bearing(bearing) { }
+MockBoatDataStream::MockBoatDataStream() : MockBoatDataStream(DEFAULT_MOCK_HEADING) { }
+
+MockBoatDataStream::MockBoatDataStream(double heading) : heading_(heading) { }
 
 CurrentData MockBoatDataStream::getBoatData() {
     CurrentData currentData;
-    currentData.setHeading(_bearing);
+    currentData.setHeading(heading_);
     return currentData;
 }
 

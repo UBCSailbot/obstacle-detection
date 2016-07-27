@@ -11,13 +11,29 @@
 #include <io/cameradata/ImageStreamCameraDataAdapter.h>
 #include <io/cameradata/CameraDataNetworkStream.h>
 #include <QtCore/QTS>
-#include <config/AdaVisionConfig.h>
 #include <comm/DangerZoneSender.h>
 #include <imu/StubIMU.h>
 #include <config/BadConfigException.h>
 #include <comm/CurrentDataConnection.h>
 #include <io/MockBoatDataStream.h>
 #include <logger/Logger.h>
+#include <config/Config.h>
+
+namespace {
+
+void printUsage(int argc, char **argv) {
+    std::cout << "Usage:\n"
+            "adaVision config.txt" << std::endl;
+    std::cout << "You entered: " << std::endl;
+    for (int i = 0; i < argc; i++) {
+        std::cout << argv[i];
+    }
+    std::cout << std::endl;
+}
+
+} // anonymous namespace
+
+namespace od {
 
 /*
  * This class is the core handler of events while processing images on Ada.
@@ -26,22 +42,27 @@ class AdaVisionHandler : public CameraDataHandler {
 
 public:
 
-    AdaVisionHandler(std::string imageOutputDir, std::string logOutputDir, const int imageFeedZmqPort, const bool debug,
-                     const int frameSkip)
-            : CameraDataHandler(), _zmqfeed(ZmqContextSingleton::getContext()),
-              _zmqPort(imageFeedZmqPort), _imageOutputDir(imageOutputDir), _debug(debug), _frameSkip(frameSkip),
-              _dangerZoneSender(ZmqContextSingleton::getContext()) {
+    AdaVisionHandler(const Config &config) :
+            CameraDataHandler(),
+            _zmqfeed(ZmqContextSingleton::getContext()),
+            _imageOutputDir(config.adavision().output().data_dir()),
+            _debug(config.adavision().debug()),
+            _frameSkip(config.adavision().output().frame_skip()),
+            _dangerZoneSender(ZmqContextSingleton::getContext(), config.comms().dangerzone_channel()) {
 
-        _zmqfeed.init(imageFeedZmqPort);
+        _zmqfeed.init(config.comms().live_feed_pub_port());
+
+        const auto imageOutputDir = config.adavision().output().data_dir();
         if (!QDir(imageOutputDir.c_str()).exists()) {
             QDir().mkdir(imageOutputDir.c_str());
         }
+
+        const auto logOutputDir = config.adavision().output().log_dir();
         if (!QDir(logOutputDir.c_str()).exists()) {
             QDir().mkdir(logOutputDir.c_str());
         }
 
         imuLog.open(logOutputDir + "/imulog.txt");
-
     }
 
     void onImageProcessed(const std::vector<CameraData> &cameraData,
@@ -112,7 +133,7 @@ public:
 
     void onDangerZoneProcessed(const std::vector<DangerZone> &dangerZones) {
         std::ostringstream stringStream;
-        for (auto const &dangerZone: dangerZones) {
+        for (const auto &dangerZone : dangerZones) {
             stringStream << "dangerzone:" << std::endl;
             stringStream << " sb :" << dangerZone.getStarboardAngleDeg();
             stringStream << " p:" << dangerZone.getPortAngleDeg();
@@ -132,7 +153,6 @@ public:
         }
     }
 
-
 private:
     int _frameCounter = 0;
 
@@ -141,8 +161,6 @@ private:
     ImageFeedZmq _zmqfeed;
 
     DangerZoneSender _dangerZoneSender;
-
-    int _zmqPort;
 
     int _skippedCounter = 0;
 
@@ -154,65 +172,55 @@ private:
 
 };
 
+std::shared_ptr<IMU> getImu(const Config &masterConfig) {
+    typedef Config::adavision_config::imu_config::ImuMode ImuMode;
 
-void printUsage(int argc, char **argv) {
-    std::cout << "Usage:\n"
-            "adaVision config.txt" << std::endl;
-    std::cout << "You entered: " << std::endl;
-    for (int i = 0; i < argc; i++) {
-        std::cout << argv[i];
-    }
-    std::cout << std::endl;
-}
-
-std::shared_ptr<IMU> getImu(const AdaVisionConfig::Imu &imuConfig) {
-    switch (imuConfig.mode()) {
-        case AdaVisionConfig::Imu::REAL: {
+    switch (masterConfig.adavision().imu().mode()) {
+        case ImuMode::REAL:
             return std::shared_ptr<IMU>(new ParallelIMU());
-        }
-        case AdaVisionConfig::Imu::STUB: {
+
+        case ImuMode::STUB:
             return std::shared_ptr<IMU>(new StubIMU(0, 0, 0));
-        }
-        case AdaVisionConfig::Imu::FILE:
+
+        case ImuMode::FILE:
             //TODO add file reader for IMU
             throw BadConfigException("file reading isn't currently supported for IMU's");
+
         default:
             throw BadConfigException("This imuConfig is unsupported");
-
     }
 }
 
-std::shared_ptr<BoatDataStream> getBoatDataStream(const AdaVisionConfig::CurrentData &currentDataConfig) {
-    switch (currentDataConfig.mode()) {
-        case AdaVisionConfig::CurrentData::REAL: {
+std::shared_ptr<BoatDataStream> getBoatDataStream(const Config &masterConfig) {
+    typedef Config::adavision_config::current_data_config::CurrentDataMode CurrentDataMode;
+
+    switch (masterConfig.adavision().current_data().mode()) {
+        case CurrentDataMode::REAL:
             return std::shared_ptr<BoatDataStream>(
-                    new CurrentDataConnection(ZmqContextSingleton::getContext(), currentDataConfig.zmqAddress()));
-        }
-        case AdaVisionConfig::CurrentData::STUB: {
+                    new CurrentDataConnection(
+                            ZmqContextSingleton::getContext(),
+                            masterConfig.comms().current_data_channel()));
+        case CurrentDataMode::STUB:
             return std::shared_ptr<BoatDataStream>(
-                    new MockBoatDataStream(currentDataConfig.mockHeading()));
-        }
+                    new MockBoatDataStream());
         default:
             throw BadConfigException("This config is unsupported");
-
     }
 }
 
+void runAdaVisionFromFiles(const Config &masterConfig) {
 
-void runAdaVisionFromFiles(const AdaVisionConfig &config) {
-    const auto &fileConfig = config.imageSource().file();
-    DLibProcessor dLibProcessor(config.machineLearning().models().all());
-    AdaVisionHandler adaVisionHandler(config.output().dataDir(),
-                                      config.output().logDir(),
-                                      std::stoi(config.output().liveFeedPort()),
-                                      config.global().debug(),
-                                      config.output().frameSkip());
-    FileSystemImageStream fileStream(fileConfig.inputDir(), "*.png");
-    ImageStreamCameraDataAdapter imageStreamCameraDataAdapter(fileStream, fileConfig.doubleUp());
+    const auto &fileConfig = masterConfig.adavision().file_input();
+    DLibProcessor dLibProcessor(masterConfig.perception().boat_detection().models().all());
+
+    AdaVisionHandler adaVisionHandler(masterConfig);
+
+    FileSystemImageStream fileStream(fileConfig.input_frame_dir(), "*.png");
+    ImageStreamCameraDataAdapter imageStreamCameraDataAdapter(fileStream, fileConfig.double_up());
     CameraDataStream &cameraDataStream = imageStreamCameraDataAdapter;
 
-    std::shared_ptr<IMU> pIMU = getImu(config.imu());
-    std::shared_ptr<BoatDataStream> boatDataStream = getBoatDataStream(config.currentData());
+    std::shared_ptr<IMU> pIMU = getImu(masterConfig);
+    std::shared_ptr<BoatDataStream> boatDataStream = getBoatDataStream(masterConfig);
 
     CameraDataProcessor cameraDataProcessor(cameraDataStream, dLibProcessor, adaVisionHandler, *pIMU, *boatDataStream);
     try {
@@ -222,28 +230,31 @@ void runAdaVisionFromFiles(const AdaVisionConfig &config) {
     }
 }
 
+void runAdaVisionFromNetwork(const Config &masterConfig) {
+    const auto &commsConfig = masterConfig.comms();
 
-void runAdaVisionFromNetwork(const AdaVisionConfig &config) {
-    const auto &networkConfig = config.imageSource().network();
-    DLibProcessor dLibProcessor(config.machineLearning().models().all());
-    AdaVisionHandler adaVisionHandler(config.output().dataDir(),
-                                      config.output().logDir(),
-                                      std::stoi(config.output().liveFeedPort()),
-                                      config.global().debug(),
-                                      config.output().frameSkip());
-    CameraDataNetworkStream cameraDataNetworkStream(networkConfig.imagePubIP(), networkConfig.imagePubPort());
-    std::shared_ptr<IMU> pIMU = getImu(config.imu());
-    std::shared_ptr<BoatDataStream> boatDataStream = getBoatDataStream(config.currentData());
+    DLibProcessor dLibProcessor(masterConfig.perception().boat_detection().models().all());
+
+    AdaVisionHandler adaVisionHandler(masterConfig);
+
+    CameraDataNetworkStream cameraDataNetworkStream(commsConfig.camera_server_ip(),
+                                                    commsConfig.camera_server_pub_port());
+
+    std::shared_ptr<IMU> pIMU = getImu(masterConfig);
+    std::shared_ptr<BoatDataStream> boatDataStream = getBoatDataStream(masterConfig);
 
     CameraDataProcessor cameraDataProcessor(cameraDataNetworkStream, dLibProcessor, adaVisionHandler, *pIMU,
                                             *boatDataStream);
 
     try {
         cameraDataProcessor.run();
-    } catch (std::exception &e) {
+    }
+    catch (std::exception &e) {
         std::cout << e.what() << endl;
     }
 }
+
+} // od
 
 int main(int argc, char **argv) {
     if (argc < 2) {
@@ -251,14 +262,17 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    AdaVisionConfig config(argv[1]);
+    od::Config config(argv[1]);
+    const auto &adaVisionConfig = config.adavision();
 
-    switch (config.imageSource().source()) {
-        case AdaVisionConfig::ImageSource::FILE:
-            runAdaVisionFromFiles(config);
+    typedef od::Config::adavision_config::ImageSource AdaVisionImageSource;
+
+    switch (adaVisionConfig.image_source()) {
+        case AdaVisionImageSource::FILE:
+            od::runAdaVisionFromFiles(config);
             break;
-        case AdaVisionConfig::ImageSource::NETWORK:
-            runAdaVisionFromNetwork(config);
+        case AdaVisionImageSource::NETWORK:
+            od::runAdaVisionFromNetwork(config);
             break;
         default:
             printUsage(argc, argv);
@@ -266,4 +280,3 @@ int main(int argc, char **argv) {
     }
 
 }
-

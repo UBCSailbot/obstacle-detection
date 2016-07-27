@@ -2,12 +2,10 @@
 #include <io/DangerZoneSerializer.h>
 #include "DangerZoneSender.h"
 
-const std::string DangerZoneSender::routemakingIpcAddress = "ipc:////tmp/sailbot-obstacle-detection";
-
-DangerZoneSender::DangerZoneSender(zmq::context_t &context) :
+DangerZoneSender::DangerZoneSender(zmq::context_t &context, const std::string &dangerZonePubAddress) :
         _socket(zmq::socket_t(context, ZMQ_PUB)) {
 
-    _socket.bind(routemakingIpcAddress);
+    _socket.bind(dangerZonePubAddress);
 }
 
 

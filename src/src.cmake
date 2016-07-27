@@ -19,8 +19,9 @@ add_library(src_core STATIC
         src/core/comm/TCPCameraCommsSub.cpp
         src/core/comm/TCPImageServer.cpp
         src/core/comm/ZmqContextSingleton.cpp
-        src/core/config/AdaVisionConfig.cpp
         src/core/config/BadConfigException.h
+        src/core/config/Config.cpp
+        src/core/config/ConfigMacros.h
         src/core/detect/Obstacle.cpp
         src/core/detect/SimpleDangerZoneEncoder.cpp
         src/core/exceptions/ErrorMessageException.cpp
@@ -72,8 +73,7 @@ add_library(src_core STATIC
 		src/core/io/cameradata/CameraDataHandler.h
 		src/core/detect/DangerZone.h)
 
-add_dependencies(src_core ${CORE_LIBS})
-add_dependencies(src_core migrateResources)
+add_dependencies(src_core migrateResources protofiles)
 
 # obstdetect_core is the version of the obstacle detection library stripped of any device-specific code
 add_library(obstdetect_core STATIC "")

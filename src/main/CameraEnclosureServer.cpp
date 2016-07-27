@@ -10,6 +10,8 @@
 #include <camera/LeptonMultiplexer.h>
 #include <camera/MockCameraMultiplexer.h>
 #include <comm/TCPCameraCommsPub.h>
+#include <config/Config.h>
+#include <comm/ZmqContextSingleton.h>
 
 #define APPNAME "cameraServer"
 
@@ -24,61 +26,68 @@ using namespace std;
  *
  * For usage notes, see those that are printed out in main().
  */
-void run(string endpointAddress, string portNumber, bool debug,
-         bool useLepton0, bool useLepton1) {
+void runFileStream(const od::Config &topLevelConfig) {
+    const auto &enclosureConfig = topLevelConfig.camera_enclosure();
+    const auto &commsConfig = topLevelConfig.comms();
 
-    ICameraMultiplexer *mux;
-
-    if(debug) {
-        mux = new MockCameraMultiplexer();
-    }
-    else {
-        mux = new LeptonMultiplexer(useLepton0, useLepton1);
-    }
-
-    zmq::context_t context;
-    TCPCameraCommsPub publisher(context, endpointAddress, portNumber, *mux);
+    // TODO: (low priority for now) Make mock camera mux use an input directory
+    MockCameraMultiplexer mux;
+    TCPCameraCommsPub publisher(ZmqContextSingleton::getContext(),
+                                "*",
+                                commsConfig.camera_server_pub_port(),
+                                mux);
 
     for (;;) {
         pause();
     }
+}
 
+void runLeptonStream(const od::Config &topLevelConfig) {
+    const auto &leptonConfig = topLevelConfig.camera_enclosure().lepton();
+    const auto &sunConfig = topLevelConfig.perception().sun_detection();
+    const auto &commsConfig = topLevelConfig.comms();
+
+    LeptonMultiplexer mux(leptonConfig, sunConfig);
+    TCPCameraCommsPub publisher(ZmqContextSingleton::getContext(),
+                                "*",
+                                commsConfig.camera_server_pub_port(),
+                                mux);
+
+    for (;;) {
+        pause();
+    }
+}
+
+void printUsage(int argc, char **argv) {
+    std::cout << "Usage:\n" <<
+            APPNAME << " [path/to/config.txt]" << std::endl;
+    std::cout << "You entered: " << std::endl;
+    for (int i = 0; i < argc; i++) {
+        std::cout << argv[i];
+    }
+    std::cout << std::endl;
 }
 
 int main(int argc, char **argv) {
 
-    if (argc < 4) {
-        std::cout << std::endl;
-        std::cout << "Usage: " << APPNAME << " [IPv4_address] [port#] [debug/lepton]" << std::endl;
-        std::cout << std::endl;
-        std::cout << "e.g. ./" << APPNAME << " " << "'*' 5555 lepton 1 1" << std::endl;
-        std::cout << std::endl;
-        std:: cout << "This binds an instance of cameraServer to any available interface "
-            "on this device, on port 5555, connecting to two Leptons: one on "
-            "SPI_CS_0, the other on SPI_CS_1." << std::endl;
-        exit(0);
+    if (argc < 2) {
+        printUsage(argc, argv);
+        return 1;
     }
 
-    std::string address(argv[1]), port(argv[2]);
+    od::Config config(argv[1]);
 
-    char* mode = argv[3];
+    typedef od::Config::camera_enclosure_config::ImageSource EnclosureImageSource;
 
-    if (!strcmp(mode, "lepton")) {
-        if (argc < 6) {
-            std::cout << "If lepton is specified, must include two more arguments"
-                                 " both binary (i.e. 0 or 1): [useLepton0] and "
-                                 "[useLepton1]." << std::endl;
-            exit(0);
-        }
-        bool useLepton0 = atoi(argv[4]) != 0;
-        bool useLepton1 = atoi(argv[5]) != 0;
-        run(address, port, false, useLepton0, useLepton1);
-    }
-    else if (!strcmp(mode, "debug")) {
-        run(address, port, true, 0, 0);
-    }
-    else {
-        std::cout << "Error: Fourth argument must be one of 'debug' or 'lepton'." << std::endl;
+    switch (config.camera_enclosure().image_source()) {
+        case EnclosureImageSource::FILE:
+            runFileStream(config);
+            break;
+        case EnclosureImageSource::LEPTON:
+            runLeptonStream(config);
+            break;
+        default:
+            printUsage(argc, argv);
     }
 
     return 0;
