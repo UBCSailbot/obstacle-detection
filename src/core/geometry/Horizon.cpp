@@ -5,7 +5,7 @@
 #include "Horizon.h"
 
 Horizon::Horizon(cv::Point2f startPoint, cv::Point2f endPoint) :
-    Line(startPoint, endPoint) { }
+        Line(startPoint, endPoint) {}
 
 /*
 Check if given point is above horizon.
@@ -25,22 +25,14 @@ bool Horizon::isPointAbove(const float &x, const float &y) const {
         return true;
 
     return (_endPoint.x - _startPoint.x) * (y - _startPoint.y) <
-        (_endPoint.y - _startPoint.y) * (x - _startPoint.x);
+           (_endPoint.y - _startPoint.y) * (x - _startPoint.x);
 
 }
 
-/*
-Check if rectangle intersect the horizon.
-IN: rectangle
-OUT:
-RETURN: true some points in the the rectangle is above and below the horizon
- TODO: Implement this function
-*/
-bool Horizon::isPolyIntersect(cv::Rect rectangle) const {
-    bool isAbove = false;
-    bool isBelow = false;
 
-    //add check for 4 point
-
-    return isAbove && isBelow;
+bool Horizon::isRectAbove(cv::Rect rectangle) const {
+    return isPointAbove(rectangle.tl()) &&
+           isPointAbove(rectangle.br()) &&
+           isPointAbove(cv::Point2f(rectangle.x + rectangle.width, rectangle.y)) &&
+           isPointAbove(cv::Point2f(rectangle.x, rectangle.y + rectangle.height));
 }

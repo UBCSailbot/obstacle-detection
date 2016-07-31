@@ -16,9 +16,9 @@
 #include "camera/lepton/LeptonCameraSpecifications.h"
 #include "Line.h"
 
-class Horizon: public Line {
+class Horizon : public Line {
 
-  public:
+public:
     Horizon(cv::Point2f startPoint, cv::Point2f endPoint);
 
     /*
@@ -28,17 +28,18 @@ class Horizon: public Line {
     RETURN: true if point is above horizon
     */
     bool isPointAbove(cv::Point2f pointOfInterest) const;
+
     bool isPointAbove(const float &x, const float &y) const;
 
     /*
-    Check if rectangle intersect the horizon.
+    Check if rectangle is above the horizon.
     IN: rectangle
     OUT:
-    RETURN: true some points in the the rectangle is above and below the horizon
+    RETURN: true if the rectangle is fully above the horizon
     */
-    bool isPolyIntersect(cv::Rect rectangle) const;
+    bool isRectAbove(cv::Rect rectangle) const;
 
-  private:
+private:
     // Store the height of the intersection of the horizon with the edges of the viewport
     int heightLeft, heightRight;
 

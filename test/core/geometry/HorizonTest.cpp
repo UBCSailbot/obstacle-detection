@@ -152,6 +152,40 @@ TEST_F(HorizonTest, steepHorizonNegativeSlope) {
     testIsPointAbove(p4, h, true);
 }
 
+TEST_F(HorizonTest, steepHorizonNegativeSlope_withRectAbove) {
+    cv::Point2f start(17,0);
+    cv::Point2f end(68,60);
+    Horizon h(start, end);
+
+    cv::Rect rectangle(77,30,10,10);
+
+    EXPECT_TRUE(h.isRectAbove(rectangle));
+}
+
+
+TEST_F(HorizonTest, negativeRollPositivePitch_withRect) {
+    cv::Point2f start(40,60);
+    cv::Point2f end(80,40);
+    Horizon h(start, end);
+
+    cv::Point2f pointOfInterest;
+
+    cv::Rect rectangle(76,55,3,4);
+
+    EXPECT_FALSE(h.isRectAbove(rectangle));
+}
+
+
+TEST_F(HorizonTest, steepHorizonNegativeSlope_withRectBelow) {
+    cv::Point2f start(17,0);
+    cv::Point2f end(68,60);
+    Horizon h(start, end);
+
+    cv::Rect rectangle(18,90,10,20);
+
+    EXPECT_FALSE(h.isRectAbove(rectangle));
+}
+
 void HorizonTest::testIsPointAbove(const cv::Point2f &pointOfInterest, const Horizon &h, const bool &isAbove)
 {
     EXPECT_EQ(isAbove, h.isPointAbove(pointOfInterest));
