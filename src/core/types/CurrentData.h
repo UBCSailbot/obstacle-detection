@@ -8,13 +8,13 @@
 class CurrentData {
 public:
 
-    double speed_over_ground() { return speed_over_ground_; };
+    double speed_over_ground() const { return speed_over_ground_; };
 
-    double heading() { return heading_; };
+    double heading() const { return heading_; };
 
-    double latitude() { return latitude_; };
+    double latitude() const { return latitude_; };
 
-    double longitude() { return longitude_; };
+    double longitude() const { return longitude_; };
 
     void setSpeedOverGround(double speed_over_ground) { speed_over_ground_ = speed_over_ground; };
 

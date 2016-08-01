@@ -25,21 +25,9 @@ bool ImageFeedZmq::init(const std::string &portNum) {
     return true;
 }
 
-bool ImageFeedZmq::sendFrame(const uint8_t *buf, size_t size) {
-    // Check that we've initialized first
-    if (m_socket == NULL) {
-        return false;
-    }
+bool ImageFeedZmq::sendFrame(const std::string &message) {
 
-    /* We need to allocate our own buffer, because we can't
-       assume the one we're given will exist long enough */
-    void *nbuf = malloc(size);
-    if (nbuf == NULL) {
-        return false;
-    }
-    memcpy(nbuf, buf, size);
-
-    zmq::message_t msg(nbuf, size, ImageFeedZmq::zmqFree);
+    zmq::message_t msg(message.c_str(), message.size());
 
     // Send the message
     return m_socket->send(msg);

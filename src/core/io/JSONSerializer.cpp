@@ -2,23 +2,33 @@
 
 const char *types[] = {"8Bit", "16Bit"};
 
-std::string JSONSerializer::makeJSON(std::string img, std::vector<cv::Rect> rectangles, ImageType imageType) {
+std::string JSONSerializer::makeJSON(const std::string &img, const std::vector<cv::Rect> &rectangles, const ImageType &imageType,
+                                     const Horizon &horizon) {
     Json::Value jsonObject;
-    jsonObject["image"] = Json::Value(img);
+    jsonObject[kImage] = Json::Value(img);
 
-    jsonObject["imageType"] = Json::Value(types[imageType]);
+    jsonObject[kImageType] = Json::Value(types[imageType]);
 
-    Json::Value boxesArray = jsonObject["boxes"];
+    Json::Value jsonHorizon;
+    jsonHorizon[kStartPoint][kX] = Json::Value(horizon.getStartPoint().x);;
+    jsonHorizon[kStartPoint][kY] = Json::Value(horizon.getStartPoint().y);;
+
+    jsonHorizon[kEndPoint][kX] = Json::Value(horizon.getEndPoint().x);
+    jsonHorizon[kEndPoint][kY] = Json::Value(horizon.getEndPoint().y);;
+
+    jsonObject[kHorizon] = jsonHorizon;
+
+    Json::Value boxesArray = jsonObject[kBoxes];
     for (std::vector<int>::size_type i = 0; i != rectangles.size(); i++) {
         cv::Rect rectangle = rectangles[i];
         Json::Value box;
-        box["x"] = Json::Value((int) rectangle.x);
-        box["y"] = Json::Value((int) rectangle.y);
-        box["h"] = Json::Value((int) rectangle.height);
-        box["w"] = Json::Value((int) rectangle.width);
-        boxesArray[(int) i] = box;
+        box[kX] = Json::Value(rectangle.x);
+        box[kY] = Json::Value(rectangle.y);
+        box[kH] = Json::Value(rectangle.height);
+        box[kW] = Json::Value(rectangle.width);
+        boxesArray[static_cast<int>(i)] = box;
     }
-    jsonObject["boxes"] = boxesArray;
+    jsonObject[kBoxes] = boxesArray;
 
     std::ostringstream stream;
     stream << jsonObject;

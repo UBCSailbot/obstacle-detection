@@ -33,7 +33,9 @@
 #include "imageProc/dlib/DLibProcessor.h"
 
 class liveFeedImpl;
-
+/**
+ * DEPRECATED
+ */
 class LiveFeed: public FeedReader { ;
   public:
     LiveFeed(ImageStream *stream, const DLibProcessor &dLibProcessor, char *output_dir,

@@ -10,6 +10,7 @@ TEST_F(JSONSerializerTest, JSONTest) {
     rectangles.push_back(rect1);
     rectangles.push_back(rect2);
     std::string img = "asdf";
+    Horizon horizon = Horizon(cv::Point2f(0, 30), cv::Point2f(50, 60));
 
     std::string expected = "{\n"
             "\t\"boxes\" : \n"
@@ -27,11 +28,24 @@ TEST_F(JSONSerializerTest, JSONTest) {
             "\t\t\t\"y\" : 2\n"
             "\t\t}\n"
             "\t],\n"
+            "\t\"horizon\" : \n"
+            "\t{\n"
+            "\t\t\"endPoint\" : \n"
+            "\t\t{\n"
+            "\t\t\t\"x\" : 50,\n"
+            "\t\t\t\"y\" : 60\n"
+            "\t\t},\n"
+            "\t\t\"startPoint\" : \n"
+            "\t\t{\n"
+            "\t\t\t\"x\" : 0,\n"
+            "\t\t\t\"y\" : 30\n"
+            "\t\t}\n"
+            "\t},\n"
             "\t\"image\" : \"asdf\",\n"
             "\t\"imageType\" : \"8Bit\"\n"
             "}";
 
-    EXPECT_EQ(expected, JSONSerializer::makeJSON(img, rectangles, IMAGE8BIT));
+    EXPECT_EQ(expected, JSONSerializer::makeJSON(img, rectangles, IMAGE8BIT, horizon));
 }
 
 JSONSerializerTest::JSONSerializerTest() {

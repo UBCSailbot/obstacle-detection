@@ -37,12 +37,6 @@ void LiveFeed::onImageRead(Image16bit image) {
     if (runImu) {
         imuLog << imu->getOrientation().toDataString();
     }
-
-    std::vector<uchar> buff = Compressor::imgToBuff(image, 3);
-    std::string encoded = base64_encode(buff.data(), buff.size());
-    std::vector<cv::Rect> detectedRectangles = dLibProcessor.getObjectDetectionBoxes(image);
-    std::string JSON(JSONSerializer::makeJSON(encoded, detectedRectangles, IMAGE16BIT));
-    zmqfeed.sendFrame((const uint8_t *) JSON.c_str(), JSON.size());
 }
 
 void LiveFeed::printUsage(int argc, char **argv) {
