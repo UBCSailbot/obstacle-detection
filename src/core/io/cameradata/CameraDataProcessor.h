@@ -30,13 +30,15 @@ public:
 
     void run();
 
+    static void filterRectanglesByHorizon(std::vector<cv::Rect> *rectangles, const Horizon &horizon);
+
 private:
-    std::vector<DangerZone> getDangerZones(std::vector<std::shared_ptr<cv::Mat>> frames,
-                                           std::vector<cv::Rect> detectedRectangles,
-                                           CameraSpecifications specs,
-                                           CurrentData latestData,
-                                           Orientation orientation,
-                                           std::chrono::duration<uint64_t, std::ratio<1, 1>> imageReceiveTime);
+    std::vector<DangerZone> getDangerZones(const std::vector<cv::Rect> &detectedRectangles,
+                   const std::vector<std::shared_ptr<cv::Mat>> &frames,
+                   const CurrentData &latestData,
+                   const std::chrono::duration<uint64_t, std::ratio<1, 1>> &imageReceiveTime,
+                   const Horizon &horizon,
+                   const CameraSpecifications &specs);
 
     DLibProcessor &_dlibProcessor;
 

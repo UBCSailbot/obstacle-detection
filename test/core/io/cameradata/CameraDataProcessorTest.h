@@ -1,0 +1,13 @@
+
+#ifndef OBSTACLE_DETECTION_CAMERADATAPROCESSORTEST_H
+#define OBSTACLE_DETECTION_CAMERADATAPROCESSORTEST_H
+
+#include <gtest/gtest.h>
+
+class CameraDataProcessorTest : public ::testing::Test {
+
+
+};
+
+
+#endif //OBSTACLE_DETECTION_CAMERADATAPROCESSORTEST_H

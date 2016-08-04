@@ -10,7 +10,6 @@ CameraDataProcessor::CameraDataProcessor(CameraDataStream &stream, DLibProcessor
                                          BoatDataStream &boatDataStream)
         : _keepRecording(true), _dlibProcessor(dLibProcessor), _cameraDataHandler(cameraDataHandler), _stream(stream),
           _simpleDangerZoneEncoder(), _imu(imu), _boatDataStream(boatDataStream) {
-
 }
 
 
@@ -21,8 +20,7 @@ void CameraDataProcessor::run() {
         CurrentData latestData = _boatDataStream.getBoatData();
         Orientation orientation = _imu.getOrientation();
         _cameraDataHandler.onOrientationReceived(orientation);
-        auto time = std::chrono::duration_cast<std::chrono::seconds>(
-                std::chrono::system_clock::now().time_since_epoch());
+        auto time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
 
         std::vector<std::shared_ptr<cv::Mat>> frames;
         std::vector<std::pair<std::shared_ptr<CameraData>, std::vector<cv::Rect>>> dataRectPairs;
@@ -36,30 +34,41 @@ void CameraDataProcessor::run() {
             dataRectPairs.push_back(std::make_pair(frame, detectedRectangles));
         }
 
-        if (dataRectPairs.size() == 1) {
-            std::vector<cv::Rect> &rectangles = dataRectPairs[0].second;
-            _cameraDataHandler.onImageProcessed(dataVector, rectangles);
-            if (rectangles.size() > 0) {
-                _cameraDataHandler.onDangerZoneProcessed(
-                        getDangerZones(frames, rectangles, dataVector[0].imageSpecs, latestData,
-                                       orientation, time));
-            }
-        } else if (dataRectPairs.size() == 2) {
-            auto filteredRectangles = RectangleComparator::getCommonRectangles(dataRectPairs[0].second,
-                                                                               dataRectPairs[1].second);
-            _cameraDataHandler.onImageProcessed(dataVector, filteredRectangles);
-            if (filteredRectangles.size() > 0) {
-                _cameraDataHandler.onDangerZoneProcessed(
-                        getDangerZones(frames, filteredRectangles, dataVector[0].imageSpecs, latestData,
-                                       orientation, time));
-            }
+        std::vector<cv::Rect> rectangles;
+        switch (dataRectPairs.size()) {
+            case 0:
+                break;
+            case 1:
+                rectangles = dataRectPairs[0].second;
+                break;
+            case 2:
+                rectangles = RectangleComparator::getCommonRectangles(dataRectPairs[0].second, dataRectPairs[1].second);
+                break;
+            default:
+                throw TooManyImagesException("More than 2 images received");
+        }
 
-        } else if (dataRectPairs.size() > 2) {
-            throw TooManyImagesException("More than 2 images received");
+        CameraSpecifications &specifications = dataVector[0].imageSpecs;
+        HorizonFactory horizonFactory(specifications);
+        Horizon horizon = horizonFactory.makeHorizon(orientation);
+
+        filterRectanglesByHorizon(&rectangles, horizon);
+
+        _cameraDataHandler.onImageProcessed(dataVector, rectangles, horizon);
+
+        if (rectangles.size() > 0) {
+            _cameraDataHandler.onDangerZoneProcessed(
+                    getDangerZones(rectangles, frames, latestData, time, horizon, specifications));
         }
     }
 }
 
+void CameraDataProcessor::filterRectanglesByHorizon(std::vector<cv::Rect> *rectangles, const Horizon &horizon) {
+    rectangles->erase(
+            std::remove_if(rectangles->begin(), rectangles->end(),
+                           [&horizon](const cv::Rect &elem) { return horizon.isRectAbove(elem); }),
+            rectangles->end());
+}
 
 void CameraDataProcessor::setKeepRecording(volatile bool keepRecording) {
     _keepRecording = keepRecording;
@@ -81,16 +90,12 @@ Obstacle CameraDataProcessor::rectToObstacle(cv::Rect rect, Horizon horizon) {
 }
 
 
-std::vector<DangerZone> CameraDataProcessor::getDangerZones(std::vector<std::shared_ptr<cv::Mat>> frames,
-                                                            std::vector<cv::Rect> detectedRectangles,
-                                                            CameraSpecifications specs,
-                                                            CurrentData latestData,
-                                                            Orientation orientation,
-                                                            std::chrono::duration<uint64_t, std::ratio<1, 1>> imageReceiveTime) {
-    HorizonFactory horizonFactory(specs);
-    Horizon horizon = horizonFactory.makeHorizon(orientation);
-    std::remove_if(detectedRectangles.begin(), detectedRectangles.end(),
-                   [&horizon](const cv::Rect &elem) { return !horizon.isRectAbove(elem); });
+std::vector<DangerZone> CameraDataProcessor::getDangerZones(const std::vector<cv::Rect> &detectedRectangles,
+                                                            const std::vector<std::shared_ptr<cv::Mat>> &frames,
+                                                            const CurrentData &latestData,
+                                                            const std::chrono::duration<uint64_t, std::ratio<1, 1>> &imageReceiveTime,
+                                                            const Horizon &horizon,
+                                                            const CameraSpecifications &specs) {
 
     std::vector<Obstacle> obstacles;
     std::transform(detectedRectangles.begin(), detectedRectangles.end(), std::back_inserter(obstacles),

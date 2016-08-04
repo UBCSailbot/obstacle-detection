@@ -65,20 +65,18 @@ public:
         imuLog.open(logOutputDir + "/imulog.txt");
     }
 
-    void onImageProcessed(const std::vector<CameraData> &cameraData,
-                          const std::vector<cv::Rect> &detectedRectangles) {
+    void onImageProcessed(const std::vector<CameraData> &cameraData, const std::vector<cv::Rect> &detectedRectangles, const Horizon &horizon) {
         _skippedCounter++;
         if (_frameSkip <= 0 || _skippedCounter % _frameSkip == 0) {
             if (cameraData.size() == 1) {
-                onSingleImageProcessed(cameraData[0], detectedRectangles);
+                onSingleImageProcessed(cameraData[0], detectedRectangles, horizon);
             } else {
-                onMultiImageProcessed(cameraData, detectedRectangles);
+                onMultiImageProcessed(cameraData, detectedRectangles, horizon);
             }
         }
     }
 
-    void onMultiImageProcessed(const std::vector<CameraData> &cameraData,
-                               const std::vector<cv::Rect> detectedRectangles) {
+    void onMultiImageProcessed(const std::vector<CameraData> &cameraData, const std::vector<cv::Rect> detectedRectangles, const Horizon &horizon) {
         if (_debug) {
             std::cout << "received two images" << std::endl;
             if (detectedRectangles.size() > 0) {
@@ -102,10 +100,10 @@ public:
         //TODO something smarter than this...
         int cameraToUse = _frameCounter % 2;
         std::vector<uchar> buff = Compressor::imgToBuff(cameraData[cameraToUse].frame, 3);
-        sendProcessedImage(detectedRectangles, buff);
+        sendProcessedImage(detectedRectangles, buff, horizon);
     }
 
-    void onSingleImageProcessed(const CameraData &cameraData, std::vector<cv::Rect> detectedRectangles) {
+    void onSingleImageProcessed(const CameraData &cameraData, std::vector<cv::Rect> detectedRectangles, const Horizon &horizon) {
         if (_debug) {
             std::cout << "single received image" << std::endl;
             if (detectedRectangles.size() > 0) {
@@ -122,22 +120,24 @@ public:
         cv::imwrite(stringStream.str(), cameraData.frame);
 
         std::vector<uchar> buff = Compressor::imgToBuff(cameraData.frame, 3);
-        sendProcessedImage(detectedRectangles, buff);
+        sendProcessedImage(detectedRectangles, buff, horizon);
     }
 
-    void sendProcessedImage(const std::vector<cv::Rect> &detectedRectangles, std::vector<uchar> &buff) {
+    void sendProcessedImage(const std::vector<cv::Rect> &detectedRectangles, std::vector<uchar> &buff, const Horizon &horizon) {
         std::string encoded = base64_encode(buff.data(), buff.size());
-        std::string json(JSONSerializer::makeJSON(encoded, detectedRectangles, IMAGE16BIT));
-        _zmqfeed.sendFrame((const uint8_t *) json.c_str(), json.size());
+        std::string json(JSONSerializer::makeJSON(encoded, detectedRectangles, IMAGE16BIT, horizon));
+        _zmqfeed.sendFrame(json);
     }
 
     void onDangerZoneProcessed(const std::vector<DangerZone> &dangerZones) {
         std::ostringstream stringStream;
-        for (const auto &dangerZone : dangerZones) {
-            stringStream << "dangerzone:" << std::endl;
-            stringStream << " sb :" << dangerZone.getStarboardAngleDeg();
-            stringStream << " p:" << dangerZone.getPortAngleDeg();
-            stringStream << " l:" << dangerZone.getLateralOffsetMeters() << std::endl;
+        if (_debug) {
+            for (const auto &dangerZone : dangerZones) {
+                stringStream << "dangerzone:" << std::endl;
+                stringStream << " sb :" << dangerZone.getStarboardAngleDeg();
+                stringStream << " p:" << dangerZone.getPortAngleDeg();
+                stringStream << " l:" << dangerZone.getLateralOffsetMeters() << std::endl;
+            }
         }
         od::Logger::log(od::Logger::INFO, stringStream.str(), _debug);
 
@@ -222,7 +222,8 @@ void runAdaVisionFromFiles(const Config &masterConfig) {
     std::shared_ptr<IMU> pIMU = getImu(masterConfig);
     std::shared_ptr<BoatDataStream> boatDataStream = getBoatDataStream(masterConfig);
 
-    CameraDataProcessor cameraDataProcessor(cameraDataStream, dLibProcessor, adaVisionHandler, *pIMU, *boatDataStream);
+    CameraDataProcessor cameraDataProcessor(cameraDataStream, dLibProcessor, adaVisionHandler, *pIMU,
+                                            *boatDataStream);
     try {
         cameraDataProcessor.run();
     } catch (std::exception &e) {

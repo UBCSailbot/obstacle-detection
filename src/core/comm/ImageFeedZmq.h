@@ -15,7 +15,7 @@ class ImageFeedZmq {
     ImageFeedZmq(zmq::context_t &ctx);
     ~ImageFeedZmq();
     bool init(const std::string &portNum);
-    bool sendFrame(const uint8_t *buf, size_t size);
+    bool sendFrame(const std::string &message);
     static void zmqFree(void *data, void *hint);
 };
 
