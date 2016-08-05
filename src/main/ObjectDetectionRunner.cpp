@@ -41,7 +41,7 @@ using namespace dlib;
 int main(int argc, char **argv) {
 
     try {
-        if (argc != 3) {
+        if (argc < 3) {
             cout << "Give the path to the testing directory and your model as the argument to this" << endl;
             cout << "You can do this this program by running: " << endl;
             cout << "   ./ObjectDetectionRunner path/to/images model.svm ..." << endl;
@@ -84,6 +84,7 @@ int main(int argc, char **argv) {
 
         for (unsigned long i = 0; i < images_test.size(); ++i) {
             std::vector <rectangle> dets = evaluate_detectors(my_detectors, images_test[i]);
+            std::cout << i +1 << std::endl;
             win.clear_overlay();
             win.set_image(images_test[i]);
             win.add_overlay(dets, rgb_pixel(255, 0, 0));
