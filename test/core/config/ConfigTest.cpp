@@ -32,7 +32,6 @@ protected:
         // Config fields for detecting stuff
         const auto &perceptionConfig = config.perception();
         perceptionConfig.boat_detection().models().all();
-        perceptionConfig.boat_detection().models().boat_detector();
         perceptionConfig.sun_detection().sun_pixel_threshold();
 
         // AdaVision config fields
