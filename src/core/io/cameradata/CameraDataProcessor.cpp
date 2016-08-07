@@ -37,7 +37,7 @@ void CameraDataProcessor::run() {
         std::vector<cv::Rect> rectangles;
         switch (dataRectPairs.size()) {
             case 0:
-                break;
+                continue;
             case 1:
                 rectangles = dataRectPairs[0].second;
                 break;
