@@ -57,7 +57,6 @@ public:
 
         START_CONFIG_SECTION(boat_detection)
             START_CONFIG_SECTION(models)
-                ADD_REQUIRED_STRING_FIELD(boat_detector)
                 std::vector<perception_config::ObjectDetectorType> all() const;
             END_CONFIG_SECTION(models)
         END_CONFIG_SECTION(boat_detection)
