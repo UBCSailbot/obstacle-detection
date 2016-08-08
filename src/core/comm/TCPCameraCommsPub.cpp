@@ -7,7 +7,7 @@ TCPCameraCommsPub::TCPCameraCommsPub(zmq::context_t &context,
                                      const std::string &portNumber,
                                      ICameraMultiplexer &cameraMux) {
     std::thread _pubThread(&TCPCameraCommsPub::startPublisher, this,
-                           std::ref(context), std::ref(endpointAddress),
+                           std::ref(context), endpointAddress,
                            std::ref(portNumber), std::ref(cameraMux));
     _pubThread.detach();
 }
