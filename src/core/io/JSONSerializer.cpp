@@ -35,4 +35,21 @@ std::string JSONSerializer::makeJSON(const std::string &img, const std::vector<c
     return stream.str();
 }
 
+std::string JSONSerializer::makeJSON(std::vector<std::string> images) {
+    Json::Value jsonObject;
+
+    Json::Value imagesArray = jsonObject[kImages];
+    for (std::vector<int>::size_type i = 0; i != images.size(); i++) {
+        std::string encodedImage = images[i];
+        Json::Value image;
+        image[kImage] = Json::Value(encodedImage);
+        imagesArray[static_cast<int>(i)] = image;
+    }
+    jsonObject[kImages] = imagesArray;
+
+    std::ostringstream stream;
+    stream << jsonObject;
+    return stream.str();
+}
+
 

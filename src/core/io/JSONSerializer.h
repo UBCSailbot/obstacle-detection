@@ -23,6 +23,9 @@ public:
     */
     static std::string makeJSON(const std::string &img, const std::vector<cv::Rect> &rectangles, const ImageType &imageType, const Horizon &horizon);
 
+    static std::string makeJSON(std::vector<std::string> images);
+
+
 private:
 
     static constexpr auto kStartPoint = "startPoint";
@@ -35,6 +38,7 @@ private:
     static constexpr auto kW = "w";
     static constexpr auto kBoxes = "boxes";
     static constexpr auto kImageType = "imageType";
+    static constexpr auto kImages = "images";
 
 };
 

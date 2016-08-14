@@ -80,6 +80,10 @@ target_link_libraries(horizonEval obstdetect_core)
 add_executable(adaVision src/main/AdaVision.cpp)
 target_link_libraries(adaVision obstdetect_full test_support)
 
+add_executable(simpleImageSender src/main/SimpleImageSender.cpp)
+target_link_libraries(simpleImageSender obstdetect_full)
+
+
 #########
 # TESTS #
 #########
