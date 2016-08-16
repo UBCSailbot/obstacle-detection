@@ -13,6 +13,8 @@
 #include <imageProc/liveFeed/base64EncDec.h>
 #include <io/JSONSerializer.h>
 
+static constexpr auto kFrameCountLog = "image_count";
+
 class SimpleImageSender {
 public:
 
@@ -26,6 +28,15 @@ public:
         if (!QDir(imageOutputDir.c_str()).exists()) {
             QDir().mkdir(imageOutputDir.c_str());
         }
+        std::ifstream frameLogIn(kFrameCountLog);
+        if (frameLogIn.is_open()) {
+            std::string count;
+            while (getline(frameLogIn, count)) {
+                savedImageCount_ = std::stoi(count);
+            }
+            frameLogIn.close();
+        }
+
     }
 
 
@@ -45,15 +56,26 @@ public:
                 auto frame = data.frame;
                 Image8bit rescaled;
                 rescaler_.scale16bitTo8bit(frame, rescaled);
-                saveImage(frame_counter, i, frame);
+                if (frame_counter % 60 == 0) {
+                    saveImage(savedImageCount_, i, frame);
+                    remove(kFrameCountLog);
+                    frameCountLog_.open(kFrameCountLog);
+                    frameCountLog_ << savedImageCount_;
+                    frameCountLog_.close();
+                }
                 encodedImages.push_back(imageToBuffer(rescaled));
                 i++;
+            }
+            if (frame_counter % 60 == 0) {
+                savedImageCount_++;
             }
 
             std::string json(JSONSerializer::makeJSON(encodedImages));
             zmqfeed_.sendFrame(json);
+            std::cout << "send image " << frame_counter << std::endl;
 
-            std::this_thread::sleep_for(std::chrono::minutes(10));
+
+            std::this_thread::sleep_for(std::chrono::seconds(10));
         }
 
     }
@@ -87,6 +109,8 @@ private:
     SimpleRescaler rescaler_;
     ImageFeedZmq zmqfeed_;
     std::string imageOutputDir_;
+    std::ofstream frameCountLog_;
+    int savedImageCount_ = 0;
 };
 
 void printUsage(int argc, char **argv) {
