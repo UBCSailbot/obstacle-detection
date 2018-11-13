@@ -1,0 +1,23 @@
+syntax = "proto2";
+
+package sailbot;
+
+message GPSCoordinate {
+    required float latitude = 1;
+    required float longitude = 2;
+    optional WaypointLevel waypoint_level = 3;
+}
+
+// Floating point numbers do not guarantee the level of precision required.
+// This message contains a waypoint scaled by 10**7
+message GPSCoordinateExact {
+    required sfixed32 latitude = 1;
+    required sfixed32 longitude = 2;
+    optional WaypointLevel waypoint_level = 3;
+}
+
+enum WaypointLevel {
+    micro = 0;
+    local = 1;
+    global = 2;
+}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package sailbot;
+
+import "currentdata.proto";
+
+message CurrentDataServerMessage {
+  CurrentData current_data = 1;
+  PowerData power_data = 2;
+  // encoded with polyline
+  string planned_path = 3;
+}

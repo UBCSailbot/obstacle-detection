@@ -29,7 +29,7 @@ Try running our setup script for debian systems, [debiansetup.sh](debiansetup.sh
 ## In general
 
 ```
-  cd obstacle-avoidance
+  cd obstacle-detection
   git submodule update --init --recursive
   mkdir bin
   cd bin

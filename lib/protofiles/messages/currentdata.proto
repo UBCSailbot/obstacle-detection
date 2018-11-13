@@ -1,0 +1,138 @@
+syntax = "proto2";
+
+package sailbot;
+
+import "gpscoordinate.proto";
+
+message ChargeController {
+  required sfixed32 charge = 1;
+  required sfixed32 power = 2;
+  required sfixed32 current = 3;
+}
+
+message CurrentData {
+  optional float heading_over_ground = 1;
+  optional float speed_over_ground = 2;
+  optional float course_over_ground = 3;
+  optional float apparent_wind_angle = 4;
+  optional float wind_speed = 5;
+  optional sint32 rudder_angle = 6;
+  optional int32 sheet_percentage = 7;
+  optional GPSCoordinateExact gps_coordinate = 8;
+  optional bool is_gps_fix_reliable = 9;
+  optional bool is_gps_course_reliable = 10;
+  optional bool is_gps_heading_reliable = 11;
+  optional int32 roll = 12;
+}
+
+
+message PowerData {
+  repeated ChargeController charge_controllers = 1;
+  optional uint32 battery_data_age = 2;
+}
+
+message UnixTimestamp {
+  required uint32 timestamp = 1;
+}
+
+message WaypointMessage {
+  optional GPSCoordinateExact gps_coordinate = 1;
+
+  enum WaypointCode {
+    WaypointsReset = 0;
+    UsingBuiltInWaypoints = 1;
+    WaypointAdded = 2;
+    WaypointReached = 3;
+    WaypointTargeted = 4;
+    WaypointBufferFull = 5;
+  };
+
+  required WaypointCode waypoint_code = 2;
+}
+
+message ErrorMessage {
+  enum ErrorCode {
+    GpsPosFail = 0;
+    GpsCogFail = 1;
+    GpsSogFail = 2;
+    GpsHogFail = 3;
+  };
+
+  required ErrorCode error_code = 1;
+}
+
+message ParameterMessage {
+  enum ControlState {
+    AWA = 0;
+    Compass = 1;
+    Downwind = 2;
+  }
+
+  enum SailingMode {
+    RC = 0;
+    SailToPoint = 1;
+    Emergency = 2;
+  }
+
+  enum WindSensor {
+    Local = 0;
+    Remote = 1;
+  }
+
+  oneof parameter_code {
+    SailingMode sailing_mode = 1;
+    ControlState control_state = 2;
+    sfixed32 bearing_to_dest = 3;
+    sfixed32 distance_to_dest = 4;
+    WindSensor wind_sensor = 5;
+  }
+}
+
+message GenericLogMessage {
+  required string message = 1;
+}
+
+message Command {
+  enum Component {
+    GPS = 0;
+    WindSensor = 1;
+    AIS = 2;
+    SAT = 3;
+    GSM = 4;
+    Lepton = 5;
+    Light = 6;
+    Extra33 = 7;
+    RC = 8;
+    Extra12 = 9;
+    Winch = 10;
+    Rudder = 11;
+  }
+
+  message ComponentCommand {
+    optional Component component = 1;
+    optional bool power_on = 2;
+  }
+
+  // A workaround to have commands for each component in the oneof
+  message ComponentCommands {
+    repeated ComponentCommand component_command = 1;
+  }
+
+  message WaypointCommand {
+    // if undefined or false, don't clear all
+    optional bool clear_all = 1;
+    repeated GPSCoordinateExact waypoints = 2;
+  }
+
+  message SimulatorData {
+    optional CurrentData current_data = 1;
+    optional PowerData power_data = 2;
+  }
+
+  oneof command {
+    SimulatorData simulator_data = 1;
+    ComponentCommands component_commands = 2;
+    bool flashing_firmware = 3;
+    WaypointCommand waypoint_command = 4;
+  }
+}

@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package Sailbot;
+
+// Mobile-Originating Message (goes from boat to server)
+message MOMessage {
+    int32 jobId = 1;
+
+    enum Purpose {
+        HTTP_REQUEST = 0;
+        SUBMIT_CURRENT_DATA = 1;
+        SUBMIT_LOG_MESSAGE = 2;
+        SUBMIT_BINARY_DATA = 3;
+    }
+
+    Purpose purpose = 2;
+
+    bytes data = 3;
+    // optional value that is only filled when HTTP_REQUEST is filled
+    HTTPRequest request = 4;
+    // eventName is only filled when the purpose is SUBMIT_BINARY_DATA
+    string eventName = 5;
+}
+
+// Mobile-Terminating Message (goes from server to boat)
+message MTMessage {
+    int32 jobId = 1;
+
+    enum Purpose {
+        HTTP_RESPONSE = 0;
+        SUBMIT_COMMAND = 1;
+        SUBMIT_BINARY_DATA = 2;
+    }
+
+    enum Status {
+        SUCCESS = 0;
+        FAILURE = 1;
+    }
+
+    Purpose purpose = 2;
+    Status status = 3;
+    bytes data = 4;
+    string eventName = 5;
+}
+
+message HTTPRequest {
+    enum Method {
+        GET = 0;
+        DELETE = 1;
+        PUT = 2;
+        POST = 3;
+    }
+
+    Method method = 1;
+    string url = 2;
+    string body = 3;
+}
+

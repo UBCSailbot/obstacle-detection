@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package sailbot;
+
+message DangerZone {
+    double port_angle = 1;
+    double starboard_angle = 2;
+    double longitude = 3;
+    double latitude = 4;
+    google.protobuf.Timestamp time = 5;
+}
+
+message DangerZones {
+    repeated DangerZone danger_zone = 1;
+}

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package Sailbot;
+
+message TestingCommandResponse {
+  enum Type {
+    FAILURE = 0;
+    SUCCESS = 1;
+    RECEIVED = 2;
+  }
+  Type type = 1;
+  int32 id = 2;
+  int32 failure_count = 3;
+}

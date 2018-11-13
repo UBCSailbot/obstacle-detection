@@ -1,0 +1,11 @@
+# Max number of charge controllers
+sailbot.PowerData.charge_controllers max_count:4
+
+# Max number of components to refer to in one component command message
+sailbot.Command.ComponentCommands.component_command max_count:12
+
+# Max number of waypoints to send in one waypoint command message
+sailbot.Command.WaypointCommand.waypoints max_count:12
+
+# Max string size for a generic log message
+sailbot.GenericLogMessage.message max_size:64
